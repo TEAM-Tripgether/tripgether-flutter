@@ -29,9 +29,18 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
   use_frameworks!
+  # [NEW] Share Extension 지원을 위해 modular headers 사용 설정
+  use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  
   target 'RunnerTests' do
+    inherit! :search_paths
+  end
+  
+  # [NEW] Share Extension 타겟 정의
+  # 'Share Extension'은 Xcode에서 생성한 확장 프로그램의 이름과 일치해야 합니다.
+  target 'Share Extension' do
     inherit! :search_paths
   end
 end
