@@ -50,8 +50,7 @@
     <key>AppGroupId</key>
     <string>$(CUSTOM_GROUP_ID)</string>
 
-    <!-- [UPDATED] CFBundleURLTypes를 PRODUCT_BUNDLE_IDENTIFIER에 연결하여 재설정했습니다.
-         이전의 잘못된 위치에 있던 내용(ShareMedia 스키마)을 대체합니다. -->
+    <!-- Share Extension에서 메인 앱으로 돌아오기 위한 URL 스킴 설정 -->
     <key>CFBundleURLTypes</key>
     <array>
         <dict>
@@ -59,7 +58,7 @@
             <string>Editor</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>ShareMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+                <string>ShareMedia</string>
             </array>
         </dict>
     </array>
