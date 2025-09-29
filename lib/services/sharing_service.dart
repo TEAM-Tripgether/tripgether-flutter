@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+// import 'package:receive_sharing_intent/receive_sharing_intent.dart' as rsi;
 
 /// 공유된 미디어 파일의 타입을 나타내는 열거형
 enum SharedMediaType { image, video, file, text, url }
@@ -94,8 +95,12 @@ class SharingService {
   /// 현재 공유된 데이터
   SharedData? _currentSharedData;
 
-  /// Native 플랫폼 채널
+  /// Native 플랫폼 채널 (iOS용)
   static const MethodChannel _channel = MethodChannel('sharing_service');
+
+  /// 안드로이드 공유 스트림 구독 (임시 비활성화)
+  // StreamSubscription<List<rsi.SharedMediaFile>>? _androidMediaSubscription;
+  StreamSubscription<String>? _androidTextSubscription;
 
   /// 공유 데이터 스트림 (외부에서 구독 가능)
   Stream<SharedData> get dataStream => _dataStreamController.stream;
@@ -110,11 +115,11 @@ class SharingService {
       debugPrint('[SharingService] 공유 서비스 초기화 시작');
 
       if (Platform.isIOS) {
-        // 앱 시작 시 기존 데이터 처리
+        // iOS: UserDefaults를 통한 데이터 처리
         await _processInitialData();
       } else if (Platform.isAndroid) {
-        // Android는 Intent를 통해 직접 처리됨 (기존 방식 유지)
-        debugPrint('[SharingService] Android 공유는 Intent를 통해 처리됨');
+        // Android: MethodChannel을 통한 Intent 데이터 수신
+        await _initializeAndroidMethodChannel();
       }
 
       debugPrint('[SharingService] 공유 서비스 초기화 완료');
@@ -123,7 +128,178 @@ class SharingService {
     }
   }
 
-  /// 앱 시작 시 기존 데이터 처리
+  /// 안드로이드 MethodChannel 초기화
+  /// MainActivity에서 Intent 데이터를 수신하여 처리
+  Future<void> _initializeAndroidMethodChannel() async {
+    try {
+      debugPrint('[SharingService] 안드로이드 MethodChannel 초기화 시작');
+
+      // MethodChannel 메서드 호출 리스너 설정
+      _channel.setMethodCallHandler((call) async {
+        debugPrint('==== [SharingService] MethodChannel 호출 받음 ====');
+        debugPrint('[SharingService] 메서드: ${call.method}');
+        debugPrint('[SharingService] 인자: ${call.arguments}');
+        debugPrint('[SharingService] 인자 타입: ${call.arguments.runtimeType}');
+
+        switch (call.method) {
+          case 'onSharedData':
+            debugPrint('[SharingService] onSharedData 메서드 처리 시작');
+            debugPrint('[SharingService] 수신된 데이터: ${call.arguments}');
+            try {
+              await _processAndroidSharedData(call.arguments);
+              debugPrint('[SharingService] onSharedData 처리 성공');
+            } catch (e) {
+              debugPrint('[SharingService] onSharedData 처리 중 오류: $e');
+            }
+            break;
+          default:
+            debugPrint('[SharingService] 지원하지 않는 메서드: ${call.method}');
+        }
+        debugPrint('==== [SharingService] MethodChannel 처리 완료 ====');
+      });
+
+      debugPrint('[SharingService] 안드로이드 MethodChannel 초기화 완료');
+    } catch (error) {
+      debugPrint('[SharingService] 안드로이드 MethodChannel 초기화 오류: $error');
+    }
+  }
+
+  /// 안드로이드에서 받은 공유 데이터 처리
+  Future<void> _processAndroidSharedData(dynamic arguments) async {
+    try {
+      debugPrint('==== [SharingService] 안드로이드 공유 데이터 처리 시작 ====');
+      debugPrint('[SharingService] 원본 arguments: $arguments');
+      debugPrint('[SharingService] arguments 타입: ${arguments.runtimeType}');
+
+      if (arguments == null) {
+        debugPrint('[SharingService] ❌ 공유 데이터가 null입니다');
+        return;
+      }
+
+      final Map<String, dynamic> data = Map<String, dynamic>.from(arguments);
+      final String type = data['type'] ?? '';
+
+      debugPrint('[SharingService] ✅ 데이터 파싱 완료');
+      debugPrint('[SharingService] 데이터 타입: $type');
+      debugPrint('[SharingService] 전체 데이터 내용: $data');
+
+      List<SharedMediaFile> sharedFiles = [];
+      List<String> sharedTexts = [];
+
+      switch (type) {
+        case 'text':
+          final String? text = data['text'];
+          if (text != null && text.isNotEmpty) {
+            sharedTexts.add(text);
+            debugPrint('[SharingService] 텍스트 데이터 처리됨: $text');
+          }
+          break;
+
+        case 'image':
+        case 'video':
+        case 'file':
+          final String? uri = data['uri'];
+          if (uri != null && uri.isNotEmpty) {
+            final mediaType = _getMediaTypeFromString(type);
+            final sharedFile = SharedMediaFile(
+              path: uri,
+              thumbnail: null,
+              duration: null,
+              type: mediaType,
+            );
+            sharedFiles.add(sharedFile);
+            debugPrint('[SharingService] 미디어 파일 처리됨: $uri');
+          }
+          break;
+
+        case 'multiple':
+          final List<dynamic>? uris = data['uris'];
+          final String? mimeType = data['mimeType'];
+
+          if (uris != null && uris.isNotEmpty) {
+            for (final uri in uris) {
+              if (uri is String && uri.isNotEmpty) {
+                final mediaType = _getMediaTypeFromMime(mimeType);
+                final sharedFile = SharedMediaFile(
+                  path: uri,
+                  thumbnail: null,
+                  duration: null,
+                  type: mediaType,
+                );
+                sharedFiles.add(sharedFile);
+              }
+            }
+            debugPrint('[SharingService] ${sharedFiles.length}개 파일 처리됨');
+          }
+          break;
+
+        default:
+          debugPrint('[SharingService] 지원하지 않는 데이터 타입: $type');
+          return;
+      }
+
+      // SharedData 생성 및 스트림에 전달
+      debugPrint('[SharingService] SharedData 생성 준비 중...');
+      debugPrint('[SharingService] sharedFiles 개수: ${sharedFiles.length}');
+      debugPrint('[SharingService] sharedTexts 개수: ${sharedTexts.length}');
+
+      if (sharedFiles.isNotEmpty || sharedTexts.isNotEmpty) {
+        final sharedData = SharedData(
+          sharedFiles: sharedFiles,
+          sharedTexts: sharedTexts,
+        );
+
+        debugPrint('[SharingService] ✅ SharedData 생성 완료');
+        debugPrint('[SharingService] SharedData 내용: ${sharedData.toString()}');
+
+        _currentSharedData = sharedData;
+
+        debugPrint('[SharingService] 스트림에 데이터 추가 중...');
+        _dataStreamController.add(sharedData);
+        debugPrint('[SharingService] ✅ 스트림에 데이터 추가 완료');
+
+        debugPrint('[SharingService] 현재 스트림 리스너 수: ${_dataStreamController.hasListener ? "있음" : "없음"}');
+      } else {
+        debugPrint('[SharingService] ⚠️ 처리할 데이터가 없음 (파일: ${sharedFiles.length}, 텍스트: ${sharedTexts.length})');
+      }
+
+      debugPrint('==== [SharingService] 안드로이드 공유 데이터 처리 종료 ====');
+
+    } catch (error) {
+      debugPrint('[SharingService] ❌ 안드로이드 공유 데이터 처리 오류: $error');
+    }
+  }
+
+  /// 문자열 타입을 SharedMediaType으로 변환
+  SharedMediaType _getMediaTypeFromString(String type) {
+    switch (type) {
+      case 'image':
+        return SharedMediaType.image;
+      case 'video':
+        return SharedMediaType.video;
+      case 'text':
+        return SharedMediaType.text;
+      default:
+        return SharedMediaType.file;
+    }
+  }
+
+  /// MIME 타입을 SharedMediaType으로 변환
+  SharedMediaType _getMediaTypeFromMime(String? mimeType) {
+    if (mimeType == null) return SharedMediaType.file;
+
+    if (mimeType.startsWith('image/')) {
+      return SharedMediaType.image;
+    } else if (mimeType.startsWith('video/')) {
+      return SharedMediaType.video;
+    } else if (mimeType.startsWith('text/')) {
+      return SharedMediaType.text;
+    } else {
+      return SharedMediaType.file;
+    }
+  }
+
+  /// iOS 앱 시작 시 기존 데이터 처리
   Future<void> _processInitialData() async {
     try {
       debugPrint('[SharingService] 초기 데이터 처리 시작');
@@ -404,6 +580,10 @@ class SharingService {
   /// 서비스 종료 및 리소스 정리
   void dispose() {
     debugPrint('[SharingService] 서비스 종료 시작');
+
+    // 안드로이드 스트림 구독 해제 (현재 비활성화)
+    // _androidMediaSubscription?.cancel();
+    _androidTextSubscription?.cancel();
 
     _dataStreamController.close();
     _currentSharedData = null;
