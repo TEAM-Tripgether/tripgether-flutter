@@ -4,48 +4,9 @@ import 'services/sharing_service.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
+/// 앱의 루트 위젯 - MaterialApp만 담당
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  MyAppState createState() => MyAppState();
-}
-
-class MyAppState extends State<MyApp> {
-  late StreamSubscription<SharedData> _sharingSubscription;
-  SharedData? _currentSharedData;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeSharing();
-  }
-
-  /// 공유 서비스 초기화
-  Future<void> _initializeSharing() async {
-    // SharingService 초기화
-    await SharingService.instance.initialize();
-
-    // 공유 데이터 스트림 구독
-    _sharingSubscription = SharingService.instance.dataStream.listen(
-      (SharedData data) {
-        setState(() {
-          _currentSharedData = data;
-        });
-        debugPrint('[MainApp] 공유 데이터 수신: ${data.toString()}');
-      },
-      onError: (error) {
-        debugPrint('[MainApp] 공유 스트림 오류: $error');
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _sharingSubscription.cancel();
-    SharingService.instance.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,18 +17,108 @@ class MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         fontFamily: 'Pretendard',
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('TripTogether - 공유 테스트'),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        body: _buildBody(),
+      home: HomePage(), // 홈페이지를 별도 위젯으로 분리
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+/// 홈페이지 - 공유 데이터 관리와 화면 표시 담당
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  HomePageState createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+  SharedData? _currentSharedData;
+  bool _isInitialized = false;
+  StreamSubscription<SharedData>? _sharingSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('[HomePage] initState 시작');
+    _initializeSharing();
+  }
+
+  /// 공유 서비스 초기화 및 스트림 구독
+  Future<void> _initializeSharing() async {
+    try {
+      debugPrint('[HomePage] 공유 서비스 초기화 시작');
+
+      // SharingService 초기화
+      await SharingService.instance.initialize();
+
+      // 공유 데이터 스트림 구독
+      _sharingSubscription = SharingService.instance.dataStream.listen(
+        (SharedData data) {
+          debugPrint('[HomePage] 공유 데이터 수신됨: ${data.toString()}');
+          debugPrint('[HomePage] setState 호출 전');
+
+          if (mounted) {
+            setState(() {
+              _currentSharedData = data;
+            });
+            debugPrint('[HomePage] setState 호출 완료');
+          }
+        },
+        onError: (error) {
+          debugPrint('[HomePage] 공유 스트림 오류: $error');
+        },
+      );
+
+      setState(() {
+        _isInitialized = true;
+      });
+      debugPrint('[HomePage] 공유 서비스 초기화 완료');
+    } catch (error) {
+      debugPrint('[HomePage] 공유 서비스 초기화 오류: $error');
+    }
+  }
+
+  @override
+  void dispose() {
+    debugPrint('[HomePage] dispose 호출');
+    _sharingSubscription?.cancel();
+    SharingService.instance.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint('[HomePage] build 호출됨 - 데이터 있음: ${_currentSharedData != null}');
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('TripTogether - 공유 테스트'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
+      body: _buildBody(),
     );
   }
 
   /// 메인 화면 구성
   Widget _buildBody() {
+    // 초기화 중일 때 로딩 표시
+    if (!_isInitialized) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text(
+              '공유 서비스 초기화 중...',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // 공유된 데이터가 없을 때
     if (_currentSharedData == null || !_currentSharedData!.hasData) {
       return const Center(
         child: Column(
@@ -97,7 +148,8 @@ class MyAppState extends State<MyApp> {
           _buildDataInfo(),
           const SizedBox(height: 20),
           if (_currentSharedData!.hasTextData) _buildTextSection(),
-          if (_currentSharedData!.hasTextData && _currentSharedData!.hasMediaData)
+          if (_currentSharedData!.hasTextData &&
+              _currentSharedData!.hasMediaData)
             const SizedBox(height: 20),
           if (_currentSharedData!.hasMediaData) _buildMediaSection(),
           const SizedBox(height: 20),
@@ -149,43 +201,42 @@ class MyAppState extends State<MyApp> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            ...texts.map((text) => Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (SharingService.instance.isValidUrl(text))
-                    const Text(
-                      '🔗 URL',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
+            ...texts.map(
+              (text) => Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (SharingService.instance.isValidUrl(text))
+                      const Text(
+                        '🔗 URL',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    else
+                      const Text(
+                        '💬 텍스트',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    )
-                  else
-                    const Text(
-                      '💬 텍스트',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  const SizedBox(height: 4),
-                  Text(
-                    text,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(text, style: const TextStyle(fontSize: 14)),
+                  ],
+                ),
               ),
-            )),
+            ),
           ],
         ),
       ),
@@ -206,51 +257,62 @@ class MyAppState extends State<MyApp> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            ...files.map((file) => Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _getFileTypeIcon(file.type),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+            ...files.map(
+              (file) => Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _getFileTypeIcon(file.type),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    file.path.split('/').last,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '경로: ${file.path}',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  if (file.thumbnail != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      file.path.split('/').last,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 2),
                     Text(
-                      '썸네일: ${file.thumbnail}',
+                      '경로: ${file.path}',
                       style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
+                    if (file.thumbnail != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        '썸네일: ${file.thumbnail}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                    if (file.duration != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        '재생시간: ${(file.duration! / 1000).toStringAsFixed(1)}초',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ],
-                  if (file.duration != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      '재생시간: ${(file.duration! / 1000).toStringAsFixed(1)}초',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ],
+                ),
               ),
-            )),
+            ),
           ],
         ),
       ),
@@ -263,14 +325,24 @@ class MyAppState extends State<MyApp> {
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: () {
-              SharingService.instance.clearCurrentData();
+            onPressed: () async {
+              // 모든 데이터 완전 초기화 (UserDefaults + 해시)
+              await SharingService.instance.resetAllData();
               setState(() {
                 _currentSharedData = null;
               });
+
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('모든 공유 데이터가 초기화되었습니다'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
             },
-            icon: const Icon(Icons.clear),
-            label: const Text('데이터 초기화'),
+            icon: const Icon(Icons.clear_all),
+            label: const Text('완전 초기화'),
           ),
         ),
         const SizedBox(width: 12),
@@ -278,9 +350,9 @@ class MyAppState extends State<MyApp> {
           child: ElevatedButton.icon(
             onPressed: () {
               // TODO: 실제 처리 로직 구현
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('공유 처리 완료!')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('공유 처리 완료!')));
             },
             icon: const Icon(Icons.done),
             label: const Text('처리 완료'),

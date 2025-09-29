@@ -126,8 +126,8 @@ class SharingService {
         // iOS에서는 주기적으로 UserDefaults 확인
         _startSharingCheck();
 
-        // 앱 시작 시 한 번 확인
-        await _checkForSharedData();
+        // 앱 시작 시 기존 데이터 강제 처리 (중복 체크 무시)
+        await _forceProcessInitialData();
       } else if (Platform.isAndroid) {
         // Android는 Intent를 통해 직접 처리됨 (기존 방식 유지)
         debugPrint('[SharingService] Android 공유는 Intent를 통해 처리됨');
@@ -137,6 +137,36 @@ class SharingService {
 
     } catch (error) {
       debugPrint('[SharingService] 초기화 오류: $error');
+    }
+  }
+
+  /// 앱 시작 시 기존 데이터 강제 처리 (중복 체크 무시)
+  Future<void> _forceProcessInitialData() async {
+    try {
+      debugPrint('[SharingService] 초기 데이터 강제 처리 시작');
+
+      // iOS UserDefaults에서 공유 데이터 읽기 시도
+      final result = await _channel.invokeMethod('getSharedData');
+      if (result != null) {
+        debugPrint('[SharingService] 초기 데이터 발견: $result');
+
+        // 해시값 생성
+        final dataHash = result.toString().hashCode.toString();
+        debugPrint('[SharingService] 초기 데이터 해시: $dataHash');
+
+        // 중복 체크 없이 강제 처리
+        final success = await _processSharedData(result, dataHash);
+        if (success) {
+          _lastProcessedDataHash = dataHash;
+          debugPrint('[SharingService] ✅ 초기 데이터 처리 성공');
+        } else {
+          debugPrint('[SharingService] ❌ 초기 데이터 처리 실패');
+        }
+      } else {
+        debugPrint('[SharingService] 초기 데이터 없음');
+      }
+    } catch (error) {
+      debugPrint('[SharingService] 초기 데이터 처리 오류: $error');
     }
   }
 
@@ -183,38 +213,65 @@ class SharingService {
 
         debugPrint('[SharingService] iOS 공유 데이터 발견: $result');
         debugPrint('[SharingService] 데이터 해시: $dataHash');
+        debugPrint('[SharingService] 데이터 타입: ${result.runtimeType}');
 
-        // 중복이 아니면 처리
-        _lastProcessedDataHash = dataHash;
-        await _processSharedData(result);
+        // 데이터 처리 시도 (해시는 성공 후 저장)
+        final success = await _processSharedData(result, dataHash);
+        if (success) {
+          _lastProcessedDataHash = dataHash;
+          debugPrint('[SharingService] 데이터 처리 완료, 해시 저장: $dataHash');
+        } else {
+          debugPrint('[SharingService] 데이터 처리 실패: $dataHash');
+        }
       }
     } catch (error) {
-      // 에러는 무시 (UserDefaults에 데이터가 없을 때 발생 가능)
-      // debugPrint('[SharingService] 공유 데이터 확인 오류: $error');
+      debugPrint('[SharingService] 공유 데이터 확인 오류: $error');
     }
   }
 
   /// 공유 데이터 처리
-  Future<void> _processSharedData(Map<String, dynamic> data) async {
+  /// [data] 처리할 데이터 (보통 Map<String, dynamic>)
+  /// [dataHash] 중복 체크용 해시값
+  /// Returns: 처리 성공 여부
+  Future<bool> _processSharedData(dynamic data, String dataHash) async {
     try {
+      debugPrint('[SharingService] _processSharedData 시작');
+      debugPrint('[SharingService] 받은 데이터: $data');
+      debugPrint('[SharingService] 데이터 타입: ${data.runtimeType}');
+
+      // 데이터 타입 검증 및 변환
+      Map<String, dynamic> processedData;
+      if (data is Map<String, dynamic>) {
+        processedData = data;
+      } else if (data is Map) {
+        // Map을 Map<String, dynamic>으로 변환
+        processedData = Map<String, dynamic>.from(data);
+      } else {
+        debugPrint('[SharingService] ❌ 지원하지 않는 데이터 타입: ${data.runtimeType}');
+        return false;
+      }
+
+      debugPrint('[SharingService] 변환된 데이터: $processedData');
       final List<String> sharedTexts = [];
       final List<SharedMediaFile> sharedFiles = [];
 
       // 텍스트 데이터 처리
-      if (data['texts'] != null) {
-        final texts = List<String>.from(data['texts']);
+      if (processedData['texts'] != null) {
+        final texts = List<String>.from(processedData['texts']);
         sharedTexts.addAll(texts);
+        debugPrint('[SharingService] 텍스트 데이터 ${texts.length}개 처리됨');
       }
 
       // 미디어 파일 데이터 처리
-      if (data['files'] != null) {
-        final files = List<Map<String, dynamic>>.from(data['files']);
+      if (processedData['files'] != null) {
+        final files = List<Map<String, dynamic>>.from(processedData['files']);
         for (final fileData in files) {
           final sharedFile = _parseSharedMediaFile(fileData);
           if (sharedFile != null) {
             sharedFiles.add(sharedFile);
           }
         }
+        debugPrint('[SharingService] 미디어 파일 ${sharedFiles.length}개 처리됨');
       }
 
       // 데이터가 있으면 처리
@@ -225,6 +282,7 @@ class SharingService {
         );
 
         _currentSharedData = sharedData;
+        debugPrint('[SharingService] ✅ 스트림에 데이터 전달: ${sharedData.toString()}');
         _dataStreamController.add(sharedData);
 
         // iOS UserDefaults 클리어
@@ -237,10 +295,16 @@ class SharingService {
           // 클리어 성공 시 Timer를 일시 정지했다가 재시작
           _pauseAndRestartTimer();
         }
+
+        return true; // 성공
+      } else {
+        debugPrint('[SharingService] ⚠️ 처리할 데이터가 없음');
+        return false; // 데이터 없음
       }
 
     } catch (error) {
-      debugPrint('[SharingService] 공유 데이터 처리 오류: $error');
+      debugPrint('[SharingService] ❌ 공유 데이터 처리 오류: $error');
+      return false; // 실패
     }
   }
 
@@ -309,6 +373,30 @@ class SharingService {
   void clearCurrentData() {
     _currentSharedData = null;
     debugPrint('[SharingService] 현재 공유 데이터 초기화 완료');
+  }
+
+  /// 모든 공유 데이터 완전 초기화 (테스트용)
+  /// UserDefaults와 해시 모두 초기화
+  Future<void> resetAllData() async {
+    try {
+      debugPrint('[SharingService] 모든 데이터 완전 초기화 시작');
+
+      // 1. 현재 데이터 초기화
+      _currentSharedData = null;
+
+      // 2. 해시 초기화
+      _lastProcessedDataHash = null;
+
+      // 3. iOS UserDefaults 클리어
+      if (Platform.isIOS) {
+        final clearSuccess = await _channel.invokeMethod('clearSharedData');
+        debugPrint('[SharingService] UserDefaults 강제 클리어 결과: $clearSuccess');
+      }
+
+      debugPrint('[SharingService] ✅ 모든 데이터 완전 초기화 완료');
+    } catch (error) {
+      debugPrint('[SharingService] ❌ 데이터 초기화 오류: $error');
+    }
   }
 
   /// 서비스 종료 및 리소스 정리
