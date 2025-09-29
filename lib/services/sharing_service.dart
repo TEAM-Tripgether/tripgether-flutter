@@ -264,14 +264,32 @@ class SharingService {
 
       // 미디어 파일 데이터 처리
       if (processedData['files'] != null) {
-        final files = List<Map<String, dynamic>>.from(processedData['files']);
-        for (final fileData in files) {
-          final sharedFile = _parseSharedMediaFile(fileData);
-          if (sharedFile != null) {
-            sharedFiles.add(sharedFile);
+        try {
+          debugPrint('[SharingService] files 데이터 타입: ${processedData['files'].runtimeType}');
+          final filesList = processedData['files'] as List;
+          debugPrint('[SharingService] files 배열 길이: ${filesList.length}');
+
+          for (int i = 0; i < filesList.length; i++) {
+            final item = filesList[i];
+            debugPrint('[SharingService] 파일 $i 타입: ${item.runtimeType}');
+            debugPrint('[SharingService] 파일 $i 데이터: $item');
+
+            // 안전한 Map 타입 변환
+            final fileData = Map<String, dynamic>.from(item as Map);
+            debugPrint('[SharingService] 변환된 파일 데이터: $fileData');
+
+            final sharedFile = _parseSharedMediaFile(fileData);
+            if (sharedFile != null) {
+              sharedFiles.add(sharedFile);
+              debugPrint('[SharingService] 미디어 파일 추가 성공: ${sharedFile.path}');
+            } else {
+              debugPrint('[SharingService] ❌ 미디어 파일 파싱 실패');
+            }
           }
+          debugPrint('[SharingService] 총 ${sharedFiles.length}개 미디어 파일 처리 완료');
+        } catch (error) {
+          debugPrint('[SharingService] ❌ 미디어 파일 처리 오류: $error');
         }
-        debugPrint('[SharingService] 미디어 파일 ${sharedFiles.length}개 처리됨');
       }
 
       // 데이터가 있으면 처리
@@ -311,23 +329,40 @@ class SharingService {
   /// SharedMediaFile 파싱
   SharedMediaFile? _parseSharedMediaFile(Map<String, dynamic> data) {
     try {
+      debugPrint('[SharingService] SharedMediaFile 파싱 시작: $data');
+
       final path = data['path'] as String?;
       final thumbnail = data['thumbnail'] as String?;
       final duration = data['duration'] as double?;
       final typeInt = data['type'] as int?;
 
-      if (path == null || typeInt == null) return null;
+      debugPrint('[SharingService] 파싱된 필드들 - path: $path, type: $typeInt, thumbnail: $thumbnail, duration: $duration');
+
+      if (path == null || typeInt == null) {
+        debugPrint('[SharingService] ❌ 필수 필드 누락 - path: $path, type: $typeInt');
+        return null;
+      }
+
+      // 안전한 enum 인덱스 접근
+      if (typeInt < 0 || typeInt >= SharedMediaType.values.length) {
+        debugPrint('[SharingService] ❌ 잘못된 type 인덱스: $typeInt');
+        return null;
+      }
 
       final type = SharedMediaType.values[typeInt];
+      debugPrint('[SharingService] 매핑된 타입: $type');
 
-      return SharedMediaFile(
+      final result = SharedMediaFile(
         path: path,
         thumbnail: thumbnail,
         duration: duration,
         type: type,
       );
+
+      debugPrint('[SharingService] ✅ SharedMediaFile 생성 성공: ${result.toString()}');
+      return result;
     } catch (error) {
-      debugPrint('[SharingService] SharedMediaFile 파싱 오류: $error');
+      debugPrint('[SharingService] ❌ SharedMediaFile 파싱 오류: $error');
       return null;
     }
   }
