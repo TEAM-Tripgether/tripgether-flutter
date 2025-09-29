@@ -65,6 +65,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
             setState(() {
               _currentSharedData = data;
             });
+
+            // 공유 데이터 수신 시 사용자에게 알림 표시
+            _showSharedDataNotification(data);
+
             debugPrint('[HomePage] setState 호출 완료');
           }
         },
@@ -116,6 +120,103 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
+  /// 공유 데이터 수신 시 사용자 알림 표시
+  void _showSharedDataNotification(SharedData data) {
+    debugPrint('[HomePage] 공유 데이터 알림 표시');
+
+    // 스낵바와 함께 진동(일부 기기에서 지원) 피드백 제공
+    if (mounted) {
+      // 공유된 컨텐츠 타입에 따른 메시지 생성
+      String message = _getSharedDataMessage(data);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(
+                Icons.check_circle,
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  message,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: '확인',
+            textColor: Colors.white,
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ),
+      );
+
+      debugPrint('[HomePage] 공유 데이터 알림 완료: $message');
+    }
+  }
+
+  /// 공유된 데이터 타입에 따른 메시지 생성
+  String _getSharedDataMessage(SharedData data) {
+    if (data.hasTextData && data.hasMediaData) {
+      return '텍스트 ${data.sharedTexts.length}개와 파일 ${data.sharedFiles.length}개가 공유되었습니다!';
+    } else if (data.hasTextData) {
+      if (data.sharedTexts.length == 1) {
+        final text = data.sharedTexts.first;
+        if (SharingService.instance.isValidUrl(text)) {
+          return 'URL이 공유되었습니다!';
+        } else {
+          return '텍스트가 공유되었습니다!';
+        }
+      } else {
+        return '텍스트 ${data.sharedTexts.length}개가 공유되었습니다!';
+      }
+    } else if (data.hasMediaData) {
+      if (data.sharedFiles.length == 1) {
+        final file = data.sharedFiles.first;
+        switch (file.type) {
+          case SharedMediaType.image:
+            return '이미지가 공유되었습니다!';
+          case SharedMediaType.video:
+            return '동영상이 공유되었습니다!';
+          case SharedMediaType.file:
+            return '파일이 공유되었습니다!';
+          default:
+            return '컨텐츠가 공유되었습니다!';
+        }
+      } else {
+        // 복수 파일의 경우 타입별 개수 표시
+        final imageCount = data.images.length;
+        final videoCount = data.videos.length;
+        final fileCount = data.files.length;
+
+        List<String> parts = [];
+        if (imageCount > 0) parts.add('이미지 $imageCount개');
+        if (videoCount > 0) parts.add('동영상 $videoCount개');
+        if (fileCount > 0) parts.add('파일 $fileCount개');
+
+        if (parts.isNotEmpty) {
+          return '${parts.join(', ')}가 공유되었습니다!';
+        } else {
+          return '파일 ${data.sharedFiles.length}개가 공유되었습니다!';
+        }
+      }
+    }
+
+    return '컨텐츠가 공유되었습니다!';
+  }
+
   @override
   Widget build(BuildContext context) {
     debugPrint('[HomePage] build 호출됨 - 데이터 있음: ${_currentSharedData != null}');
@@ -160,8 +261,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         onRefresh: _onRefresh,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height - 200,
+          child: Container(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height * 0.6,
+            ),
             child: const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -33,10 +33,10 @@ class AppTheme {
         onSecondaryContainer: AppColors.onSecondaryContainer,
         surface: AppColors.surface,
         onSurface: AppColors.onSurface,
-        surfaceVariant: AppColors.surfaceVariant,
+        surfaceContainerHighest: AppColors.surfaceVariant, // surfaceVariant는 deprecated, surfaceContainerHighest 사용
         onSurfaceVariant: AppColors.onSurfaceVariant,
-        background: AppColors.background,
-        onBackground: AppColors.onBackground,
+        // background는 deprecated, surface 사용
+        // onBackground는 deprecated, onSurface 사용
         error: AppColors.error,
         onError: AppColors.onError,
         errorContainer: AppColors.errorContainer,
@@ -62,10 +62,7 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           color: AppColors.onSurface,
         ),
-        iconTheme: IconThemeData(
-          color: AppColors.onSurface,
-          size: 24,
-        ),
+        iconTheme: IconThemeData(color: AppColors.onSurface, size: 24),
       ),
 
       /// 버튼 테마들
@@ -74,9 +71,9 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.onPrimary,
           disabledBackgroundColor: AppColors.buttonDisabled,
-          disabledForegroundColor: AppColors.onPrimary.withOpacity(0.38),
+          disabledForegroundColor: AppColors.onPrimary.withValues(alpha:0.38),
           elevation: 2,
-          shadowColor: AppColors.shadow.withOpacity(0.15),
+          shadowColor: AppColors.shadow.withValues(alpha:0.15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -95,7 +92,7 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.onPrimary,
           disabledBackgroundColor: AppColors.buttonDisabled,
-          disabledForegroundColor: AppColors.onPrimary.withOpacity(0.38),
+          disabledForegroundColor: AppColors.onPrimary.withValues(alpha:0.38),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -113,9 +110,7 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
           disabledForegroundColor: AppColors.textDisabled,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           minimumSize: const Size(48, 40),
           textStyle: const TextStyle(
             fontFamily: fontFamily,
@@ -150,29 +145,50 @@ class AppTheme {
         fillColor: AppColors.inputFillColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.inputBorderColor, width: 1),
+          borderSide: const BorderSide(
+            color: AppColors.inputBorderColor,
+            width: 1,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.inputBorderColor, width: 1),
+          borderSide: const BorderSide(
+            color: AppColors.inputBorderColor,
+            width: 1,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.inputFocusedBorderColor, width: 2),
+          borderSide: const BorderSide(
+            color: AppColors.inputFocusedBorderColor,
+            width: 2,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.inputErrorBorderColor, width: 1),
+          borderSide: const BorderSide(
+            color: AppColors.inputErrorBorderColor,
+            width: 1,
+          ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.inputErrorBorderColor, width: 2),
+          borderSide: const BorderSide(
+            color: AppColors.inputErrorBorderColor,
+            width: 2,
+          ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.outline.withOpacity(0.38), width: 1),
+          borderSide: BorderSide(
+            color: AppColors.outline.withValues(alpha:0.38),
+            width: 1,
+          ),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         hintStyle: const TextStyle(
           fontFamily: fontFamily,
           fontSize: 16,
@@ -194,14 +210,12 @@ class AppTheme {
       ),
 
       /// 카드 테마
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.cardBackground,
         elevation: 2,
         shadowColor: AppColors.cardElevation,
         surfaceTintColor: AppColors.surfaceTint,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
 
@@ -239,9 +253,7 @@ class AppTheme {
           fontWeight: FontWeight.w500,
           color: AppColors.chipSelectedText,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         side: const BorderSide(color: AppColors.outline, width: 1),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
@@ -272,8 +284,8 @@ class AppTheme {
         surfaceTintColor: AppColors.surfaceTint,
         elevation: 3,
         height: 80,
-        labelTextStyle: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return const TextStyle(
               fontFamily: fontFamily,
               fontSize: 12,
@@ -288,8 +300,8 @@ class AppTheme {
             color: AppColors.navigationUnselected,
           );
         }),
-        iconTheme: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return const IconThemeData(
               color: AppColors.navigationSelected,
               size: 24,
@@ -318,21 +330,18 @@ class AppTheme {
           fontWeight: FontWeight.w500,
           color: AppColors.neutral99,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16),
+        // margin 속성은 Flutter 3.35.3에서 제거됨
+        // SnackBar 사용 시 ScaffoldMessenger.of(context).showSnackBar()에서 직접 margin 설정
       ),
 
       /// 다이얼로그 테마
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surface,
         surfaceTintColor: AppColors.surfaceTint,
         elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         titleTextStyle: const TextStyle(
           fontFamily: fontFamily,
           fontSize: 20,
@@ -358,43 +367,49 @@ class AppTheme {
 
       /// 체크박스 테마
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return AppColors.primary;
           }
           return AppColors.surface;
         }),
-        checkColor: MaterialStateProperty.all(AppColors.onPrimary),
-        overlayColor: MaterialStateProperty.all(AppColors.primary.withOpacity(0.1)),
+        checkColor: WidgetStateProperty.all(AppColors.onPrimary),
+        overlayColor: WidgetStateProperty.all(
+          AppColors.primary.withValues(alpha:0.1),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
 
       /// 라디오 버튼 테마
       radioTheme: RadioThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return AppColors.primary;
           }
           return AppColors.outline;
         }),
-        overlayColor: MaterialStateProperty.all(AppColors.primary.withOpacity(0.1)),
+        overlayColor: WidgetStateProperty.all(
+          AppColors.primary.withValues(alpha:0.1),
+        ),
       ),
 
       /// 스위치 테마
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return AppColors.onPrimary;
           }
           return AppColors.outline;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return AppColors.primary;
           }
           return AppColors.surfaceVariant;
         }),
-        overlayColor: MaterialStateProperty.all(AppColors.primary.withOpacity(0.1)),
+        overlayColor: WidgetStateProperty.all(
+          AppColors.primary.withValues(alpha:0.1),
+        ),
       ),
 
       /// 슬라이더 테마
@@ -402,7 +417,7 @@ class AppTheme {
         activeTrackColor: AppColors.primary,
         inactiveTrackColor: AppColors.surfaceVariant,
         thumbColor: AppColors.primary,
-        overlayColor: AppColors.primary.withOpacity(0.1),
+        overlayColor: AppColors.primary.withValues(alpha:0.1),
         valueIndicatorColor: AppColors.primary,
         valueIndicatorTextStyle: const TextStyle(
           fontFamily: fontFamily,
@@ -420,7 +435,7 @@ class AppTheme {
       ),
 
       /// 탭바 테마
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         labelColor: AppColors.primary,
         unselectedLabelColor: AppColors.textSecondary,
         indicatorColor: AppColors.primary,
@@ -435,7 +450,7 @@ class AppTheme {
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
-        overlayColor: MaterialStatePropertyAll(Colors.transparent),
+        overlayColor: WidgetStatePropertyAll(Colors.transparent),
       ),
 
       /// 뱃지 테마

@@ -130,45 +130,45 @@ class AppColors {
   /// Extension method for Color opacity
   /// 색상의 투명도를 쉽게 조절할 수 있는 확장 메서드
   static Color withOpacity(Color color, double opacity) {
-    return color.withOpacity(opacity);
+    return color.withValues(alpha: opacity);
   }
 
-  /// Material State Colors
+  /// Widget State Colors
   /// 버튼과 같은 상호작용 요소의 상태별 색상을 제공하는 메서드들
 
-  /// Primary 버튼의 MaterialStateProperty 색상
-  static MaterialStateProperty<Color> primaryButtonColor() {
-    return MaterialStateProperty.resolveWith<Color>((states) {
-      if (states.contains(MaterialState.disabled)) {
+  /// Primary 버튼의 WidgetStateProperty 색상
+  static WidgetStateProperty<Color> primaryButtonColor() {
+    return WidgetStateProperty.resolveWith<Color>((states) {
+      if (states.contains(WidgetState.disabled)) {
         return buttonDisabled; // B2A4D6
       }
-      if (states.contains(MaterialState.pressed)) {
+      if (states.contains(WidgetState.pressed)) {
         return primaryDark;
       }
       return buttonEnabled; // 664BAE
     });
   }
 
-  /// Secondary 버튼의 MaterialStateProperty 색상
-  static MaterialStateProperty<Color> secondaryButtonColor() {
-    return MaterialStateProperty.resolveWith<Color>((states) {
-      if (states.contains(MaterialState.disabled)) {
+  /// Secondary 버튼의 WidgetStateProperty 색상
+  static WidgetStateProperty<Color> secondaryButtonColor() {
+    return WidgetStateProperty.resolveWith<Color>((states) {
+      if (states.contains(WidgetState.disabled)) {
         return neutral80;
       }
-      if (states.contains(MaterialState.pressed)) {
+      if (states.contains(WidgetState.pressed)) {
         return Color(0xFF6B6B6B);
       }
       return buttonSecondary; // 878787
     });
   }
 
-  /// 텍스트 색상의 MaterialStateProperty
-  static MaterialStateProperty<Color> textButtonColor() {
-    return MaterialStateProperty.resolveWith<Color>((states) {
-      if (states.contains(MaterialState.disabled)) {
+  /// 텍스트 색상의 WidgetStateProperty
+  static WidgetStateProperty<Color> textButtonColor() {
+    return WidgetStateProperty.resolveWith<Color>((states) {
+      if (states.contains(WidgetState.disabled)) {
         return textDisabled;
       }
-      if (states.contains(MaterialState.pressed)) {
+      if (states.contains(WidgetState.pressed)) {
         return primaryDark;
       }
       return primary;
