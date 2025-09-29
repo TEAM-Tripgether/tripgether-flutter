@@ -31,7 +31,7 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   SharedData? _currentSharedData;
   bool _isInitialized = false;
   StreamSubscription<SharedData>? _sharingSubscription;
@@ -40,6 +40,10 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     debugPrint('[HomePage] initState 시작');
+
+    // 앱 라이프사이클 관찰자 등록
+    WidgetsBinding.instance.addObserver(this);
+
     _initializeSharing();
   }
 
@@ -81,9 +85,35 @@ class HomePageState extends State<HomePage> {
   @override
   void dispose() {
     debugPrint('[HomePage] dispose 호출');
+
+    // 앱 라이프사이클 관찰자 해제
+    WidgetsBinding.instance.removeObserver(this);
+
     _sharingSubscription?.cancel();
     SharingService.instance.dispose();
     super.dispose();
+  }
+
+  /// 앱 라이프사이클 상태 변화 감지
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    debugPrint('[HomePage] 앱 라이프사이클 변경: $state');
+
+    // 앱이 백그라운드에서 포그라운드로 돌아올 때 데이터 확인
+    if (state == AppLifecycleState.resumed) {
+      debugPrint('[HomePage] 앱이 포그라운드로 복귀 - 공유 데이터 확인');
+      _checkForNewData();
+    }
+  }
+
+  /// 새로운 공유 데이터 확인
+  Future<void> _checkForNewData() async {
+    try {
+      await SharingService.instance.checkForData();
+    } catch (error) {
+      debugPrint('[HomePage] 데이터 확인 오류: $error');
+    }
   }
 
   @override
@@ -97,6 +127,12 @@ class HomePageState extends State<HomePage> {
       ),
       body: _buildBody(),
     );
+  }
+
+  /// 수동 새로고침 처리
+  Future<void> _onRefresh() async {
+    debugPrint('[HomePage] 수동 새로고침 시작');
+    await _checkForNewData();
   }
 
   /// 메인 화면 구성
@@ -120,41 +156,59 @@ class HomePageState extends State<HomePage> {
 
     // 공유된 데이터가 없을 때
     if (_currentSharedData == null || !_currentSharedData!.hasData) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.share, size: 64, color: Colors.grey),
-            SizedBox(height: 16),
-            Text(
-              '다른 앱에서 콘텐츠를 공유해보세요!',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
+      return RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height - 200,
+            child: const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.share, size: 64, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text(
+                    '다른 앱에서 콘텐츠를 공유해보세요!',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    '이미지, 동영상, 텍스트, 파일을 지원합니다.',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    '⬇️ 아래로 당겨서 새로고침',
+                    style: TextStyle(fontSize: 12, color: Colors.blue),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 8),
-            Text(
-              '이미지, 동영상, 텍스트, 파일을 지원합니다.',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
-            ),
-          ],
+          ),
         ),
       );
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildDataInfo(),
-          const SizedBox(height: 20),
-          if (_currentSharedData!.hasTextData) _buildTextSection(),
-          if (_currentSharedData!.hasTextData &&
-              _currentSharedData!.hasMediaData)
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDataInfo(),
             const SizedBox(height: 20),
-          if (_currentSharedData!.hasMediaData) _buildMediaSection(),
-          const SizedBox(height: 20),
-          _buildActionButtons(),
-        ],
+            if (_currentSharedData!.hasTextData) _buildTextSection(),
+            if (_currentSharedData!.hasTextData &&
+                _currentSharedData!.hasMediaData)
+              const SizedBox(height: 20),
+            if (_currentSharedData!.hasMediaData) _buildMediaSection(),
+            const SizedBox(height: 20),
+            _buildActionButtons(),
+          ],
+        ),
       ),
     );
   }
@@ -321,42 +375,87 @@ class HomePageState extends State<HomePage> {
 
   /// 액션 버튼 구성
   Widget _buildActionButtons() {
-    return Row(
+    return Column(
       children: [
-        Expanded(
+        // 첫 번째 줄: 새로고침 버튼
+        SizedBox(
+          width: double.infinity,
           child: ElevatedButton.icon(
             onPressed: () async {
-              // 모든 데이터 완전 초기화 (UserDefaults + 해시)
-              await SharingService.instance.resetAllData();
-              setState(() {
-                _currentSharedData = null;
-              });
+              debugPrint('[HomePage] 수동 새로고침 버튼 클릭');
+
+              // 로딩 스낵바 표시
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('공유 데이터 확인 중...'),
+                  duration: Duration(seconds: 1),
+                ),
+              );
+
+              await _checkForNewData();
 
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('모든 공유 데이터가 초기화되었습니다'),
-                    backgroundColor: Colors.green,
+                    content: Text('데이터 확인 완료'),
+                    backgroundColor: Colors.blue,
                   ),
                 );
               }
             },
-            icon: const Icon(Icons.clear_all),
-            label: const Text('완전 초기화'),
+            icon: const Icon(Icons.refresh),
+            label: const Text('새로고침'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue[50],
+              foregroundColor: Colors.blue[700],
+            ),
           ),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () {
-              // TODO: 실제 처리 로직 구현
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('공유 처리 완료!')));
-            },
-            icon: const Icon(Icons.done),
-            label: const Text('처리 완료'),
-          ),
+        const SizedBox(height: 12),
+        // 두 번째 줄: 기존 버튼들
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  // 모든 데이터 완전 초기화
+                  await SharingService.instance.resetAllData();
+                  setState(() {
+                    _currentSharedData = null;
+                  });
+
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('모든 공유 데이터가 초기화되었습니다'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                },
+                icon: const Icon(Icons.clear_all),
+                label: const Text('완전 초기화'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // 공유 처리 완료 (현재 데이터 지우기)
+                  SharingService.instance.clearCurrentData();
+                  setState(() {
+                    _currentSharedData = null;
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('공유 처리 완료!')),
+                  );
+                },
+                icon: const Icon(Icons.done),
+                label: const Text('처리 완료'),
+              ),
+            ),
+          ],
         ),
       ],
     );
