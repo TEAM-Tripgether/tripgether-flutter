@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-// import 'package:receive_sharing_intent/receive_sharing_intent.dart' as rsi;
 
 /// 공유된 미디어 파일의 타입을 나타내는 열거형
 enum SharedMediaType { image, video, file, text, url }
@@ -258,13 +257,16 @@ class SharingService {
         _dataStreamController.add(sharedData);
         debugPrint('[SharingService] ✅ 스트림에 데이터 추가 완료');
 
-        debugPrint('[SharingService] 현재 스트림 리스너 수: ${_dataStreamController.hasListener ? "있음" : "없음"}');
+        debugPrint(
+          '[SharingService] 현재 스트림 리스너 수: ${_dataStreamController.hasListener ? "있음" : "없음"}',
+        );
       } else {
-        debugPrint('[SharingService] ⚠️ 처리할 데이터가 없음 (파일: ${sharedFiles.length}, 텍스트: ${sharedTexts.length})');
+        debugPrint(
+          '[SharingService] ⚠️ 처리할 데이터가 없음 (파일: ${sharedFiles.length}, 텍스트: ${sharedTexts.length})',
+        );
       }
 
       debugPrint('==== [SharingService] 안드로이드 공유 데이터 처리 종료 ====');
-
     } catch (error) {
       debugPrint('[SharingService] ❌ 안드로이드 공유 데이터 처리 오류: $error');
     }
@@ -323,7 +325,6 @@ class SharingService {
       debugPrint('[SharingService] 초기 데이터 처리 오류: $error');
     }
   }
-
 
   /// 공유 데이터 처리
   /// [data] 처리할 데이터 (보통 Map String, dynamic )
@@ -563,7 +564,6 @@ class SharingService {
 
       // 1. 현재 데이터 초기화
       _currentSharedData = null;
-
 
       // 3. iOS UserDefaults 클리어
       if (Platform.isIOS) {
