@@ -90,19 +90,260 @@
 
 ⸻
 
-10. 폴더 구조 예시
+10. 폴더 구조 (Clean Architecture + 하이브리드 Provider 패턴)
 
+```
 lib/
-  app/          # 앱 레벨 설정 (app.dart, theme, utils)
-  core/
-    routes/     # routes.dart (상수), router.dart (실제 GoRouter)
-  shared/       # 공용 위젯, 스타일
-  features/
-    home/
-    course_market/
-    map/
-    schedule/
-    mypage/
+├── app/                     # 앱 레벨 설정 및 초기화
+│   ├── app.dart            # 메인 앱 위젯 (MaterialApp)
+│   ├── app_router.dart     # 전역 GoRouter 설정 및 라우트 관리
+│   └── app_providers.dart  # 앱 레벨 전역 providers 초기화
+│
+├── core/                   # 핵심 공통 모듈 (전체 앱에서 사용)
+│   ├── constants/         # 상수 정의
+│   │   ├── app_colors.dart      # 색상 상수 (브랜드 컬러, 시스템 컬러)
+│   │   ├── app_strings.dart     # 문자열 상수 (API 엔드포인트, 키값)
+│   │   ├── app_dimensions.dart  # 크기/간격 상수 (padding, margin)
+│   │   └── app_assets.dart      # 에셋 경로 상수
+│   │
+│   ├── theme/            # Material 3 테마 및 스타일 시스템
+│   │   ├── app_theme.dart       # 전체 앱 테마 설정
+│   │   ├── text_styles.dart     # 타이포그래피 스타일
+│   │   └── component_themes.dart # 개별 컴포넌트 테마
+│   │
+│   ├── router/           # 라우팅 시스템
+│   │   ├── routes.dart          # 라우트 상수 정의
+│   │   ├── router.dart          # GoRouter 인스턴스
+│   │   └── route_guards.dart    # 인증/권한 가드
+│   │
+│   ├── services/         # 공통 서비스 레이어
+│   │   ├── sharing_service.dart # 앱 간 공유 기능
+│   │   ├── api_service.dart     # HTTP 클라이언트
+│   │   ├── storage_service.dart # 로컬 저장소
+│   │   └── location_service.dart # 위치 서비스
+│   │
+│   ├── utils/           # 유틸리티 함수
+│   │   ├── validators.dart      # 입력 검증 함수
+│   │   ├── formatters.dart      # 데이터 포맷팅
+│   │   ├── extensions.dart      # Dart 확장 메서드
+│   │   └── helpers.dart         # 일반 도우미 함수
+│   │
+│   └── exceptions/      # 커스텀 예외 클래스
+│       ├── app_exceptions.dart  # 앱 전용 예외
+│       └── api_exceptions.dart  # API 관련 예외
+│
+├── shared/              # 공유 컴포넌트 (재사용 가능한 요소)
+│   ├── widgets/        # 공통 UI 컴포넌트
+│   │   ├── buttons/           # 버튼 컴포넌트
+│   │   │   ├── primary_button.dart
+│   │   │   └── secondary_button.dart
+│   │   ├── cards/             # 카드 컴포넌트
+│   │   │   ├── place_card.dart
+│   │   │   └── course_card.dart
+│   │   ├── inputs/            # 입력 컴포넌트
+│   │   │   ├── search_field.dart
+│   │   │   └── text_field.dart
+│   │   ├── loading/           # 로딩 컴포넌트
+│   │   │   ├── shimmer_loading.dart
+│   │   │   └── progress_indicator.dart
+│   │   └── layout/            # 레이아웃 컴포넌트
+│   │       ├── app_bar.dart
+│   │       └── bottom_navigation.dart
+│   │
+│   ├── models/         # 공통 데이터 모델
+│   │   ├── user.dart          # 사용자 모델
+│   │   ├── place.dart         # 장소 모델
+│   │   ├── course.dart        # 코스 모델
+│   │   └── api_response.dart  # API 응답 모델
+│   │
+│   └── providers/      # 전역 공유 Providers (2개 이상 feature에서 사용)
+│       ├── auth_provider.dart        # 인증 상태 관리
+│       ├── user_provider.dart        # 전역 사용자 정보
+│       ├── saved_places_provider.dart # 저장된 장소 (지도/일정/홈에서 사용)
+│       ├── app_settings_provider.dart # 앱 설정 (테마, 언어 등)
+│       └── connectivity_provider.dart # 네트워크 연결 상태
+│
+├── features/           # Feature별 모듈 (Clean Architecture + 하이브리드 Provider)
+│   ├── splash/         # 스플래시 화면 Feature
+│   │   └── presentation/
+│   │       ├── screens/
+│   │       │   └── splash_screen.dart
+│   │       └── widgets/
+│   │           └── app_logo.dart
+│   │
+│   ├── auth/           # 인증 Feature (로그인/회원가입)
+│   │   ├── presentation/
+│   │   │   ├── screens/
+│   │   │   │   ├── login_screen.dart
+│   │   │   │   └── signup_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── login_form.dart
+│   │   │       └── social_login_buttons.dart
+│   │   ├── providers/     # auth 전용 providers
+│   │   │   ├── login_form_provider.dart
+│   │   │   └── signup_validation_provider.dart
+│   │   ├── domain/
+│   │   │   ├── models/
+│   │   │   │   ├── login_request.dart
+│   │   │   │   └── auth_result.dart
+│   │   │   └── repositories/
+│   │   │       └── auth_repository.dart
+│   │   └── data/
+│   │       ├── datasources/
+│   │       │   └── auth_remote_datasource.dart
+│   │       └── repositories/
+│   │           └── auth_repository_impl.dart
+│   │
+│   ├── home/           # 홈 탭 Feature
+│   │   ├── presentation/
+│   │   │   ├── screens/
+│   │   │   │   └── home_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── recent_places_section.dart
+│   │   │       ├── recommended_courses_section.dart
+│   │   │       └── quick_action_buttons.dart
+│   │   ├── providers/     # home 전용 providers
+│   │   │   ├── home_state_provider.dart
+│   │   │   ├── recent_places_provider.dart
+│   │   │   └── recommended_courses_provider.dart
+│   │   ├── domain/
+│   │   │   ├── models/
+│   │   │   │   └── home_data.dart
+│   │   │   └── repositories/
+│   │   │       └── home_repository.dart
+│   │   └── data/
+│   │       └── repositories/
+│   │           └── home_repository_impl.dart
+│   │
+│   ├── course_market/  # 코스마켓 탭 Feature
+│   │   ├── presentation/
+│   │   │   ├── screens/
+│   │   │   │   ├── course_list_screen.dart
+│   │   │   │   └── course_detail_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── course_filter_bar.dart
+│   │   │       ├── course_list_item.dart
+│   │   │       └── course_detail_info.dart
+│   │   ├── providers/     # course_market 전용 providers
+│   │   │   ├── course_list_provider.dart
+│   │   │   ├── course_filter_provider.dart
+│   │   │   ├── course_search_provider.dart
+│   │   │   └── course_detail_provider.dart
+│   │   ├── domain/
+│   │   │   ├── models/
+│   │   │   │   ├── course.dart
+│   │   │   │   ├── course_filter.dart
+│   │   │   │   └── course_detail.dart
+│   │   │   └── repositories/
+│   │   │       └── course_repository.dart
+│   │   └── data/
+│   │       └── repositories/
+│   │           └── course_repository_impl.dart
+│   │
+│   ├── map/            # 지도 탭 Feature
+│   │   ├── presentation/
+│   │   │   ├── screens/
+│   │   │   │   └── map_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── map_widget.dart
+│   │   │       ├── place_markers.dart
+│   │   │       ├── place_info_sheet.dart
+│   │   │       └── location_search_bar.dart
+│   │   ├── providers/     # map 전용 providers
+│   │   │   ├── map_controller_provider.dart
+│   │   │   ├── map_markers_provider.dart
+│   │   │   ├── current_location_provider.dart
+│   │   │   └── place_search_provider.dart
+│   │   ├── domain/
+│   │   │   ├── models/
+│   │   │   │   ├── map_marker.dart
+│   │   │   │   ├── location.dart
+│   │   │   │   └── place_info.dart
+│   │   │   └── repositories/
+│   │   │       └── map_repository.dart
+│   │   └── data/
+│   │       └── repositories/
+│   │           └── map_repository_impl.dart
+│   │
+│   ├── schedule/       # 일정 탭 Feature
+│   │   ├── presentation/
+│   │   │   ├── screens/
+│   │   │   │   ├── schedule_screen.dart
+│   │   │   │   └── schedule_detail_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── calendar_widget.dart
+│   │   │       ├── schedule_list.dart
+│   │   │       ├── schedule_item.dart
+│   │   │       └── add_schedule_form.dart
+│   │   ├── providers/     # schedule 전용 providers
+│   │   │   ├── calendar_provider.dart
+│   │   │   ├── schedule_list_provider.dart
+│   │   │   ├── schedule_form_provider.dart
+│   │   │   └── selected_date_provider.dart
+│   │   ├── domain/
+│   │   │   ├── models/
+│   │   │   │   ├── schedule.dart
+│   │   │   │   ├── schedule_item.dart
+│   │   │   │   └── calendar_event.dart
+│   │   │   └── repositories/
+│   │   │       └── schedule_repository.dart
+│   │   └── data/
+│   │       └── repositories/
+│   │           └── schedule_repository_impl.dart
+│   │
+│   └── mypage/         # 마이페이지 탭 Feature
+│       ├── presentation/
+│       │   ├── screens/
+│       │   │   ├── mypage_screen.dart
+│       │   │   ├── profile_edit_screen.dart
+│       │   │   ├── my_courses_screen.dart
+│       │   │   └── settings_screen.dart
+│       │   └── widgets/
+│       │       ├── profile_header.dart
+│       │       ├── menu_list.dart
+│       │       ├── my_stats.dart
+│       │       └── settings_item.dart
+│       ├── providers/     # mypage 전용 providers
+│       │   ├── profile_provider.dart
+│       │   ├── my_courses_provider.dart
+│       │   ├── user_stats_provider.dart
+│       │   └── settings_provider.dart
+│       ├── domain/
+│       │   ├── models/
+│       │   │   ├── user_profile.dart
+│       │   │   ├── user_stats.dart
+│       │   │   └── user_settings.dart
+│       │   └── repositories/
+│       │       └── profile_repository.dart
+│       └── data/
+│           └── repositories/
+│               └── profile_repository_impl.dart
+│
+└── main.dart           # 앱 엔트리 포인트
+```
+
+### Provider 위치 전략 (하이브리드 접근법)
+
+#### Feature별 Provider 배치 기준:
+- **Feature 전용 상태**: 해당 feature에서만 사용하는 UI 상태, 폼 상태, 필터링 로직
+- **Feature 비즈니스 로직**: 특정 화면/기능에 종속적인 데이터 처리
+- **생명주기 연결**: Feature와 동일한 생명주기를 가지는 상태
+
+#### Shared Provider 배치 기준:
+- **전역 상태**: 인증, 사용자 정보, 앱 설정 등 앱 전체에서 필요한 상태
+- **다중 Feature 사용**: 2개 이상의 feature에서 공통으로 사용하는 데이터
+- **시스템 상태**: 네트워크 연결, 위치 권한 등 시스템 레벨 상태
+
+### 확장성 고려사항:
+- **수평 확장**: 새로운 feature 추가 시 동일한 구조 패턴 적용
+- **수직 확장**: 각 feature 내부에서 복잡도 증가 시 sub-feature로 분리 가능
+- **의존성 관리**: core → shared → features 순서로 의존성 방향 고정
+- **테스트 용이성**: 각 레이어별 독립적 단위 테스트 가능
+
+### MVP 개발 우선순위:
+1. **P0**: core/constants, core/theme, features/splash, features/auth
+2. **P1**: 5개 메인 탭 features (home, course_market, map, schedule, mypage)
+3. **P2**: shared/widgets 고도화, core/services 확장
 
 
 ⸻

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'services/sharing_service.dart';
+import 'core/services/sharing_service.dart';
 
 void main() => runApp(MyApp());
 
@@ -447,9 +447,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     _currentSharedData = null;
                   });
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('공유 처리 완료!')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('공유 처리 완료!')));
                 },
                 icon: const Icon(Icons.done),
                 label: const Text('처리 완료'),
