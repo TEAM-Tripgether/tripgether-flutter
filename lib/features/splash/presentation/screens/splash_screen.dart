@@ -114,7 +114,6 @@ class _SplashScreenState extends State<SplashScreen>
                     child: Text(
                       'Trip',
                       style: TextStyle(
-                        fontFamily: 'Pretendard',
                         fontSize: 48.sp,
                         fontWeight: FontWeight.w700,
                         color: AppColors.onPrimary,
@@ -156,7 +155,6 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Text(
                     'Together',
                     style: TextStyle(
-                      fontFamily: 'Pretendard',
                       fontSize: 48.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.onPrimary,
@@ -219,7 +217,6 @@ class _SplashScreenState extends State<SplashScreen>
                       child: Text(
                         'Tripgether',
                         style: TextStyle(
-                          fontFamily: 'Pretendard',
                           fontSize: 48.sp,
                           fontWeight: FontWeight.w700,
                           color: AppColors.onPrimary,
@@ -240,7 +237,6 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Text(
                           'More than tours. Real local moments',
                           style: TextStyle(
-                            fontFamily: 'Pretendard',
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
                             color: AppColors.onPrimary.withValues(alpha: 0.8),

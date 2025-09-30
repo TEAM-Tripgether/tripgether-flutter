@@ -94,10 +94,6 @@
 
 ```
 lib/
-├── app/                     # 앱 레벨 설정 및 초기화
-│   ├── app.dart            # 메인 앱 위젯 (MaterialApp)
-│   ├── app_router.dart     # 전역 GoRouter 설정 및 라우트 관리
-│   └── app_providers.dart  # 앱 레벨 전역 providers 초기화
 │
 ├── core/                   # 핵심 공통 모듈 (전체 앱에서 사용)
 │   ├── constants/         # 상수 정의

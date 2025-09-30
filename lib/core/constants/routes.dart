@@ -19,22 +19,16 @@ class AppRoutes {
   /// 모든 바텀 네비게이션 탭의 경로를 리스트로 반환
   /// 탭 인덱스와 경로를 매핑할 때 사용
   static List<String> get bottomNavRoutes => [
-        home,
-        courseMarket,
-        map,
-        schedule,
-        myPage,
-      ];
+    home,
+    courseMarket,
+    map,
+    schedule,
+    myPage,
+  ];
 
   /// 바텀 네비게이션 탭의 라벨들
   /// UI에서 탭 제목을 표시할 때 사용
-  static List<String> get tabLabels => [
-        '홈',
-        '코스마켓',
-        '지도',
-        '스케줄',
-        '마이페이지',
-      ];
+  static List<String> get tabLabels => ['홈', '코스마켓', '지도', '일정', '마이페이지'];
 }
 
 /// 네비게이션 아이콘 파일 경로 관리 클래스
@@ -49,14 +43,16 @@ class NavigationIcons {
   static const String homeInactive = '$_basePath/home_inactive.svg';
 
   // 코스 마켓 탭 아이콘
-  static const String courseMarketActive = '$_basePath/course_market_active.svg';
-  static const String courseMarketInactive = '$_basePath/course_market_inactive.svg';
+  static const String courseMarketActive =
+      '$_basePath/course_market_active.svg';
+  static const String courseMarketInactive =
+      '$_basePath/course_market_inactive.svg';
 
   // 지도 탭 아이콘
   static const String mapActive = '$_basePath/map_active.svg';
   static const String mapInactive = '$_basePath/map_inactive.svg';
 
-  // 스케줄 탭 아이콘
+  // 일정 탭 아이콘
   static const String scheduleActive = '$_basePath/schedule_active.svg';
   static const String scheduleInactive = '$_basePath/schedule_inactive.svg';
 

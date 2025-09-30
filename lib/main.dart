@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/router/router.dart';
+import 'core/theme/app_theme.dart';
 
 void main() => runApp(const MyApp());
 
@@ -23,77 +24,9 @@ class MyApp extends StatelessWidget {
         return MaterialApp.router(
           title: 'TripTogether',
 
-          // Material 3 테마 설정
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.blue,
-              brightness: Brightness.light,
-            ),
-            fontFamily: 'Pretendard', // 커스텀 폰트 적용
-            // AppBar 테마
-            appBarTheme: AppBarTheme(
-              centerTitle: false,
-              titleTextStyle: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            ),
-
-            // ElevatedButton 테마
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                textStyle: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-            ),
-
-            // OutlinedButton 테마
-            outlinedButtonTheme: OutlinedButtonThemeData(
-              style: OutlinedButton.styleFrom(
-                textStyle: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-            ),
-
-            // Card 테마
-            cardTheme: CardThemeData(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              margin: EdgeInsets.zero,
-            ),
-
-            // 페이지 전환 애니메이션 완전 제거
-            pageTransitionsTheme: const PageTransitionsTheme(
-              builders: {
-                // 모든 플랫폼에서 애니메이션 없는 전환 적용
-                TargetPlatform.android: _NoAnimationPageTransitionsBuilder(),
-                TargetPlatform.iOS: _NoAnimationPageTransitionsBuilder(),
-                TargetPlatform.macOS: _NoAnimationPageTransitionsBuilder(),
-                TargetPlatform.windows: _NoAnimationPageTransitionsBuilder(),
-                TargetPlatform.linux: _NoAnimationPageTransitionsBuilder(),
-                TargetPlatform.fuchsia: _NoAnimationPageTransitionsBuilder(),
-              },
-            ),
-          ),
+          // AppTheme의 완벽한 테마 시스템 활용
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
 
           // GoRouter 설정 적용
           routerConfig: AppRouter.router,
@@ -103,25 +36,5 @@ class MyApp extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-/// 애니메이션 없는 페이지 전환을 위한 커스텀 PageTransitionsBuilder
-///
-/// 모든 플랫폼에서 페이지 전환 시 애니메이션을 완전히 제거하여
-/// 즉각적인 화면 전환을 제공합니다.
-class _NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
-  const _NoAnimationPageTransitionsBuilder();
-
-  @override
-  Widget buildTransitions<T extends Object?>(
-    PageRoute<T> route,
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    // 애니메이션 없이 즉시 child 위젯 반환
-    return child;
   }
 }

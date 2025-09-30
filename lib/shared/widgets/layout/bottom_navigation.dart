@@ -57,7 +57,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   /// 개별 네비게이션 아이템을 구성하는 위젯
   ///
   /// [context] BuildContext - 테마 접근용
-  /// [index] 탭의 인덱스 (0: 홈, 1: 코스마켓, 2: 지도, 3: 스케줄, 4: 마이페이지)
+  /// [index] 탭의 인덱스 (0: 홈, 1: 코스마켓, 2: 지도, 3: 일정, 4: 마이페이지)
   Widget _buildNavItem(BuildContext context, int index) {
     // 현재 탭이 선택되어 있는지 확인
     final bool isSelected = currentIndex == index;
@@ -122,7 +122,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Text(
       AppRoutes.tabLabels[index],
       style: TextStyle(
-        fontFamily: 'Pretendard', // 커스텀 폰트 적용
         fontSize: 10.sp, // 반응형 폰트 크기
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         color: isSelected

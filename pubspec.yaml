@@ -63,6 +63,8 @@ dependencies:
   # firebase_analytics: ^12.0.1        # 앱 사용자 분석 및 통계
   # firebase_crashlytics: ^5.0.1       # 앱 크래시 리포팅
 
+  # 다국어 지원
+
   # 데이터 시각화(운영자용)
   syncfusion_flutter_charts: ^31.1.17 # 차트 위젯 패키지
 

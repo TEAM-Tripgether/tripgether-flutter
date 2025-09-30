@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../constants/app_colors.dart';
+import '../animations/page_transitions.dart';
 
 /// TripTogether 앱의 테마 설정
 ///
@@ -481,6 +482,9 @@ class AppTheme {
 
       /// 텍스트 테마 (전체 타이포그래피)
       textTheme: _buildTextTheme(),
+
+      /// 페이지 전환 애니메이션 설정
+      pageTransitionsTheme: AppPageTransitions.noAnimation,
     );
   }
 
