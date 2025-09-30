@@ -47,5 +47,11 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+
+    # iOS Deployment Target 최소 버전을 12.0으로 강제 설정
+    # 이는 Xcode 빌드 경고를 해결하고 최신 iOS 기능 호환성을 보장합니다
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+    end
   end
 end

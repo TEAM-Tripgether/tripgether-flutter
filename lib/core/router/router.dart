@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'routes.dart';
 import 'route_guards.dart';
 import '../../shared/widgets/layout/bottom_navigation.dart';
+import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/course_market/presentation/screens/course_list_screen.dart';
 import '../../features/map/presentation/screens/map_screen.dart';
@@ -28,9 +29,19 @@ class AppRouter {
   /// 앱 전체에서 사용되는 라우터 설정
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.home, // 앱 시작 시 홈 탭으로 이동
+    initialLocation: AppRoutes.splash, // 앱 시작 시 스플래시 화면으로 이동
     redirect: RouteGuard.redirectLogic, // 인증/권한 가드 적용
     routes: [
+      /// 스플래시 화면 라우트
+      ///
+      /// 앱 시작 시 표시되는 브랜딩 화면으로,
+      /// 로고와 애니메이션을 보여준 후 자동으로 홈 화면으로 이동합니다.
+      GoRoute(
+        path: AppRoutes.splash,
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: const SplashScreen(),
+        ),
+      ),
       /// ShellRoute: 바텀 네비게이션이 있는 메인 레이아웃
       ///
       /// 모든 메인 탭들이 이 ShellRoute 내부에서 관리되며,

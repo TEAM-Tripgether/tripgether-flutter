@@ -3,6 +3,9 @@
 /// GoRouter에서 사용되는 라우트 경로들을 중앙에서 관리하여
 /// 경로 변경 시 일관성을 유지하고 오타를 방지합니다.
 class AppRoutes {
+  // 스플래시 화면 경로
+  static const String splash = '/';
+
   // 메인 쉘 라우트 (바텀 네비게이션이 있는 기본 레이아웃)
   static const String shell = '/shell';
 
