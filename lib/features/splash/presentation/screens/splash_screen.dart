@@ -57,8 +57,8 @@ class _SplashScreenState extends State<SplashScreen>
     });
 
     // 애니메이션 완료 후 홈 화면으로 자동 이동
-    // 애니메이션 총 시간 2000ms + 여유 시간 300ms = 2300ms 후 이동
-    Future.delayed(const Duration(milliseconds: 2300), () {
+    // 애니메이션 총 시간 2000ms + 여유 시간 800ms = 2800ms 후 이동
+    Future.delayed(const Duration(milliseconds: 3500), () {
       if (mounted) {
         // 위젯이 아직 화면에 마운트되어 있는지 확인
         // 애니메이션 없이 즉시 홈 화면으로 전환
@@ -129,12 +129,6 @@ class _SplashScreenState extends State<SplashScreen>
                   end: 70.w, // 왼쪽에서 중앙으로 70.w만큼 이동
                   duration: 800.ms,
                   curve: Curves.easeOut,
-                )
-                // 800-1400ms: Trip 페이드아웃 (합체 단계)
-                .fadeOut(
-                  delay: 600.ms,
-                  duration: 600.ms,
-                  curve: Curves.easeInOut,
                 ),
       ),
     );
@@ -169,12 +163,6 @@ class _SplashScreenState extends State<SplashScreen>
                   end: -130.w, // Trip과 절반 정도 겹치는 위치로 이동
                   duration: 800.ms,
                   curve: Curves.easeOut,
-                )
-                // 800-1400ms: Together 페이드아웃 (합체 단계)
-                .fadeOut(
-                  delay: 600.ms,
-                  duration: 600.ms,
-                  curve: Curves.easeInOut,
                 ),
       ),
     );
@@ -251,8 +239,8 @@ class _SplashScreenState extends State<SplashScreen>
               .animate(target: _isAnimationStarted ? 1 : 0)
               // 800-2000ms: 로고, 텍스트, 슬로건 모두 함께 서서히 페이드인 (더욱 길고 부드럽게)
               .fadeIn(
-                delay: 900.ms,
-                duration: 1000.ms,
+                delay: 700.ms,
+                duration: 1800.ms,
                 curve: Curves.easeInOut,
               ),
     );

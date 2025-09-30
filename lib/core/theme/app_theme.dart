@@ -82,7 +82,7 @@ class AppTheme {
           textStyle: const TextStyle(
             fontFamily: fontFamily,
             fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             letterSpacing: 0.1,
           ),
         ),
@@ -101,7 +101,7 @@ class AppTheme {
           textStyle: const TextStyle(
             fontFamily: fontFamily,
             fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             letterSpacing: 0.1,
           ),
         ),
@@ -505,7 +505,7 @@ class AppTheme {
       displayLarge: TextStyle(
         fontFamily: fontFamily,
         fontSize: 57,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w300,
         height: 1.12,
         letterSpacing: -0.25,
         color: AppColors.onSurface,
@@ -513,14 +513,14 @@ class AppTheme {
       displayMedium: TextStyle(
         fontFamily: fontFamily,
         fontSize: 45,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w300,
         height: 1.16,
         color: AppColors.onSurface,
       ),
       displaySmall: TextStyle(
         fontFamily: fontFamily,
         fontSize: 36,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w300,
         height: 1.22,
         color: AppColors.onSurface,
       ),
@@ -529,7 +529,7 @@ class AppTheme {
       headlineLarge: TextStyle(
         fontFamily: fontFamily,
         fontSize: 32,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w600,
         height: 1.25,
         color: AppColors.onSurface,
       ),
@@ -543,7 +543,7 @@ class AppTheme {
       headlineSmall: TextStyle(
         fontFamily: fontFamily,
         fontSize: 24,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
         height: 1.33,
         color: AppColors.onSurface,
       ),
@@ -635,7 +635,7 @@ extension AppTextStyles on TextTheme {
   TextStyle get buttonText => const TextStyle(
     fontFamily: AppTheme.fontFamily,
     fontSize: 16,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w700,
     letterSpacing: 0.1,
   );
 
@@ -651,7 +651,7 @@ extension AppTextStyles on TextTheme {
   TextStyle get errorText => const TextStyle(
     fontFamily: AppTheme.fontFamily,
     fontSize: 12,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
     color: AppColors.error,
   );
 
@@ -659,7 +659,7 @@ extension AppTextStyles on TextTheme {
   TextStyle get successText => const TextStyle(
     fontFamily: AppTheme.fontFamily,
     fontSize: 12,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
     color: AppColors.success,
   );
 
@@ -680,5 +680,32 @@ extension AppTextStyles on TextTheme {
     color: AppColors.textSecondary,
     letterSpacing: 1.5,
     height: 1.6,
+  );
+
+  /// 초경량 스타일 (섬세한 캡션용)
+  TextStyle get ultraLight => const TextStyle(
+    fontFamily: AppTheme.fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w200,
+    color: AppColors.textSecondary,
+    height: 1.4,
+  );
+
+  /// 볼드 스타일 (강조 텍스트용)
+  TextStyle get bold => const TextStyle(
+    fontFamily: AppTheme.fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+    height: 1.5,
+  );
+
+  /// 블랙 스타일 (브랜딩 텍스트용)
+  TextStyle get black => const TextStyle(
+    fontFamily: AppTheme.fontFamily,
+    fontSize: 20,
+    fontWeight: FontWeight.w900,
+    color: AppColors.textPrimary,
+    height: 1.2,
   );
 }
