@@ -61,6 +61,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(milliseconds: 2300), () {
       if (mounted) {
         // 위젯이 아직 화면에 마운트되어 있는지 확인
+        // 애니메이션 없이 즉시 홈 화면으로 전환
         context.go(AppRoutes.home);
       }
     });
@@ -199,7 +200,7 @@ class _SplashScreenState extends State<SplashScreen>
                     bottom: 0,
                     child: Center(
                       child: Transform.translate(
-                        offset: Offset(0, -60.h), // Tripgether 기준 위쪽으로
+                        offset: Offset(0, -70.h), // Tripgether 기준 위쪽으로
                         child: Image.asset(
                           'assets/splash/logo_center.png',
                           width: 100.w,
@@ -240,7 +241,7 @@ class _SplashScreenState extends State<SplashScreen>
                           'More than tours. Real local moments',
                           style: TextStyle(
                             fontFamily: 'Pretendard',
-                            fontSize: 14.sp,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
                             color: AppColors.onPrimary.withValues(alpha: 0.8),
                             letterSpacing: 0.5,
@@ -254,7 +255,7 @@ class _SplashScreenState extends State<SplashScreen>
               .animate(target: _isAnimationStarted ? 1 : 0)
               // 800-2000ms: 로고, 텍스트, 슬로건 모두 함께 서서히 페이드인 (더욱 길고 부드럽게)
               .fadeIn(
-                delay: 800.ms,
+                delay: 500.ms,
                 duration: 1200.ms,
                 curve: Curves.easeInOut,
               ),

@@ -80,6 +80,19 @@ class MyApp extends StatelessWidget {
               ),
               margin: EdgeInsets.zero,
             ),
+
+            // 페이지 전환 애니메이션 완전 제거
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                // 모든 플랫폼에서 애니메이션 없는 전환 적용
+                TargetPlatform.android: _NoAnimationPageTransitionsBuilder(),
+                TargetPlatform.iOS: _NoAnimationPageTransitionsBuilder(),
+                TargetPlatform.macOS: _NoAnimationPageTransitionsBuilder(),
+                TargetPlatform.windows: _NoAnimationPageTransitionsBuilder(),
+                TargetPlatform.linux: _NoAnimationPageTransitionsBuilder(),
+                TargetPlatform.fuchsia: _NoAnimationPageTransitionsBuilder(),
+              },
+            ),
           ),
 
           // GoRouter 설정 적용
@@ -90,5 +103,25 @@ class MyApp extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+/// 애니메이션 없는 페이지 전환을 위한 커스텀 PageTransitionsBuilder
+///
+/// 모든 플랫폼에서 페이지 전환 시 애니메이션을 완전히 제거하여
+/// 즉각적인 화면 전환을 제공합니다.
+class _NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
+  const _NoAnimationPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T extends Object?>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    // 애니메이션 없이 즉시 child 위젯 반환
+    return child;
   }
 }
