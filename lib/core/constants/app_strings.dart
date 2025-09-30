@@ -1,179 +1,117 @@
-/// TripTogether 앱에서 사용되는 모든 문자열 상수
+import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
+
+/// 앱 전반에서 사용하는 국제화된 문자열을 쉽게 접근할 수 있는 유틸리티 클래스
 ///
-/// 하드코딩된 문자열들을 중앙에서 관리하여 일관성과 유지보수성을 향상시킵니다.
-/// 향후 다국어 지원을 위한 기반이 됩니다.
+/// 기존의 하드코딩된 문자열 상수를 국제화된 다국어 지원 시스템으로 대체합니다.
+/// ARB 파일을 통해 한국어와 영어를 지원하며, 필요시 추가 언어를 쉽게 추가할 수 있습니다.
+///
+/// 사용법:
+/// - Text(AppStrings.of(context).appTitle)
+/// - AppStrings.of(context).navHome
+/// - if (AppStrings.isKorean(context)) { ... }
 class AppStrings {
   AppStrings._();
 
   // ================================
-  // 앱 기본 정보
+  // 국제화 문자열 접근 메서드
   // ================================
 
-  /// 앱 이름
-  static const String appName = 'Tripgether';
-
-  /// 앱 기본 제목 (AppBar용)
-  static const String appTitle = 'Tripgether';
-
-  // ================================
-  // 화면 제목들
-  // ================================
-
-  /// 지도 화면 제목
-  static const String screenMap = '지도 화면';
-
-  /// 코스마켓 화면 제목
-  static const String screenCourseMarket = '코스마켓';
-
-  /// 일정 화면 제목
-  static const String screenSchedule = '내 일정';
-
-  /// 마이페이지 화면 제목
-  static const String screenMyPage = '마이페이지';
+  /// BuildContext에서 AppLocalizations 인스턴스를 가져옵니다
+  ///
+  /// [context] BuildContext 인스턴스 (필수)
+  /// Returns: AppLocalizations 인스턴스
+  static AppLocalizations of(BuildContext context) {
+    return AppLocalizations.of(context);
+  }
 
   // ================================
-  // TODO(human): 여기에 추가 상수들을 정리해주세요
+  // 언어 감지 유틸리티
   // ================================
 
-  // 버튼 텍스트
-  // 알림 메시지
-  // 플레이스홀더 텍스트
-  // 툴팁 텍스트
-  // 에러 메시지
-  // 네비게이션 라벨
+  /// 현재 설정된 언어가 한국어인지 확인합니다
+  ///
+  /// [context] BuildContext 인스턴스
+  /// Returns: 한국어인 경우 true, 그렇지 않으면 false
+  static bool isKorean(BuildContext context) {
+    return Localizations.localeOf(context).languageCode == 'ko';
+  }
+
+  /// 현재 설정된 언어가 영어인지 확인합니다
+  ///
+  /// [context] BuildContext 인스턴스
+  /// Returns: 영어인 경우 true, 그렇지 않으면 false
+  static bool isEnglish(BuildContext context) {
+    return Localizations.localeOf(context).languageCode == 'en';
+  }
+
+  /// 현재 설정된 언어 코드를 반환합니다
+  ///
+  /// [context] BuildContext 인스턴스
+  /// Returns: 언어 코드 (예: 'ko', 'en')
+  static String getCurrentLanguageCode(BuildContext context) {
+    return Localizations.localeOf(context).languageCode;
+  }
 
   // ================================
-  // 알림 관련
+  // 포맷팅 유틸리티
   // ================================
 
-  /// 알림 다이얼로그 제목
-  static const String notificationTitle = '알림';
+  /// 현재 언어에 따른 날짜 포맷을 반환합니다
+  ///
+  /// [context] BuildContext 인스턴스
+  /// Returns: 언어별 날짜 포맷 문자열
+  static String getDateFormat(BuildContext context) {
+    return of(context).dateFormat;
+  }
 
-  /// 기본 알림 메시지
-  static const String notificationEmpty = '현재 새로운 알림이 없습니다.';
-
-  // ================================
-  // 공통 버튼 텍스트
-  // ================================
-
-  /// 확인 버튼
-  static const String buttonConfirm = '확인';
-
-  /// 취소 버튼
-  static const String buttonCancel = '취소';
-
-  /// 저장 버튼
-  static const String buttonSave = '저장';
+  /// 현재 언어에 따른 시간 포맷을 반환합니다
+  ///
+  /// [context] BuildContext 인스턴스
+  /// Returns: 언어별 시간 포맷 문자열
+  static String getTimeFormat(BuildContext context) {
+    return of(context).timeFormat;
+  }
 
   // ================================
-  // 툴팁 텍스트
+  // 사용 예제 및 마이그레이션 가이드
   // ================================
 
-  /// 뒤로가기 툴팁
-  static const String tooltipBack = '뒤로가기';
+  /*
+  기존 하드코딩된 문자열을 국제화된 버전으로 마이그레이션하는 방법:
 
-  /// 메뉴 툴팁
-  static const String tooltipMenu = '메뉴';
+  🔴 기존 (Hard-coded)
+  Text('TripTogether')
+  Text('홈')
+  AppBar(title: Text('지도 화면'))
 
-  /// 알림 툴팁
-  static const String tooltipNotification = '알림';
+  ✅ 새로운 방식 (Internationalized)
+  Text(AppStrings.of(context).appTitle)
+  Text(AppStrings.of(context).navHome)
+  AppBar(title: Text(AppStrings.of(context).navMap))
 
-  /// 검색 툴팁
-  static const String tooltipSearch = '검색';
+  🌍 언어별 조건부 처리
+  if (AppStrings.isKorean(context)) {
+    // 한국어 전용 로직
+  } else if (AppStrings.isEnglish(context)) {
+    // 영어 전용 로직
+  }
 
-  /// 필터 툴팁
-  static const String tooltipFilter = '필터';
-
-  /// 설정 툴팁
-  static const String tooltipSettings = '설정';
-
-  /// 내 위치 툴팁
-  static const String tooltipMyLocation = '내 위치';
-
-  /// 캘린더 툴팁
-  static const String tooltipCalendar = '캘린더';
-
-  /// 일정 추가 툴팁
-  static const String tooltipAddSchedule = '일정 추가';
+  📅 날짜/시간 포맷팅
+  String datePattern = AppStrings.getDateFormat(context);
+  String timePattern = AppStrings.getTimeFormat(context);
+  */
 
   // ================================
-  // 플레이스홀더 텍스트
+  // 레거시 상수들 (제거 예정)
   // ================================
 
-  /// 지도 API 연동 예정 메시지
-  static const String placeholderMapApi = '지도 API 연동 예정';
+  // 아래 상수들은 국제화 마이그레이션 후 제거될 예정입니다.
+  // 새로운 코드에서는 AppStrings.of(context)를 사용하세요.
 
-  /// 코스마켓 콘텐츠 예정 메시지
-  static const String placeholderCourseMarket = '여행 코스 목록 및 상세 정보 표시 예정';
+  @Deprecated('Use AppStrings.of(context).appTitle instead')
+  static const String appName = 'TripTogether';
 
-  /// 일정 콘텐츠 예정 메시지
-  static const String placeholderSchedule = '여행 일정 목록 및 캘린더 뷰 표시 예정';
-
-  /// 마이페이지 콘텐츠 예정 메시지
-  static const String placeholderMyPage = '사용자 프로필 및 설정 메뉴 표시 예정';
-
-  // ================================
-  // 시맨틱 라벨 (접근성용)
-  // ================================
-
-  /// 뒤로가기 버튼 시맨틱 라벨
-  static const String semanticBackButton = '뒤로가기 버튼';
-
-  /// 메뉴 버튼 시맨틱 라벨
-  static const String semanticMenuButton = '메뉴 버튼';
-
-  /// 알림 버튼 시맨틱 라벨
-  static const String semanticNotificationButton = '알림 버튼';
-
-  /// 검색 버튼 시맨틱 라벨
-  static const String semanticSearchButton = '검색 버튼';
-
-  /// 필터 버튼 시맨틱 라벨
-  static const String semanticFilterButton = '필터 버튼';
-
-  /// 설정 버튼 시맨틱 라벨
-  static const String semanticSettingsButton = '설정 버튼';
-
-  /// 캘린더 뷰 버튼 시맨틱 라벨
-  static const String semanticCalendarButton = '캘린더 뷰 버튼';
-
-  /// 일정 추가 버튼 시맨틱 라벨
-  static const String semanticAddScheduleButton = '일정 추가 버튼';
-
-  // ================================
-  // 디버그 메시지
-  // ================================
-
-  /// 지도 메뉴 버튼 클릭 로그
-  static const String debugMapMenuClicked = '지도 메뉴 버튼 클릭';
-
-  /// 내 위치 버튼 클릭 로그
-  static const String debugMyLocationClicked = '내 위치 버튼 클릭';
-
-  /// 코스마켓 메뉴 버튼 클릭 로그
-  static const String debugCourseMarketMenuClicked = '코스마켓 메뉴 버튼 클릭';
-
-  /// 코스마켓 검색 버튼 클릭 로그
-  static const String debugCourseMarketSearchClicked = '코스마켓 검색 버튼 클릭';
-
-  /// 코스마켓 필터 버튼 클릭 로그
-  static const String debugCourseMarketFilterClicked = '코스마켓 필터 버튼 클릭';
-
-  /// 일정 메뉴 버튼 클릭 로그
-  static const String debugScheduleMenuClicked = '일정 화면 메뉴 버튼 클릭';
-
-  /// 일정 알림 버튼 클릭 로그
-  static const String debugScheduleNotificationClicked = '일정 화면 알림 버튼 클릭';
-
-  /// 캘린더 뷰 버튼 클릭 로그
-  static const String debugCalendarViewClicked = '캘린더 뷰 버튼 클릭';
-
-  /// 일정 추가 버튼 클릭 로그
-  static const String debugAddScheduleClicked = '일정 추가 버튼 클릭';
-
-  /// 마이페이지 알림 버튼 클릭 로그
-  static const String debugMyPageNotificationClicked = '마이페이지 알림 버튼 클릭';
-
-  /// 마이페이지 설정 버튼 클릭 로그
-  static const String debugMyPageSettingsClicked = '마이페이지 설정 버튼 클릭';
+  @Deprecated('Use AppStrings.of(context).appTitle instead')
+  static const String appTitle = 'TripTogether';
 }

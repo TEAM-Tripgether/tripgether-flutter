@@ -31,6 +31,7 @@ class AppRoutes {
   static const String profileEdit = '/profile-edit';
   static const String settings = '/settings';
 
+
   /// 모든 바텀 네비게이션 탭의 경로를 리스트로 반환
   /// 탭 인덱스와 경로를 매핑할 때 사용
   static List<String> get bottomNavRoutes => [

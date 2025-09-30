@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/router/router.dart';
 import 'core/theme/app_theme.dart';
+import 'l10n/app_localizations.dart';
 
 void main() => runApp(const MyApp());
 
@@ -22,11 +24,25 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true, // 분할 화면 모드 지원
       builder: (context, child) {
         return MaterialApp.router(
-          title: 'TripTogether',
+          title: 'Tripgether',
 
           // AppTheme의 완벽한 테마 시스템 활용
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
+
+          // 국제화 설정 - 한국어와 영어 지원
+          localizationsDelegates: const [
+            AppLocalizations.delegate, // 앱 고유 번역
+            GlobalMaterialLocalizations.delegate, // Material 위젯 번역
+            GlobalWidgetsLocalizations.delegate, // 기본 위젯 번역
+            GlobalCupertinoLocalizations.delegate, // Cupertino 위젯 번역
+          ],
+
+          // 지원 언어 목록
+          supportedLocales: const [
+            Locale('ko', ''), // 한국어
+            Locale('en', ''), // 영어
+          ],
 
           // GoRouter 설정 적용
           routerConfig: AppRouter.router,

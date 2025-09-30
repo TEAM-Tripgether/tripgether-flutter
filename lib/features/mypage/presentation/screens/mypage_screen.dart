@@ -16,17 +16,17 @@ class MyPageScreen extends StatelessWidget {
       // 마이페이지에 최적화된 AppBar
       // 개인 계정 관리 중심으로 설정 기능을 강조
       appBar: CommonAppBar(
-        title: AppStrings.screenMyPage,
+        title: AppStrings.of(context).navMyPage,
         showMenuButton: false, // 마이페이지에서는 메뉴 버튼 제거 (개인 공간)
         showNotificationIcon: true, // 개인 알림 확인을 위해 알림 아이콘 유지
         onNotificationPressed: () {
-          debugPrint(AppStrings.debugMyPageNotificationClicked);
+          debugPrint('마이페이지 알림 버튼 클릭');
           // TODO: 개인 알림 목록 화면으로 이동
         },
         rightActions: [
           // 설정 버튼 - 마이페이지의 핵심 기능
           Semantics(
-            label: AppStrings.semanticSettingsButton,
+            label: '설정 버튼',
             button: true,
             child: IconButton(
               icon: Icon(
@@ -35,10 +35,10 @@ class MyPageScreen extends StatelessWidget {
                 color: Colors.grey[700],
               ),
               onPressed: () {
-                debugPrint(AppStrings.debugMyPageSettingsClicked);
+                debugPrint('마이페이지 설정 버튼 클릭');
                 // TODO: 설정 화면으로 이동
               },
-              tooltip: AppStrings.tooltipSettings,
+              tooltip: AppStrings.of(context).settings,
             ),
           ),
           // 알림 아이콘은 showNotificationIcon으로 처리됨
@@ -56,14 +56,14 @@ class MyPageScreen extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             Text(
-              AppStrings.screenMyPage,
+              AppStrings.of(context).navMyPage,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: Colors.grey[700],
               ),
             ),
             SizedBox(height: 8.h),
             Text(
-              AppStrings.placeholderMyPage,
+              '사용자 프로필 및 설정 메뉴 표시 예정',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey[500],
               ),

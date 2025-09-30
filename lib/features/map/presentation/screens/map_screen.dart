@@ -24,7 +24,7 @@ class MapScreen extends StatelessWidget {
         showMenuButton: true, // 햄버거 메뉴는 유지 (다른 화면 접근용)
         showNotificationIcon: false, // 알림 아이콘 제거로 공간 확보
         onMenuPressed: () {
-          debugPrint(AppStrings.debugMapMenuClicked);
+          debugPrint("임시 디버그 메시지");
           // TODO: 사이드 메뉴 열기 또는 드로어 표시
         },
         rightActions: [
@@ -36,10 +36,10 @@ class MapScreen extends StatelessWidget {
               color: Colors.grey[700],
             ),
             onPressed: () {
-              debugPrint(AppStrings.debugMyLocationClicked);
+              debugPrint("임시 디버그 메시지");
               // TODO: 현재 위치로 지도 중심 이동
             },
-            tooltip: AppStrings.tooltipMyLocation,
+            tooltip: "임시 툴팁",
           ),
           SizedBox(width: 8.w),
         ],
@@ -51,14 +51,14 @@ class MapScreen extends StatelessWidget {
             Icon(Icons.map_outlined, size: 64.w, color: Colors.grey[400]),
             SizedBox(height: 16.h),
             Text(
-              AppStrings.screenMap,
+              AppStrings.of(context).navMap,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: Colors.grey[700],
               ),
             ),
             SizedBox(height: 8.h),
             Text(
-              AppStrings.placeholderMapApi,
+              "임시 플레이스홀더 텍스트",
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey[500],
               ),

@@ -132,7 +132,7 @@ class _SplashScreenState extends State<SplashScreen>
                 )
                 // 800-1400ms: Trip 페이드아웃 (합체 단계)
                 .fadeOut(
-                  delay: 800.ms,
+                  delay: 600.ms,
                   duration: 600.ms,
                   curve: Curves.easeInOut,
                 ),
@@ -172,7 +172,7 @@ class _SplashScreenState extends State<SplashScreen>
                 )
                 // 800-1400ms: Together 페이드아웃 (합체 단계)
                 .fadeOut(
-                  delay: 800.ms,
+                  delay: 600.ms,
                   duration: 600.ms,
                   curve: Curves.easeInOut,
                 ),
@@ -198,11 +198,11 @@ class _SplashScreenState extends State<SplashScreen>
                     bottom: 0,
                     child: Center(
                       child: Transform.translate(
-                        offset: Offset(0, -70.h), // Tripgether 기준 위쪽으로
+                        offset: Offset(0, -80.h), // Tripgether 기준 위쪽으로
                         child: Image.asset(
                           'assets/splash/logo_center.png',
-                          width: 100.w,
-                          height: 100.h,
+                          width: 120.w,
+                          height: 120.h,
                         ),
                       ),
                     ),
@@ -251,8 +251,8 @@ class _SplashScreenState extends State<SplashScreen>
               .animate(target: _isAnimationStarted ? 1 : 0)
               // 800-2000ms: 로고, 텍스트, 슬로건 모두 함께 서서히 페이드인 (더욱 길고 부드럽게)
               .fadeIn(
-                delay: 500.ms,
-                duration: 1200.ms,
+                delay: 900.ms,
+                duration: 1000.ms,
                 curve: Curves.easeInOut,
               ),
     );

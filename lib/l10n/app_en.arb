@@ -1,0 +1,224 @@
+{
+  "@@locale": "en",
+  "@@last_modified": "2025-09-30T12:00:00.000Z",
+
+  "appTitle": "TripTogether",
+  "@appTitle": {
+    "description": "Application name"
+  },
+
+  "appDescription": "Share your travel moments and discover local places",
+  "@appDescription": {
+    "description": "App description"
+  },
+
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Home tab label"
+  },
+
+  "navMap": "Map",
+  "@navMap": {
+    "description": "Map tab label"
+  },
+
+  "navSchedule": "Schedule",
+  "@navSchedule": {
+    "description": "Schedule tab label"
+  },
+
+  "navCourseMarket": "Course Market",
+  "@navCourseMarket": {
+    "description": "Course market tab label"
+  },
+
+  "navMyPage": "My Page",
+  "@navMyPage": {
+    "description": "My page tab label"
+  },
+
+  "btnConfirm": "Confirm",
+  "@btnConfirm": {
+    "description": "Confirm button"
+  },
+
+  "btnCancel": "Cancel",
+  "@btnCancel": {
+    "description": "Cancel button"
+  },
+
+  "btnSave": "Save",
+  "@btnSave": {
+    "description": "Save button"
+  },
+
+  "btnDelete": "Delete",
+  "@btnDelete": {
+    "description": "Delete button"
+  },
+
+  "btnEdit": "Edit",
+  "@btnEdit": {
+    "description": "Edit button"
+  },
+
+  "btnShare": "Share",
+  "@btnShare": {
+    "description": "Share button"
+  },
+
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading status message"
+  },
+
+  "loadingData": "Loading data...",
+  "@loadingData": {
+    "description": "Data loading message"
+  },
+
+  "noData": "No data available",
+  "@noData": {
+    "description": "No data message"
+  },
+
+  "networkError": "Please check your network connection",
+  "@networkError": {
+    "description": "Network error message"
+  },
+
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button"
+  },
+
+  "trip": "Trip",
+  "@trip": {
+    "description": "Trip singular"
+  },
+
+  "trips": "Trips",
+  "@trips": {
+    "description": "Trip plural"
+  },
+
+  "myTrips": "My Trips",
+  "@myTrips": {
+    "description": "My trip list"
+  },
+
+  "createTrip": "Create Trip",
+  "@createTrip": {
+    "description": "Create new trip button"
+  },
+
+  "tripTitle": "Trip Title",
+  "@tripTitle": {
+    "description": "Trip title input label"
+  },
+
+  "tripDescription": "Trip Description",
+  "@tripDescription": {
+    "description": "Trip description input label"
+  },
+
+  "startDate": "Start Date",
+  "@startDate": {
+    "description": "Trip start date"
+  },
+
+  "endDate": "End Date",
+  "@endDate": {
+    "description": "Trip end date"
+  },
+
+  "schedule": "Schedule",
+  "@schedule": {
+    "description": "Schedule singular"
+  },
+
+  "schedules": "Schedules",
+  "@schedules": {
+    "description": "Schedule plural"
+  },
+
+  "addSchedule": "Add Schedule",
+  "@addSchedule": {
+    "description": "Add new schedule button"
+  },
+
+  "scheduleTime": "Time",
+  "@scheduleTime": {
+    "description": "Schedule time"
+  },
+
+  "scheduleLocation": "Location",
+  "@scheduleLocation": {
+    "description": "Schedule location"
+  },
+
+  "map": "Map",
+  "@map": {
+    "description": "Map"
+  },
+
+  "currentLocation": "Current Location",
+  "@currentLocation": {
+    "description": "Current location"
+  },
+
+  "searchLocation": "Search location",
+  "@searchLocation": {
+    "description": "Location search input hint"
+  },
+
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings menu"
+  },
+
+  "language": "Language",
+  "@language": {
+    "description": "Language setting"
+  },
+
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme setting"
+  },
+
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Dark mode setting"
+  },
+
+  "lightMode": "Light Mode",
+  "@lightMode": {
+    "description": "Light mode setting"
+  },
+
+  "errorGeneral": "An error occurred",
+  "@errorGeneral": {
+    "description": "General error message"
+  },
+
+  "errorInvalidInput": "Invalid input",
+  "@errorInvalidInput": {
+    "description": "Input validation error"
+  },
+
+  "errorSaveData": "Failed to save data",
+  "@errorSaveData": {
+    "description": "Data save failure error"
+  },
+
+  "dateFormat": "MMM dd, yyyy",
+  "@dateFormat": {
+    "description": "English date format"
+  },
+
+  "timeFormat": "h:mm a",
+  "@timeFormat": {
+    "description": "English time format (AM/PM)"
+  }
+}

@@ -25,12 +25,12 @@ class DialogUtils {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title ?? AppStrings.notificationTitle),
-        content: Text(content ?? AppStrings.notificationEmpty),
+        title: Text(title ?? '알림'),
+        content: Text(content ?? '현재 새로운 알림이 없습니다.'),
         actions: [
           TextButton(
             onPressed: onConfirm ?? () => Navigator.of(context).pop(),
-            child: Text(confirmText ?? AppStrings.buttonConfirm),
+            child: Text(confirmText ?? AppStrings.of(context).btnConfirm),
           ),
         ],
       ),
@@ -68,14 +68,14 @@ class DialogUtils {
               Navigator.of(context).pop(false);
               onCancel?.call();
             },
-            child: Text(cancelText ?? AppStrings.buttonCancel),
+            child: Text(cancelText ?? AppStrings.of(context).btnCancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(true);
               onConfirm?.call();
             },
-            child: Text(confirmText ?? AppStrings.buttonConfirm),
+            child: Text(confirmText ?? AppStrings.of(context).btnConfirm),
           ),
         ],
       ),
@@ -104,7 +104,7 @@ class DialogUtils {
         actions: [
           TextButton(
             onPressed: onConfirm ?? () => Navigator.of(context).pop(),
-            child: Text(confirmText ?? AppStrings.buttonConfirm),
+            child: Text(confirmText ?? AppStrings.of(context).btnConfirm),
           ),
         ],
       ),
@@ -133,7 +133,7 @@ class DialogUtils {
         actions: [
           TextButton(
             onPressed: onConfirm ?? () => Navigator.of(context).pop(),
-            child: Text(confirmText ?? AppStrings.buttonConfirm),
+            child: Text(confirmText ?? AppStrings.of(context).btnConfirm),
           ),
         ],
       ),

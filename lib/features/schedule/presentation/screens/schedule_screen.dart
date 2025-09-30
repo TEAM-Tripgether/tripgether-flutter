@@ -16,21 +16,21 @@ class ScheduleScreen extends StatelessWidget {
       // 일정 관리에 최적화된 AppBar
       // 캘린더 뷰와 일정 추가 기능을 강조하여 구성
       appBar: CommonAppBar(
-        title: AppStrings.screenSchedule,
+        title: AppStrings.of(context).navSchedule,
         showMenuButton: true, // 메뉴를 통한 다른 화면 접근 유지
         showNotificationIcon: true, // 일정 알림 확인을 위해 알림 아이콘 유지
         onMenuPressed: () {
-          debugPrint(AppStrings.debugScheduleMenuClicked);
+          debugPrint('일정 화면 메뉴 버튼 클릭');
           // TODO: 사이드 메뉴 열기 또는 드로어 표시
         },
         onNotificationPressed: () {
-          debugPrint(AppStrings.debugScheduleNotificationClicked);
+          debugPrint('일정 화면 알림 버튼 클릭');
           // TODO: 일정 관련 알림 화면으로 이동
         },
         rightActions: [
           // 캘린더 뷰 전환 버튼
           Semantics(
-            label: AppStrings.semanticCalendarButton,
+            label: '캘린더 뷰 버튼',
             button: true,
             child: IconButton(
               icon: Icon(
@@ -39,15 +39,15 @@ class ScheduleScreen extends StatelessWidget {
                 color: Colors.grey[700],
               ),
               onPressed: () {
-                debugPrint(AppStrings.debugCalendarViewClicked);
+                debugPrint('캘린더 뷰 버튼 클릭');
                 // TODO: 리스트 뷰 ↔ 캘린더 뷰 전환
               },
-              tooltip: AppStrings.tooltipCalendar,
+              tooltip: '캘린더',
             ),
           ),
           // 새 일정 추가 버튼
           Semantics(
-            label: AppStrings.semanticAddScheduleButton,
+            label: '일정 추가 버튼',
             button: true,
             child: IconButton(
               icon: Icon(
@@ -56,10 +56,10 @@ class ScheduleScreen extends StatelessWidget {
                 color: Colors.grey[700],
               ),
               onPressed: () {
-                debugPrint(AppStrings.debugAddScheduleClicked);
+                debugPrint('일정 추가 버튼 클릭');
                 // TODO: 새 일정 추가 화면으로 이동 또는 모달 표시
               },
-              tooltip: AppStrings.tooltipAddSchedule,
+              tooltip: AppStrings.of(context).addSchedule,
             ),
           ),
           // 알림 아이콘은 showNotificationIcon으로 처리됨
@@ -77,14 +77,14 @@ class ScheduleScreen extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             Text(
-              AppStrings.screenSchedule,
+              AppStrings.of(context).navSchedule,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: Colors.grey[700],
               ),
             ),
             SizedBox(height: 8.h),
             Text(
-              AppStrings.placeholderSchedule,
+              '여행 일정 목록 및 캘린더 뷰 표시 예정',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey[500],
               ),

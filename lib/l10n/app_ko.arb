@@ -1,0 +1,224 @@
+{
+  "@@locale": "ko",
+  "@@last_modified": "2025-09-30T12:00:00.000Z",
+
+  "appTitle": "TripTogether",
+  "@appTitle": {
+    "description": "애플리케이션 이름"
+  },
+
+  "appDescription": "여행 순간을 공유하고 현지 명소를 발견하세요",
+  "@appDescription": {
+    "description": "앱 설명"
+  },
+
+  "navHome": "홈",
+  "@navHome": {
+    "description": "홈 탭 라벨"
+  },
+
+  "navMap": "지도",
+  "@navMap": {
+    "description": "지도 탭 라벨"
+  },
+
+  "navSchedule": "일정",
+  "@navSchedule": {
+    "description": "일정 탭 라벨"
+  },
+
+  "navCourseMarket": "코스 마켓",
+  "@navCourseMarket": {
+    "description": "코스 마켓 탭 라벨"
+  },
+
+  "navMyPage": "마이페이지",
+  "@navMyPage": {
+    "description": "마이페이지 탭 라벨"
+  },
+
+  "btnConfirm": "확인",
+  "@btnConfirm": {
+    "description": "확인 버튼"
+  },
+
+  "btnCancel": "취소",
+  "@btnCancel": {
+    "description": "취소 버튼"
+  },
+
+  "btnSave": "저장",
+  "@btnSave": {
+    "description": "저장 버튼"
+  },
+
+  "btnDelete": "삭제",
+  "@btnDelete": {
+    "description": "삭제 버튼"
+  },
+
+  "btnEdit": "편집",
+  "@btnEdit": {
+    "description": "편집 버튼"
+  },
+
+  "btnShare": "공유",
+  "@btnShare": {
+    "description": "공유 버튼"
+  },
+
+  "loading": "로딩 중...",
+  "@loading": {
+    "description": "로딩 상태 메시지"
+  },
+
+  "loadingData": "데이터를 불러오는 중...",
+  "@loadingData": {
+    "description": "데이터 로딩 메시지"
+  },
+
+  "noData": "데이터가 없습니다",
+  "@noData": {
+    "description": "데이터가 없을 때 메시지"
+  },
+
+  "networkError": "네트워크 연결을 확인해주세요",
+  "@networkError": {
+    "description": "네트워크 오류 메시지"
+  },
+
+  "retry": "다시 시도",
+  "@retry": {
+    "description": "재시도 버튼"
+  },
+
+  "trip": "여행",
+  "@trip": {
+    "description": "여행 단수형"
+  },
+
+  "trips": "여행들",
+  "@trips": {
+    "description": "여행 복수형"
+  },
+
+  "myTrips": "내 여행",
+  "@myTrips": {
+    "description": "내 여행 목록"
+  },
+
+  "createTrip": "여행 만들기",
+  "@createTrip": {
+    "description": "새 여행 생성 버튼"
+  },
+
+  "tripTitle": "여행 제목",
+  "@tripTitle": {
+    "description": "여행 제목 입력 라벨"
+  },
+
+  "tripDescription": "여행 설명",
+  "@tripDescription": {
+    "description": "여행 설명 입력 라벨"
+  },
+
+  "startDate": "시작일",
+  "@startDate": {
+    "description": "여행 시작일"
+  },
+
+  "endDate": "종료일",
+  "@endDate": {
+    "description": "여행 종료일"
+  },
+
+  "schedule": "일정",
+  "@schedule": {
+    "description": "일정 단수형"
+  },
+
+  "schedules": "일정들",
+  "@schedules": {
+    "description": "일정 복수형"
+  },
+
+  "addSchedule": "일정 추가",
+  "@addSchedule": {
+    "description": "새 일정 추가 버튼"
+  },
+
+  "scheduleTime": "시간",
+  "@scheduleTime": {
+    "description": "일정 시간"
+  },
+
+  "scheduleLocation": "장소",
+  "@scheduleLocation": {
+    "description": "일정 장소"
+  },
+
+  "map": "지도",
+  "@map": {
+    "description": "지도"
+  },
+
+  "currentLocation": "현재 위치",
+  "@currentLocation": {
+    "description": "현재 위치"
+  },
+
+  "searchLocation": "장소 검색",
+  "@searchLocation": {
+    "description": "장소 검색 입력 힌트"
+  },
+
+  "settings": "설정",
+  "@settings": {
+    "description": "설정 메뉴"
+  },
+
+  "language": "언어",
+  "@language": {
+    "description": "언어 설정"
+  },
+
+  "theme": "테마",
+  "@theme": {
+    "description": "테마 설정"
+  },
+
+  "darkMode": "다크 모드",
+  "@darkMode": {
+    "description": "다크 모드 설정"
+  },
+
+  "lightMode": "라이트 모드",
+  "@lightMode": {
+    "description": "라이트 모드 설정"
+  },
+
+  "errorGeneral": "오류가 발생했습니다",
+  "@errorGeneral": {
+    "description": "일반적인 오류 메시지"
+  },
+
+  "errorInvalidInput": "잘못된 입력입니다",
+  "@errorInvalidInput": {
+    "description": "입력 검증 오류"
+  },
+
+  "errorSaveData": "데이터 저장에 실패했습니다",
+  "@errorSaveData": {
+    "description": "데이터 저장 실패 오류"
+  },
+
+  "dateFormat": "yyyy년 MM월 dd일",
+  "@dateFormat": {
+    "description": "한국어 날짜 형식"
+  },
+
+  "timeFormat": "a h:mm",
+  "@timeFormat": {
+    "description": "한국어 시간 형식 (오전/오후)"
+  }
+}

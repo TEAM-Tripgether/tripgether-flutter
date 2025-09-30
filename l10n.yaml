@@ -1,0 +1,24 @@
+# Flutter 국제화 설정 파일
+# ARB 파일로부터 Dart 국제화 코드를 자동 생성하는 설정
+
+# ARB 파일들이 위치할 디렉토리
+arb-dir: lib/l10n
+
+# 기본 언어(템플릿) ARB 파일명
+template-arb-file: app_ko.arb
+
+# 생성될 Dart 클래스 파일명
+output-localization-file: app_localizations.dart
+
+# 생성될 클래스명 (기본값: AppLocalizations)
+output-class: AppLocalizations
+
+# 생성될 파일 위치 (기본값: arb-dir과 동일)
+output-dir: lib/l10n
+
+# nullable getter 사용 여부 (AppLocalizations.of(context)!.title 형태)
+nullable-getter: false
+
+
+# 지연 로딩 사용 여부 (앱 시작 시간 단축)
+use-deferred-loading: false

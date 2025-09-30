@@ -64,6 +64,8 @@ dependencies:
   # firebase_crashlytics: ^5.0.1       # 앱 크래시 리포팅
 
   # 다국어 지원
+  flutter_localizations:               # Flutter 내장 국제화 지원
+    sdk: flutter
 
   # 데이터 시각화(운영자용)
   syncfusion_flutter_charts: ^31.1.17 # 차트 위젯 패키지
@@ -85,6 +87,7 @@ dev_dependencies:
 
 
 flutter:
+  generate: true  # 국제화 코드 자동 생성 활성화
 
   uses-material-design: true
 

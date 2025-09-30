@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -27,11 +28,17 @@ class HomeScreen extends StatelessWidget {
         },
       ),
       body: Center(
-        child: Text(
-          '홈 화면',
-          style: Theme.of(
-            context,
-          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              AppStrings.of(context).navHome,
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 32),
+          ],
         ),
       ),
     );
