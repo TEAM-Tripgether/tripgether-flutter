@@ -220,5 +220,152 @@
   "timeFormat": "h:mm a",
   "@timeFormat": {
     "description": "English time format (AM/PM)"
+  },
+
+  "greeting": "Hello, {userName}!",
+  "@greeting": {
+    "description": "Home screen greeting",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "Kevin"
+      }
+    }
+  },
+
+  "greetingSubtitle": "Where shall we explore today?",
+  "@greetingSubtitle": {
+    "description": "Home screen greeting subtitle"
+  },
+
+  "searchHint": "Search keywords, cities, or places",
+  "@searchHint": {
+    "description": "Search bar hint text"
+  },
+
+  "recentSnsContent": "Recent SNS Content",
+  "@recentSnsContent": {
+    "description": "SNS content section title"
+  },
+
+  "recentSavedPlaces": "Recently Saved Places",
+  "@recentSavedPlaces": {
+    "description": "Saved places section title"
+  },
+
+  "seeMore": "See More",
+  "@seeMore": {
+    "description": "See more button text"
+  },
+
+  "viewCount": "{count} views",
+  "@viewCount": {
+    "description": "View count display",
+    "placeholders": {
+      "count": {
+        "type": "String",
+        "example": "100K"
+      }
+    }
+  },
+
+  "noMoreContent": "No more content",
+  "@noMoreContent": {
+    "description": "End of content message"
+  },
+
+  "filterAll": "All",
+  "@filterAll": {
+    "description": "All filter option"
+  },
+
+  "filterYoutube": "YouTube",
+  "@filterYoutube": {
+    "description": "YouTube filter option"
+  },
+
+  "filterInstagram": "Instagram",
+  "@filterInstagram": {
+    "description": "Instagram filter option"
+  },
+
+  "placeVisited": "Visited",
+  "@placeVisited": {
+    "description": "Place visited indicator"
+  },
+
+  "seeMorePlaces": "See More Places",
+  "@seeMorePlaces": {
+    "description": "See more places button"
+  },
+
+  "sharedDataReceived": "Shared Data Received",
+  "@sharedDataReceived": {
+    "description": "Shared data received notification"
+  },
+
+  "createTripFromShared": "Create Trip",
+  "@createTripFromShared": {
+    "description": "Create trip from shared data button"
+  },
+
+  "close": "Close",
+  "@close": {
+    "description": "Close button"
+  },
+
+  "textCount": "Text ({count})",
+  "@textCount": {
+    "description": "Text count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "mediaFileCount": "Media Files ({count})",
+  "@mediaFileCount": {
+    "description": "Media file count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "imageCount": "Images {count}",
+  "@imageCount": {
+    "description": "Image count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "videoCount": "Videos {count}",
+  "@videoCount": {
+    "description": "Video count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "fileCount": "Files {count}",
+  "@fileCount": {
+    "description": "File count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
   }
 }

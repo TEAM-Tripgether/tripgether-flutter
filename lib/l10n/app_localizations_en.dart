@@ -140,4 +140,81 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get timeFormat => 'h:mm a';
+
+  @override
+  String greeting(String userName) {
+    return 'Hello, $userName!';
+  }
+
+  @override
+  String get greetingSubtitle => 'Where shall we explore today?';
+
+  @override
+  String get searchHint => 'Search keywords, cities, or places';
+
+  @override
+  String get recentSnsContent => 'Recent SNS Content';
+
+  @override
+  String get recentSavedPlaces => 'Recently Saved Places';
+
+  @override
+  String get seeMore => 'See More';
+
+  @override
+  String viewCount(String count) {
+    return '$count views';
+  }
+
+  @override
+  String get noMoreContent => 'No more content';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get filterYoutube => 'YouTube';
+
+  @override
+  String get filterInstagram => 'Instagram';
+
+  @override
+  String get placeVisited => 'Visited';
+
+  @override
+  String get seeMorePlaces => 'See More Places';
+
+  @override
+  String get sharedDataReceived => 'Shared Data Received';
+
+  @override
+  String get createTripFromShared => 'Create Trip';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String textCount(int count) {
+    return 'Text ($count)';
+  }
+
+  @override
+  String mediaFileCount(int count) {
+    return 'Media Files ($count)';
+  }
+
+  @override
+  String imageCount(int count) {
+    return 'Images $count';
+  }
+
+  @override
+  String videoCount(int count) {
+    return 'Videos $count';
+  }
+
+  @override
+  String fileCount(int count) {
+    return 'Files $count';
+  }
 }

@@ -361,6 +361,132 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'a h:mm'**
   String get timeFormat;
+
+  /// 홈 화면 인사말
+  ///
+  /// In ko, this message translates to:
+  /// **'안녕하세요, {userName}님!'**
+  String greeting(String userName);
+
+  /// 홈 화면 인사말 부제목
+  ///
+  /// In ko, this message translates to:
+  /// **'현지의 하루, 어디로 떠날까요?'**
+  String get greetingSubtitle;
+
+  /// 검색창 힌트 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'키워드·도시·장소를 검색해 보세요'**
+  String get searchHint;
+
+  /// SNS 콘텐츠 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 SNS에서 본 콘텐츠'**
+  String get recentSnsContent;
+
+  /// 저장한 장소 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 저장한 장소'**
+  String get recentSavedPlaces;
+
+  /// 더보기 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'더보기'**
+  String get seeMore;
+
+  /// 조회수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}회'**
+  String viewCount(String count);
+
+  /// 콘텐츠 끝 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'더 이상 콘텐츠가 없습니다'**
+  String get noMoreContent;
+
+  /// 전체 필터 옵션
+  ///
+  /// In ko, this message translates to:
+  /// **'전체'**
+  String get filterAll;
+
+  /// 유튜브 필터 옵션
+  ///
+  /// In ko, this message translates to:
+  /// **'YouTube'**
+  String get filterYoutube;
+
+  /// 인스타그램 필터 옵션
+  ///
+  /// In ko, this message translates to:
+  /// **'Instagram'**
+  String get filterInstagram;
+
+  /// 장소 방문 완료 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'방문완료'**
+  String get placeVisited;
+
+  /// 장소 더보기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'더 많은 장소 보기'**
+  String get seeMorePlaces;
+
+  /// 공유 데이터 수신 알림
+  ///
+  /// In ko, this message translates to:
+  /// **'공유 데이터 수신됨'**
+  String get sharedDataReceived;
+
+  /// 공유 데이터로 여행 생성 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'여행 만들기'**
+  String get createTripFromShared;
+
+  /// 닫기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'닫기'**
+  String get close;
+
+  /// 텍스트 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'텍스트 ({count}개)'**
+  String textCount(int count);
+
+  /// 미디어 파일 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'미디어 파일 ({count}개)'**
+  String mediaFileCount(int count);
+
+  /// 이미지 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'이미지 {count}'**
+  String imageCount(int count);
+
+  /// 동영상 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'동영상 {count}'**
+  String videoCount(int count);
+
+  /// 파일 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'파일 {count}'**
+  String fileCount(int count);
 }
 
 class _AppLocalizationsDelegate

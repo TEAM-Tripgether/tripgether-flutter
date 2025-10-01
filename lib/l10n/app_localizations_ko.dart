@@ -139,4 +139,81 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get timeFormat => 'a h:mm';
+
+  @override
+  String greeting(String userName) {
+    return '안녕하세요, $userName님!';
+  }
+
+  @override
+  String get greetingSubtitle => '현지의 하루, 어디로 떠날까요?';
+
+  @override
+  String get searchHint => '키워드·도시·장소를 검색해 보세요';
+
+  @override
+  String get recentSnsContent => '최근 SNS에서 본 콘텐츠';
+
+  @override
+  String get recentSavedPlaces => '최근 저장한 장소';
+
+  @override
+  String get seeMore => '더보기';
+
+  @override
+  String viewCount(String count) {
+    return '$count회';
+  }
+
+  @override
+  String get noMoreContent => '더 이상 콘텐츠가 없습니다';
+
+  @override
+  String get filterAll => '전체';
+
+  @override
+  String get filterYoutube => 'YouTube';
+
+  @override
+  String get filterInstagram => 'Instagram';
+
+  @override
+  String get placeVisited => '방문완료';
+
+  @override
+  String get seeMorePlaces => '더 많은 장소 보기';
+
+  @override
+  String get sharedDataReceived => '공유 데이터 수신됨';
+
+  @override
+  String get createTripFromShared => '여행 만들기';
+
+  @override
+  String get close => '닫기';
+
+  @override
+  String textCount(int count) {
+    return '텍스트 ($count개)';
+  }
+
+  @override
+  String mediaFileCount(int count) {
+    return '미디어 파일 ($count개)';
+  }
+
+  @override
+  String imageCount(int count) {
+    return '이미지 $count';
+  }
+
+  @override
+  String videoCount(int count) {
+    return '동영상 $count';
+  }
+
+  @override
+  String fileCount(int count) {
+    return '파일 $count';
+  }
 }

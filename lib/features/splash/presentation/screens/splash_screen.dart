@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
@@ -59,11 +60,11 @@ class _SplashScreenState extends State<SplashScreen>
   void _startAnimation() async {
     // 안드로이드 플랫폼에서만 지연 적용
     // 안드로이드 12+의 시스템 스플래시가 끝날 때까지 대기
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       // 700ms 지연: 시스템 스플래시가 표시되는 동안 대기
       await Future.delayed(const Duration(milliseconds: 500));
     }
-    // iOS는 지연 없이 즉시 애니메이션 시작
+    // iOS와 웹은 지연 없이 즉시 애니메이션 시작
 
     // 위젯이 아직 마운트되어 있는지 확인
     if (!mounted) return;

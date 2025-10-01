@@ -220,5 +220,152 @@
   "timeFormat": "a h:mm",
   "@timeFormat": {
     "description": "한국어 시간 형식 (오전/오후)"
+  },
+
+  "greeting": "안녕하세요, {userName}님!",
+  "@greeting": {
+    "description": "홈 화면 인사말",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "Kevin"
+      }
+    }
+  },
+
+  "greetingSubtitle": "현지의 하루, 어디로 떠날까요?",
+  "@greetingSubtitle": {
+    "description": "홈 화면 인사말 부제목"
+  },
+
+  "searchHint": "키워드·도시·장소를 검색해 보세요",
+  "@searchHint": {
+    "description": "검색창 힌트 텍스트"
+  },
+
+  "recentSnsContent": "최근 SNS에서 본 콘텐츠",
+  "@recentSnsContent": {
+    "description": "SNS 콘텐츠 섹션 제목"
+  },
+
+  "recentSavedPlaces": "최근 저장한 장소",
+  "@recentSavedPlaces": {
+    "description": "저장한 장소 섹션 제목"
+  },
+
+  "seeMore": "더보기",
+  "@seeMore": {
+    "description": "더보기 버튼 텍스트"
+  },
+
+  "viewCount": "{count}회",
+  "@viewCount": {
+    "description": "조회수 표시",
+    "placeholders": {
+      "count": {
+        "type": "String",
+        "example": "100K"
+      }
+    }
+  },
+
+  "noMoreContent": "더 이상 콘텐츠가 없습니다",
+  "@noMoreContent": {
+    "description": "콘텐츠 끝 메시지"
+  },
+
+  "filterAll": "전체",
+  "@filterAll": {
+    "description": "전체 필터 옵션"
+  },
+
+  "filterYoutube": "YouTube",
+  "@filterYoutube": {
+    "description": "유튜브 필터 옵션"
+  },
+
+  "filterInstagram": "Instagram",
+  "@filterInstagram": {
+    "description": "인스타그램 필터 옵션"
+  },
+
+  "placeVisited": "방문완료",
+  "@placeVisited": {
+    "description": "장소 방문 완료 표시"
+  },
+
+  "seeMorePlaces": "더 많은 장소 보기",
+  "@seeMorePlaces": {
+    "description": "장소 더보기 버튼"
+  },
+
+  "sharedDataReceived": "공유 데이터 수신됨",
+  "@sharedDataReceived": {
+    "description": "공유 데이터 수신 알림"
+  },
+
+  "createTripFromShared": "여행 만들기",
+  "@createTripFromShared": {
+    "description": "공유 데이터로 여행 생성 버튼"
+  },
+
+  "close": "닫기",
+  "@close": {
+    "description": "닫기 버튼"
+  },
+
+  "textCount": "텍스트 ({count}개)",
+  "@textCount": {
+    "description": "텍스트 개수 표시",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "mediaFileCount": "미디어 파일 ({count}개)",
+  "@mediaFileCount": {
+    "description": "미디어 파일 개수 표시",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "imageCount": "이미지 {count}",
+  "@imageCount": {
+    "description": "이미지 개수 표시",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "videoCount": "동영상 {count}",
+  "@videoCount": {
+    "description": "동영상 개수 표시",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "fileCount": "파일 {count}",
+  "@fileCount": {
+    "description": "파일 개수 표시",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
   }
 }

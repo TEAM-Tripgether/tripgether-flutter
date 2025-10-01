@@ -6,6 +6,7 @@ import 'route_guards.dart';
 import '../../shared/widgets/layout/bottom_navigation.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/schedule/presentation/screens/schedule_screen.dart';
@@ -69,6 +70,18 @@ class AppRouter {
             path: AppRoutes.home,
             pageBuilder: (context, state) =>
                 NoTransitionPage(child: const HomeScreen()),
+            routes: [
+              // SNS 콘텐츠 목록 화면
+              GoRoute(
+                path: 'sns-contents',
+                builder: (context, state) => const SnsContentsListScreen(),
+              ),
+              // 저장한 장소 목록 화면
+              GoRoute(
+                path: 'saved-places',
+                builder: (context, state) => const SavedPlacesListScreen(),
+              ),
+            ],
           ),
 
           /// 코스 마켓 탭 (인덱스: 1)
@@ -257,6 +270,18 @@ class MyCoursesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('내 코스')),
       body: const Center(child: Text('내 코스 화면')),
+    );
+  }
+}
+
+class SavedPlacesListScreen extends StatelessWidget {
+  const SavedPlacesListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('저장한 장소')),
+      body: const Center(child: Text('저장한 장소 목록 화면 (준비중)')),
     );
   }
 }

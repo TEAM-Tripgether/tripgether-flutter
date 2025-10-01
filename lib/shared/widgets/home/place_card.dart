@@ -1,0 +1,427 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../../../features/home/data/models/place_model.dart';
+
+/// 저장된 장소 카드 위젯
+///
+/// 사용자가 저장한 장소를 카드 형태로 표시
+/// 장소명, 카테고리, 주소, 이미지 미리보기 포함
+class PlaceCard extends StatelessWidget {
+  /// 표시할 장소 정보
+  final SavedPlace place;
+
+  /// 카드 탭 시 실행될 콜백
+  final VoidCallback? onTap;
+
+  /// 이미지 탭 시 실행될 콜백
+  final Function(int imageIndex)? onImageTap;
+
+  /// 즐겨찾기 버튼 탭 시 콜백
+  final VoidCallback? onFavoriteTap;
+
+  const PlaceCard({
+    super.key,
+    required this.place,
+    this.onTap,
+    this.onImageTap,
+    this.onFavoriteTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap:
+          onTap ??
+          () {
+            debugPrint('장소 카드 클릭: ${place.name}');
+          },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 상단 정보 영역 (장소명, 카테고리, 주소)
+            _buildPlaceInfo(context),
+
+            // 구분선
+            Container(height: 1, color: Colors.grey[200]),
+
+            // 이미지 미리보기 영역
+            _buildImagePreview(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 장소 정보 영역 빌드
+  Widget _buildPlaceInfo(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(16.w),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 장소 정보 (좌측)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 장소명과 카테고리
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // 카테고리 이모지
+                    Text(
+                      place.category.emoji,
+                      style: TextStyle(fontSize: 16.sp),
+                    ),
+                    SizedBox(width: 6.w),
+                    // 장소명
+                    Expanded(
+                      child: Text(
+                        place.name,
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.h),
+
+                // 카테고리 및 업종
+                Text(
+                  place.category.displayName,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+
+                // 주소
+                Text(
+                  place.address,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey[600],
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                SizedBox(height: 8.h),
+
+                // 추가 정보 (평점, 리뷰, 거리)
+                _buildAdditionalInfo(),
+              ],
+            ),
+          ),
+
+          // 즐겨찾기 버튼 (우측)
+          IconButton(
+            onPressed: onFavoriteTap,
+            icon: Icon(
+              place.isFavorite ? Icons.bookmark : Icons.bookmark_border,
+              size: 24.w,
+              color: place.isFavorite
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey[500],
+            ),
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(minWidth: 32.w, minHeight: 32.w),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 추가 정보 위젯 (평점, 리뷰, 거리 등)
+  Widget _buildAdditionalInfo() {
+    return Row(
+      children: [
+        // 평점
+        if (place.rating != null) ...[
+          Icon(Icons.star, size: 14.w, color: Colors.amber),
+          SizedBox(width: 2.w),
+          Text(
+            place.rating!.toStringAsFixed(1),
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+          ),
+          if (place.reviewCount != null) ...[
+            Text(
+              ' (${place.reviewCount})',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+          SizedBox(width: 12.w),
+        ],
+
+        // 거리
+        Icon(Icons.location_on, size: 14.w, color: Colors.grey[500]),
+        SizedBox(width: 2.w),
+        Text(
+          place.distanceText,
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w400,
+            color: Colors.grey[600],
+          ),
+        ),
+
+        // 방문 여부 표시
+        if (place.isVisited) ...[
+          SizedBox(width: 12.w),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+            decoration: BoxDecoration(
+              color: Colors.green[50],
+              borderRadius: BorderRadius.circular(4.r),
+              border: Border.all(color: Colors.green[200]!, width: 0.5),
+            ),
+            child: Text(
+              '방문완료',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.green[700],
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// 이미지 미리보기 영역 빌드
+  Widget _buildImagePreview() {
+    if (place.imageUrls.isEmpty) {
+      return SizedBox.shrink();
+    }
+
+    return Container(
+      height: 112.h, // 100h 이미지 + 12h 패딩
+      padding: EdgeInsets.all(12.w),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: place.imageUrls.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              if (onImageTap != null) {
+                onImageTap!(index);
+              } else {
+                debugPrint('이미지 클릭: ${place.name} - 이미지 $index');
+              }
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 8.w),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.r),
+                child: CachedNetworkImage(
+                  imageUrl: place.imageUrls[index],
+                  width: 100.w, // 정사각형으로 변경 및 크기 확대
+                  height: 100.h,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    width: 100.w,
+                    height: 100.h,
+                    color: Colors.grey[200],
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.grey[400]!,
+                        ),
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: 100.w,
+                    height: 100.h,
+                    color: Colors.grey[200],
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 24.w,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// 저장된 장소 리스트 위젯
+///
+/// 여러 장소를 세로 스크롤 가능한 리스트로 표시
+class PlaceListSection extends StatelessWidget {
+  /// 표시할 장소 리스트
+  final List<SavedPlace> places;
+
+  /// 섹션 제목
+  final String? title;
+
+  /// 더보기 버튼 탭 시 콜백
+  final VoidCallback? onSeeMoreTap;
+
+  /// 최대 표시 개수 (null이면 전체 표시)
+  final int? maxItems;
+
+  const PlaceListSection({
+    super.key,
+    required this.places,
+    this.title,
+    this.onSeeMoreTap,
+    this.maxItems,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final displayPlaces = maxItems != null && places.length > maxItems!
+        ? places.take(maxItems!).toList()
+        : places;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 섹션 헤더
+        if (title != null) _buildSectionHeader(context),
+
+        // 장소 리스트
+        ...displayPlaces.map(
+          (place) => PlaceCard(
+            place: place,
+            onTap: () {
+              // 장소 상세 화면으로 이동
+              debugPrint('장소 선택: ${place.name}');
+            },
+            onImageTap: (index) {
+              // 이미지 상세 보기 또는 지도 화면으로 이동
+              debugPrint('이미지 선택: ${place.name} - 이미지 $index');
+            },
+            onFavoriteTap: () {
+              // 즐겨찾기 토글
+              debugPrint('즐겨찾기 토글: ${place.name}');
+            },
+          ),
+        ),
+
+        // 더보기 버튼
+        if (maxItems != null &&
+            places.length > maxItems! &&
+            onSeeMoreTap != null)
+          _buildSeeMoreButton(context),
+      ],
+    );
+  }
+
+  /// 섹션 헤더 위젯 빌드
+  Widget _buildSectionHeader(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+      ).copyWith(top: 16.h, bottom: 8.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title!,
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.black87,
+            ),
+          ),
+          if (onSeeMoreTap != null)
+            GestureDetector(
+              onTap: onSeeMoreTap,
+              child: Row(
+                children: [
+                  Text(
+                    '더보기',
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 12.w,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// 더보기 버튼 위젯 빌드
+  Widget _buildSeeMoreButton(BuildContext context) {
+    return GestureDetector(
+      onTap: onSeeMoreTap,
+      child: Container(
+        margin: EdgeInsets.all(16.w),
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        child: Center(
+          child: Text(
+            '더 많은 장소 보기',
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
