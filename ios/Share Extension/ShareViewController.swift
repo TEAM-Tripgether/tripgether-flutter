@@ -239,7 +239,7 @@ class ShareViewController: SLComposeServiceViewController {
     /// 사용자가 알림을 탭하면 앱이 실행됨
     private func sendLocalNotification() {
         let content = UNMutableNotificationContent()
-        content.title = "✓ TripTogether에 저장됨"
+        content.title = "✓ Tripgether에 저장됨"
         content.body = "탭하여 공유된 콘텐츠를 확인하세요"
         content.sound = .default
 

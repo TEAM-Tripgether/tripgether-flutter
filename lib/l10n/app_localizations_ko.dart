@@ -9,7 +9,7 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => 'TripTogether';
+  String get appTitle => 'Tripgether';
 
   @override
   String get appDescription => '여행 순간을 공유하고 현지 명소를 발견하세요';

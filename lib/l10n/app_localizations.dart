@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// 애플리케이션 이름
   ///
   /// In ko, this message translates to:
-  /// **'TripTogether'**
+  /// **'Tripgether'**
   String get appTitle;
 
   /// 앱 설명

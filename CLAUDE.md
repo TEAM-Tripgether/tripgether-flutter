@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-TripTogether is a Flutter mobile application focused on travel planning and collaboration. The project is in early development stage with a basic splash screen and home page structure.
+Tripgether is a Flutter mobile application focused on travel planning and collaboration. The project is in early development stage with a basic splash screen and home page structure.
 
 ## Technology Stack & Architecture
 
@@ -184,7 +184,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true, // 분할 화면 모드 지원
       builder: (context, child) {
         return MaterialApp(
-          title: 'TripTogether',
+          title: 'Tripgether',
           home: child,
         );
       },
