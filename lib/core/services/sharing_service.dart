@@ -272,6 +272,7 @@ class SharingService {
     }
   }
 
+
   /// 문자열 타입을 SharedMediaType으로 변환
   SharedMediaType _getMediaTypeFromString(String type) {
     switch (type) {
