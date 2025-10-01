@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../features/home/data/models/place_model.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// 저장된 장소 카드 위젯
 ///
@@ -159,24 +160,44 @@ class PlaceCard extends StatelessWidget {
 
   /// 추가 정보 위젯 (평점, 리뷰, 거리 등)
   Widget _buildAdditionalInfo() {
-    return Row(
-      children: [
-        // 평점
-        if (place.rating != null) ...[
-          Icon(Icons.star, size: 14.w, color: Colors.amber),
-          SizedBox(width: 2.w),
-          Text(
-            place.rating!.toStringAsFixed(1),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-            ),
-          ),
-          if (place.reviewCount != null) ...[
+    return Builder(
+      builder: (context) {
+        final l10n = AppLocalizations.of(context);
+
+        return Row(
+          children: [
+            // 평점
+            if (place.rating != null) ...[
+              Icon(Icons.star, size: 14.w, color: Colors.amber),
+              SizedBox(width: 2.w),
+              Text(
+                place.rating!.toStringAsFixed(1),
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+              if (place.reviewCount != null) ...[
+                Text(
+                  ' (${place.reviewCount})',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+              SizedBox(width: 12.w),
+            ],
+
+            // 거리
+            Icon(Icons.location_on, size: 14.w, color: Colors.grey[500]),
+            SizedBox(width: 2.w),
             Text(
-              ' (${place.reviewCount})',
+              place.distanceText,
               style: TextStyle(
                 fontFamily: 'Pretendard',
                 fontSize: 12.sp,
@@ -184,45 +205,31 @@ class PlaceCard extends StatelessWidget {
                 color: Colors.grey[600],
               ),
             ),
-          ],
-          SizedBox(width: 12.w),
-        ],
 
-        // 거리
-        Icon(Icons.location_on, size: 14.w, color: Colors.grey[500]),
-        SizedBox(width: 2.w),
-        Text(
-          place.distanceText,
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w400,
-            color: Colors.grey[600],
-          ),
-        ),
-
-        // 방문 여부 표시
-        if (place.isVisited) ...[
-          SizedBox(width: 12.w),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-            decoration: BoxDecoration(
-              color: Colors.green[50],
-              borderRadius: BorderRadius.circular(4.r),
-              border: Border.all(color: Colors.green[200]!, width: 0.5),
-            ),
-            child: Text(
-              '방문완료',
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.green[700],
+            // 방문 여부 표시
+            if (place.isVisited) ...[
+              SizedBox(width: 12.w),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                decoration: BoxDecoration(
+                  color: Colors.green[50],
+                  borderRadius: BorderRadius.circular(4.r),
+                  border: Border.all(color: Colors.green[200]!, width: 0.5),
+                ),
+                child: Text(
+                  l10n.placeVisited,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.green[700],
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
-      ],
+            ],
+          ],
+        );
+      },
     );
   }
 
@@ -355,6 +362,8 @@ class PlaceListSection extends StatelessWidget {
 
   /// 섹션 헤더 위젯 빌드
   Widget _buildSectionHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 16.w,
@@ -377,7 +386,7 @@ class PlaceListSection extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    '더보기',
+                    l10n.seeMore,
                     style: TextStyle(
                       fontFamily: 'Pretendard',
                       fontSize: 13.sp,
@@ -401,6 +410,8 @@ class PlaceListSection extends StatelessWidget {
 
   /// 더보기 버튼 위젯 빌드
   Widget _buildSeeMoreButton(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return GestureDetector(
       onTap: onSeeMoreTap,
       child: Container(
@@ -412,7 +423,7 @@ class PlaceListSection extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            '더 많은 장소 보기',
+            l10n.seeMorePlaces,
             style: TextStyle(
               fontFamily: 'Pretendard',
               fontSize: 14.sp,

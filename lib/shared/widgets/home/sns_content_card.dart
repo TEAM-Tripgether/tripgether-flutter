@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../features/home/data/models/sns_content_model.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// SNS 콘텐츠 카드 위젯
 ///
@@ -243,6 +244,8 @@ class SnsContentHorizontalList extends StatelessWidget {
 
   /// 섹션 헤더 위젯 빌드
   Widget _buildSectionHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Row(
@@ -263,7 +266,7 @@ class SnsContentHorizontalList extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    '더보기',
+                    l10n.seeMore,
                     style: TextStyle(
                       fontFamily: 'Pretendard',
                       fontSize: 13.sp,
