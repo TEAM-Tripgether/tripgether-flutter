@@ -216,4 +216,45 @@ class AppLocalizationsKo extends AppLocalizations {
   String fileCount(int count) {
     return '파일 $count';
   }
+
+  @override
+  String get snsContentDetail => '콘텐츠 상세';
+
+  @override
+  String get description => '설명';
+
+  @override
+  String get openOriginalContent => '원본 콘텐츠 보기';
+
+  @override
+  String get cannotOpenLink => '링크를 열 수 없습니다';
+
+  @override
+  String get linkOpenError => '링크 열기 중 오류가 발생했습니다';
+
+  @override
+  String get today => '오늘';
+
+  @override
+  String get yesterday => '어제';
+
+  @override
+  String daysAgo(int days) {
+    return '$days일 전';
+  }
+
+  @override
+  String weeksAgo(int weeks) {
+    return '$weeks주 전';
+  }
+
+  @override
+  String monthsAgo(int months) {
+    return '$months개월 전';
+  }
+
+  @override
+  String yearsAgo(int years) {
+    return '$years년 전';
+  }
 }

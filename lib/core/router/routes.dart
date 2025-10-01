@@ -24,6 +24,11 @@ class AppRoutes {
   static const String schedule = '/schedule';
   static const String myPage = '/my-page';
 
+  /// 홈 탭 하위 경로들
+  static const String snsContentsList = '/home/sns-contents';
+  static const String snsContentDetail = '/home/sns-contents/detail/:contentId';
+  static const String savedPlacesList = '/home/saved-places';
+
   /// 상세 화면 경로들
   static const String courseDetail = '/course-detail/:courseId';
   static const String placeDetail = '/place-detail/:placeId';

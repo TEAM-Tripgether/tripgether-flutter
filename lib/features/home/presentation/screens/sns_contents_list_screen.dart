@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/sns_content_model.dart';
 
@@ -108,19 +110,14 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.recentSnsContent),
-        elevation: 0,
-      ),
+      appBar: AppBar(title: Text(l10n.recentSnsContent), elevation: 0),
       body: Column(
         children: [
           // 필터 칩들
           _buildFilterChips(l10n),
 
           // 콘텐츠 그리드
-          Expanded(
-            child: _buildContentGrid(l10n),
-          ),
+          Expanded(child: _buildContentGrid(l10n)),
         ],
       ),
     );
@@ -141,7 +138,9 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
               label: Text(l10n.filterAll),
               selected: _selectedFilter == null,
               onSelected: (_) => _onFilterChanged(null),
-              selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+              selectedColor: Theme.of(
+                context,
+              ).primaryColor.withValues(alpha: 0.2),
             ),
           ),
           // YouTube 필터
@@ -216,7 +215,10 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
           mainAxisSpacing: 12.w,
           childAspectRatio: 0.75,
         ),
-        itemCount: _filteredContents.length + (_isLoading ? 2 : 0) + (!_hasMore ? 1 : 0),
+        itemCount:
+            _filteredContents.length +
+            (_isLoading ? 2 : 0) +
+            (!_hasMore ? 1 : 0),
         itemBuilder: (context, index) {
           // 로딩 인디케이터
           if (index >= _filteredContents.length) {
@@ -239,18 +241,26 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
           }
 
           // 콘텐츠 카드
-          return _buildContentCard(_filteredContents[index], l10n);
+          return _buildContentCard(_filteredContents[index], index, l10n);
         },
       ),
     );
   }
 
   /// 콘텐츠 카드 빌드
-  Widget _buildContentCard(SnsContent content, AppLocalizations l10n) {
+  Widget _buildContentCard(SnsContent content, int index, AppLocalizations l10n) {
     return GestureDetector(
       onTap: () {
-        // 콘텐츠 상세 화면으로 이동 또는 외부 링크 열기
-        debugPrint('콘텐츠 선택: ${content.title}');
+        // SNS 콘텐츠 상세 화면으로 네비게이션
+        // extra 파라미터로 전체 리스트와 현재 인덱스를 전달하여 가로 스와이프 네비게이션 지원
+        final detailPath = AppRoutes.snsContentDetail.replaceFirst(
+          ':contentId',
+          content.id,
+        );
+        context.go(detailPath, extra: {
+          'contents': _filteredContents,
+          'initialIndex': index,
+        });
       },
       child: Container(
         decoration: BoxDecoration(
@@ -271,7 +281,9 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(12.r),
+                  ),
                   child: CachedNetworkImage(
                     imageUrl: content.thumbnailUrl,
                     height: 140.h,
@@ -395,11 +407,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8.r),
       ),
-      child: Icon(
-        icon,
-        size: 18.w,
-        color: Colors.white,
-      ),
+      child: Icon(icon, size: 18.w, color: Colors.white),
     );
   }
 

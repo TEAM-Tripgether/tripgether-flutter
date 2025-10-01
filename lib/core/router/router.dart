@@ -7,6 +7,8 @@ import '../../shared/widgets/layout/bottom_navigation.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
+import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
+import '../../features/home/data/models/sns_content_model.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/schedule/presentation/screens/schedule_screen.dart';
@@ -75,6 +77,38 @@ class AppRouter {
               GoRoute(
                 path: 'sns-contents',
                 builder: (context, state) => const SnsContentsListScreen(),
+                routes: [
+                  // SNS 콘텐츠 상세 화면
+                  GoRoute(
+                    path: 'detail/:contentId',
+                    builder: (context, state) {
+                      final contentId = state.pathParameters['contentId']!;
+                      final extraData = state.extra;
+
+                      // extra가 Map<String, dynamic> 형태로 전달되었는지 확인
+                      if (extraData is Map<String, dynamic>) {
+                        final contents = extraData['contents'] as List<SnsContent>?;
+                        final initialIndex = extraData['initialIndex'] as int?;
+
+                        // 리스트와 인덱스가 모두 전달된 경우
+                        if (contents != null && initialIndex != null) {
+                          return SnsContentDetailScreen(
+                            contents: contents,
+                            initialIndex: initialIndex,
+                          );
+                        }
+                      }
+
+                      // Fallback: 더미 데이터로 단일 콘텐츠 표시
+                      // (직접 URL 접근 시나리오)
+                      final dummyContent = _findContentById(contentId);
+                      return SnsContentDetailScreen(
+                        contents: [dummyContent],
+                        initialIndex: 0,
+                      );
+                    },
+                  ),
+                ],
               ),
               // 저장한 장소 목록 화면
               GoRoute(
@@ -189,6 +223,28 @@ class AppRouter {
   static void _onBottomNavTap(BuildContext context, int index) {
     final String route = AppRoutes.bottomNavRoutes[index];
     context.go(route);
+  }
+
+  /// ID로 SNS 콘텐츠 찾기 헬퍼 함수
+  ///
+  /// 실제로는 Riverpod provider나 API에서 가져와야 하지만,
+  /// 현재는 더미 데이터를 사용합니다.
+  ///
+  /// [contentId] 콘텐츠 ID
+  /// Returns: 해당 ID의 SnsContent 객체
+  static SnsContent _findContentById(String contentId) {
+    // 더미 데이터에서 검색
+    final allContents = SnsContentDummyData.getSampleContents();
+    try {
+      return allContents.firstWhere((content) => content.id == contentId);
+    } catch (e) {
+      // 찾지 못한 경우 기본 더미 데이터 반환
+      return SnsContent.dummy(
+        id: contentId,
+        title: '콘텐츠를 찾을 수 없습니다',
+        source: SnsSource.youtube,
+      );
+    }
   }
 }
 

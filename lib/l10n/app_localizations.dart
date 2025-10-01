@@ -487,6 +487,72 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'파일 {count}'**
   String fileCount(int count);
+
+  /// SNS 콘텐츠 상세 화면 타이틀
+  ///
+  /// In ko, this message translates to:
+  /// **'콘텐츠 상세'**
+  String get snsContentDetail;
+
+  /// 설명 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'설명'**
+  String get description;
+
+  /// 외부 링크 열기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'원본 콘텐츠 보기'**
+  String get openOriginalContent;
+
+  /// 링크 열기 실패 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'링크를 열 수 없습니다'**
+  String get cannotOpenLink;
+
+  /// 링크 열기 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'링크 열기 중 오류가 발생했습니다'**
+  String get linkOpenError;
+
+  /// 오늘 날짜 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘'**
+  String get today;
+
+  /// 어제 날짜 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'어제'**
+  String get yesterday;
+
+  /// N일 전 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{days}일 전'**
+  String daysAgo(int days);
+
+  /// N주 전 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{weeks}주 전'**
+  String weeksAgo(int weeks);
+
+  /// N개월 전 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{months}개월 전'**
+  String monthsAgo(int months);
+
+  /// N년 전 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{years}년 전'**
+  String yearsAgo(int years);
 }
 
 class _AppLocalizationsDelegate

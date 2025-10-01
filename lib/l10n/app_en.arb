@@ -367,5 +367,84 @@
         "example": "1"
       }
     }
+  },
+
+  "snsContentDetail": "Content Detail",
+  "@snsContentDetail": {
+    "description": "SNS content detail screen title"
+  },
+
+  "description": "Description",
+  "@description": {
+    "description": "Description label"
+  },
+
+  "openOriginalContent": "View Original Content",
+  "@openOriginalContent": {
+    "description": "Open external link button"
+  },
+
+  "cannotOpenLink": "Cannot open link",
+  "@cannotOpenLink": {
+    "description": "Link open failure message"
+  },
+
+  "linkOpenError": "Error occurred while opening link",
+  "@linkOpenError": {
+    "description": "Link open error message"
+  },
+
+  "today": "Today",
+  "@today": {
+    "description": "Today date display"
+  },
+
+  "yesterday": "Yesterday",
+  "@yesterday": {
+    "description": "Yesterday date display"
+  },
+
+  "daysAgo": "{days} days ago",
+  "@daysAgo": {
+    "description": "N days ago display",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "weeksAgo": "{weeks} weeks ago",
+  "@weeksAgo": {
+    "description": "N weeks ago display",
+    "placeholders": {
+      "weeks": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "monthsAgo": "{months} months ago",
+  "@monthsAgo": {
+    "description": "N months ago display",
+    "placeholders": {
+      "months": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "yearsAgo": "{years} years ago",
+  "@yearsAgo": {
+    "description": "N years ago display",
+    "placeholders": {
+      "years": {
+        "type": "int",
+        "example": "1"
+      }
+    }
   }
 }

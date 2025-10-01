@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -129,9 +130,9 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       return leftAction;
     }
 
-    // 2. 뒤로가기 버튼을 강제로 표시하거나, Navigator에 이전 화면이 있는 경우
-    final shouldShowBackButton =
-        showBackButton ?? Navigator.of(context).canPop();
+    // 2. 뒤로가기 버튼을 강제로 표시하거나, GoRouter에 이전 화면이 있는 경우
+    // GoRouter 사용 시 context.canPop() 사용 (Navigator.canPop()과 다름)
+    final shouldShowBackButton = showBackButton ?? context.canPop();
 
     if (shouldShowBackButton) {
       return Semantics(
@@ -142,7 +143,13 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
             Icons.arrow_back_ios,
             size: 20.w, // ScreenUtil로 반응형 크기
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            // GoRouter 사용 시 context.pop() 사용
+            // 안전을 위해 canPop() 체크 후 pop 실행
+            if (context.canPop()) {
+              context.pop();
+            }
+          },
           tooltip: '뒤로가기', // 접근성을 위한 툴팁
         ),
       );

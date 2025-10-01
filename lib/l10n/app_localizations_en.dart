@@ -217,4 +217,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String fileCount(int count) {
     return 'Files $count';
   }
+
+  @override
+  String get snsContentDetail => 'Content Detail';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get openOriginalContent => 'View Original Content';
+
+  @override
+  String get cannotOpenLink => 'Cannot open link';
+
+  @override
+  String get linkOpenError => 'Error occurred while opening link';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String daysAgo(int days) {
+    return '$days days ago';
+  }
+
+  @override
+  String weeksAgo(int weeks) {
+    return '$weeks weeks ago';
+  }
+
+  @override
+  String monthsAgo(int months) {
+    return '$months months ago';
+  }
+
+  @override
+  String yearsAgo(int years) {
+    return '$years years ago';
+  }
 }
