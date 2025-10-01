@@ -127,6 +127,10 @@ class AppColors {
   static const Color divider = Color(0xFFE0E0E0);
   static const Color dividerLight = Color(0xFFF5F5F5);
 
+  /// Gradient Colors (그라데이션 색상)
+  /// 홈 화면 헤더 그라데이션용 중간 색상
+  static const Color gradientMid = Color(0xB28975C1); // 8975C1B2 (70% opacity)
+
   /// Extension method for Color opacity
   /// 색상의 투명도를 쉽게 조절할 수 있는 확장 메서드
   static Color withOpacity(Color color, double opacity) {
@@ -188,6 +192,13 @@ extension AppColorPalette on AppColors {
   static const List<Color> backgroundGradient = [
     AppColors.background,
     AppColors.surfaceVariant,
+  ];
+
+  /// 홈 헤더 그라데이션 (위에서 아래로: #664BAE → #8975C1B2 70% → #FFFFFF)
+  static const List<Color> homeHeaderGradient = [
+    AppColors.primary,        // #664BAE (0%)
+    AppColors.gradientMid,    // #8975C1B2 (70%)
+    Color(0xFFFFFFFF),        // #FFFFFF (100%)
   ];
 
   /// 소셜 로그인 버튼 색상

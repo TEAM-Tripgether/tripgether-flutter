@@ -28,33 +28,21 @@ class SectionDivider extends StatelessWidget {
   });
 
   /// 얇은 라인 구분선 생성자
-  const SectionDivider.thin({
-    super.key,
-    double? horizontalPadding,
-    Color? color,
-  })  : type = SectionDividerType.thin,
-        horizontalPadding = horizontalPadding,
-        height = null,
-        color = color;
+  const SectionDivider.thin({super.key, this.horizontalPadding, this.color})
+    : type = SectionDividerType.thin,
+      height = null;
 
   /// 두꺼운 배경 구분선 생성자
-  const SectionDivider.thick({
-    super.key,
-    double? height,
-    Color? color,
-  })  : type = SectionDividerType.thick,
-        horizontalPadding = null,
-        height = height,
-        color = color;
+  const SectionDivider.thick({super.key, this.height, this.color})
+    : type = SectionDividerType.thick,
+      horizontalPadding = null;
 
   @override
   Widget build(BuildContext context) {
     switch (type) {
       case SectionDividerType.thin:
         return Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding ?? 16.w,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding ?? 16.w),
           child: Divider(
             thickness: 1,
             height: 1,

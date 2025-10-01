@@ -243,6 +243,11 @@
     "description": "Search bar hint text"
   },
 
+  "clearInput": "Clear input",
+  "@clearInput": {
+    "description": "Search bar clear button tooltip"
+  },
+
   "recentSnsContent": "Recent SNS Content",
   "@recentSnsContent": {
     "description": "SNS content section title"

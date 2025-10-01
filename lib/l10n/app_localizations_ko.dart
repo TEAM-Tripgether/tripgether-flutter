@@ -152,6 +152,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get searchHint => '키워드·도시·장소를 검색해 보세요';
 
   @override
+  String get clearInput => '입력 내용 지우기';
+
+  @override
   String get recentSnsContent => '최근 SNS에서 본 콘텐츠';
 
   @override

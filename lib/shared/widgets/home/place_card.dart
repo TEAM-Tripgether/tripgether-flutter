@@ -18,15 +18,11 @@ class PlaceCard extends StatelessWidget {
   /// 이미지 탭 시 실행될 콜백
   final Function(int imageIndex)? onImageTap;
 
-  /// 즐겨찾기 버튼 탭 시 콜백
-  final VoidCallback? onFavoriteTap;
-
   const PlaceCard({
     super.key,
     required this.place,
     this.onTap,
     this.onImageTap,
-    this.onFavoriteTap,
   });
 
   @override
@@ -71,88 +67,63 @@ class PlaceCard extends StatelessWidget {
   Widget _buildPlaceInfo(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.w),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 장소 정보 (좌측)
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 장소명과 카테고리
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // 카테고리 이모지
-                    Text(
-                      place.category.emoji,
-                      style: TextStyle(fontSize: 16.sp),
-                    ),
-                    SizedBox(width: 6.w),
-                    // 장소명
-                    Expanded(
-                      child: Text(
-                        place.name,
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-
-                // 카테고리 및 업종
-                Text(
-                  place.category.displayName,
+          // 장소명과 카테고리
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // 카테고리 이모지
+              Text(place.category.emoji, style: TextStyle(fontSize: 16.sp)),
+              SizedBox(width: 6.w),
+              // 장소명
+              Expanded(
+                child: Text(
+                  place.name,
                   style: TextStyle(
                     fontFamily: 'Pretendard',
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).primaryColor,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
                   ),
-                ),
-                SizedBox(height: 4.h),
-
-                // 주소
-                Text(
-                  place.address,
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey[600],
-                  ),
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
+              ),
+            ],
+          ),
+          SizedBox(height: 4.h),
 
-                SizedBox(height: 8.h),
-
-                // 추가 정보 (평점, 리뷰, 거리)
-                _buildAdditionalInfo(),
-              ],
+          // 카테고리 및 업종
+          Text(
+            place.category.displayName,
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).primaryColor,
             ),
           ),
+          SizedBox(height: 4.h),
 
-          // 즐겨찾기 버튼 (우측)
-          IconButton(
-            onPressed: onFavoriteTap,
-            icon: Icon(
-              place.isFavorite ? Icons.bookmark : Icons.bookmark_border,
-              size: 24.w,
-              color: place.isFavorite
-                  ? Theme.of(context).primaryColor
-                  : Colors.grey[500],
+          // 주소
+          Text(
+            place.address,
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey[600],
             ),
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(minWidth: 32.w, minHeight: 32.w),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
+
+          SizedBox(height: 8.h),
+
+          // 추가 정보 (평점, 리뷰, 거리)
+          _buildAdditionalInfo(),
         ],
       ),
     );
@@ -343,10 +314,6 @@ class PlaceListSection extends StatelessWidget {
             onImageTap: (index) {
               // 이미지 상세 보기 또는 지도 화면으로 이동
               debugPrint('이미지 선택: ${place.name} - 이미지 $index');
-            },
-            onFavoriteTap: () {
-              // 즐겨찾기 토글
-              debugPrint('즐겨찾기 토글: ${place.name}');
             },
           ),
         ),

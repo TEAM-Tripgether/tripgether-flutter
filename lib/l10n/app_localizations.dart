@@ -380,6 +380,12 @@ abstract class AppLocalizations {
   /// **'키워드·도시·장소를 검색해 보세요'**
   String get searchHint;
 
+  /// 검색창 X 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'입력 내용 지우기'**
+  String get clearInput;
+
   /// SNS 콘텐츠 섹션 제목
   ///
   /// In ko, this message translates to:

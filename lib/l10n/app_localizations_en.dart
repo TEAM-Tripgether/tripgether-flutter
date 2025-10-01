@@ -153,6 +153,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchHint => 'Search keywords, cities, or places';
 
   @override
+  String get clearInput => 'Clear input';
+
+  @override
   String get recentSnsContent => 'Recent SNS Content';
 
   @override

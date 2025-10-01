@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../l10n/app_localizations.dart';
+import 'search_bar.dart';
 
 /// 홈 화면 상단 인사말 섹션 위젯
 ///
@@ -12,11 +15,7 @@ class GreetingSection extends StatelessWidget {
   /// 부제목 텍스트
   final String? subtitle;
 
-  const GreetingSection({
-    super.key,
-    required this.userName,
-    this.subtitle,
-  });
+  const GreetingSection({super.key, required this.userName, this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +87,9 @@ class GreetingSection extends StatelessWidget {
   }
 }
 
-/// 홈 화면 헤더 위젯 (인사말 전용)
+/// 홈 화면 헤더 위젯 (인사말 + 검색창)
 ///
-/// 인사말과 부제목을 표시하는 헤더
+/// 인사말, 부제목, 검색창을 포함하는 통합 헤더
 class HomeHeader extends StatelessWidget {
   /// 사용자 이름
   final String userName;
@@ -101,53 +100,87 @@ class HomeHeader extends StatelessWidget {
   /// 인사말 부제목 (국제화된)
   final String? greetingSubtitle;
 
+  /// 검색창 힌트 텍스트 (국제화된)
+  final String? searchHint;
+
+  /// 검색창 탭 시 콜백
+  final VoidCallback? onSearchTap;
+
   const HomeHeader({
     super.key,
     required this.userName,
     this.greeting,
     this.greetingSubtitle,
+    this.searchHint,
+    this.onSearchTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      // 전체 너비 명시적으로 지정
+      width: double.infinity,
+      // 그라데이션 배경 추가 (#664BAE → #8975C1B2 70% → #FFFFFF)
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: AppColorPalette.homeHeaderGradient,
+          stops: const [0.0, 0.7, 1.0], // 70% 지점에서 중간 색상
+        ),
+      ),
+      padding: EdgeInsets.only(
+        left: 16.w,
+        right: 16.w,
+        top: 24.h,
+        bottom: 16.h, // 검색창을 위한 하단 패딩 추가
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 인사말
+          // 인사말 (국제화 적용)
           Text(
-            greeting ?? _getGreetingText(),
+            greeting ?? l10n.greeting(userName),
             style: TextStyle(
               fontFamily: 'Pretendard',
               fontSize: 22.sp,
               fontWeight: FontWeight.w700,
-              color: Colors.black87,
+              color: Colors.white, // 그라데이션 배경에 맞춰 흰색으로 변경
             ),
           ),
           SizedBox(height: 2.h),
-          // 부제목
+          // 부제목 (국제화 적용)
           Text(
-            greetingSubtitle ?? _getSubtitleText(),
+            greetingSubtitle ?? l10n.greetingSubtitle,
             style: TextStyle(
               fontFamily: 'Pretendard',
               fontSize: 13.sp,
               fontWeight: FontWeight.w400,
-              color: Colors.grey[600],
+              color: Colors.white.withValues(alpha: 0.9), // 약간 투명한 흰색
             ),
+          ),
+
+          SizedBox(height: 16.h),
+
+          // 검색창 (그라데이션 배경 위에 표시)
+          TripSearchBar(
+            hintText: searchHint ?? l10n.searchHint,
+            readOnly: false, // 직접 입력 가능하도록 변경
+            onTap: onSearchTap,
+            onChanged: (text) {
+              // 텍스트 변경 시 (X 아이콘 표시 업데이트)
+              debugPrint('검색어 입력: $text');
+            },
+            onSubmitted: (text) {
+              // 검색 실행 (엔터 키 또는 검색 버튼 클릭)
+              debugPrint('검색 실행: $text');
+              // TODO: 검색 결과 화면으로 이동
+            },
           ),
         ],
       ),
     );
-  }
-
-  /// 시간대에 따른 인사말 생성
-  String _getGreetingText() {
-    return '안녕하세요, $userName님!';
-  }
-
-  /// 기본 부제목 텍스트 생성
-  String _getSubtitleText() {
-    return '현지의 하루, 어디로 떠날까요?';
   }
 }

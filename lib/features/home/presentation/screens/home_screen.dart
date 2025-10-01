@@ -7,7 +7,6 @@ import '../../../../core/services/sharing_service.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/home/greeting_section.dart';
-import '../../../../shared/widgets/home/search_bar.dart';
 import '../../../../shared/widgets/home/sns_content_card.dart';
 import '../../../../shared/widgets/home/place_card.dart';
 import '../../data/models/sns_content_model.dart';
@@ -320,35 +319,40 @@ class _HomeScreenState extends State<HomeScreen> {
             // 공유 데이터 표시 영역
             if (_currentSharedData != null) _buildSharedDataDisplay(),
 
-            // 인사말 섹션 (국제화 적용)
+            // 홈 헤더 (인사말 + 검색창 통합)
             HomeHeader(
               userName: 'Kevin',
               greeting: l10n.greeting('Kevin'),
               greetingSubtitle: l10n.greetingSubtitle,
-            ),
-
-            SizedBox(height: 10.h),
-
-            // 검색창 (국제화 적용)
-            TripSearchBar(
-              hintText: l10n.searchHint,
-              readOnly: true,
-              onTap: () {
+              searchHint: l10n.searchHint,
+              onSearchTap: () {
                 // 검색 화면으로 이동
                 debugPrint('검색창 클릭 - 검색 화면으로 이동');
               },
             ),
 
-            SizedBox(height: 40.h),
+            SizedBox(height: 32.h),
 
             // 최근 SNS에서 본 콘텐츠 섹션 (국제화 및 라우팅 적용)
-            // 처음 3개만 표시하여 정보 과부하 방지
+            // 처음 6개만 표시하여 정보 과부하 방지
             SnsContentHorizontalList(
               contents: _snsContents.take(6).toList(),
               title: l10n.recentSnsContent,
               onSeeMoreTap: () {
                 // SNS 콘텐츠 목록 화면으로 이동
                 context.push('/home/sns-contents');
+              },
+              onContentTap: (content, index) {
+                // 개별 콘텐츠 카드 탭 시 상세 화면으로 이동
+                // 전체 리스트와 현재 인덱스를 전달하여 가로 스와이프 네비게이션 지원
+                final detailPath = '/home/sns-contents/detail/${content.id}';
+                context.go(
+                  detailPath,
+                  extra: {
+                    'contents': _snsContents.take(6).toList(),
+                    'initialIndex': index,
+                  },
+                );
               },
             ),
 

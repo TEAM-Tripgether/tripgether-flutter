@@ -32,7 +32,12 @@ class LocalizationDemoScreen extends StatelessWidget {
             // ============================
             // 언어 정보 섹션
             // ============================
-            _buildLanguageInfoCard(context, currentLanguage, isKorean, isEnglish),
+            _buildLanguageInfoCard(
+              context,
+              currentLanguage,
+              isKorean,
+              isEnglish,
+            ),
 
             SizedBox(height: 24.h),
 
@@ -76,15 +81,19 @@ class LocalizationDemoScreen extends StatelessWidget {
           // 언어 변경 다이얼로그 표시 (실제 구현은 추후)
           _showLanguageChangeDialog(context);
         },
-        child: const Icon(Icons.language),
         tooltip: isKorean ? '언어 변경' : 'Change Language',
+        child: const Icon(Icons.language),
       ),
     );
   }
 
   /// 언어 정보를 표시하는 카드 위젯
-  Widget _buildLanguageInfoCard(BuildContext context, String currentLanguage,
-      bool isKorean, bool isEnglish) {
+  Widget _buildLanguageInfoCard(
+    BuildContext context,
+    String currentLanguage,
+    bool isKorean,
+    bool isEnglish,
+  ) {
     return Card(
       elevation: 4,
       child: Padding(
@@ -122,7 +131,9 @@ class LocalizationDemoScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.isKorean(context) ? '🧭 네비게이션 라벨' : '🧭 Navigation Labels',
+              AppStrings.isKorean(context)
+                  ? '🧭 네비게이션 라벨'
+                  : '🧭 Navigation Labels',
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
@@ -137,7 +148,10 @@ class LocalizationDemoScreen extends StatelessWidget {
                 _buildLabelChip(context, AppStrings.of(context).navHome),
                 _buildLabelChip(context, AppStrings.of(context).navMap),
                 _buildLabelChip(context, AppStrings.of(context).navSchedule),
-                _buildLabelChip(context, AppStrings.of(context).navCourseMarket),
+                _buildLabelChip(
+                  context,
+                  AppStrings.of(context).navCourseMarket,
+                ),
                 _buildLabelChip(context, AppStrings.of(context).navMyPage),
               ],
             ),
@@ -258,7 +272,9 @@ class LocalizationDemoScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.isKorean(context) ? '📅 날짜/시간 포맷' : '📅 Date/Time Formats',
+              AppStrings.isKorean(context)
+                  ? '📅 날짜/시간 포맷'
+                  : '📅 Date/Time Formats',
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
@@ -266,17 +282,25 @@ class LocalizationDemoScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 12.h),
-            _buildInfoRow('Date Format Pattern', AppStrings.getDateFormat(context)),
-            _buildInfoRow('Time Format Pattern', AppStrings.getTimeFormat(context)),
-            _buildInfoRow('Current Date Example',
-              AppStrings.isKorean(context)
-                ? '${now.year}년 ${now.month}월 ${now.day}일'
-                : '${_getMonthName(now.month)} ${now.day}, ${now.year}'
+            _buildInfoRow(
+              'Date Format Pattern',
+              AppStrings.getDateFormat(context),
             ),
-            _buildInfoRow('Current Time Example',
+            _buildInfoRow(
+              'Time Format Pattern',
+              AppStrings.getTimeFormat(context),
+            ),
+            _buildInfoRow(
+              'Current Date Example',
               AppStrings.isKorean(context)
-                ? '${now.hour > 12 ? '오후' : '오전'} ${now.hour > 12 ? now.hour - 12 : now.hour}:${now.minute.toString().padLeft(2, '0')}'
-                : '${now.hour > 12 ? now.hour - 12 : now.hour}:${now.minute.toString().padLeft(2, '0')} ${now.hour >= 12 ? 'PM' : 'AM'}'
+                  ? '${now.year}년 ${now.month}월 ${now.day}일'
+                  : '${_getMonthName(now.month)} ${now.day}, ${now.year}',
+            ),
+            _buildInfoRow(
+              'Current Time Example',
+              AppStrings.isKorean(context)
+                  ? '${now.hour > 12 ? '오후' : '오전'} ${now.hour > 12 ? now.hour - 12 : now.hour}:${now.minute.toString().padLeft(2, '0')}'
+                  : '${now.hour > 12 ? now.hour - 12 : now.hour}:${now.minute.toString().padLeft(2, '0')} ${now.hour >= 12 ? 'PM' : 'AM'}',
             ),
           ],
         ),
@@ -329,10 +353,7 @@ class LocalizationDemoScreen extends StatelessWidget {
           Expanded(
             child: Text(
               message,
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontFamily: 'Pretendard',
-              ),
+              style: TextStyle(fontSize: 14.sp, fontFamily: 'Pretendard'),
             ),
           ),
         ],
@@ -345,10 +366,7 @@ class LocalizationDemoScreen extends StatelessWidget {
     return Chip(
       label: Text(
         label,
-        style: TextStyle(
-          fontSize: 12.sp,
-          fontFamily: 'Pretendard',
-        ),
+        style: TextStyle(fontSize: 12.sp, fontFamily: 'Pretendard'),
       ),
       backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
       side: BorderSide(
@@ -368,8 +386,8 @@ class LocalizationDemoScreen extends StatelessWidget {
         ),
         content: Text(
           AppStrings.isKorean(context)
-            ? '언어 변경 기능은 추후 구현될 예정입니다.\n현재는 시스템 언어 설정을 따릅니다.'
-            : 'Language change feature will be implemented later.\nCurrently follows system language settings.',
+              ? '언어 변경 기능은 추후 구현될 예정입니다.\n현재는 시스템 언어 설정을 따릅니다.'
+              : 'Language change feature will be implemented later.\nCurrently follows system language settings.',
           style: TextStyle(fontFamily: 'Pretendard'),
         ),
         actions: [
@@ -388,8 +406,18 @@ class LocalizationDemoScreen extends StatelessWidget {
   /// 월 이름을 반환하는 헬퍼 메서드
   String _getMonthName(int month) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return months[month - 1];
   }

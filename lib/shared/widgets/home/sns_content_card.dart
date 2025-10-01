@@ -202,11 +202,15 @@ class SnsContentHorizontalList extends StatelessWidget {
   /// 더보기 버튼 탭 시 콜백
   final VoidCallback? onSeeMoreTap;
 
+  /// 개별 콘텐츠 카드 탭 시 콜백 (콘텐츠와 인덱스를 전달)
+  final void Function(SnsContent content, int index)? onContentTap;
+
   const SnsContentHorizontalList({
     super.key,
     required this.contents,
     this.title,
     this.onSeeMoreTap,
+    this.onContentTap,
   });
 
   @override
@@ -230,10 +234,12 @@ class SnsContentHorizontalList extends StatelessWidget {
             itemBuilder: (context, index) {
               return SnsContentCard(
                 content: contents[index],
-                onTap: () {
-                  // 콘텐츠 상세 화면으로 이동 또는 외부 링크 열기
-                  debugPrint('SNS 콘텐츠 선택: ${contents[index].title}');
-                },
+                onTap: onContentTap != null
+                    ? () => onContentTap!(contents[index], index)
+                    : () {
+                        // 기본 동작: 디버그 출력
+                        debugPrint('SNS 콘텐츠 선택: ${contents[index].title}');
+                      },
               );
             },
           ),
