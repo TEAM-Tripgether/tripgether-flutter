@@ -37,6 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _initializeSharingService() async {
     _sharingService = SharingService.instance;
 
+    // 공유 서비스 재개 (이전에 일시정지된 경우 재활성화)
+    _sharingService.resume();
+
     // 공유 서비스 초기화 (iOS UserDefaults 또는 Android Intent 데이터 확인)
     await _sharingService.initialize();
 
@@ -308,17 +311,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 32),
 
-                  // 디버깅용 버튼들
+                  // 디버깅용 버튼
                   if (const bool.fromEnvironment('dart.vm.product') ==
                       false) ...[
-                    ElevatedButton(
-                      onPressed: () async {
-                        // 수동으로 공유 데이터 확인 (iOS)
-                        await _sharingService.checkForData();
-                      },
-                      child: const Text('공유 데이터 확인 (iOS)'),
-                    ),
-                    const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () async {
                         // 모든 데이터 초기화 (테스트용)
@@ -343,6 +338,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     // 스트림 구독 해제
     _sharingSubscription?.cancel();
+
+    // SharingService 일시정지 (타이머 및 lifecycle 리스너 정리)
+    _sharingService.pause();
+
     super.dispose();
   }
 }

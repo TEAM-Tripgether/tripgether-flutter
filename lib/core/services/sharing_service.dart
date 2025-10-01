@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -102,11 +101,23 @@ class SharingService {
   // StreamSubscription<List<rsi.SharedMediaFile>>? _androidMediaSubscription;
   StreamSubscription<String>? _androidTextSubscription;
 
-  /// iOS 앱 라이프사이클 리스너
-  late final AppLifecycleListener _appLifecycleListener;
+  /// iOS 앱 라이프사이클 리스너 (nullable로 변경하여 재초기화 가능)
+  AppLifecycleListener? _appLifecycleListener;
 
-  /// 지연 체크 타이머
-  Timer? _delayedCheckTimer;
+  /// 지연 체크 타이머들 (정리가 필요한 모든 타이머 추적)
+  final List<Timer> _delayedTimers = [];
+
+  /// 디바운싱을 위한 타이머
+  Timer? _debounceTimer;
+
+  /// 서비스 일시정지 상태 (화면 전환 시 타이머 정지용)
+  bool _isPaused = false;
+
+  /// 마지막 체크 시간 (중복 호출 방지용)
+  DateTime? _lastCheckTime;
+
+  /// 최소 체크 간격 (1초)
+  static const Duration _minCheckInterval = Duration(seconds: 1);
 
   /// 공유 데이터 스트림 (외부에서 구독 가능)
   Stream<SharedData> get dataStream => _dataStreamController.stream;
@@ -284,7 +295,6 @@ class SharingService {
       debugPrint('[SharingService] ❌ 안드로이드 공유 데이터 처리 오류: $error');
     }
   }
-
 
   /// 문자열 타입을 SharedMediaType으로 변환
   SharedMediaType _getMediaTypeFromString(String type) {
@@ -546,18 +556,14 @@ class SharingService {
 
       _appLifecycleListener = AppLifecycleListener(
         onResume: () {
-          debugPrint('[SharingService] 앱이 포그라운드로 전환됨 - 자동 데이터 확인');
-          // 포그라운드 전환 시 자동으로 공유 데이터 확인
-          Future.delayed(const Duration(milliseconds: 500), () {
-            checkForData();
-          });
+          debugPrint('[SharingService] 앱이 포그라운드로 전환됨 - 디바운싱 체크 실행');
+          // 디바운싱으로 중복 호출 방지
+          _debouncedCheckForData();
         },
         onShow: () {
-          debugPrint('[SharingService] 앱이 표시됨 - 자동 데이터 확인');
-          // 앱이 표시될 때도 체크
-          Future.delayed(const Duration(milliseconds: 300), () {
-            checkForData();
-          });
+          debugPrint('[SharingService] 앱이 표시됨 - 디바운싱 체크 실행');
+          // 디바운싱으로 중복 호출 방지
+          _debouncedCheckForData();
         },
       );
 
@@ -579,22 +585,83 @@ class SharingService {
       final delays = [1000, 3000, 5000];
 
       for (int i = 0; i < delays.length; i++) {
-        Timer(Duration(milliseconds: delays[i]), () {
-          debugPrint('[SharingService] 지연 체크 실행 (${delays[i]}ms 후)');
-          checkForData();
+        final timer = Timer(Duration(milliseconds: delays[i]), () {
+          // 일시정지 상태가 아닐 때만 실행
+          if (!_isPaused) {
+            debugPrint(
+              '[SharingService] 지연 체크 실행 (${delays[i]}ms 후) - 디바운싱 적용',
+            );
+            // 디바운싱으로 중복 호출 방지
+            _debouncedCheckForData();
+          }
         });
+
+        // 타이머를 목록에 추가하여 추적
+        _delayedTimers.add(timer);
       }
 
-      debugPrint('[SharingService] ✅ 지연 체크 타이머 설정 완료');
+      debugPrint('[SharingService] ✅ 지연 체크 타이머 ${delays.length}개 설정 완료');
     } catch (error) {
       debugPrint('[SharingService] ❌ 지연 체크 타이머 설정 오류: $error');
+    }
+  }
+
+  /// 디바운싱된 공유 데이터 확인
+  /// 중복 호출을 방지하고 효율적으로 데이터를 체크합니다
+  void _debouncedCheckForData() {
+    if (!Platform.isIOS || _isPaused) return;
+
+    try {
+      debugPrint('[SharingService] 디바운싱 체크 요청됨');
+
+      // 기존 디바운스 타이머 취소
+      _debounceTimer?.cancel();
+
+      // 새 타이머로 1초 후 실행 (여러 호출을 하나로 합침)
+      _debounceTimer = Timer(const Duration(seconds: 1), () {
+        // 일시정지 상태가 아닐 때만 실행
+        if (!_isPaused) {
+          _performCheckIfNeeded();
+        }
+      });
+
+      debugPrint('[SharingService] 디바운스 타이머 설정됨 (1초 후 실행)');
+    } catch (error) {
+      debugPrint('[SharingService] 디바운싱 설정 오류: $error');
+    }
+  }
+
+  /// 필요한 경우에만 실제 데이터 확인 수행
+  /// 마지막 체크로부터 최소 간격이 지났을 때만 실행
+  Future<void> _performCheckIfNeeded() async {
+    if (!Platform.isIOS || _isPaused) return;
+
+    try {
+      final now = DateTime.now();
+
+      // 마지막 체크로부터 최소 간격 확인
+      if (_lastCheckTime != null &&
+          now.difference(_lastCheckTime!) < _minCheckInterval) {
+        debugPrint(
+          '[SharingService] 중복 체크 방지: 마지막 체크로부터 ${now.difference(_lastCheckTime!).inMilliseconds}ms 경과 (최소 ${_minCheckInterval.inMilliseconds}ms 필요)',
+        );
+        return;
+      }
+
+      // 마지막 체크 시간 업데이트
+      _lastCheckTime = now;
+
+      debugPrint('[SharingService] 실제 데이터 체크 수행');
+      await checkForData();
+    } catch (error) {
+      debugPrint('[SharingService] 조건부 체크 수행 오류: $error');
     }
   }
 
   /// 수동으로 공유 데이터 확인
   /// 앱이 포그라운드로 돌아오거나 사용자가 새로고침할 때 호출
   Future<void> checkForData() async {
-    if (!Platform.isIOS) return;
+    if (!Platform.isIOS || _isPaused) return;
 
     try {
       debugPrint('[SharingService] 데이터 확인 시작 (자동/수동)');
@@ -646,6 +713,60 @@ class SharingService {
     }
   }
 
+  /// 서비스 일시정지 (화면에서 벗어날 때 호출)
+  /// 모든 타이머와 lifecycle 리스너를 정지하여 리소스 절약
+  void pause() {
+    try {
+      debugPrint('[SharingService] 서비스 일시정지 시작');
+
+      _isPaused = true;
+
+      // 모든 지연 타이머 정리
+      for (final timer in _delayedTimers) {
+        timer.cancel();
+      }
+      _delayedTimers.clear();
+
+      // 디바운스 타이머 정리
+      _debounceTimer?.cancel();
+      _debounceTimer = null;
+
+      // iOS 앱 라이프사이클 리스너 정리
+      if (Platform.isIOS && _appLifecycleListener != null) {
+        _appLifecycleListener!.dispose();
+        _appLifecycleListener = null;
+      }
+
+      debugPrint(
+        '[SharingService] ✅ 서비스 일시정지 완료 (타이머 ${_delayedTimers.length}개 정리됨)',
+      );
+    } catch (error) {
+      debugPrint('[SharingService] ❌ 서비스 일시정지 오류: $error');
+    }
+  }
+
+  /// 서비스 재개 (화면으로 돌아올 때 호출)
+  /// 일시정지된 기능들을 다시 활성화
+  void resume() {
+    try {
+      debugPrint('[SharingService] 서비스 재개 시작');
+
+      _isPaused = false;
+
+      // iOS에서만 라이프사이클 리스너 재설정
+      if (Platform.isIOS && _appLifecycleListener == null) {
+        _setupAppLifecycleListener();
+
+        // 재개 시 즉시 한 번 체크
+        _debouncedCheckForData();
+      }
+
+      debugPrint('[SharingService] ✅ 서비스 재개 완료');
+    } catch (error) {
+      debugPrint('[SharingService] ❌ 서비스 재개 오류: $error');
+    }
+  }
+
   /// 서비스 종료 및 리소스 정리
   void dispose() {
     debugPrint('[SharingService] 서비스 종료 시작');
@@ -654,13 +775,20 @@ class SharingService {
     // _androidMediaSubscription?.cancel();
     _androidTextSubscription?.cancel();
 
-    // iOS 타이머 정리
-    _delayedCheckTimer?.cancel();
+    // 모든 지연 타이머 정리
+    for (final timer in _delayedTimers) {
+      timer.cancel();
+    }
+    _delayedTimers.clear();
+
+    // 디바운스 타이머 정리
+    _debounceTimer?.cancel();
 
     // iOS 앱 라이프사이클 리스너 정리
-    if (Platform.isIOS) {
+    if (Platform.isIOS && _appLifecycleListener != null) {
       try {
-        _appLifecycleListener.dispose();
+        _appLifecycleListener!.dispose();
+        _appLifecycleListener = null;
         debugPrint('[SharingService] iOS 라이프사이클 리스너 정리 완료');
       } catch (e) {
         debugPrint('[SharingService] iOS 라이프사이클 리스너 정리 오류: $e');
@@ -669,6 +797,7 @@ class SharingService {
 
     _dataStreamController.close();
     _currentSharedData = null;
+    _isPaused = true;
 
     debugPrint('[SharingService] 서비스 종료 완료');
   }
