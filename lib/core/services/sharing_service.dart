@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 /// 공유된 미디어 파일의 타입을 나타내는 열거형
 enum SharedMediaType { image, video, file, text, url }
@@ -101,6 +102,12 @@ class SharingService {
   // StreamSubscription<List<rsi.SharedMediaFile>>? _androidMediaSubscription;
   StreamSubscription<String>? _androidTextSubscription;
 
+  /// iOS 앱 라이프사이클 리스너
+  late final AppLifecycleListener _appLifecycleListener;
+
+  /// 지연 체크 타이머
+  Timer? _delayedCheckTimer;
+
   /// 공유 데이터 스트림 (외부에서 구독 가능)
   Stream<SharedData> get dataStream => _dataStreamController.stream;
 
@@ -116,6 +123,12 @@ class SharingService {
       if (Platform.isIOS) {
         // iOS: UserDefaults를 통한 데이터 처리
         await _processInitialData();
+
+        // iOS: 앱 라이프사이클 리스너 추가 (포그라운드 전환 시 자동 체크)
+        _setupAppLifecycleListener();
+
+        // iOS: 추가적인 지연 체크 (Flutter 초기화 완료 후)
+        _scheduleDelayedCheck();
       } else if (Platform.isAndroid) {
         // Android: MethodChannel을 통한 Intent 데이터 수신
         await _initializeAndroidMethodChannel();
@@ -523,13 +536,68 @@ class SharingService {
     return SharedMediaType.file;
   }
 
+  /// iOS 앱 라이프사이클 리스너 설정
+  /// 앱이 포그라운드로 전환될 때마다 자동으로 공유 데이터 확인
+  void _setupAppLifecycleListener() {
+    if (!Platform.isIOS) return;
+
+    try {
+      debugPrint('[SharingService] iOS 앱 라이프사이클 리스너 설정');
+
+      _appLifecycleListener = AppLifecycleListener(
+        onResume: () {
+          debugPrint('[SharingService] 앱이 포그라운드로 전환됨 - 자동 데이터 확인');
+          // 포그라운드 전환 시 자동으로 공유 데이터 확인
+          Future.delayed(const Duration(milliseconds: 500), () {
+            checkForData();
+          });
+        },
+        onShow: () {
+          debugPrint('[SharingService] 앱이 표시됨 - 자동 데이터 확인');
+          // 앱이 표시될 때도 체크
+          Future.delayed(const Duration(milliseconds: 300), () {
+            checkForData();
+          });
+        },
+      );
+
+      debugPrint('[SharingService] ✅ iOS 앱 라이프사이클 리스너 설정 완료');
+    } catch (error) {
+      debugPrint('[SharingService] ❌ 앱 라이프사이클 리스너 설정 오류: $error');
+    }
+  }
+
+  /// Flutter 초기화 완료 후 지연 체크 스케줄링
+  /// 앱 시작 직후에는 데이터가 감지되지 않을 수 있으므로 추가 체크
+  void _scheduleDelayedCheck() {
+    if (!Platform.isIOS) return;
+
+    try {
+      debugPrint('[SharingService] 지연 체크 타이머 설정');
+
+      // 1초, 3초, 5초 후에 추가로 체크
+      final delays = [1000, 3000, 5000];
+
+      for (int i = 0; i < delays.length; i++) {
+        Timer(Duration(milliseconds: delays[i]), () {
+          debugPrint('[SharingService] 지연 체크 실행 (${delays[i]}ms 후)');
+          checkForData();
+        });
+      }
+
+      debugPrint('[SharingService] ✅ 지연 체크 타이머 설정 완료');
+    } catch (error) {
+      debugPrint('[SharingService] ❌ 지연 체크 타이머 설정 오류: $error');
+    }
+  }
+
   /// 수동으로 공유 데이터 확인
   /// 앱이 포그라운드로 돌아오거나 사용자가 새로고침할 때 호출
   Future<void> checkForData() async {
     if (!Platform.isIOS) return;
 
     try {
-      debugPrint('[SharingService] 수동 데이터 확인 시작');
+      debugPrint('[SharingService] 데이터 확인 시작 (자동/수동)');
 
       // iOS UserDefaults에서 공유 데이터 읽기 시도
       final result = await _channel.invokeMethod('getSharedData');
@@ -539,15 +607,15 @@ class SharingService {
         // 데이터 처리 시도
         final success = await _processSharedData(result);
         if (success) {
-          debugPrint('[SharingService] ✅ 수동 데이터 확인 처리 성공');
+          debugPrint('[SharingService] ✅ 데이터 확인 처리 성공');
         } else {
-          debugPrint('[SharingService] ❌ 수동 데이터 확인 처리 실패');
+          debugPrint('[SharingService] ❌ 데이터 확인 처리 실패');
         }
       } else {
         debugPrint('[SharingService] 새로운 공유 데이터 없음');
       }
     } catch (error) {
-      debugPrint('[SharingService] 수동 데이터 확인 오류: $error');
+      debugPrint('[SharingService] 데이터 확인 오류: $error');
     }
   }
 
@@ -585,6 +653,19 @@ class SharingService {
     // 안드로이드 스트림 구독 해제 (현재 비활성화)
     // _androidMediaSubscription?.cancel();
     _androidTextSubscription?.cancel();
+
+    // iOS 타이머 정리
+    _delayedCheckTimer?.cancel();
+
+    // iOS 앱 라이프사이클 리스너 정리
+    if (Platform.isIOS) {
+      try {
+        _appLifecycleListener.dispose();
+        debugPrint('[SharingService] iOS 라이프사이클 리스너 정리 완료');
+      } catch (e) {
+        debugPrint('[SharingService] iOS 라이프사이클 리스너 정리 오류: $e');
+      }
+    }
 
     _dataStreamController.close();
     _currentSharedData = null;
