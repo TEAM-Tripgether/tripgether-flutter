@@ -182,6 +182,26 @@
     "description": "Language setting"
   },
 
+  "languageSelection": "Language Selection",
+  "@languageSelection": {
+    "description": "Language selection screen title"
+  },
+
+  "korean": "한국어",
+  "@korean": {
+    "description": "Korean language"
+  },
+
+  "english": "English",
+  "@english": {
+    "description": "English language"
+  },
+
+  "currentLanguage": "Current Language",
+  "@currentLanguage": {
+    "description": "Currently selected language"
+  },
+
   "theme": "Theme",
   "@theme": {
     "description": "Theme setting"
@@ -451,5 +471,20 @@
         "example": "1"
       }
     }
+  },
+
+  "goToOriginalPost": "Go to original post",
+  "@goToOriginalPost": {
+    "description": "External link button for SNS post"
+  },
+
+  "aiContentSummary": "AI Content Summary",
+  "@aiContentSummary": {
+    "description": "AI-generated content summary tag"
+  },
+
+  "share": "Share",
+  "@share": {
+    "description": "Share button tooltip"
   }
 }

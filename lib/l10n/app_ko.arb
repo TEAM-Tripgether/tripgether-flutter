@@ -27,9 +27,9 @@
     "description": "일정 탭 라벨"
   },
 
-  "navCourseMarket": "코스 마켓",
+  "navCourseMarket": "코스마켓",
   "@navCourseMarket": {
-    "description": "코스 마켓 탭 라벨"
+    "description": "코스마켓 탭 라벨"
   },
 
   "navMyPage": "마이페이지",
@@ -180,6 +180,26 @@
   "language": "언어",
   "@language": {
     "description": "언어 설정"
+  },
+
+  "languageSelection": "언어 선택",
+  "@languageSelection": {
+    "description": "언어 선택 화면 제목"
+  },
+
+  "korean": "한국어",
+  "@korean": {
+    "description": "한국어"
+  },
+
+  "english": "English",
+  "@english": {
+    "description": "영어"
+  },
+
+  "currentLanguage": "현재 언어",
+  "@currentLanguage": {
+    "description": "현재 선택된 언어"
   },
 
   "theme": "테마",
@@ -451,5 +471,20 @@
         "example": "1"
       }
     }
+  },
+
+  "goToOriginalPost": "게시물 바로가기",
+  "@goToOriginalPost": {
+    "description": "SNS 게시물 외부 링크 버튼"
+  },
+
+  "aiContentSummary": "AI 콘텐츠 요약",
+  "@aiContentSummary": {
+    "description": "AI가 생성한 콘텐츠 요약 태그"
+  },
+
+  "share": "공유",
+  "@share": {
+    "description": "공유 버튼 툴팁"
   }
 }

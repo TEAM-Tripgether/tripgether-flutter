@@ -42,7 +42,7 @@ class NavigationIcons {
   static const String homeActive = '$_basePath/home_active.svg';
   static const String homeInactive = '$_basePath/home_inactive.svg';
 
-  // 코스 마켓 탭 아이콘
+  // 코스마켓 탭 아이콘
   static const String courseMarketActive =
       '$_basePath/course_market_active.svg';
   static const String courseMarketInactive =

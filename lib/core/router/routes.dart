@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
+
 /// 앱 내 모든 라우트 경로를 관리하는 상수 클래스
 ///
 /// GoRouter에서 사용되는 라우트 경로들을 중앙에서 관리하여
@@ -36,7 +39,6 @@ class AppRoutes {
   static const String profileEdit = '/profile-edit';
   static const String settings = '/settings';
 
-
   /// 모든 바텀 네비게이션 탭의 경로를 리스트로 반환
   /// 탭 인덱스와 경로를 매핑할 때 사용
   static List<String> get bottomNavRoutes => [
@@ -47,9 +49,20 @@ class AppRoutes {
     myPage,
   ];
 
-  /// 바텀 네비게이션 탭의 라벨들
+  /// 바텀 네비게이션 탭의 라벨들 (국제화 적용)
   /// UI에서 탭 제목을 표시할 때 사용
-  static List<String> get tabLabels => ['홈', '코스마켓', '지도', '일정', '마이페이지'];
+  ///
+  /// 사용 예: `AppRoutes.getTabLabels(context)`
+  static List<String> getTabLabels(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      l10n.navHome,
+      l10n.navCourseMarket,
+      l10n.navMap,
+      l10n.navSchedule,
+      l10n.navMyPage,
+    ];
+  }
 
   /// 인증이 필요한 경로들
   /// route_guards.dart에서 사용
@@ -78,7 +91,7 @@ class NavigationIcons {
   static const String homeActive = '$_basePath/home_active.svg';
   static const String homeInactive = '$_basePath/home_inactive.svg';
 
-  // 코스 마켓 탭 아이콘
+  // 코스마켓 탭 아이콘
   static const String courseMarketActive =
       '$_basePath/course_market_active.svg';
   static const String courseMarketInactive =

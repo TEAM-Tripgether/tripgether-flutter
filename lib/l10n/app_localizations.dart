@@ -128,10 +128,10 @@ abstract class AppLocalizations {
   /// **'일정'**
   String get navSchedule;
 
-  /// 코스 마켓 탭 라벨
+  /// 코스마켓 탭 라벨
   ///
   /// In ko, this message translates to:
-  /// **'코스 마켓'**
+  /// **'코스마켓'**
   String get navCourseMarket;
 
   /// 마이페이지 탭 라벨
@@ -313,6 +313,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'언어'**
   String get language;
+
+  /// 언어 선택 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'언어 선택'**
+  String get languageSelection;
+
+  /// 한국어
+  ///
+  /// In ko, this message translates to:
+  /// **'한국어'**
+  String get korean;
+
+  /// 영어
+  ///
+  /// In ko, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// 현재 선택된 언어
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 언어'**
+  String get currentLanguage;
 
   /// 테마 설정
   ///
@@ -559,6 +583,24 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'{years}년 전'**
   String yearsAgo(int years);
+
+  /// SNS 게시물 외부 링크 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'게시물 바로가기'**
+  String get goToOriginalPost;
+
+  /// AI가 생성한 콘텐츠 요약 태그
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 콘텐츠 요약'**
+  String get aiContentSummary;
+
+  /// 공유 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'공유'**
+  String get share;
 }
 
 class _AppLocalizationsDelegate

@@ -118,6 +118,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
+  String get languageSelection => 'Language Selection';
+
+  @override
+  String get korean => '한국어';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get currentLanguage => 'Current Language';
+
+  @override
   String get theme => 'Theme';
 
   @override
@@ -261,4 +273,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String yearsAgo(int years) {
     return '$years years ago';
   }
+
+  @override
+  String get goToOriginalPost => 'Go to original post';
+
+  @override
+  String get aiContentSummary => 'AI Content Summary';
+
+  @override
+  String get share => 'Share';
 }

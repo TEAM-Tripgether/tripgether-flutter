@@ -62,7 +62,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
               // TODO: 공유 기능 구현
               debugPrint('공유 버튼 클릭');
             },
-            tooltip: '공유',
+            tooltip: l10n.share,
           ),
           SizedBox(width: 8.w),
         ],
@@ -103,7 +103,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 채널 정보 및 바로가기
-                _buildChannelInfo(context, content),
+                _buildChannelInfo(context, content, l10n),
 
                 SizedBox(height: 16.h),
 
@@ -113,7 +113,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
                 SizedBox(height: 12.h),
 
                 // 카테고리 태그
-                _buildCategoryTag(context),
+                _buildCategoryTag(context, l10n),
 
                 SizedBox(height: 16.h),
 
@@ -206,7 +206,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
   }
 
   /// 채널 정보 및 바로가기 링크
-  Widget _buildChannelInfo(BuildContext context, SnsContent content) {
+  Widget _buildChannelInfo(
+    BuildContext context,
+    SnsContent content,
+    AppLocalizations l10n,
+  ) {
     return Row(
       children: [
         // 플랫폼 아이콘
@@ -239,7 +243,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
               ),
               SizedBox(width: 4.w),
               Text(
-                '게시물 바로가기',
+                l10n.goToOriginalPost,
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontSize: 13.sp,
@@ -296,13 +300,13 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
   }
 
   /// 카테고리 태그
-  Widget _buildCategoryTag(BuildContext context) {
+  Widget _buildCategoryTag(BuildContext context, AppLocalizations l10n) {
     return Row(
       children: [
         Icon(Icons.label_outline, size: 16.w, color: Colors.grey[600]),
         SizedBox(width: 4.w),
         Text(
-          'AI 콘텐츠 요약',
+          l10n.aiContentSummary,
           style: TextStyle(
             fontFamily: 'Pretendard',
             fontSize: 13.sp,

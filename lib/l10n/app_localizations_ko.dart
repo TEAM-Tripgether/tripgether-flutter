@@ -24,7 +24,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get navSchedule => '일정';
 
   @override
-  String get navCourseMarket => '코스 마켓';
+  String get navCourseMarket => '코스마켓';
 
   @override
   String get navMyPage => '마이페이지';
@@ -115,6 +115,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get language => '언어';
+
+  @override
+  String get languageSelection => '언어 선택';
+
+  @override
+  String get korean => '한국어';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get currentLanguage => '현재 언어';
 
   @override
   String get theme => '테마';
@@ -260,4 +272,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String yearsAgo(int years) {
     return '$years년 전';
   }
+
+  @override
+  String get goToOriginalPost => '게시물 바로가기';
+
+  @override
+  String get aiContentSummary => 'AI 콘텐츠 요약';
+
+  @override
+  String get share => '공유';
 }

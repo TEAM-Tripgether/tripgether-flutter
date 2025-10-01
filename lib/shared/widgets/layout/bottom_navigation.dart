@@ -45,7 +45,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(
-              AppRoutes.tabLabels.length,
+              AppRoutes.getTabLabels(context).length,
               (index) => _buildNavItem(context, index),
             ),
           ),
@@ -113,14 +113,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  /// 탭 라벨을 빌드하는 위젯
+  /// 탭 라벨을 빌드하는 위젯 (국제화 적용)
   ///
-  /// [context] BuildContext - 테마 접근용
+  /// [context] BuildContext - 테마 접근 및 국제화용
   /// [index] 탭 인덱스
   /// [isSelected] 선택 여부 (텍스트 스타일 결정)
   Widget _buildLabel(BuildContext context, int index, bool isSelected) {
     return Text(
-      AppRoutes.tabLabels[index],
+      AppRoutes.getTabLabels(context)[index],
       style: TextStyle(
         fontSize: 10.sp, // 반응형 폰트 크기
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,

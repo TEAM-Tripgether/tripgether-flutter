@@ -87,7 +87,8 @@ class AppRouter {
 
                       // extra가 Map<String, dynamic> 형태로 전달되었는지 확인
                       if (extraData is Map<String, dynamic>) {
-                        final contents = extraData['contents'] as List<SnsContent>?;
+                        final contents =
+                            extraData['contents'] as List<SnsContent>?;
                         final initialIndex = extraData['initialIndex'] as int?;
 
                         // 리스트와 인덱스가 모두 전달된 경우
@@ -118,7 +119,7 @@ class AppRouter {
             ],
           ),
 
-          /// 코스 마켓 탭 (인덱스: 1)
+          /// 코스마켓 탭 (인덱스: 1)
           /// 여행 코스 리스트와 상세 정보를 제공하는 마켓플레이스
           GoRoute(
             path: AppRoutes.courseMarket,
@@ -198,7 +199,6 @@ class AppRouter {
           ),
         ],
       ),
-
     ],
   );
 
