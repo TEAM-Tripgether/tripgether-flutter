@@ -104,20 +104,21 @@ class SharingService {
   /// iOS 앱 라이프사이클 리스너 (nullable로 변경하여 재초기화 가능)
   AppLifecycleListener? _appLifecycleListener;
 
-  /// 지연 체크 타이머들 (정리가 필요한 모든 타이머 추적)
-  final List<Timer> _delayedTimers = [];
-
-  /// 디바운싱을 위한 타이머
-  Timer? _debounceTimer;
-
   /// 서비스 일시정지 상태 (화면 전환 시 타이머 정지용)
   bool _isPaused = false;
 
-  /// 마지막 체크 시간 (중복 호출 방지용)
-  DateTime? _lastCheckTime;
+  /// 마지막 처리된 데이터의 해시 (중복 처리 방지용)
+  String? _lastProcessedDataHash;
 
-  /// 최소 체크 간격 (1초)
-  static const Duration _minCheckInterval = Duration(seconds: 1);
+  /// 라이프사이클 이벤트 디바운싱 타이머
+  /// iOS의 onShow 이벤트가 5번 연속 발생하는 문제를 해결하기 위해
+  /// 300ms 내의 여러 호출을 하나로 묶어서 처리
+  Timer? _lifecycleDebounceTimer;
+
+  /// 디바운싱 진행 중 플래그
+  /// true일 때는 새로운 라이프사이클 이벤트를 무시하여
+  /// 타이머 재설정 없이 첫 이벤트 기준으로 정확히 300ms 후 실행
+  bool _isDebouncing = false;
 
   /// 공유 데이터 스트림 (외부에서 구독 가능)
   Stream<SharedData> get dataStream => _dataStreamController.stream;
@@ -132,14 +133,11 @@ class SharingService {
       debugPrint('[SharingService] 공유 서비스 초기화 시작');
 
       if (Platform.isIOS) {
-        // iOS: UserDefaults를 통한 데이터 처리
+        // iOS: UserDefaults를 통한 데이터 처리 (즉시 처리)
         await _processInitialData();
 
-        // iOS: 앱 라이프사이클 리스너 추가 (포그라운드 전환 시 자동 체크)
+        // iOS: 앱 라이프사이클 리스너 추가 (포그라운드 전환 시 즉시 체크)
         _setupAppLifecycleListener();
-
-        // iOS: 추가적인 지연 체크 (Flutter 초기화 완료 후)
-        _scheduleDelayedCheck();
       } else if (Platform.isAndroid) {
         // Android: MethodChannel을 통한 Intent 데이터 수신
         await _initializeAndroidMethodChannel();
@@ -350,6 +348,14 @@ class SharingService {
     }
   }
 
+  /// 데이터 해시 계산 (중복 체크용)
+  /// 동일한 데이터가 여러 번 처리되는 것을 방지
+  String _calculateDataHash(Map<String, dynamic> data) {
+    // 데이터 전체를 문자열로 변환하여 해시코드 생성
+    final dataStr = data.toString();
+    return dataStr.hashCode.toString();
+  }
+
   /// 공유 데이터 처리
   /// [data] 처리할 데이터 (보통 Map String, dynamic )
   /// Returns: 처리 성공 여부
@@ -372,6 +378,21 @@ class SharingService {
       }
 
       debugPrint('[SharingService] 변환된 데이터: $processedData');
+
+      // 데이터 해시 계산하여 중복 확인
+      final dataHash = _calculateDataHash(processedData);
+      debugPrint('[SharingService] 데이터 해시: $dataHash');
+
+      if (_lastProcessedDataHash == dataHash) {
+        debugPrint(
+          '[SharingService] ⚠️ 중복 데이터 감지 - 이미 처리됨 (해시: $dataHash)',
+        );
+        return false; // 중복 데이터이므로 처리하지 않음
+      }
+
+      // 새로운 데이터이므로 해시 저장
+      _lastProcessedDataHash = dataHash;
+      debugPrint('[SharingService] ✅ 새로운 데이터 확인 - 처리 시작');
       final List<String> sharedTexts = [];
       final List<SharedMediaFile> sharedFiles = [];
 
@@ -547,7 +568,13 @@ class SharingService {
   }
 
   /// iOS 앱 라이프사이클 리스너 설정
-  /// 앱이 포그라운드로 전환될 때마다 자동으로 공유 데이터 확인
+  /// 앱이 포그라운드로 전환될 때 공유 데이터 확인
+  ///
+  /// **디바운싱 전략**:
+  /// - iOS의 onShow 이벤트는 5번 연속 발생하는 특성이 있음
+  /// - 300ms 짧은 디바운싱으로 여러 이벤트를 하나로 묶어서 처리
+  /// - 사용자는 300ms 지연을 전혀 느끼지 못함 (즉시 반응으로 인식)
+  /// - 해시 기반 중복 방지로 동일 데이터는 자동 필터링됨
   void _setupAppLifecycleListener() {
     if (!Platform.isIOS) return;
 
@@ -555,16 +582,8 @@ class SharingService {
       debugPrint('[SharingService] iOS 앱 라이프사이클 리스너 설정');
 
       _appLifecycleListener = AppLifecycleListener(
-        onResume: () {
-          debugPrint('[SharingService] 앱이 포그라운드로 전환됨 - 디바운싱 체크 실행');
-          // 디바운싱으로 중복 호출 방지
-          _debouncedCheckForData();
-        },
-        onShow: () {
-          debugPrint('[SharingService] 앱이 표시됨 - 디바운싱 체크 실행');
-          // 디바운싱으로 중복 호출 방지
-          _debouncedCheckForData();
-        },
+        onResume: () => _debouncedCheckForData(),
+        onShow: () => _debouncedCheckForData(),
       );
 
       debugPrint('[SharingService] ✅ iOS 앱 라이프사이클 리스너 설정 완료');
@@ -573,93 +592,33 @@ class SharingService {
     }
   }
 
-  /// Flutter 초기화 완료 후 지연 체크 스케줄링
-  /// 앱 시작 직후에는 데이터가 감지되지 않을 수 있으므로 추가 체크
-  void _scheduleDelayedCheck() {
-    if (!Platform.isIOS) return;
-
-    try {
-      debugPrint('[SharingService] 지연 체크 타이머 설정');
-
-      // 1초, 3초, 5초 후에 추가로 체크
-      final delays = [1000, 3000, 5000];
-
-      for (int i = 0; i < delays.length; i++) {
-        final timer = Timer(Duration(milliseconds: delays[i]), () {
-          // 일시정지 상태가 아닐 때만 실행
-          if (!_isPaused) {
-            debugPrint(
-              '[SharingService] 지연 체크 실행 (${delays[i]}ms 후) - 디바운싱 적용',
-            );
-            // 디바운싱으로 중복 호출 방지
-            _debouncedCheckForData();
-          }
-        });
-
-        // 타이머를 목록에 추가하여 추적
-        _delayedTimers.add(timer);
-      }
-
-      debugPrint('[SharingService] ✅ 지연 체크 타이머 ${delays.length}개 설정 완료');
-    } catch (error) {
-      debugPrint('[SharingService] ❌ 지연 체크 타이머 설정 오류: $error');
-    }
-  }
-
-  /// 디바운싱된 공유 데이터 확인
-  /// 중복 호출을 방지하고 효율적으로 데이터를 체크합니다
+  /// 라이프사이클 이벤트용 디바운싱된 데이터 확인
+  ///
+  /// **목적**: iOS의 onShow 이벤트가 5번 연속 발생하는 문제 해결
+  /// **전략**: 첫 이벤트만 처리하고 300ms 내의 추가 이벤트는 완전히 무시
+  /// **효과**:
+  /// - UserDefaults 읽기 6회 → 1회로 감소 (83% 절감)
+  /// - 타이머 재설정 5회 → 0회 (CPU 사용 최소화)
+  /// - 첫 이벤트로부터 정확히 300ms 후 실행 (예측 가능)
   void _debouncedCheckForData() {
-    if (!Platform.isIOS || _isPaused) return;
+    // 이미 디바운싱 진행 중이면 완전히 무시 (로그도 출력 안 함)
+    if (_isDebouncing) return;
 
-    try {
-      debugPrint('[SharingService] 디바운싱 체크 요청됨');
+    // 디바운싱 시작
+    _isDebouncing = true;
+    debugPrint('[SharingService] 라이프사이클 이벤트 감지 - 300ms 후 체크 예약');
 
-      // 기존 디바운스 타이머 취소
-      _debounceTimer?.cancel();
-
-      // 새 타이머로 1초 후 실행 (여러 호출을 하나로 합침)
-      _debounceTimer = Timer(const Duration(seconds: 1), () {
-        // 일시정지 상태가 아닐 때만 실행
-        if (!_isPaused) {
-          _performCheckIfNeeded();
-        }
-      });
-
-      debugPrint('[SharingService] 디바운스 타이머 설정됨 (1초 후 실행)');
-    } catch (error) {
-      debugPrint('[SharingService] 디바운싱 설정 오류: $error');
-    }
-  }
-
-  /// 필요한 경우에만 실제 데이터 확인 수행
-  /// 마지막 체크로부터 최소 간격이 지났을 때만 실행
-  Future<void> _performCheckIfNeeded() async {
-    if (!Platform.isIOS || _isPaused) return;
-
-    try {
-      final now = DateTime.now();
-
-      // 마지막 체크로부터 최소 간격 확인
-      if (_lastCheckTime != null &&
-          now.difference(_lastCheckTime!) < _minCheckInterval) {
-        debugPrint(
-          '[SharingService] 중복 체크 방지: 마지막 체크로부터 ${now.difference(_lastCheckTime!).inMilliseconds}ms 경과 (최소 ${_minCheckInterval.inMilliseconds}ms 필요)',
-        );
-        return;
-      }
-
-      // 마지막 체크 시간 업데이트
-      _lastCheckTime = now;
-
-      debugPrint('[SharingService] 실제 데이터 체크 수행');
-      await checkForData();
-    } catch (error) {
-      debugPrint('[SharingService] 조건부 체크 수행 오류: $error');
-    }
+    // 300ms 후에 실제 체크 실행
+    _lifecycleDebounceTimer = Timer(const Duration(milliseconds: 300), () {
+      debugPrint('[SharingService] 디바운싱 완료 - 데이터 체크 실행');
+      _isDebouncing = false; // 플래그 해제
+      checkForData();
+    });
   }
 
   /// 수동으로 공유 데이터 확인
   /// 앱이 포그라운드로 돌아오거나 사용자가 새로고침할 때 호출
+  /// 해시 기반 중복 체크로 동일한 데이터는 자동 필터링됨
   Future<void> checkForData() async {
     if (!Platform.isIOS || _isPaused) return;
 
@@ -714,22 +673,17 @@ class SharingService {
   }
 
   /// 서비스 일시정지 (화면에서 벗어날 때 호출)
-  /// 모든 타이머와 lifecycle 리스너를 정지하여 리소스 절약
+  /// iOS 라이프사이클 리스너와 디바운싱 타이머를 정지하여 리소스 절약
   void pause() {
     try {
       debugPrint('[SharingService] 서비스 일시정지 시작');
 
       _isPaused = true;
 
-      // 모든 지연 타이머 정리
-      for (final timer in _delayedTimers) {
-        timer.cancel();
-      }
-      _delayedTimers.clear();
-
-      // 디바운스 타이머 정리
-      _debounceTimer?.cancel();
-      _debounceTimer = null;
+      // 디바운싱 타이머 취소 및 플래그 리셋
+      _lifecycleDebounceTimer?.cancel();
+      _lifecycleDebounceTimer = null;
+      _isDebouncing = false;
 
       // iOS 앱 라이프사이클 리스너 정리
       if (Platform.isIOS && _appLifecycleListener != null) {
@@ -737,16 +691,14 @@ class SharingService {
         _appLifecycleListener = null;
       }
 
-      debugPrint(
-        '[SharingService] ✅ 서비스 일시정지 완료 (타이머 ${_delayedTimers.length}개 정리됨)',
-      );
+      debugPrint('[SharingService] ✅ 서비스 일시정지 완료');
     } catch (error) {
       debugPrint('[SharingService] ❌ 서비스 일시정지 오류: $error');
     }
   }
 
   /// 서비스 재개 (화면으로 돌아올 때 호출)
-  /// 일시정지된 기능들을 다시 활성화
+  /// iOS 라이프사이클 리스너를 다시 활성화하고 즉시 데이터 체크
   void resume() {
     try {
       debugPrint('[SharingService] 서비스 재개 시작');
@@ -757,8 +709,8 @@ class SharingService {
       if (Platform.isIOS && _appLifecycleListener == null) {
         _setupAppLifecycleListener();
 
-        // 재개 시 즉시 한 번 체크
-        _debouncedCheckForData();
+        // 재개 시 즉시 한 번 체크 (해시로 중복 방지)
+        checkForData();
       }
 
       debugPrint('[SharingService] ✅ 서비스 재개 완료');
@@ -771,18 +723,14 @@ class SharingService {
   void dispose() {
     debugPrint('[SharingService] 서비스 종료 시작');
 
+    // 디바운싱 타이머 취소 및 플래그 리셋
+    _lifecycleDebounceTimer?.cancel();
+    _lifecycleDebounceTimer = null;
+    _isDebouncing = false;
+
     // 안드로이드 스트림 구독 해제 (현재 비활성화)
     // _androidMediaSubscription?.cancel();
     _androidTextSubscription?.cancel();
-
-    // 모든 지연 타이머 정리
-    for (final timer in _delayedTimers) {
-      timer.cancel();
-    }
-    _delayedTimers.clear();
-
-    // 디바운스 타이머 정리
-    _debounceTimer?.cancel();
 
     // iOS 앱 라이프사이클 리스너 정리
     if (Platform.isIOS && _appLifecycleListener != null) {
@@ -797,6 +745,7 @@ class SharingService {
 
     _dataStreamController.close();
     _currentSharedData = null;
+    _lastProcessedDataHash = null; // 해시 초기화
     _isPaused = true;
 
     debugPrint('[SharingService] 서비스 종료 완료');
