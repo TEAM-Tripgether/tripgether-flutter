@@ -9,7 +9,7 @@ import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/home/greeting_section.dart';
 import '../../../../shared/widgets/home/search_bar.dart';
 import '../../../../shared/widgets/home/sns_content_card.dart';
-import '../../../../shared/widgets/home/place_card_compact.dart';
+import '../../../../shared/widgets/home/place_card.dart';
 import '../../data/models/sns_content_model.dart';
 import '../../data/models/place_model.dart';
 
@@ -355,15 +355,16 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 40.h),
 
             // 섹션 구분선 (더 두꺼운 배경색 영역)
-            const SectionDivider.thin(),
+            const SectionDivider.thick(),
 
             SizedBox(height: 40.h),
 
-            // 최근 저장한 장소 섹션 (정사각형 카드, 가로 스크롤)
+            // 최근 저장한 장소 섹션 (세로 리스트, 이미지 가로 스크롤)
             // 처음 3개만 표시하여 스크롤 부담 감소
-            PlaceHorizontalList(
-              places: _savedPlaces.take(3).toList(),
+            PlaceListSection(
+              places: _savedPlaces,
               title: l10n.recentSavedPlaces,
+              maxItems: 3,
               onSeeMoreTap: () {
                 // 저장한 장소 목록 화면으로 이동
                 context.push('/home/saved-places');
