@@ -116,3 +116,10 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.ttf
           weight: 900
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/app_logo_black.png"
+  # adaptive_icon_background: "#664BAE"       # Android 전용 배경
+  remove_alpha_ios: true                    # iOS는 알파 제거 후 단색 배경
