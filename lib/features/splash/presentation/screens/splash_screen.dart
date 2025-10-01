@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -51,7 +53,22 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   /// 애니메이션을 시작하는 메서드
-  void _startAnimation() {
+  ///
+  /// 안드로이드 12+에서는 시스템 스플래시가 먼저 표시되므로
+  /// 애니메이션 시작을 약간 지연시켜 자연스러운 전환을 만듭니다
+  void _startAnimation() async {
+    // 안드로이드 플랫폼에서만 지연 적용
+    // 안드로이드 12+의 시스템 스플래시가 끝날 때까지 대기
+    if (Platform.isAndroid) {
+      // 700ms 지연: 시스템 스플래시가 표시되는 동안 대기
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    // iOS는 지연 없이 즉시 애니메이션 시작
+
+    // 위젯이 아직 마운트되어 있는지 확인
+    if (!mounted) return;
+
+    // 애니메이션 시작
     setState(() {
       _isAnimationStarted = true;
     });
