@@ -110,6 +110,13 @@ class SharingService {
   /// 마지막 처리된 데이터의 해시 (중복 처리 방지용)
   String? _lastProcessedDataHash;
 
+  /// 마지막 데이터 처리 시간 (시간 기반 중복 방지용)
+  DateTime? _lastProcessedTime;
+
+  /// 중복 체크 시간 윈도우 (5초 이내 동일 데이터만 차단)
+  /// 사용자가 같은 콘텐츠를 의도적으로 재공유하는 경우를 허용
+  static const Duration _duplicateCheckWindow = Duration(seconds: 5);
+
   /// 라이프사이클 이벤트 디바운싱 타이머
   /// iOS의 onShow 이벤트가 5번 연속 발생하는 문제를 해결하기 위해
   /// 300ms 내의 여러 호출을 하나로 묶어서 처리
@@ -356,6 +363,42 @@ class SharingService {
     return dataStr.hashCode.toString();
   }
 
+  /// 시간 기반 중복 데이터 체크
+  ///
+  /// 이중 보호 전략:
+  /// 1. 라이프사이클 이벤트 중복 (300ms 이내): 디바운싱으로 차단
+  /// 2. 사용자 재공유 (5초 이후): 정상 처리 허용
+  ///
+  /// [dataHash] 체크할 데이터의 해시값
+  /// Returns: true면 중복 데이터 (처리 안 함), false면 새 데이터 (처리 함)
+  bool _isDuplicateData(String dataHash) {
+    // 이전에 처리된 데이터가 없으면 중복 아님
+    if (_lastProcessedDataHash == null) return false;
+
+    // 해시가 다르면 중복 아님
+    if (_lastProcessedDataHash != dataHash) return false;
+
+    // 해시는 같지만 마지막 처리 시간이 없으면 중복으로 간주 (안전장치)
+    if (_lastProcessedTime == null) return true;
+
+    // 5초 이상 지났으면 중복 아님 (사용자의 의도적 재공유)
+    final now = DateTime.now();
+    final timeSinceLastProcess = now.difference(_lastProcessedTime!);
+    final isDuplicate = timeSinceLastProcess < _duplicateCheckWindow;
+
+    if (isDuplicate) {
+      debugPrint(
+        '[SharingService] ⏱️ 중복 데이터 감지 - ${timeSinceLastProcess.inMilliseconds}ms 전 처리됨',
+      );
+    } else {
+      debugPrint(
+        '[SharingService] ⏱️ 동일 데이터지만 ${timeSinceLastProcess.inSeconds}초 경과 - 재공유 허용',
+      );
+    }
+
+    return isDuplicate;
+  }
+
   /// 공유 데이터 처리
   /// [data] 처리할 데이터 (보통 Map String, dynamic )
   /// Returns: 처리 성공 여부
@@ -379,19 +422,18 @@ class SharingService {
 
       debugPrint('[SharingService] 변환된 데이터: $processedData');
 
-      // 데이터 해시 계산하여 중복 확인
+      // 데이터 해시 계산하여 시간 기반 중복 확인
       final dataHash = _calculateDataHash(processedData);
       debugPrint('[SharingService] 데이터 해시: $dataHash');
 
-      if (_lastProcessedDataHash == dataHash) {
-        debugPrint(
-          '[SharingService] ⚠️ 중복 데이터 감지 - 이미 처리됨 (해시: $dataHash)',
-        );
-        return false; // 중복 데이터이므로 처리하지 않음
+      if (_isDuplicateData(dataHash)) {
+        // 5초 이내 동일 데이터는 처리하지 않음
+        return false;
       }
 
-      // 새로운 데이터이므로 해시 저장
+      // 새로운 데이터이므로 해시와 타임스탬프 저장
       _lastProcessedDataHash = dataHash;
+      _lastProcessedTime = DateTime.now();
       debugPrint('[SharingService] ✅ 새로운 데이터 확인 - 처리 시작');
       final List<String> sharedTexts = [];
       final List<SharedMediaFile> sharedFiles = [];
@@ -746,6 +788,7 @@ class SharingService {
     _dataStreamController.close();
     _currentSharedData = null;
     _lastProcessedDataHash = null; // 해시 초기화
+    _lastProcessedTime = null; // 타임스탬프 초기화
     _isPaused = true;
 
     debugPrint('[SharingService] 서비스 종료 완료');

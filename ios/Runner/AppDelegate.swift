@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import UserNotifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -12,6 +13,12 @@ import UIKit
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
+
+    // 알림 권한 요청 (Share Extension에서 알림을 발송하기 위해 필요)
+    requestNotificationPermission()
+
+    // 알림 델리게이트 설정 (알림 탭 처리를 위해)
+    UNUserNotificationCenter.current().delegate = self
 
     // Flutter Method Channel 설정
     if let controller = window?.rootViewController as? FlutterViewController {
@@ -26,6 +33,20 @@ import UIKit
     }
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  /// 알림 권한 요청
+  /// Share Extension에서 Local Notification을 발송하기 위해 필요
+  private func requestNotificationPermission() {
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+      if let error = error {
+        print("[AppDelegate] ❌ 알림 권한 요청 실패: \(error)")
+      } else if granted {
+        print("[AppDelegate] ✅ 알림 권한 허용됨")
+      } else {
+        print("[AppDelegate] ⚠️ 알림 권한 거부됨 - Share Extension에서 알림을 발송할 수 없습니다")
+      }
+    }
   }
 
   // Method Channel 처리
@@ -98,25 +119,65 @@ import UIKit
     }
   }
 
-  // URL 스킴을 통한 앱 호출 처리 (Share Extension → 메인 앱)
+  // URL Scheme 핸들러 - Share Extension에서 앱 열기
   override func application(
     _ app: UIApplication,
     open url: URL,
     options: [UIApplication.OpenURLOptionsKey : Any] = [:]
   ) -> Bool {
+    print("[AppDelegate] ✅ URL Scheme 호출됨: \(url.absoluteString)")
+    print("[AppDelegate] URL Host/Path: \(url.host ?? "nil")/\(url.path)")
 
-    // ShareMedia:// 스킴 확인 (Share Extension에서 사용)
-    if url.scheme == "ShareMedia" {
-      // URL에서 데이터 키와 타입 추출: ShareMedia://dataUrl=ShareKey#media
-      let urlString = url.absoluteString
-      print("[AppDelegate] Share Extension에서 호출됨: \(urlString)")
+    // triptogether:// 스킴 확인
+    if url.scheme == "triptogether" {
+      print("[AppDelegate] 🚀 Share Extension에서 앱 실행됨!")
 
-      // UserDefaults에서 데이터를 읽어 Flutter로 전달하는 것은
-      // Flutter의 SharingService에서 주기적으로 확인함
+      // 앱이 포그라운드로 전환
+      // 공유 데이터는 라이프사이클 리스너에서 자동 로드됨
+
       return true
     }
 
-    // 다른 URL 스킴은 부모 클래스에서 처리
     return super.application(app, open: url, options: options)
   }
+
+  // MARK: - UNUserNotificationCenterDelegate
+  /// 포그라운드에서 알림을 받았을 때 처리
+  /// 앱이 이미 실행 중일 때도 알림을 표시하도록 설정
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+  ) {
+    print("[AppDelegate] 🔔 포그라운드 알림 수신: \(notification.request.identifier)")
+
+    // 포그라운드에서도 배너, 사운드, 뱃지 표시
+    completionHandler([.banner, .sound, .badge])
+  }
+
+  /// 사용자가 알림을 탭했을 때 처리
+  /// Share Extension에서 발송한 "share_completed" 알림을 탭하면 앱이 실행되고 공유 데이터를 자동 로드합니다
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    let identifier = response.notification.request.identifier
+    print("[AppDelegate] 🔔 알림 탭됨: \(identifier)")
+
+    // Share Extension에서 발송한 알림인지 확인
+    if identifier == "share_completed" {
+      print("[AppDelegate] 🚀 공유 완료 알림 탭 - 앱이 실행되었습니다")
+      print("[AppDelegate] 💡 공유 데이터는 HomeScreen의 라이프사이클 리스너에서 자동으로 로드됩니다")
+
+      // 앱이 백그라운드에서 포그라운드로 전환됨
+      // HomeScreen의 AppLifecycleListener가 onResume/onShow 이벤트를 감지하여
+      // SharingService.checkForData()를 자동으로 호출합니다
+      // 따라서 여기서는 별도의 데이터 로드 작업이 필요하지 않습니다
+    }
+
+    completionHandler()
+  }
+
 }
+

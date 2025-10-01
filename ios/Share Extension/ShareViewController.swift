@@ -13,6 +13,7 @@ import Social
 import MobileCoreServices
 import Photos
 import AVFoundation
+import UserNotifications
 
 class ShareViewController: SLComposeServiceViewController {
     // IMPORTANT: 메인 앱의 Bundle Identifier와 동일하게 설정 (App Group ID 접두사로도 사용)
@@ -70,7 +71,7 @@ class ShareViewController: SLComposeServiceViewController {
                     let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
                     userDefaults?.set(sharedText, forKey: sharedKey)
                     userDefaults?.synchronize()
-                    redirectToHostApp(type: .text)
+                    showSuccessAndDismiss()
                 } else {
                     extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
                 }
@@ -90,10 +91,16 @@ class ShareViewController: SLComposeServiceViewController {
                     let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
                     userDefaults?.set(this.sharedText, forKey: this.sharedKey)
                     userDefaults?.synchronize()
-                    this.redirectToHostApp(type: .text)
+
+                    // UI 업데이트는 메인 스레드에서 실행
+                    DispatchQueue.main.async {
+                        this.showSuccessAndDismiss()
+                    }
                 }
             } else {
-                self?.dismissWithError()
+                DispatchQueue.main.async {
+                    self?.dismissWithError()
+                }
             }
         }
     }
@@ -106,10 +113,16 @@ class ShareViewController: SLComposeServiceViewController {
                     let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
                     userDefaults?.set(this.sharedText, forKey: this.sharedKey)
                     userDefaults?.synchronize()
-                    this.redirectToHostApp(type: .text)
+
+                    // UI 업데이트는 메인 스레드에서 실행
+                    DispatchQueue.main.async {
+                        this.showSuccessAndDismiss()
+                    }
                 }
             } else {
-                self?.dismissWithError()
+                DispatchQueue.main.async {
+                    self?.dismissWithError()
+                }
             }
         }
     }
@@ -129,10 +142,16 @@ class ShareViewController: SLComposeServiceViewController {
                     let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
                     userDefaults?.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
                     userDefaults?.synchronize()
-                    this.redirectToHostApp(type: .media)
+
+                    // UI 업데이트는 메인 스레드에서 실행
+                    DispatchQueue.main.async {
+                        this.showSuccessAndDismiss()
+                    }
                 }
             } else {
-                self?.dismissWithError()
+                DispatchQueue.main.async {
+                    self?.dismissWithError()
+                }
             }
         }
     }
@@ -153,10 +172,16 @@ class ShareViewController: SLComposeServiceViewController {
                     let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
                     userDefaults?.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
                     userDefaults?.synchronize()
-                    this.redirectToHostApp(type: .media)
+
+                    // UI 업데이트는 메인 스레드에서 실행
+                    DispatchQueue.main.async {
+                        this.showSuccessAndDismiss()
+                    }
                 }
             } else {
-                self?.dismissWithError()
+                DispatchQueue.main.async {
+                    self?.dismissWithError()
+                }
             }
         }
     }
@@ -176,10 +201,16 @@ class ShareViewController: SLComposeServiceViewController {
                     let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
                     userDefaults?.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
                     userDefaults?.synchronize()
-                    this.redirectToHostApp(type: .file)
+
+                    // UI 업데이트는 메인 스레드에서 실행
+                    DispatchQueue.main.async {
+                        this.showSuccessAndDismiss()
+                    }
                 }
             } else {
-                self?.dismissWithError()
+                DispatchQueue.main.async {
+                    self?.dismissWithError()
+                }
             }
         }
     }
@@ -195,23 +226,34 @@ class ShareViewController: SLComposeServiceViewController {
         extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
 
-    private func redirectToHostApp(type: RedirectType) {
-        let url = URL(string: "ShareMedia://dataUrl=\(sharedKey)#\(type)")
-        var responder: UIResponder? = self
-        let selectorOpenURL = sel_registerName("openURL:")
-        while responder != nil {
-            if responder?.responds(to: selectorOpenURL) == true {
-                _ = responder?.perform(selectorOpenURL, with: url)
-            }
-            responder = responder?.next
-        }
+    /// 저장 성공 후 Local Notification 발송
+    private func showSuccessAndDismiss() {
+        // Local Notification 발송 (앱이 종료되어 있어도 작동)
+        sendLocalNotification()
+
+        // Extension 닫기
         extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
 
-    enum RedirectType {
-        case media
-        case text
-        case file
+    /// Local Notification 발송
+    /// 사용자가 알림을 탭하면 앱이 실행됨
+    private func sendLocalNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "✓ TripTogether에 저장됨"
+        content.body = "탭하여 공유된 콘텐츠를 확인하세요"
+        content.sound = .default
+
+        // 즉시 발송
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+        let request = UNNotificationRequest(identifier: "share_completed", content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("[ShareExtension] ❌ Notification 발송 실패: \(error)")
+            } else {
+                print("[ShareExtension] ✅ Notification 발송 성공")
+            }
+        }
     }
 
     func getExtension(from url: URL, type: SharedMediaType) -> String {

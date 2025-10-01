@@ -50,7 +50,7 @@
     <key>AppGroupId</key>
     <string>$(CUSTOM_GROUP_ID)</string>
 
-    <!-- Share Extension에서 메인 앱으로 돌아오기 위한 URL 스킴 설정 -->
+    <!-- 앱 딥링크를 위한 URL 스킴 설정 -->
     <key>CFBundleURLTypes</key>
     <array>
         <dict>
@@ -58,7 +58,7 @@
             <string>Editor</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>ShareMedia</string>
+                <string>triptogether</string>
             </array>
         </dict>
     </array>
