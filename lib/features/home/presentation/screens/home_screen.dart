@@ -6,9 +6,9 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/services/sharing_service.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
-import '../../../../shared/widgets/home/greeting_section.dart';
-import '../../../../shared/widgets/home/sns_content_card.dart';
-import '../../../../shared/widgets/home/place_card.dart';
+import '../../../../shared/widgets/layout/greeting_section.dart';
+import '../../../../shared/widgets/layout/sns_content_card.dart';
+import '../../../../shared/widgets/layout/place_card.dart';
 import '../../data/models/sns_content_model.dart';
 import '../../data/models/place_model.dart';
 
