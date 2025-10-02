@@ -184,6 +184,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noMoreContent => '더 이상 콘텐츠가 없습니다';
 
   @override
+  String get noSnsContentYet => 'SNS에서 공유된 컨텐츠가 없습니다.';
+
+  @override
+  String get noSavedPlacesYet => '아직 저장한 장소가 없습니다.';
+
+  @override
   String get filterAll => '전체';
 
   @override

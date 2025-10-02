@@ -293,6 +293,7 @@ class PlaceListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final displayPlaces = maxItems != null && places.length > maxItems!
         ? places.take(maxItems!).toList()
         : places;
@@ -303,20 +304,38 @@ class PlaceListSection extends StatelessWidget {
         // 섹션 헤더
         if (title != null) _buildSectionHeader(context),
 
-        // 장소 리스트
-        ...displayPlaces.map(
-          (place) => PlaceCard(
-            place: place,
-            onTap: () {
-              // 장소 상세 화면으로 이동
-              debugPrint('장소 선택: ${place.name}');
-            },
-            onImageTap: (index) {
-              // 이미지 상세 보기 또는 지도 화면으로 이동
-              debugPrint('이미지 선택: ${place.name} - 이미지 $index');
-            },
+        // 장소 리스트 또는 빈 상태 메시지
+        if (places.isEmpty)
+          // 저장한 장소가 없을 때 빈 상태 메시지 표시
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 40.h),
+            child: Center(
+              child: Text(
+                l10n.noSavedPlacesYet,
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+          )
+        else
+          // 장소 리스트 표시
+          ...displayPlaces.map(
+            (place) => PlaceCard(
+              place: place,
+              onTap: () {
+                // 장소 상세 화면으로 이동
+                debugPrint('장소 선택: ${place.name}');
+              },
+              onImageTap: (index) {
+                // 이미지 상세 보기 또는 지도 화면으로 이동
+                debugPrint('이미지 선택: ${place.name} - 이미지 $index');
+              },
+            ),
           ),
-        ),
 
         // 더보기 버튼
         if (maxItems != null &&

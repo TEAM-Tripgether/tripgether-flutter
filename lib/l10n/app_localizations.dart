@@ -440,6 +440,18 @@ abstract class AppLocalizations {
   /// **'더 이상 콘텐츠가 없습니다'**
   String get noMoreContent;
 
+  /// SNS 콘텐츠가 없을 때 표시되는 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'SNS에서 공유된 컨텐츠가 없습니다.'**
+  String get noSnsContentYet;
+
+  /// 저장한 장소가 없을 때 표시되는 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 저장한 장소가 없습니다.'**
+  String get noSavedPlacesYet;
+
   /// 전체 필터 옵션
   ///
   /// In ko, this message translates to:

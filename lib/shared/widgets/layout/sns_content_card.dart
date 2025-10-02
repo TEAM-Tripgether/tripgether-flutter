@@ -94,41 +94,33 @@ class SnsContentCard extends StatelessWidget {
           ),
         ),
 
-        // SNS 플랫폼 아이콘
-        Positioned(bottom: 8.h, right: 8.w, child: _buildSourceIcon()),
+        // SNS 플랫폼 아이콘 (좌측 하단으로 변경)
+        Positioned(bottom: 8.h, left: 8.w, child: _buildSourceIcon()),
       ],
     );
   }
 
-  /// SNS 플랫폼 아이콘 빌드
+  /// SNS 플랫폼 아이콘 빌드 (배경 제거, 아이콘만 표시)
   Widget _buildSourceIcon() {
     IconData icon;
-    Color backgroundColor;
     Color iconColor;
 
     switch (content.source) {
       case SnsSource.youtube:
         icon = Icons.play_circle_filled;
-        backgroundColor = Colors.red;
-        iconColor = Colors.white;
+        iconColor = Colors.red;
         break;
       case SnsSource.instagram:
         icon = Icons.camera_alt;
-        backgroundColor = Colors.purple;
-        iconColor = Colors.white;
+        iconColor = Colors.purple;
         break;
       case SnsSource.tiktok:
         icon = Icons.music_note;
-        backgroundColor = Colors.black;
-        iconColor = Colors.white;
+        iconColor = Colors.black;
         break;
     }
 
-    return Container(
-      padding: EdgeInsets.all(4.w),
-      decoration: BoxDecoration(color: backgroundColor, shape: BoxShape.circle),
-      child: Icon(icon, size: 16.w, color: iconColor),
-    );
+    return Icon(icon, size: 24.w, color: iconColor);
   }
 
   /// 콘텐츠 제목 위젯 빌드

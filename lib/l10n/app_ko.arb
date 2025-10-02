@@ -299,6 +299,16 @@
     "description": "콘텐츠 끝 메시지"
   },
 
+  "noSnsContentYet": "SNS에서 공유된 컨텐츠가 없습니다.",
+  "@noSnsContentYet": {
+    "description": "SNS 콘텐츠가 없을 때 표시되는 메시지"
+  },
+
+  "noSavedPlacesYet": "아직 저장한 장소가 없습니다.",
+  "@noSavedPlacesYet": {
+    "description": "저장한 장소가 없을 때 표시되는 메시지"
+  },
+
   "filterAll": "전체",
   "@filterAll": {
     "description": "전체 필터 옵션"

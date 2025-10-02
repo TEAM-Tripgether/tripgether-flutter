@@ -333,28 +333,45 @@ class _HomeScreenState extends State<HomeScreen> {
 
             SizedBox(height: 32.h),
 
-            // 최근 SNS에서 본 콘텐츠 섹션 (국제화 및 라우팅 적용)
-            // 처음 6개만 표시하여 정보 과부하 방지
-            SnsContentHorizontalList(
-              contents: _snsContents.take(6).toList(),
-              title: l10n.recentSnsContent,
-              onSeeMoreTap: () {
-                // SNS 콘텐츠 목록 화면으로 이동
-                context.push('/home/sns-contents');
-              },
-              onContentTap: (content, index) {
-                // 개별 콘텐츠 카드 탭 시 상세 화면으로 이동
-                // 전체 리스트와 현재 인덱스를 전달하여 가로 스와이프 네비게이션 지원
-                final detailPath = '/home/sns-contents/detail/${content.id}';
-                context.go(
-                  detailPath,
-                  extra: {
-                    'contents': _snsContents.take(6).toList(),
-                    'initialIndex': index,
-                  },
-                );
-              },
-            ),
+            // 최근 SNS에서 본 콘텐츠 섹션 (빈 상태 처리 추가)
+            if (_snsContents.isEmpty)
+              // SNS 콘텐츠가 없을 때 빈 상태 메시지 표시
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 40.h),
+                child: Center(
+                  child: Text(
+                    l10n.noSnsContentYet,
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ),
+              )
+            else
+              // SNS 콘텐츠가 있을 때 리스트 표시 (처음 6개만)
+              SnsContentHorizontalList(
+                contents: _snsContents.take(6).toList(),
+                title: l10n.recentSnsContent,
+                onSeeMoreTap: () {
+                  // SNS 콘텐츠 목록 화면으로 이동
+                  context.push('/home/sns-contents');
+                },
+                onContentTap: (content, index) {
+                  // 개별 콘텐츠 카드 탭 시 상세 화면으로 이동
+                  // 전체 리스트와 현재 인덱스를 전달하여 가로 스와이프 네비게이션 지원
+                  final detailPath = '/home/sns-contents/detail/${content.id}';
+                  context.go(
+                    detailPath,
+                    extra: {
+                      'contents': _snsContents.take(6).toList(),
+                      'initialIndex': index,
+                    },
+                  );
+                },
+              ),
 
             SizedBox(height: 40.h),
 

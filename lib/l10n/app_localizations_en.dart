@@ -185,6 +185,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMoreContent => 'No more content';
 
   @override
+  String get noSnsContentYet => 'No SNS content shared yet.';
+
+  @override
+  String get noSavedPlacesYet => 'No saved places yet.';
+
+  @override
   String get filterAll => 'All';
 
   @override

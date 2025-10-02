@@ -299,6 +299,16 @@
     "description": "End of content message"
   },
 
+  "noSnsContentYet": "No SNS content shared yet.",
+  "@noSnsContentYet": {
+    "description": "Message when there is no SNS content"
+  },
+
+  "noSavedPlacesYet": "No saved places yet.",
+  "@noSavedPlacesYet": {
+    "description": "Message when there are no saved places"
+  },
+
   "filterAll": "All",
   "@filterAll": {
     "description": "All filter option"
