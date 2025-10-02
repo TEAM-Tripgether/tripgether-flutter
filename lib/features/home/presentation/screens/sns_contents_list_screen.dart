@@ -213,7 +213,8 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
           crossAxisCount: 2,
           crossAxisSpacing: 12.w,
           mainAxisSpacing: 12.w,
-          childAspectRatio: 0.75,
+          childAspectRatio:
+              0.58, // sns_content_card (120w:170h) + 제목 영역을 고려한 비율
         ),
         itemCount:
             _filteredContents.length +
@@ -247,136 +248,86 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
     );
   }
 
-  /// 콘텐츠 카드 빌드
-  Widget _buildContentCard(SnsContent content, int index, AppLocalizations l10n) {
+  /// 콘텐츠 카드 빌드 (간단하게: 썸네일 + 플랫폼 로고 + 제목)
+  Widget _buildContentCard(
+    SnsContent content,
+    int index,
+    AppLocalizations l10n,
+  ) {
     return GestureDetector(
       onTap: () {
         // SNS 콘텐츠 상세 화면으로 네비게이션
-        // extra 파라미터로 전체 리스트와 현재 인덱스를 전달하여 가로 스와이프 네비게이션 지원
         final detailPath = AppRoutes.snsContentDetail.replaceFirst(
           ':contentId',
           content.id,
         );
-        context.go(detailPath, extra: {
-          'contents': _filteredContents,
-          'initialIndex': index,
-        });
+        context.go(
+          detailPath,
+          extra: {'contents': _filteredContents, 'initialIndex': index},
+        );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 썸네일
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(12.r),
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: content.thumbnailUrl,
-                    height: 140.h,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      height: 140.h,
-                      color: Colors.grey[200],
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.grey[400]!,
-                          ),
-                        ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      height: 140.h,
-                      color: Colors.grey[200],
-                      child: Icon(
-                        Icons.image_not_supported,
-                        size: 48.w,
-                        color: Colors.grey[400],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 썸네일 이미지
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12.r),
+              child: CachedNetworkImage(
+                imageUrl: content.thumbnailUrl,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  color: Colors.grey[200],
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.grey[400]!,
                       ),
                     ),
                   ),
                 ),
-                // 플랫폼 아이콘
-                Positioned(
-                  top: 8.h,
-                  right: 8.w,
-                  child: _buildPlatformIcon(content.source),
-                ),
-              ],
-            ),
-
-            // 콘텐츠 정보
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(12.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 제목
-                    Text(
-                      content.title,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 4.h),
-
-                    const Spacer(),
-
-                    // 크리에이터와 조회수
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            content.creatorName,
-                            style: TextStyle(
-                              fontFamily: 'Pretendard',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.grey[600],
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text(
-                          l10n.viewCount(_formatViewCount(content.viewCount)),
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                errorWidget: (context, url, error) => Container(
+                  color: Colors.grey[200],
+                  child: Icon(
+                    Icons.image_not_supported,
+                    size: 48.w,
+                    color: Colors.grey[400],
+                  ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+
+          SizedBox(height: 8.h),
+
+          // 플랫폼 로고 + 제목
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 플랫폼 로고
+              _buildPlatformIcon(content.source),
+
+              SizedBox(width: 8.w),
+
+              // 제목
+              Expanded(
+                child: Text(
+                  content.title,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -427,16 +378,6 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
         ),
       ),
     );
-  }
-
-  /// 조회수 포맷팅
-  String _formatViewCount(int count) {
-    if (count >= 1000000) {
-      return '${(count / 1000000).toStringAsFixed(1)}M';
-    } else if (count >= 1000) {
-      return '${(count / 1000).toStringAsFixed(0)}K';
-    }
-    return count.toString();
   }
 
   @override
