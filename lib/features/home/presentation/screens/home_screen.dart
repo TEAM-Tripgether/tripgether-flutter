@@ -331,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
 
-            SizedBox(height: 32.h),
+            SizedBox(height: 16.h),
 
             // 최근 SNS에서 본 콘텐츠 섹션 (빈 상태 처리 추가)
             if (_snsContents.isEmpty)
@@ -373,12 +373,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
 
-            SizedBox(height: 40.h),
+            SizedBox(height: 24.h),
 
             // 섹션 구분선 (더 두꺼운 배경색 영역)
             const SectionDivider.thick(),
 
-            SizedBox(height: 40.h),
+            SizedBox(height: 24.h),
 
             // 최근 저장한 장소 섹션 (세로 리스트, 이미지 가로 스크롤)
             // 처음 3개만 표시하여 스크롤 부담 감소

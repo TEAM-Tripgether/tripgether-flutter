@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
+import '../../../../shared/widgets/common/platform_icon.dart';
 import '../../data/models/sns_content_model.dart';
 
 /// SNS 콘텐츠 상세 화면
@@ -259,29 +260,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
   }
 
   /// 플랫폼 아이콘 (YouTube, Instagram, TikTok)
+  /// PlatformIcon 위젯을 사용하여 SVG 아이콘 표시 (배경 없이)
   Widget _buildPlatformIcon(SnsContent content) {
-    IconData icon;
-    Color backgroundColor;
-
-    switch (content.source) {
-      case SnsSource.youtube:
-        icon = Icons.play_circle_filled;
-        backgroundColor = Colors.red;
-        break;
-      case SnsSource.instagram:
-        icon = Icons.camera_alt;
-        backgroundColor = Colors.purple;
-        break;
-      case SnsSource.tiktok:
-        icon = Icons.music_note;
-        backgroundColor = Colors.black;
-        break;
-    }
-
-    return Container(
-      padding: EdgeInsets.all(6.w),
-      decoration: BoxDecoration(color: backgroundColor, shape: BoxShape.circle),
-      child: Icon(icon, size: 18.w, color: Colors.white),
+    return PlatformIcon(
+      source: content.source,
+      size: 24.w, // 배경이 없으니 아이콘 크기를 약간 키움
     );
   }
 

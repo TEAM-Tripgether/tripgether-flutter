@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/common/platform_icon.dart';
+import '../../../../shared/widgets/layout/sns_content_card.dart';
 import '../../data/models/sns_content_model.dart';
 
 /// SNS 콘텐츠 목록 화면
@@ -150,7 +151,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.play_circle_filled, size: 16.w, color: Colors.red),
+                  PlatformIcon(source: SnsSource.youtube, size: 16.w),
                   SizedBox(width: 4.w),
                   Text(l10n.filterYoutube),
                 ],
@@ -167,7 +168,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.camera_alt, size: 16.w, color: Colors.purple),
+                  PlatformIcon(source: SnsSource.instagram, size: 16.w),
                   SizedBox(width: 4.w),
                   Text(l10n.filterInstagram),
                 ],
@@ -211,10 +212,9 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
         padding: EdgeInsets.all(16.w),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 12.w,
-          mainAxisSpacing: 12.w,
-          childAspectRatio:
-              0.58, // sns_content_card (120w:170h) + 제목 영역을 고려한 비율
+          crossAxisSpacing: 10.w,
+          mainAxisSpacing: 10.w,
+          childAspectRatio: 0.60, // 썸네일 250.h + 제목 영역을 고려한 비율
         ),
         itemCount:
             _filteredContents.length +
@@ -242,123 +242,23 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
           }
 
           // 콘텐츠 카드
-          return _buildContentCard(_filteredContents[index], index, l10n);
+          return SnsContentCard(
+            content: _filteredContents[index],
+            margin: EdgeInsets.zero,
+            isGridLayout: true,
+            onTap: () {
+              final detailPath = AppRoutes.snsContentDetail.replaceFirst(
+                ':contentId',
+                _filteredContents[index].id,
+              );
+              context.go(
+                detailPath,
+                extra: {'contents': _filteredContents, 'initialIndex': index},
+              );
+            },
+          );
         },
       ),
-    );
-  }
-
-  /// 콘텐츠 카드 빌드 (간단하게: 썸네일 + 플랫폼 로고 + 제목)
-  Widget _buildContentCard(
-    SnsContent content,
-    int index,
-    AppLocalizations l10n,
-  ) {
-    return GestureDetector(
-      onTap: () {
-        // SNS 콘텐츠 상세 화면으로 네비게이션
-        final detailPath = AppRoutes.snsContentDetail.replaceFirst(
-          ':contentId',
-          content.id,
-        );
-        context.go(
-          detailPath,
-          extra: {'contents': _filteredContents, 'initialIndex': index},
-        );
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 썸네일 이미지
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12.r),
-              child: CachedNetworkImage(
-                imageUrl: content.thumbnailUrl,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[200],
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.grey[400]!,
-                      ),
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.grey[200],
-                  child: Icon(
-                    Icons.image_not_supported,
-                    size: 48.w,
-                    color: Colors.grey[400],
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          SizedBox(height: 8.h),
-
-          // 플랫폼 로고 + 제목
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 플랫폼 로고
-              _buildPlatformIcon(content.source),
-
-              SizedBox(width: 8.w),
-
-              // 제목
-              Expanded(
-                child: Text(
-                  content.title,
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 플랫폼 아이콘 빌드
-  Widget _buildPlatformIcon(SnsSource source) {
-    IconData icon;
-    Color backgroundColor;
-
-    switch (source) {
-      case SnsSource.youtube:
-        icon = Icons.play_circle_filled;
-        backgroundColor = Colors.red;
-        break;
-      case SnsSource.instagram:
-        icon = Icons.camera_alt;
-        backgroundColor = Colors.purple;
-        break;
-      case SnsSource.tiktok:
-        icon = Icons.music_note;
-        backgroundColor = Colors.black;
-        break;
-    }
-
-    return Container(
-      padding: EdgeInsets.all(6.w),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Icon(icon, size: 18.w, color: Colors.white),
     );
   }
 

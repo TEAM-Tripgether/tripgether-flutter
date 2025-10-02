@@ -95,7 +95,7 @@ flutter:
   assets:
     - assets/splash/
     - assets/navigation_icons/
-
+    - assets/platform_icons/
   fonts:
     - family: Pretendard
       fonts:
