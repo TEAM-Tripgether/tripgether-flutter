@@ -486,5 +486,149 @@
   "share": "Share",
   "@share": {
     "description": "Share button tooltip"
+  },
+
+  "courseMarket": "Course Market",
+  "@courseMarket": {
+    "description": "Course Market screen title"
+  },
+
+  "searchCourse": "Search Courses",
+  "@searchCourse": {
+    "description": "Course search screen title"
+  },
+
+  "searchScreen": "Search",
+  "@searchScreen": {
+    "description": "Search screen title"
+  },
+
+  "searchPlaceholder": "Search keywords, cities, or places",
+  "@searchPlaceholder": {
+    "description": "Search input placeholder text"
+  },
+
+  "popularCourses": "Popular Courses >",
+  "@popularCourses": {
+    "description": "Popular courses section title"
+  },
+
+  "nearbyCourses": "Nearby",
+  "@nearbyCourses": {
+    "description": "Nearby courses section title (without location)"
+  },
+
+  "nearbyCoursesWithLocation": "Nearby (Current: {location}) >",
+  "@nearbyCoursesWithLocation": {
+    "description": "Nearby courses section title (with location)",
+    "placeholders": {
+      "location": {
+        "type": "String",
+        "example": "Gangnam-gu"
+      }
+    }
+  },
+
+  "addPlace": "Add Place",
+  "@addPlace": {
+    "description": "Add place button text"
+  },
+
+  "createCourse": "Create Course",
+  "@createCourse": {
+    "description": "Create course button text"
+  },
+
+  "recentSearches": "Recent Searches",
+  "@recentSearches": {
+    "description": "Recent searches section title"
+  },
+
+  "clearAllSearches": "Clear All",
+  "@clearAllSearches": {
+    "description": "Clear all recent searches button"
+  },
+
+  "recommendedSearches": "Recommended Searches",
+  "@recommendedSearches": {
+    "description": "Recommended searches section title"
+  },
+
+  "noSearchResults": "No search results",
+  "@noSearchResults": {
+    "description": "No search results message"
+  },
+
+  "tryDifferentKeyword": "Try a different keyword",
+  "@tryDifferentKeyword": {
+    "description": "Try different keyword guidance message"
+  },
+
+  "searchResults": "Search Results: {count}",
+  "@searchResults": {
+    "description": "Search results count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+
+  "placesCount": "{count} places",
+  "@placesCount": {
+    "description": "Places count display (with unit)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "places": "places",
+  "@places": {
+    "description": "Places unit"
+  },
+
+  "more": "More",
+  "@more": {
+    "description": "More button"
+  },
+
+  "priceKrw": "{thousands}K KRW",
+  "@priceKrw": {
+    "description": "Price display (in thousands KRW)",
+    "placeholders": {
+      "thousands": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "hoursAndMinutes": "{hours}h {minutes}min",
+  "@hoursAndMinutes": {
+    "description": "Duration display (hours and minutes)",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      },
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+
+  "free": "Free",
+  "@free": {
+    "description": "Free course indicator"
+  },
+
+  "goBack": "Go Back",
+  "@goBack": {
+    "description": "Go back button"
   }
 }

@@ -601,6 +601,138 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'공유'**
   String get share;
+
+  /// 코스마켓 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'코스마켓'**
+  String get courseMarket;
+
+  /// 코스 검색 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'코스 검색'**
+  String get searchCourse;
+
+  /// 검색 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'검색'**
+  String get searchScreen;
+
+  /// 검색창 플레이스홀더 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'키워드·도시·장소를 검색해 보세요'**
+  String get searchPlaceholder;
+
+  /// 실시간 인기 코스 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'실시간 인기 코스 >'**
+  String get popularCourses;
+
+  /// 내 주변 코스 섹션 제목 (위치 정보 없음)
+  ///
+  /// In ko, this message translates to:
+  /// **'내 주변'**
+  String get nearbyCourses;
+
+  /// 내 주변 코스 섹션 제목 (위치 정보 포함)
+  ///
+  /// In ko, this message translates to:
+  /// **'내 주변 (현재 위치 : {location}) >'**
+  String nearbyCoursesWithLocation(String location);
+
+  /// 장소 추가 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'장소 추가'**
+  String get addPlace;
+
+  /// 코스 생성 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'코스 생성'**
+  String get createCourse;
+
+  /// 최근 검색어 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 검색어'**
+  String get recentSearches;
+
+  /// 최근 검색어 전체 삭제 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 삭제'**
+  String get clearAllSearches;
+
+  /// 추천 검색어 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'추천 검색어'**
+  String get recommendedSearches;
+
+  /// 검색 결과 없음 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'검색 결과가 없습니다'**
+  String get noSearchResults;
+
+  /// 다른 검색어 시도 안내 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 검색어로 시도해보세요'**
+  String get tryDifferentKeyword;
+
+  /// 검색 결과 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'검색 결과 {count}개'**
+  String searchResults(int count);
+
+  /// 장소 개수 표시 (단위 포함)
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}곳'**
+  String placesCount(int count);
+
+  /// 장소 단위
+  ///
+  /// In ko, this message translates to:
+  /// **'곳'**
+  String get places;
+
+  /// 더보기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'더보기'**
+  String get more;
+
+  /// 가격 표시 (천원 단위)
+  ///
+  /// In ko, this message translates to:
+  /// **'{thousands}천원'**
+  String priceKrw(int thousands);
+
+  /// 소요시간 표시 (시간과 분)
+  ///
+  /// In ko, this message translates to:
+  /// **'{hours}시간 {minutes}분'**
+  String hoursAndMinutes(int hours, int minutes);
+
+  /// 무료 코스 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'무료'**
+  String get free;
+
+  /// 뒤로 가기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'뒤로 가기'**
+  String get goBack;
 }
 
 class _AppLocalizationsDelegate

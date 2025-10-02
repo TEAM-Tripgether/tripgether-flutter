@@ -281,4 +281,80 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get share => '공유';
+
+  @override
+  String get courseMarket => '코스마켓';
+
+  @override
+  String get searchCourse => '코스 검색';
+
+  @override
+  String get searchScreen => '검색';
+
+  @override
+  String get searchPlaceholder => '키워드·도시·장소를 검색해 보세요';
+
+  @override
+  String get popularCourses => '실시간 인기 코스 >';
+
+  @override
+  String get nearbyCourses => '내 주변';
+
+  @override
+  String nearbyCoursesWithLocation(String location) {
+    return '내 주변 (현재 위치 : $location) >';
+  }
+
+  @override
+  String get addPlace => '장소 추가';
+
+  @override
+  String get createCourse => '코스 생성';
+
+  @override
+  String get recentSearches => '최근 검색어';
+
+  @override
+  String get clearAllSearches => '전체 삭제';
+
+  @override
+  String get recommendedSearches => '추천 검색어';
+
+  @override
+  String get noSearchResults => '검색 결과가 없습니다';
+
+  @override
+  String get tryDifferentKeyword => '다른 검색어로 시도해보세요';
+
+  @override
+  String searchResults(int count) {
+    return '검색 결과 $count개';
+  }
+
+  @override
+  String placesCount(int count) {
+    return '$count곳';
+  }
+
+  @override
+  String get places => '곳';
+
+  @override
+  String get more => '더보기';
+
+  @override
+  String priceKrw(int thousands) {
+    return '$thousands천원';
+  }
+
+  @override
+  String hoursAndMinutes(int hours, int minutes) {
+    return '$hours시간 $minutes분';
+  }
+
+  @override
+  String get free => '무료';
+
+  @override
+  String get goBack => '뒤로 가기';
 }

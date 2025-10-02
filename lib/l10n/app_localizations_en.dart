@@ -282,4 +282,80 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get share => 'Share';
+
+  @override
+  String get courseMarket => 'Course Market';
+
+  @override
+  String get searchCourse => 'Search Courses';
+
+  @override
+  String get searchScreen => 'Search';
+
+  @override
+  String get searchPlaceholder => 'Search keywords, cities, or places';
+
+  @override
+  String get popularCourses => 'Popular Courses >';
+
+  @override
+  String get nearbyCourses => 'Nearby';
+
+  @override
+  String nearbyCoursesWithLocation(String location) {
+    return 'Nearby (Current: $location) >';
+  }
+
+  @override
+  String get addPlace => 'Add Place';
+
+  @override
+  String get createCourse => 'Create Course';
+
+  @override
+  String get recentSearches => 'Recent Searches';
+
+  @override
+  String get clearAllSearches => 'Clear All';
+
+  @override
+  String get recommendedSearches => 'Recommended Searches';
+
+  @override
+  String get noSearchResults => 'No search results';
+
+  @override
+  String get tryDifferentKeyword => 'Try a different keyword';
+
+  @override
+  String searchResults(int count) {
+    return 'Search Results: $count';
+  }
+
+  @override
+  String placesCount(int count) {
+    return '$count places';
+  }
+
+  @override
+  String get places => 'places';
+
+  @override
+  String get more => 'More';
+
+  @override
+  String priceKrw(int thousands) {
+    return '${thousands}K KRW';
+  }
+
+  @override
+  String hoursAndMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}min';
+  }
+
+  @override
+  String get free => 'Free';
+
+  @override
+  String get goBack => 'Go Back';
 }

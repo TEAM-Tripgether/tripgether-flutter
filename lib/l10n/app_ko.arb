@@ -486,5 +486,149 @@
   "share": "공유",
   "@share": {
     "description": "공유 버튼 툴팁"
+  },
+
+  "courseMarket": "코스마켓",
+  "@courseMarket": {
+    "description": "코스마켓 화면 제목"
+  },
+
+  "searchCourse": "코스 검색",
+  "@searchCourse": {
+    "description": "코스 검색 화면 제목"
+  },
+
+  "searchScreen": "검색",
+  "@searchScreen": {
+    "description": "검색 화면 제목"
+  },
+
+  "searchPlaceholder": "키워드·도시·장소를 검색해 보세요",
+  "@searchPlaceholder": {
+    "description": "검색창 플레이스홀더 텍스트"
+  },
+
+  "popularCourses": "실시간 인기 코스 >",
+  "@popularCourses": {
+    "description": "실시간 인기 코스 섹션 제목"
+  },
+
+  "nearbyCourses": "내 주변",
+  "@nearbyCourses": {
+    "description": "내 주변 코스 섹션 제목 (위치 정보 없음)"
+  },
+
+  "nearbyCoursesWithLocation": "내 주변 (현재 위치 : {location}) >",
+  "@nearbyCoursesWithLocation": {
+    "description": "내 주변 코스 섹션 제목 (위치 정보 포함)",
+    "placeholders": {
+      "location": {
+        "type": "String",
+        "example": "광진구 군자동"
+      }
+    }
+  },
+
+  "addPlace": "장소 추가",
+  "@addPlace": {
+    "description": "장소 추가 버튼 텍스트"
+  },
+
+  "createCourse": "코스 생성",
+  "@createCourse": {
+    "description": "코스 생성 버튼 텍스트"
+  },
+
+  "recentSearches": "최근 검색어",
+  "@recentSearches": {
+    "description": "최근 검색어 섹션 제목"
+  },
+
+  "clearAllSearches": "전체 삭제",
+  "@clearAllSearches": {
+    "description": "최근 검색어 전체 삭제 버튼"
+  },
+
+  "recommendedSearches": "추천 검색어",
+  "@recommendedSearches": {
+    "description": "추천 검색어 섹션 제목"
+  },
+
+  "noSearchResults": "검색 결과가 없습니다",
+  "@noSearchResults": {
+    "description": "검색 결과 없음 메시지"
+  },
+
+  "tryDifferentKeyword": "다른 검색어로 시도해보세요",
+  "@tryDifferentKeyword": {
+    "description": "다른 검색어 시도 안내 메시지"
+  },
+
+  "searchResults": "검색 결과 {count}개",
+  "@searchResults": {
+    "description": "검색 결과 개수 표시",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+
+  "placesCount": "{count}곳",
+  "@placesCount": {
+    "description": "장소 개수 표시 (단위 포함)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "places": "곳",
+  "@places": {
+    "description": "장소 단위"
+  },
+
+  "more": "더보기",
+  "@more": {
+    "description": "더보기 버튼"
+  },
+
+  "priceKrw": "{thousands}천원",
+  "@priceKrw": {
+    "description": "가격 표시 (천원 단위)",
+    "placeholders": {
+      "thousands": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "hoursAndMinutes": "{hours}시간 {minutes}분",
+  "@hoursAndMinutes": {
+    "description": "소요시간 표시 (시간과 분)",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      },
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+
+  "free": "무료",
+  "@free": {
+    "description": "무료 코스 표시"
+  },
+
+  "goBack": "뒤로 가기",
+  "@goBack": {
+    "description": "뒤로 가기 버튼"
   }
 }
