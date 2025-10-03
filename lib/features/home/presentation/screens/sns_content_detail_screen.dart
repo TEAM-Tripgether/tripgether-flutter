@@ -145,31 +145,35 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
           borderRadius: BorderRadius.circular(20.r),
           child: Stack(
             children: [
-              // 썸네일 이미지 - 쇼츠/릴스 형식 (세로로 긴 형태)
-              CachedNetworkImage(
-                imageUrl: content.thumbnailUrl,
-                width: 280.w,
-                height: 450.h,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
+              // Hero 위젯으로 썸네일 이미지 감싸기
+              // SnsContentCard와 같은 tag를 사용하여 연결
+              Hero(
+                tag: 'sns_content_${content.id}',
+                child: CachedNetworkImage(
+                  imageUrl: content.thumbnailUrl,
+                  width: 280.w,
                   height: 450.h,
-                  color: Colors.grey[200],
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).primaryColor,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    height: 450.h,
+                    color: Colors.grey[200],
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).primaryColor,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  height: 450.h,
-                  color: Colors.grey[200],
-                  child: Icon(
-                    Icons.image_not_supported,
-                    size: 64.w,
-                    color: Colors.grey[400],
+                  errorWidget: (context, url, error) => Container(
+                    height: 450.h,
+                    color: Colors.grey[200],
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 64.w,
+                      color: Colors.grey[400],
+                    ),
                   ),
                 ),
               ),

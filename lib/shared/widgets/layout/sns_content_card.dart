@@ -30,51 +30,81 @@ class SnsContentCard extends StatelessWidget {
         width: isGridLayout ? null : (width ?? 120.w),
         height: isGridLayout ? 250.h : 170.h,
         margin: margin ?? EdgeInsets.only(right: 12.w),
-        decoration: BoxDecoration(
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(12.r),
-          image: DecorationImage(
-            image: CachedNetworkImageProvider(content.thumbnailUrl),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.r),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
-              stops: [0.5, 1.0],
-            ),
-          ),
-          padding: EdgeInsets.all(8.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
+            fit: StackFit.expand,
             children: [
-              PlatformIcon(
-                source: content.source,
-                size: isGridLayout ? 18.w : 24.w,
+              // Hero 위젯으로 이미지 감싸기
+              // tag는 콘텐츠의 고유 ID를 사용하여 화면 간 연결
+              Hero(
+                tag: 'sns_content_${content.id}',
+                child: CachedNetworkImage(
+                  imageUrl: content.thumbnailUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[200],
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[200],
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 48.w,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                ),
               ),
-              SizedBox(height: 4.h),
-              Text(
-                content.title,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  height: 1.3,
-                  shadows: [
-                    Shadow(
-                      offset: Offset(0, 1),
-                      blurRadius: 3.0,
-                      color: Colors.black.withValues(alpha: 0.5),
+
+              // 그라데이션 오버레이 및 텍스트 정보
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
+                    stops: [0.5, 1.0],
+                  ),
+                ),
+                padding: EdgeInsets.all(8.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PlatformIcon(
+                      source: content.source,
+                      size: isGridLayout ? 18.w : 24.w,
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      content.title,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        height: 1.3,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(0, 1),
+                            blurRadius: 3.0,
+                            color: Colors.black.withValues(alpha: 0.5),
+                          ),
+                        ],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

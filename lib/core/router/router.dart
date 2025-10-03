@@ -81,9 +81,11 @@ class AppRouter {
                   // SNS 콘텐츠 상세 화면
                   GoRoute(
                     path: 'detail/:contentId',
-                    builder: (context, state) {
+                    pageBuilder: (context, state) {
                       final contentId = state.pathParameters['contentId']!;
                       final extraData = state.extra;
+
+                      Widget detailScreen;
 
                       // extra가 Map<String, dynamic> 형태로 전달되었는지 확인
                       if (extraData is Map<String, dynamic>) {
@@ -93,19 +95,66 @@ class AppRouter {
 
                         // 리스트와 인덱스가 모두 전달된 경우
                         if (contents != null && initialIndex != null) {
-                          return SnsContentDetailScreen(
+                          detailScreen = SnsContentDetailScreen(
                             contents: contents,
                             initialIndex: initialIndex,
                           );
+                        } else {
+                          // Fallback
+                          final dummyContent = _findContentById(contentId);
+                          detailScreen = SnsContentDetailScreen(
+                            contents: [dummyContent],
+                            initialIndex: 0,
+                          );
                         }
+                      } else {
+                        // Fallback: 더미 데이터로 단일 콘텐츠 표시
+                        // (직접 URL 접근 시나리오)
+                        final dummyContent = _findContentById(contentId);
+                        detailScreen = SnsContentDetailScreen(
+                          contents: [dummyContent],
+                          initialIndex: 0,
+                        );
                       }
 
-                      // Fallback: 더미 데이터로 단일 콘텐츠 표시
-                      // (직접 URL 접근 시나리오)
-                      final dummyContent = _findContentById(contentId);
-                      return SnsContentDetailScreen(
-                        contents: [dummyContent],
-                        initialIndex: 0,
+                      // 커스텀 페이지 전환 애니메이션 적용
+                      // Hero 애니메이션과 함께 Fade + Slide 효과 추가
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: detailScreen,
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          // Fade 애니메이션 (0.0 → 1.0)
+                          final fadeAnimation = Tween<double>(
+                            begin: 0.0,
+                            end: 1.0,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeOut,
+                            ),
+                          );
+
+                          // Slide 애니메이션 (아래 → 위)
+                          final slideAnimation = Tween<Offset>(
+                            begin: const Offset(0.0, 0.1), // 아래에서 살짝 올라오는 효과
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeOutCubic,
+                            ),
+                          );
+
+                          // Fade와 Slide 애니메이션 결합
+                          return FadeTransition(
+                            opacity: fadeAnimation,
+                            child: SlideTransition(
+                              position: slideAnimation,
+                              child: child,
+                            ),
+                          );
+                        },
                       );
                     },
                   ),

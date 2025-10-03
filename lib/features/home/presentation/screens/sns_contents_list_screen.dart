@@ -47,8 +47,8 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
   /// 초기 데이터 로드
   void _loadInitialData() {
     // 더미 데이터 로드 (실제로는 API 호출)
+    // 기본 6개의 샘플 콘텐츠만 로드
     _allContents.addAll(SnsContentDummyData.getSampleContents());
-    _allContents.addAll(SnsContentDummyData.getSampleContents()); // 더 많은 데이터
     _filteredContents = List.from(_allContents);
     setState(() {});
   }
@@ -72,19 +72,67 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
     // 실제로는 API 호출하여 데이터 가져오기
     await Future.delayed(const Duration(seconds: 1));
 
-    // 더미 데이터 추가
-    final moreContents = SnsContentDummyData.getSampleContents();
+    // 현재 콘텐츠 개수를 기반으로 고유한 ID를 가진 더미 데이터 생성
+    final currentCount = _allContents.length;
+    final moreContents = List.generate(
+      6,
+      (index) => SnsContent.dummy(
+        id: '${currentCount + index + 1}', // 고유한 ID 생성
+        title: _getDummyTitle(currentCount + index),
+        source: _getDummySource(currentCount + index),
+        creatorName: _getDummyCreator(currentCount + index),
+      ),
+    );
 
     setState(() {
       _allContents.addAll(moreContents);
       _applyFilter();
       _isLoading = false;
 
-      // 데이터가 적으면 더 이상 없다고 표시
-      if (moreContents.length < 3) {
+      // 3번 로드하면 더 이상 없다고 표시 (총 6 + 6*3 = 24개)
+      if (_allContents.length >= 24) {
         _hasMore = false;
       }
     });
+  }
+
+  /// 더미 제목 생성
+  String _getDummyTitle(int index) {
+    final titles = [
+      '속초 해변 일출 명소',
+      '대구 서문시장 먹방 투어',
+      '인천 차이나타운 당일치기',
+      '수원 화성 역사 탐방',
+      '춘천 남이섬 단풍 여행',
+      '여수 밤바다 야경 포인트',
+    ];
+    return titles[index % titles.length];
+  }
+
+  /// 더미 소스 생성
+  SnsSource _getDummySource(int index) {
+    final sources = [
+      SnsSource.youtube,
+      SnsSource.instagram,
+      SnsSource.youtube,
+      SnsSource.instagram,
+      SnsSource.youtube,
+      SnsSource.instagram,
+    ];
+    return sources[index % sources.length];
+  }
+
+  /// 더미 크리에이터 생성
+  String _getDummyCreator(int index) {
+    final creators = [
+      '여행러버',
+      '@travel_lover',
+      '국내여행가이드',
+      '@korea_travel',
+      '여행브이로거',
+      '@vlog_korea',
+    ];
+    return creators[index % creators.length];
   }
 
   /// 필터 적용
