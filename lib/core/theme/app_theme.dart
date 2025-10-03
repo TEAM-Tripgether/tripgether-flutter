@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../constants/app_colors.dart';
 import '../animations/page_transitions.dart';
 
-/// TripTogether 앱의 테마 설정
+/// Tripgether 앱의 테마 설정
 ///
 /// Material 3 디자인 시스템을 기반으로 한 라이트/다크 테마를 제공합니다.
 /// Pretendard 폰트 패밀리를 사용하여 일관된 타이포그래피를 적용합니다.
@@ -34,7 +34,8 @@ class AppTheme {
         onSecondaryContainer: AppColors.onSecondaryContainer,
         surface: AppColors.surface,
         onSurface: AppColors.onSurface,
-        surfaceContainerHighest: AppColors.surfaceVariant, // surfaceVariant는 deprecated, surfaceContainerHighest 사용
+        surfaceContainerHighest: AppColors
+            .surfaceVariant, // surfaceVariant는 deprecated, surfaceContainerHighest 사용
         onSurfaceVariant: AppColors.onSurfaceVariant,
         // background는 deprecated, surface 사용
         // onBackground는 deprecated, onSurface 사용
@@ -72,9 +73,9 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.onPrimary,
           disabledBackgroundColor: AppColors.buttonDisabled,
-          disabledForegroundColor: AppColors.onPrimary.withValues(alpha:0.38),
+          disabledForegroundColor: AppColors.onPrimary.withValues(alpha: 0.38),
           elevation: 2,
-          shadowColor: AppColors.shadow.withValues(alpha:0.15),
+          shadowColor: AppColors.shadow.withValues(alpha: 0.15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -93,7 +94,7 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.onPrimary,
           disabledBackgroundColor: AppColors.buttonDisabled,
-          disabledForegroundColor: AppColors.onPrimary.withValues(alpha:0.38),
+          disabledForegroundColor: AppColors.onPrimary.withValues(alpha: 0.38),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -182,7 +183,7 @@ class AppTheme {
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: AppColors.outline.withValues(alpha:0.38),
+            color: AppColors.outline.withValues(alpha: 0.38),
             width: 1,
           ),
         ),
@@ -376,7 +377,7 @@ class AppTheme {
         }),
         checkColor: WidgetStateProperty.all(AppColors.onPrimary),
         overlayColor: WidgetStateProperty.all(
-          AppColors.primary.withValues(alpha:0.1),
+          AppColors.primary.withValues(alpha: 0.1),
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
@@ -390,7 +391,7 @@ class AppTheme {
           return AppColors.outline;
         }),
         overlayColor: WidgetStateProperty.all(
-          AppColors.primary.withValues(alpha:0.1),
+          AppColors.primary.withValues(alpha: 0.1),
         ),
       ),
 
@@ -409,7 +410,7 @@ class AppTheme {
           return AppColors.surfaceVariant;
         }),
         overlayColor: WidgetStateProperty.all(
-          AppColors.primary.withValues(alpha:0.1),
+          AppColors.primary.withValues(alpha: 0.1),
         ),
       ),
 
@@ -418,7 +419,7 @@ class AppTheme {
         activeTrackColor: AppColors.primary,
         inactiveTrackColor: AppColors.surfaceVariant,
         thumbColor: AppColors.primary,
-        overlayColor: AppColors.primary.withValues(alpha:0.1),
+        overlayColor: AppColors.primary.withValues(alpha: 0.1),
         valueIndicatorColor: AppColors.primary,
         valueIndicatorTextStyle: const TextStyle(
           fontFamily: fontFamily,

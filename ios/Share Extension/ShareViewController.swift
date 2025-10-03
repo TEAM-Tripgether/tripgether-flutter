@@ -17,7 +17,7 @@ import UserNotifications
 
 class ShareViewController: SLComposeServiceViewController {
     // IMPORTANT: 메인 앱의 Bundle Identifier와 동일하게 설정 (App Group ID 접두사로도 사용)
-    let hostAppBundleIdentifier = "com.example.triptogether"
+    let hostAppBundleIdentifier = "com.tripgether.app"
     let sharedKey = "ShareKey"
     var sharedMedia: [SharedMediaFile] = []
     var sharedText: [String] = []

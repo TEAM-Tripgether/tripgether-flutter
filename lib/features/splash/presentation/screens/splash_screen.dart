@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/routes.dart';
 
-/// TripTogether 앱의 스플래시 화면
+/// Tripgether 앱의 스플래시 화면
 ///
 /// Trip과 Together가 합쳐져서 Tripgether가 되는 브랜드 로고 애니메이션을 보여줍니다.
 /// 4단계 애니메이션으로 구성:

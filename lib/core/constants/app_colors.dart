@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// TripTogether 앱의 색상 상수 정의
+/// Tripgether 앱의 색상 상수 정의
 ///
 /// Material 3 디자인 시스템에 맞춰 앱 전체에서 사용할 색상들을 정의합니다.
 /// 사용자 요구사항에 따른 브랜드 색상과 시스템 색상을 포함합니다.
@@ -15,14 +15,18 @@ class AppColors {
   static const Color primaryDark = Color(0xFF4A3689); // Primary보다 어두운 톤
   static const Color primaryContainer = Color(0xFFE8DDFF); // Primary 컨테이너 배경
   static const Color onPrimary = Color(0xFFFFFFFF); // Primary 위의 텍스트 색상
-  static const Color onPrimaryContainer = Color(0xFF21005D); // Primary 컨테이너 위의 텍스트
+  static const Color onPrimaryContainer = Color(
+    0xFF21005D,
+  ); // Primary 컨테이너 위의 텍스트
 
   /// Secondary Colors (보조 색상)
   /// Primary를 보완하는 보조 색상
   static const Color secondary = Color(0xFF625B71); // 보조 브랜드 색상
   static const Color secondaryContainer = Color(0xFFE8DEF8); // Secondary 컨테이너
   static const Color onSecondary = Color(0xFFFFFFFF); // Secondary 위의 텍스트
-  static const Color onSecondaryContainer = Color(0xFF1D192B); // Secondary 컨테이너 텍스트
+  static const Color onSecondaryContainer = Color(
+    0xFF1D192B,
+  ); // Secondary 컨테이너 텍스트
 
   /// Surface Colors (표면 색상)
   /// 카드, 시트, 메뉴 등의 배경에 사용
@@ -60,7 +64,9 @@ class AppColors {
   /// 버튼의 다양한 상태를 나타내는 색상
   static const Color buttonEnabled = primary; // 664BAE - 활성화된 버튼
   static const Color buttonDisabled = Color(0xFFB2A4D6); // B2A4D6 - 비활성화된 버튼
-  static const Color buttonSecondary = Color(0xFF878787); // 878787 - 보조 버튼 (다시보내기)
+  static const Color buttonSecondary = Color(
+    0xFF878787,
+  ); // 878787 - 보조 버튼 (다시보내기)
 
   /// Status Colors (상태 색상)
   /// 성공, 정보, 경고 등의 상태를 나타내는 색상
@@ -196,9 +202,9 @@ extension AppColorPalette on AppColors {
 
   /// 홈 헤더 그라데이션 (위에서 아래로: #664BAE → #8975C1B2 70% → #FFFFFF)
   static const List<Color> homeHeaderGradient = [
-    AppColors.primary,        // #664BAE (0%)
-    AppColors.gradientMid,    // #8975C1B2 (70%)
-    Color(0xFFFFFFFF),        // #FFFFFF (100%)
+    AppColors.primary, // #664BAE (0%)
+    AppColors.gradientMid, // #8975C1B2 (70%)
+    Color(0xFFFFFFFF), // #FFFFFF (100%)
   ];
 
   /// 소셜 로그인 버튼 색상

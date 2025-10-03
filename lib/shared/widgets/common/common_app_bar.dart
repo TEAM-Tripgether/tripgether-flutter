@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 
-/// TripTogether 앱에서 사용하는 공용 AppBar 컴포넌트
+/// Tripgether 앱에서 사용하는 공용 AppBar 컴포넌트
 ///
 /// 모든 화면에서 일관된 AppBar UI를 제공하며, 다양한 커스터마이징이 가능합니다.
 /// Material 3 디자인 시스템과 앱의 테마를 완전히 준수합니다.

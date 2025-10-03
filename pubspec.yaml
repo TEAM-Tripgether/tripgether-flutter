@@ -1,5 +1,5 @@
-name: triptogether
-description: "TripTogether - Share your travel moments and discover local places through short-form content."
+name: tripgether
+description: "Tripgether - Share your travel moments and discover local places through short-form content."
 
 publish_to: 'none' 
 
@@ -35,6 +35,7 @@ dependencies:
   dio: ^5.9.0                     # HTTP 클라이언트
   retrofit: ^4.7.2                # REST API 클라이언트 생성
   flutter_secure_storage: ^9.2.4  # 민감 데이터 안전 저장
+  google_sign_in: ^7.2.0          # 구글 소셜 로그인 (Firebase 없이)
 
   # UI/UX 레이아웃
   flutter_screenutil: ^5.9.3      # 화면, 해상도 대응 유틸리티

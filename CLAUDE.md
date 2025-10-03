@@ -812,7 +812,7 @@ class TripSharingService {
       final shareText = _buildShareText(trip);
 
       // 3. 딥링크 생성
-      final deepLink = 'https://triptogether.com/trip/${trip.id}';
+      final deepLink = 'https://tripgether.com/trip/${trip.id}';
 
       // 4. 공유 실행
       await Share.shareXFiles([shareImage], text: '$shareText\n$deepLink');

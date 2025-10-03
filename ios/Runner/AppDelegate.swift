@@ -5,7 +5,7 @@ import UserNotifications
 @main
 @objc class AppDelegate: FlutterAppDelegate {
 
-  private let hostAppBundleIdentifier = "com.example.triptogether"
+  private let hostAppBundleIdentifier = "com.tripgether.app"
   private let sharedKey = "ShareKey"
 
   override func application(
@@ -132,8 +132,8 @@ import UserNotifications
     print("[AppDelegate] ✅ URL Scheme 호출됨: \(url.absoluteString)")
     print("[AppDelegate] URL Host/Path: \(url.host ?? "nil")/\(url.path)")
 
-    // triptogether:// 스킴 확인
-    if url.scheme == "triptogether" {
+    // tripgether:// 스킴 확인
+    if url.scheme == "tripgether" {
       print("[AppDelegate] 🚀 Share Extension에서 앱 실행됨!")
 
       // 앱이 포그라운드로 전환

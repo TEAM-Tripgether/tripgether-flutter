@@ -1,4 +1,4 @@
-package com.example.triptogether
+package com.tripgether.app
 
 import android.content.Intent
 import android.net.Uri

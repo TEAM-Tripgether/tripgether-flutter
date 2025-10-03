@@ -1,6 +1,6 @@
-# triptogether
+# tripgether
 
-A new Flutter project.
+Tripgether - Share your travel moments and discover local places through short-form content.
 
 ## Getting Started
 

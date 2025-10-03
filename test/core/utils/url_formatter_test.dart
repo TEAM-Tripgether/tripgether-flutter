@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:triptogether/core/utils/url_formatter.dart';
+import 'package:tripgether/core/utils/url_formatter.dart';
 
 void main() {
   group('UrlFormatter.cleanUrl', () {

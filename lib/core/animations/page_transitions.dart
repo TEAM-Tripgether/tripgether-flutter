@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// TripTogether 앱의 페이지 전환 애니메이션 설정
+/// Tripgether 앱의 페이지 전환 애니메이션 설정
 ///
 /// 페이지 전환과 관련된 모든 애니메이션 로직을 관리합니다.
 /// 테마와 분리하여 애니메이션만의 책임을 갖습니다.
@@ -80,15 +80,13 @@ class NoAnimationPageRoute<T> extends PageRouteBuilder<T> {
   @override
   final RouteSettings settings;
 
-  NoAnimationPageRoute({
-    required this.child,
-    required this.settings,
-  }) : super(
-          settings: settings,
-          pageBuilder: (context, animation, secondaryAnimation) => child,
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        );
+  NoAnimationPageRoute({required this.child, required this.settings})
+    : super(
+        settings: settings,
+        pageBuilder: (context, animation, secondaryAnimation) => child,
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      );
 
   @override
   Widget buildTransitions(
@@ -114,7 +112,10 @@ extension PageRouteExtensions on BuildContext {
   }
 
   /// 애니메이션 없이 페이지 교체
-  Future<T?> pushReplacementWithoutAnimation<T extends Object?, TO extends Object?>(Widget page) {
+  Future<T?> pushReplacementWithoutAnimation<
+    T extends Object?,
+    TO extends Object?
+  >(Widget page) {
     return Navigator.of(this).pushReplacement<T, TO>(
       NoAnimationPageRoute<T>(
         child: page,

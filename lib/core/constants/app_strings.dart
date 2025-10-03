@@ -81,7 +81,7 @@ class AppStrings {
   기존 하드코딩된 문자열을 국제화된 버전으로 마이그레이션하는 방법:
 
   🔴 기존 (Hard-coded)
-  Text('TripTogether')
+  Text('Tripgether')
   Text('홈')
   AppBar(title: Text('지도 화면'))
 
@@ -110,8 +110,8 @@ class AppStrings {
   // 새로운 코드에서는 AppStrings.of(context)를 사용하세요.
 
   @Deprecated('Use AppStrings.of(context).appTitle instead')
-  static const String appName = 'TripTogether';
+  static const String appName = 'Tripgether';
 
   @Deprecated('Use AppStrings.of(context).appTitle instead')
-  static const String appTitle = 'TripTogether';
+  static const String appTitle = 'Tripgether';
 }
