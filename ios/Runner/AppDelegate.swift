@@ -56,6 +56,10 @@ import UserNotifications
       getSharedData(result: result)
     case "clearSharedData":
       clearSharedData(result: result)
+    case "getShareLog":
+      getShareLog(result: result)
+    case "clearShareLog":
+      clearShareLog(result: result)
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -177,6 +181,49 @@ import UserNotifications
     }
 
     completionHandler()
+  }
+
+  // Share Extension 로그 파일 읽기
+  private func getShareLog(result: @escaping FlutterResult) {
+    let containerURL = FileManager.default.containerURL(
+      forSecurityApplicationGroupIdentifier: "group.\(hostAppBundleIdentifier)"
+    )
+
+    guard let logFileURL = containerURL?.appendingPathComponent("share_extension_log.txt") else {
+      result("로그 파일 경로를 찾을 수 없습니다")
+      return
+    }
+
+    do {
+      let logContent = try String(contentsOf: logFileURL, encoding: .utf8)
+      result(logContent)
+    } catch {
+      result("로그 파일이 없거나 읽을 수 없습니다\n경로: \(logFileURL.path)")
+    }
+  }
+
+  // Share Extension 로그 파일 삭제
+  private func clearShareLog(result: @escaping FlutterResult) {
+    let containerURL = FileManager.default.containerURL(
+      forSecurityApplicationGroupIdentifier: "group.\(hostAppBundleIdentifier)"
+    )
+
+    guard let logFileURL = containerURL?.appendingPathComponent("share_extension_log.txt") else {
+      result(false)
+      return
+    }
+
+    do {
+      if FileManager.default.fileExists(atPath: logFileURL.path) {
+        try FileManager.default.removeItem(at: logFileURL)
+        result(true)
+      } else {
+        result(true) // 파일이 없으면 성공으로 간주
+      }
+    } catch {
+      print("[AppDelegate] ❌ 로그 삭제 실패: \(error)")
+      result(false)
+    }
   }
 
 }

@@ -4,11 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/services/sharing_service.dart';
+import '../../../../core/utils/url_formatter.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/layout/greeting_section.dart';
 import '../../../../shared/widgets/layout/sns_content_card.dart';
 import '../../../../shared/widgets/layout/place_card.dart';
+import '../../../debug/share_extension_log_screen.dart';
 import '../../data/models/sns_content_model.dart';
 import '../../data/models/place_model.dart';
 
@@ -58,8 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // 공유 서비스 재개 (이전에 일시정지된 경우 재활성화)
     _sharingService.resume();
 
-    // 공유 서비스 초기화 (iOS UserDefaults 또는 Android Intent 데이터 확인)
-    await _sharingService.initialize();
+    // main.dart에서 이미 초기화되었으므로 여기서는 초기화하지 않음
+    // await _sharingService.initialize(); // 제거됨
 
     // 공유 데이터 스트림 구독
     _sharingSubscription = _sharingService.dataStream.listen(
@@ -111,11 +113,19 @@ class _HomeScreenState extends State<HomeScreen> {
       debugPrint('[HomeScreen] 텍스트 데이터: $text');
 
       // URL인지 확인
-      if (_sharingService.isValidUrl(text)) {
-        debugPrint('[HomeScreen] URL 감지: $text');
+      if (UrlFormatter.isValidUrl(text)) {
+        // 🧹 추적 파라미터 제거하여 깔끔한 URL로 정리
+        final cleanedUrl = UrlFormatter.cleanUrl(text);
+        final urlType = UrlFormatter.getUrlType(cleanedUrl);
+        final domain = UrlFormatter.extractDomain(cleanedUrl);
+
+        debugPrint('[HomeScreen] 🔗 URL 감지: $cleanedUrl');
+        debugPrint('[HomeScreen] 📱 플랫폼: $urlType');
+        debugPrint('[HomeScreen] 🌐 도메인: $domain');
+
         // TODO: URL에 따른 처리 (여행 정보 파싱 등)
       } else {
-        debugPrint('[HomeScreen] 일반 텍스트: $text');
+        debugPrint('[HomeScreen] 📝 일반 텍스트: $text');
         // TODO: 일반 텍스트 처리 (여행 메모 등)
       }
     }
@@ -419,6 +429,19 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 20.h),
           ],
         ),
+      ),
+      // 디버그용 FloatingActionButton (Share Extension 로그 확인)
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ShareExtensionLogScreen(),
+            ),
+          );
+        },
+        tooltip: 'Share Extension 로그',
+        child: const Icon(Icons.bug_report),
       ),
     );
   }

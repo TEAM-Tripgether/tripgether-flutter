@@ -89,8 +89,15 @@ class ShareViewController: SLComposeServiceViewController {
                 this.sharedText.append(item)
                 if index == (content.attachments?.count ?? 1) - 1 {
                     let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
+
+                    // 💾 단일 데이터 방식: 마지막 공유만 저장 (메모리 효율)
+                    print("[ShareExtension] ✅ 단일 데이터 저장: \(this.sharedText)")
+
                     userDefaults?.set(this.sharedText, forKey: this.sharedKey)
                     userDefaults?.synchronize()
+
+                    // 📝 로그 파일 생성
+                    this.saveDebugLog(message: "텍스트 저장 완료: \(item)")
 
                     // UI 업데이트는 메인 스레드에서 실행
                     DispatchQueue.main.async {
@@ -111,8 +118,15 @@ class ShareViewController: SLComposeServiceViewController {
                 this.sharedText.append(item.absoluteString)
                 if index == (content.attachments?.count ?? 1) - 1 {
                     let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
+
+                    // 💾 단일 데이터 방식: 마지막 공유만 저장 (메모리 효율)
+                    print("[ShareExtension] ✅ 단일 데이터 저장: \(this.sharedText)")
+
                     userDefaults?.set(this.sharedText, forKey: this.sharedKey)
                     userDefaults?.synchronize()
+
+                    // 📝 로그 파일 생성
+                    this.saveDebugLog(message: "URL 저장 완료: \(item.absoluteString)")
 
                     // UI 업데이트는 메인 스레드에서 실행
                     DispatchQueue.main.async {
@@ -346,6 +360,39 @@ class ShareViewController: SLComposeServiceViewController {
     func toData(data: [SharedMediaFile]) -> Data {
         let encodedData = try? JSONEncoder().encode(data)
         return encodedData ?? Data()
+    }
+
+    /// 백그라운드 저장 확인용 디버그 로그 파일 생성
+    /// App Groups 컨테이너에 로그 파일을 저장하여 앱에서 확인 가능
+    private func saveDebugLog(message: String) {
+        let containerURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: "group.\(hostAppBundleIdentifier)"
+        )
+
+        guard let logFileURL = containerURL?.appendingPathComponent("share_extension_log.txt") else {
+            print("[ShareExtension] ❌ 로그 파일 경로 생성 실패")
+            return
+        }
+
+        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .medium)
+        let logMessage = "[\(timestamp)] \(message)\n"
+
+        // 기존 로그 읽기
+        var existingLog = ""
+        if let existing = try? String(contentsOf: logFileURL, encoding: .utf8) {
+            existingLog = existing
+        }
+
+        // 새 로그 추가
+        let updatedLog = existingLog + logMessage
+
+        // 로그 파일 저장
+        do {
+            try updatedLog.write(to: logFileURL, atomically: true, encoding: .utf8)
+            print("[ShareExtension] 📝 로그 저장 완료: \(logFileURL.path)")
+        } catch {
+            print("[ShareExtension] ❌ 로그 저장 실패: \(error)")
+        }
     }
 }
 

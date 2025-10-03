@@ -488,12 +488,16 @@ class SharingService {
         debugPrint('[SharingService] ✅ 스트림에 데이터 전달: ${sharedData.toString()}');
         _dataStreamController.add(sharedData);
 
-        // iOS UserDefaults 클리어
-        final clearSuccess = await _channel.invokeMethod('clearSharedData');
-        debugPrint('[SharingService] UserDefaults 클리어 결과: $clearSuccess');
-
-        if (clearSuccess != true) {
-          debugPrint('[SharingService] ⚠️ 경고: UserDefaults 클리어 실패!');
+        // 🗑️ 메모리 효율: 처리 완료된 데이터는 즉시 삭제
+        try {
+          final clearSuccess = await _channel.invokeMethod('clearSharedData');
+          if (clearSuccess == true) {
+            debugPrint('[SharingService] ✅ UserDefaults 즉시 삭제 완료 (메모리 효율)');
+          } else {
+            debugPrint('[SharingService] ⚠️ UserDefaults 삭제 실패 - 메모리 누수 가능성');
+          }
+        } catch (e) {
+          debugPrint('[SharingService] ❌ UserDefaults 삭제 오류: $e');
         }
 
         return true; // 성공

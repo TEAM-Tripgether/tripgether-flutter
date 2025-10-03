@@ -6,9 +6,18 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/router/router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/locale_provider.dart';
+import 'core/services/sharing_service.dart';
 import 'l10n/app_localizations.dart';
 
-void main() => runApp(const ProviderScope(child: MyApp()));
+void main() async {
+  // Flutter 바인딩 초기화
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 공유 서비스 초기화 (앱 시작 시 Share Extension 데이터 확인)
+  await SharingService.instance.initialize();
+
+  runApp(const ProviderScope(child: MyApp()));
+}
 
 /// 앱의 루트 위젯 - PRD.md 구조에 따른 메인 앱 설정œ
 ///
