@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/platform_icon.dart';
 import '../../../../shared/widgets/layout/sns_content_card.dart';
 import '../../data/models/sns_content_model.dart';
@@ -159,7 +160,9 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.recentSnsContent), elevation: 0),
+      appBar: CommonAppBar.forSubPage(
+        title: l10n.recentSnsContent,
+      ),
       body: Column(
         children: [
           // 필터 칩들
@@ -289,21 +292,26 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
             return _buildLoadingCard();
           }
 
-          // 콘텐츠 카드
-          return SnsContentCard(
-            content: _filteredContents[index],
-            margin: EdgeInsets.zero,
-            isGridLayout: true,
-            onTap: () {
-              final detailPath = AppRoutes.snsContentDetail.replaceFirst(
-                ':contentId',
-                _filteredContents[index].id,
-              );
-              context.go(
-                detailPath,
-                extra: {'contents': _filteredContents, 'initialIndex': index},
-              );
-            },
+          // 콘텐츠 카드 (Hero 애니메이션 적용)
+          // 리스트 → 상세 화면 전환 시 이미지가 확대되는 효과
+          final content = _filteredContents[index];
+          return Hero(
+            tag: 'sns_content_${content.id}',
+            child: SnsContentCard(
+              content: content,
+              margin: EdgeInsets.zero,
+              isGridLayout: true,
+              onTap: () {
+                final detailPath = AppRoutes.snsContentDetail.replaceFirst(
+                  ':contentId',
+                  content.id,
+                );
+                context.go(
+                  detailPath,
+                  extra: {'contents': _filteredContents, 'initialIndex': index},
+                );
+              },
+            ),
           );
         },
       ),

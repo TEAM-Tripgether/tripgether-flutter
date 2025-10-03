@@ -8,7 +8,10 @@ import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
 import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
+import '../../features/home/presentation/screens/saved_places_list_screen.dart';
+import '../../features/home/presentation/screens/place_detail_screen.dart';
 import '../../features/home/data/models/sns_content_model.dart';
+import '../../features/home/data/models/place_model.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/schedule/presentation/screens/schedule_screen.dart';
@@ -164,6 +167,65 @@ class AppRouter {
               GoRoute(
                 path: 'saved-places',
                 builder: (context, state) => const SavedPlacesListScreen(),
+                routes: [
+                  // 장소 상세 화면 (nested route)
+                  GoRoute(
+                    path: ':placeId',
+                    pageBuilder: (context, state) {
+                      final placeId = state.pathParameters['placeId']!;
+                      final extraData = state.extra;
+
+                      SavedPlace place;
+
+                      // extra로 전달된 장소 데이터 사용
+                      if (extraData is SavedPlace) {
+                        place = extraData;
+                      } else {
+                        // Fallback: 더미 데이터에서 찾기
+                        place = _findPlaceById(placeId);
+                      }
+
+                      // 커스텀 페이지 전환 애니메이션 적용
+                      // Hero 애니메이션과 함께 Fade + Slide 효과
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: PlaceDetailScreen(place: place),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          // Fade 애니메이션
+                          final fadeAnimation = Tween<double>(
+                            begin: 0.0,
+                            end: 1.0,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeOut,
+                            ),
+                          );
+
+                          // Slide 애니메이션 (아래 → 위)
+                          final slideAnimation = Tween<Offset>(
+                            begin: const Offset(0.0, 0.1),
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeOutCubic,
+                            ),
+                          );
+
+                          return FadeTransition(
+                            opacity: fadeAnimation,
+                            child: SlideTransition(
+                              position: slideAnimation,
+                              child: child,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -198,7 +260,8 @@ class AppRouter {
                 path: 'place/:placeId',
                 builder: (context, state) {
                   final placeId = state.pathParameters['placeId']!;
-                  return PlaceDetailScreen(placeId: placeId);
+                  final place = _findPlaceById(placeId);
+                  return PlaceDetailScreen(place: place);
                 },
               ),
             ],
@@ -295,6 +358,29 @@ class AppRouter {
       );
     }
   }
+
+  /// ID로 저장한 장소 찾기 헬퍼 함수
+  ///
+  /// 실제로는 Riverpod provider나 API에서 가져와야 하지만,
+  /// 현재는 더미 데이터를 사용합니다.
+  ///
+  /// [placeId] 장소 ID
+  /// Returns: 해당 ID의 SavedPlace 객체
+  static SavedPlace _findPlaceById(String placeId) {
+    // 더미 데이터에서 검색
+    final allPlaces = SavedPlaceDummyData.getSamplePlaces();
+    try {
+      return allPlaces.firstWhere((place) => place.id == placeId);
+    } catch (e) {
+      // 찾지 못한 경우 기본 더미 데이터 반환
+      return SavedPlace.dummy(
+        id: placeId,
+        name: '장소를 찾을 수 없습니다',
+        category: PlaceCategory.restaurant,
+        address: '주소 정보 없음',
+      );
+    }
+  }
 }
 
 /// 임시 스크린들 (실제 구현 전까지 플레이스홀더)
@@ -315,19 +401,6 @@ class CourseDetailScreen extends StatelessWidget {
   }
 }
 
-class PlaceDetailScreen extends StatelessWidget {
-  final String placeId;
-
-  const PlaceDetailScreen({super.key, required this.placeId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('장소 상세 - $placeId')),
-      body: Center(child: Text('장소 상세 화면\nID: $placeId')),
-    );
-  }
-}
 
 class ScheduleDetailScreen extends StatelessWidget {
   final String scheduleId;
@@ -379,14 +452,3 @@ class MyCoursesScreen extends StatelessWidget {
   }
 }
 
-class SavedPlacesListScreen extends StatelessWidget {
-  const SavedPlacesListScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('저장한 장소')),
-      body: const Center(child: Text('저장한 장소 목록 화면 (준비중)')),
-    );
-  }
-}

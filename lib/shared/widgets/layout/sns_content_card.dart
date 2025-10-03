@@ -35,31 +35,27 @@ class SnsContentCard extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // Hero 위젯으로 이미지 감싸기
-              // tag는 콘텐츠의 고유 ID를 사용하여 화면 간 연결
-              Hero(
-                tag: 'sns_content_${content.id}',
-                child: CachedNetworkImage(
-                  imageUrl: content.thumbnailUrl,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: Colors.grey[200],
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Theme.of(context).primaryColor,
-                        ),
+              // 썸네일 이미지 (Hero 애니메이션 제거)
+              CachedNetworkImage(
+                imageUrl: content.thumbnailUrl,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  color: Colors.grey[200],
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).primaryColor,
                       ),
                     ),
                   ),
-                  errorWidget: (context, url, error) => Container(
-                    color: Colors.grey[200],
-                    child: Icon(
-                      Icons.image_not_supported,
-                      size: 48.w,
-                      color: Colors.grey[400],
-                    ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  color: Colors.grey[200],
+                  child: Icon(
+                    Icons.image_not_supported,
+                    size: 48.w,
+                    color: Colors.grey[400],
                   ),
                 ),
               ),

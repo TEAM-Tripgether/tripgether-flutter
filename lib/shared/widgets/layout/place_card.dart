@@ -4,6 +4,207 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../features/home/data/models/place_model.dart';
 import '../../../l10n/app_localizations.dart';
 
+/// 그리드 레이아웃용 장소 카드 위젯
+///
+/// SNS 콘텐츠처럼 썸네일 이미지 중심의 컴팩트한 디자인
+/// Hero 애니메이션을 지원하여 상세 화면으로 부드러운 전환 제공
+class PlaceGridCard extends StatelessWidget {
+  /// 표시할 장소 정보
+  final SavedPlace place;
+
+  /// 카드 탭 시 실행될 콜백
+  final VoidCallback? onTap;
+
+  /// 그리드에서의 마진 설정
+  final EdgeInsets? margin;
+
+  const PlaceGridCard({
+    super.key,
+    required this.place,
+    this.onTap,
+    this.margin,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap ?? () => debugPrint('장소 카드 클릭: ${place.name}'),
+      child: Container(
+        margin: margin ?? EdgeInsets.zero,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Hero 애니메이션이 적용된 썸네일 이미지
+              _buildHeroThumbnail(),
+
+              // 장소 정보 영역
+              _buildPlaceInfo(context),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Hero 애니메이션이 적용된 썸네일 이미지
+  /// place.id를 tag로 사용하여 상세 화면과 연결
+  Widget _buildHeroThumbnail() {
+    // 첫 번째 이미지를 썸네일로 사용
+    final thumbnailUrl = place.imageUrls.isNotEmpty
+        ? place.imageUrls[0]
+        : 'https://picsum.photos/300/200?random=${place.id}';
+
+    return Expanded(
+      child: Hero(
+        tag: 'place_${place.id}',
+        child: CachedNetworkImage(
+          imageUrl: thumbnailUrl,
+          width: double.infinity,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Container(
+            color: Colors.grey[200],
+            child: Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+          ),
+          errorWidget: (context, url, error) => Container(
+            color: Colors.grey[200],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.image_not_supported,
+                  size: 48.w,
+                  color: Colors.grey[400],
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  '이미지 없음',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 12.sp,
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 장소 정보 영역 (이름, 카테고리, 평점)
+  Widget _buildPlaceInfo(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: Colors.white,
+      padding: EdgeInsets.all(12.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 카테고리와 이름
+          Row(
+            children: [
+              Text(
+                place.category.emoji,
+                style: TextStyle(fontSize: 14.sp),
+              ),
+              SizedBox(width: 4.w),
+              Expanded(
+                child: Text(
+                  place.name,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 4.h),
+
+          // 카테고리 및 거리
+          Row(
+            children: [
+              Text(
+                place.category.displayName,
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              SizedBox(width: 6.w),
+              Icon(Icons.location_on, size: 12.w, color: Colors.grey[500]),
+              SizedBox(width: 2.w),
+              Text(
+                place.distanceText,
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontSize: 11.sp,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+
+          // 평점 표시
+          if (place.rating != null) ...[
+            SizedBox(height: 4.h),
+            Row(
+              children: [
+                Icon(Icons.star, size: 12.w, color: Colors.amber),
+                SizedBox(width: 2.w),
+                Text(
+                  place.rating!.toStringAsFixed(1),
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                ),
+                if (place.reviewCount != null)
+                  Text(
+                    ' (${place.reviewCount})',
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontSize: 10.sp,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 /// 저장된 장소 카드 위젯
 ///
 /// 사용자가 저장한 장소를 카드 형태로 표시
@@ -231,7 +432,7 @@ class PlaceCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.r),
                 child: CachedNetworkImage(
                   imageUrl: place.imageUrls[index],
-                  width: 100.w, // 정사각형으로 변경 및 크기 확대
+                  width: 100.w,
                   height: 100.h,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
