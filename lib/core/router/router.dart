@@ -5,6 +5,7 @@ import 'routes.dart';
 import 'route_guards.dart';
 import '../../shared/widgets/layout/bottom_navigation.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
 import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
@@ -46,6 +47,16 @@ class AppRouter {
         path: AppRoutes.splash,
         pageBuilder: (context, state) =>
             NoTransitionPage(child: const SplashScreen()),
+      ),
+
+      /// 로그인 화면 라우트
+      ///
+      /// 이메일/비밀번호 로그인과 소셜 로그인(카카오, 네이버)을 제공합니다.
+      /// 인증이 필요없는 공개 화면입니다.
+      GoRoute(
+        path: AppRoutes.login,
+        pageBuilder: (context, state) =>
+            NoTransitionPage(child: const LoginScreen()),
       ),
 
       /// ShellRoute: 바텀 네비게이션이 있는 메인 레이아웃

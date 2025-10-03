@@ -12,8 +12,8 @@ class RouteGuard {
   /// 실제 구현 시에는 shared/providers/auth_provider.dart와 연동
   static bool get isAuthenticated {
     // TODO: 실제 인증 상태 확인 로직 구현
-    // 현재는 MVP를 위해 항상 true 반환
-    return true;
+    // 현재는 로그인 플로우 테스트를 위해 false 반환
+    return false;
   }
 
   /// 라우트 리다이렉트 로직
@@ -28,6 +28,18 @@ class RouteGuard {
   static String? redirectLogic(BuildContext context, GoRouterState state) {
     final String location = state.fullPath ?? state.uri.path;
 
+    // TODO: 임시로 인증 체크 비활성화 (로그인 플로우 테스트용)
+    // 실제 구현 시에는 아래 주석을 해제하여 사용
+
+    // 루트 경로(/) 접근 시 스플래시로 리다이렉트
+    if (location == AppRoutes.root) {
+      return AppRoutes.splash;
+    }
+
+    // 기본적으로 현재 경로 유지 (인증 체크 비활성화)
+    return null;
+
+    /* 실제 인증 로직 (주석 처리)
     // 현재 경로가 공개 경로인 경우
     if (AppRoutes.publicRoutes.contains(location)) {
       // 이미 인증된 사용자가 로그인/회원가입 페이지에 접근 시 홈으로 리다이렉트
@@ -53,6 +65,7 @@ class RouteGuard {
 
     // 기본적으로 현재 경로 유지
     return null;
+    */
   }
 
   /// 특정 권한이 필요한 기능에 대한 권한 확인

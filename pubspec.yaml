@@ -93,6 +93,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - assets/splash/
     - assets/navigation_icons/
     - assets/platform_icons/

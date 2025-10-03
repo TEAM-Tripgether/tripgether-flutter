@@ -74,13 +74,13 @@ class _SplashScreenState extends State<SplashScreen>
       _isAnimationStarted = true;
     });
 
-    // 애니메이션 완료 후 홈 화면으로 자동 이동
+    // 애니메이션 완료 후 로그인 화면으로 자동 이동
     // 애니메이션 총 시간 2000ms + 여유 시간 800ms = 2800ms 후 이동
     Future.delayed(const Duration(milliseconds: 3500), () {
       if (mounted) {
         // 위젯이 아직 화면에 마운트되어 있는지 확인
-        // 애니메이션 없이 즉시 홈 화면으로 전환
-        context.go(AppRoutes.home);
+        // 애니메이션 없이 즉시 로그인 화면으로 전환
+        context.go(AppRoutes.login);
       }
     });
   }
