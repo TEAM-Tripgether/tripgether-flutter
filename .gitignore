@@ -12,6 +12,11 @@
 .swiftpm/
 migrate_working_dir/
 
+# Environment variables (보안 정보 - Git에 업로드 금지)
+.env
+.env.local
+.env.*.local
+
 # IntelliJ related
 *.iml
 *.ipr
