@@ -17,6 +17,21 @@ class SavedPlacesListScreen extends StatefulWidget {
   State<SavedPlacesListScreen> createState() => _SavedPlacesListScreenState();
 }
 
+/// 필터 설정 데이터 클래스
+class _FilterConfig {
+  final PlaceCategory? category;
+  final String label;
+  final String emoji;
+  final Color? selectedColor;
+
+  const _FilterConfig({
+    this.category,
+    required this.label,
+    this.emoji = '',
+    this.selectedColor,
+  });
+}
+
 class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
   /// 현재 선택된 카테고리 필터
   PlaceCategory? _selectedCategory;
@@ -32,6 +47,28 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
 
   /// 로딩 중 상태
   bool _isLoading = false;
+
+  /// 필터 설정 목록 (확장 가능한 구조)
+  /// PlaceCategory enum에 새 카테고리 추가 시 자동으로 필터에 반영됨
+  List<_FilterConfig> get _filterConfigs {
+    return [
+      // 전체 보기 필터
+      _FilterConfig(
+        category: null,
+        label: AppLocalizations.of(context).filterAll,
+        selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+      ),
+      // 카테고리별 필터 (PlaceCategory enum 기반 자동 생성)
+      ...PlaceCategory.values.map(
+        (category) => _FilterConfig(
+          category: category,
+          label: category.displayName,
+          emoji: category.emoji,
+          selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+        ),
+      ),
+    ];
+  }
 
   @override
   void initState() {
@@ -70,12 +107,15 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
     final currentCount = _allPlaces.length;
     final morePlaces = List.generate(
       6,
-      (index) => SavedPlace.dummy(
-        id: '${currentCount + index + 1}',
-        name: _getDummyName(currentCount + index),
-        category: _getDummyCategory(currentCount + index),
-        address: _getDummyAddress(currentCount + index),
-      ),
+      (index) {
+        final dummyData = _getDummyData(currentCount + index);
+        return SavedPlace.dummy(
+          id: '${currentCount + index + 1}',
+          name: dummyData['name'] as String,
+          category: dummyData['category'] as PlaceCategory,
+          address: dummyData['address'] as String,
+        );
+      },
     );
 
     setState(() {
@@ -85,36 +125,45 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
     });
   }
 
-  /// 더미 이름 생성
-  String _getDummyName(int index) {
-    final names = [
-      '홍대 감성 카페',
-      '연남동 맛집',
-      '강남 루프탑 바',
-      '이태원 브런치',
-      '북촌 한옥카페',
-      '망원동 디저트',
-    ];
-    return names[index % names.length];
-  }
+  /// 더미 데이터 템플릿 (확장 가능한 구조)
+  /// 새로운 더미 장소 추가 시 여기에만 데이터를 추가하면 됨
+  static const List<Map<String, dynamic>> _dummyTemplates = [
+    {
+      'name': '홍대 감성 카페',
+      'category': PlaceCategory.cafe,
+      'address': '서울 마포구 홍대입구',
+    },
+    {
+      'name': '연남동 맛집',
+      'category': PlaceCategory.restaurant,
+      'address': '서울 마포구 연남동',
+    },
+    {
+      'name': '강남 루프탑 바',
+      'category': PlaceCategory.bar,
+      'address': '서울 강남구 역삼동',
+    },
+    {
+      'name': '이태원 브런치',
+      'category': PlaceCategory.restaurant,
+      'address': '서울 용산구 이태원동',
+    },
+    {
+      'name': '북촌 한옥카페',
+      'category': PlaceCategory.cafe,
+      'address': '서울 종로구 북촌로',
+    },
+    {
+      'name': '망원동 디저트',
+      'category': PlaceCategory.cafe,
+      'address': '서울 마포구 망원동',
+    },
+  ];
 
-  /// 더미 카테고리 생성
-  PlaceCategory _getDummyCategory(int index) {
-    final categories = PlaceCategory.values;
-    return categories[index % categories.length];
-  }
-
-  /// 더미 주소 생성
-  String _getDummyAddress(int index) {
-    final addresses = [
-      '서울 마포구 홍대입구',
-      '서울 마포구 연남동',
-      '서울 강남구 역삼동',
-      '서울 용산구 이태원동',
-      '서울 종로구 북촌로',
-      '서울 마포구 망원동',
-    ];
-    return addresses[index % addresses.length];
+  /// 더미 데이터 가져오기 (통합 메서드)
+  /// [index] 인덱스에 해당하는 더미 데이터 반환
+  Map<String, dynamic> _getDummyData(int index) {
+    return _dummyTemplates[index % _dummyTemplates.length];
   }
 
   /// 필터 적용
@@ -156,46 +205,44 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
     );
   }
 
-  /// 카테고리 필터 칩 빌드
+  /// 카테고리 필터 칩 빌드 (데이터 기반 확장 가능 구조)
   Widget _buildFilterChips(AppLocalizations l10n) {
     return Container(
       height: 50.h,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: ListView(
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        children: [
-          // 전체 필터
-          Padding(
-            padding: EdgeInsets.only(right: 8.w),
-            child: FilterChip(
-              label: Text(l10n.filterAll),
-              selected: _selectedCategory == null,
-              onSelected: (_) => _onFilterChanged(null),
-              selectedColor:
-                  Theme.of(context).primaryColor.withValues(alpha: 0.2),
-            ),
-          ),
-          // 카테고리 필터들
-          ...PlaceCategory.values.map((category) {
-            return Padding(
-              padding: EdgeInsets.only(right: 8.w),
-              child: FilterChip(
-                label: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(category.emoji),
-                    SizedBox(width: 4.w),
-                    Text(category.displayName),
-                  ],
-                ),
-                selected: _selectedCategory == category,
-                onSelected: (_) => _onFilterChanged(category),
-                selectedColor:
-                    Theme.of(context).primaryColor.withValues(alpha: 0.2),
-              ),
-            );
-          }),
-        ],
+        itemCount: _filterConfigs.length,
+        itemBuilder: (context, index) {
+          final config = _filterConfigs[index];
+          return _buildSingleFilterChip(config);
+        },
+      ),
+    );
+  }
+
+  /// 개별 필터 칩 빌드
+  /// [config] 필터 설정 데이터
+  Widget _buildSingleFilterChip(_FilterConfig config) {
+    final isSelected = _selectedCategory == config.category;
+    final hasEmoji = config.emoji.isNotEmpty;
+
+    return Padding(
+      padding: EdgeInsets.only(right: 8.w),
+      child: FilterChip(
+        label: hasEmoji
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(config.emoji),
+                  SizedBox(width: 4.w),
+                  Text(config.label),
+                ],
+              )
+            : Text(config.label),
+        selected: isSelected,
+        onSelected: (_) => _onFilterChanged(config.category),
+        selectedColor: config.selectedColor,
       ),
     );
   }

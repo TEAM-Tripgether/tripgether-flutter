@@ -386,6 +386,10 @@ class _HomeScreenState extends State<HomeScreen> {
               places: _savedPlaces,
               title: l10n.recentSavedPlaces,
               maxItems: 3,
+              onPlaceTap: (place) {
+                // 장소 카드 클릭 시 바로 상세 화면으로 이동
+                context.go('/map/place/${place.id}', extra: place);
+              },
               onSeeMoreTap: () {
                 // 저장한 장소 목록 화면으로 이동
                 context.push('/home/saved-places');

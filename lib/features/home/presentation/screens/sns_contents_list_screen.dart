@@ -19,6 +19,21 @@ class SnsContentsListScreen extends StatefulWidget {
   State<SnsContentsListScreen> createState() => _SnsContentsListScreenState();
 }
 
+/// 필터 설정 데이터 클래스
+class _FilterConfig {
+  final SnsSource? source;
+  final String label;
+  final Color? selectedColor;
+  final bool showIcon;
+
+  const _FilterConfig({
+    this.source,
+    required this.label,
+    this.selectedColor,
+    this.showIcon = false,
+  });
+}
+
 class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
   /// 현재 선택된 필터
   SnsSource? _selectedFilter;
@@ -37,6 +52,36 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
 
   /// 더 이상 데이터가 없는지 여부
   bool _hasMore = true;
+
+  /// 필터 설정 목록 (확장 가능한 구조)
+  /// 새로운 SNS 플랫폼 추가 시 여기에만 데이터를 추가하면 됨
+  List<_FilterConfig> get _filterConfigs => [
+    _FilterConfig(
+      source: null, // null = 전체 보기
+      label: AppLocalizations.of(context).filterAll,
+      selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+      showIcon: false,
+    ),
+    _FilterConfig(
+      source: SnsSource.youtube,
+      label: AppLocalizations.of(context).filterYoutube,
+      selectedColor: Colors.red.withValues(alpha: 0.2),
+      showIcon: true,
+    ),
+    _FilterConfig(
+      source: SnsSource.instagram,
+      label: AppLocalizations.of(context).filterInstagram,
+      selectedColor: Colors.purple.withValues(alpha: 0.2),
+      showIcon: true,
+    ),
+    // 새로운 플랫폼 추가 예시:
+    // _FilterConfig(
+    //   source: SnsSource.tiktok,
+    //   label: AppLocalizations.of(context).filterTiktok,
+    //   selectedColor: Colors.black.withValues(alpha: 0.2),
+    //   showIcon: true,
+    // ),
+  ];
 
   @override
   void initState() {
@@ -75,15 +120,15 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
 
     // 현재 콘텐츠 개수를 기반으로 고유한 ID를 가진 더미 데이터 생성
     final currentCount = _allContents.length;
-    final moreContents = List.generate(
-      6,
-      (index) => SnsContent.dummy(
+    final moreContents = List.generate(6, (index) {
+      final dummyData = _getDummyData(currentCount + index);
+      return SnsContent.dummy(
         id: '${currentCount + index + 1}', // 고유한 ID 생성
-        title: _getDummyTitle(currentCount + index),
-        source: _getDummySource(currentCount + index),
-        creatorName: _getDummyCreator(currentCount + index),
-      ),
-    );
+        title: dummyData['title'] as String,
+        source: dummyData['source'] as SnsSource,
+        creatorName: dummyData['creator'] as String,
+      );
+    });
 
     setState(() {
       _allContents.addAll(moreContents);
@@ -97,43 +142,37 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
     });
   }
 
-  /// 더미 제목 생성
-  String _getDummyTitle(int index) {
-    final titles = [
-      '속초 해변 일출 명소',
-      '대구 서문시장 먹방 투어',
-      '인천 차이나타운 당일치기',
-      '수원 화성 역사 탐방',
-      '춘천 남이섬 단풍 여행',
-      '여수 밤바다 야경 포인트',
-    ];
-    return titles[index % titles.length];
-  }
+  /// 더미 데이터 템플릿 (확장 가능한 구조)
+  /// 새로운 더미 콘텐츠 추가 시 여기에만 데이터를 추가하면 됨
+  static const List<Map<String, dynamic>> _dummyTemplates = [
+    {'title': '속초 해변 일출 명소', 'source': SnsSource.youtube, 'creator': '여행러버'},
+    {
+      'title': '대구 서문시장 먹방 투어',
+      'source': SnsSource.instagram,
+      'creator': '@travel_lover',
+    },
+    {
+      'title': '인천 차이나타운 당일치기',
+      'source': SnsSource.youtube,
+      'creator': '국내여행가이드',
+    },
+    {
+      'title': '수원 화성 역사 탐방',
+      'source': SnsSource.instagram,
+      'creator': '@korea_travel',
+    },
+    {'title': '춘천 남이섬 단풍 여행', 'source': SnsSource.youtube, 'creator': '여행브이로거'},
+    {
+      'title': '여수 밤바다 야경 포인트',
+      'source': SnsSource.instagram,
+      'creator': '@vlog_korea',
+    },
+  ];
 
-  /// 더미 소스 생성
-  SnsSource _getDummySource(int index) {
-    final sources = [
-      SnsSource.youtube,
-      SnsSource.instagram,
-      SnsSource.youtube,
-      SnsSource.instagram,
-      SnsSource.youtube,
-      SnsSource.instagram,
-    ];
-    return sources[index % sources.length];
-  }
-
-  /// 더미 크리에이터 생성
-  String _getDummyCreator(int index) {
-    final creators = [
-      '여행러버',
-      '@travel_lover',
-      '국내여행가이드',
-      '@korea_travel',
-      '여행브이로거',
-      '@vlog_korea',
-    ];
-    return creators[index % creators.length];
+  /// 더미 데이터 가져오기 (통합 메서드)
+  /// [index] 인덱스에 해당하는 더미 데이터 반환
+  Map<String, dynamic> _getDummyData(int index) {
+    return _dummyTemplates[index % _dummyTemplates.length];
   }
 
   /// 필터 적용
@@ -160,9 +199,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: CommonAppBar.forSubPage(
-        title: l10n.recentSnsContent,
-      ),
+      appBar: CommonAppBar.forSubPage(title: l10n.recentSnsContent),
       body: Column(
         children: [
           // 필터 칩들
@@ -175,61 +212,43 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
     );
   }
 
-  /// 필터 칩 빌드
+  /// 필터 칩 빌드 (데이터 기반 확장 가능 구조)
   Widget _buildFilterChips(AppLocalizations l10n) {
     return Container(
       height: 50.h,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: ListView(
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        children: [
-          // 전체 필터
-          Padding(
-            padding: EdgeInsets.only(right: 8.w),
-            child: FilterChip(
-              label: Text(l10n.filterAll),
-              selected: _selectedFilter == null,
-              onSelected: (_) => _onFilterChanged(null),
-              selectedColor: Theme.of(
-                context,
-              ).primaryColor.withValues(alpha: 0.2),
-            ),
-          ),
-          // YouTube 필터
-          Padding(
-            padding: EdgeInsets.only(right: 8.w),
-            child: FilterChip(
-              label: Row(
+        itemCount: _filterConfigs.length,
+        itemBuilder: (context, index) {
+          final config = _filterConfigs[index];
+          return _buildSingleFilterChip(config);
+        },
+      ),
+    );
+  }
+
+  /// 개별 필터 칩 빌드
+  /// [config] 필터 설정 데이터
+  Widget _buildSingleFilterChip(_FilterConfig config) {
+    final isSelected = _selectedFilter == config.source;
+
+    return Padding(
+      padding: EdgeInsets.only(right: 8.w),
+      child: FilterChip(
+        label: config.showIcon && config.source != null
+            ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  PlatformIcon(source: SnsSource.youtube, size: 16.w),
+                  PlatformIcon(source: config.source!, size: 16.w),
                   SizedBox(width: 4.w),
-                  Text(l10n.filterYoutube),
+                  Text(config.label),
                 ],
-              ),
-              selected: _selectedFilter == SnsSource.youtube,
-              onSelected: (_) => _onFilterChanged(SnsSource.youtube),
-              selectedColor: Colors.red.withValues(alpha: 0.2),
-            ),
-          ),
-          // Instagram 필터
-          Padding(
-            padding: EdgeInsets.only(right: 8.w),
-            child: FilterChip(
-              label: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  PlatformIcon(source: SnsSource.instagram, size: 16.w),
-                  SizedBox(width: 4.w),
-                  Text(l10n.filterInstagram),
-                ],
-              ),
-              selected: _selectedFilter == SnsSource.instagram,
-              onSelected: (_) => _onFilterChanged(SnsSource.instagram),
-              selectedColor: Colors.purple.withValues(alpha: 0.2),
-            ),
-          ),
-        ],
+              )
+            : Text(config.label),
+        selected: isSelected,
+        onSelected: (_) => _onFilterChanged(config.source),
+        selectedColor: config.selectedColor,
       ),
     );
   }

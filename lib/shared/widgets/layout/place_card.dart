@@ -481,6 +481,9 @@ class PlaceListSection extends StatelessWidget {
   /// 더보기 버튼 탭 시 콜백
   final VoidCallback? onSeeMoreTap;
 
+  /// 개별 장소 카드 탭 시 콜백
+  final void Function(SavedPlace place)? onPlaceTap;
+
   /// 최대 표시 개수 (null이면 전체 표시)
   final int? maxItems;
 
@@ -489,6 +492,7 @@ class PlaceListSection extends StatelessWidget {
     required this.places,
     this.title,
     this.onSeeMoreTap,
+    this.onPlaceTap,
     this.maxItems,
   });
 
@@ -527,10 +531,12 @@ class PlaceListSection extends StatelessWidget {
           ...displayPlaces.map(
             (place) => PlaceCard(
               place: place,
-              onTap: () {
-                // 장소 상세 화면으로 이동
-                debugPrint('장소 선택: ${place.name}');
-              },
+              onTap: onPlaceTap != null
+                  ? () => onPlaceTap!(place)
+                  : () {
+                      // 기본 동작: 디버그 출력
+                      debugPrint('장소 선택: ${place.name}');
+                    },
               onImageTap: (index) {
                 // 이미지 상세 보기 또는 지도 화면으로 이동
                 debugPrint('이미지 선택: ${place.name} - 이미지 $index');
