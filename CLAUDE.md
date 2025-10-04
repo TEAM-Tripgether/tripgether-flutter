@@ -4,17 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Tripgether is a Flutter mobile application focused on travel planning and collaboration. The project is in early development stage with a basic splash screen and home page structure.
+Tripgether is a Flutter mobile application focused on travel planning and collaboration. The app enables users to discover and save travel content from social media, organize places, and collaborate on travel planning. Core features include Google OAuth authentication, content sharing from external apps, and organized travel content management.
 
 ## Technology Stack & Architecture
 
 **State Management**: Flutter Riverpod with @riverpod annotations for code generation
-**Routing**: GoRouter for navigation management
+**Routing**: GoRouter with centralized route management via `AppRoutes` class in `lib/core/router/routes.dart`
+**Authentication**: Google Sign-In 7.2.0 with event-based API (Completer pattern)
 **Network**: Dio + Retrofit for REST API communication
 **UI Framework**: Material Design with custom Pretendard font family
-**Animations**: Lottie, Flutter Animate, and Staggered Animations for Toss-style onboarding
-**Real-time**: Firebase Cloud Messaging for push notifications
-**Data Visualization**: Syncfusion Charts for admin/operator dashboards
+**Responsiveness**: flutter_screenutil for consistent sizing across devices
+**Image Caching**: cached_network_image for performance optimization
+**Loading Effects**: Shimmer for skeleton loading screens
+**Animations**: Lottie, Flutter Animate, and Staggered Animations
+**Internationalization**: flutter_localizations with ARB files for multi-language support
+**Content Sharing**: receive_sharing_intent for receiving shared content from other apps
 **Security**: Flutter Secure Storage for sensitive data
 
 ## Development Commands
@@ -70,17 +74,57 @@ dart run flutter_launcher_icons:main
 dart run change_app_package_name:main com.new.package.name
 ```
 
+## Project Structure
+
+```
+lib/
+├── core/                           # 핵심 공통 기능
+│   ├── router/                     # 라우팅 설정
+│   │   ├── app_router.dart        # GoRouter 설정 및 라우트 정의
+│   │   └── routes.dart            # AppRoutes 클래스 (경로 상수 중앙 관리)
+│   ├── services/                   # 공통 서비스
+│   │   ├── auth/                  # 인증 서비스
+│   │   │   └── google_auth_service.dart  # Google OAuth 처리
+│   │   └── sharing_service.dart   # 외부 앱 공유 데이터 수신
+│   └── utils/                      # 유틸리티
+│       └── url_formatter.dart     # URL 정리 및 타입 판별
+├── features/                       # 기능별 모듈
+│   ├── auth/                      # 인증 기능
+│   │   ├── presentation/          # UI 레이어
+│   │   │   ├── screens/          # 로그인 화면
+│   │   │   └── widgets/          # 로그인 폼, 소셜 로그인 버튼
+│   │   └── providers/            # 상태 관리 (Riverpod)
+│   │       └── login_provider.dart
+│   ├── home/                      # 홈 화면 기능
+│   │   ├── data/models/          # 데이터 모델
+│   │   └── presentation/
+│   │       └── screens/          # 홈, SNS 콘텐츠, 장소 목록 화면
+│   └── debug/                     # 디버깅 도구
+├── shared/                        # 공유 위젯 및 리소스
+│   └── widgets/
+│       ├── common/               # 공통 위젯 (AppBar 등)
+│       └── layout/               # 레이아웃 위젯 (카드, 섹션 등)
+└── l10n/                         # 다국어 지원
+    ├── app_localizations.dart    # 자동 생성된 다국어 클래스
+    └── arb/                      # ARB 파일 (ko.arb, en.arb)
+```
+
 ## Key Dependencies & Usage Patterns
 
 **Riverpod State Management**: Use @riverpod annotations with build_runner for provider code generation
-**UI Responsiveness**: flutter_screenutil for consistent sizing across devices
-**Network Images**: cached_network_image for performance
-**Animations**: Combine lottie, flutter_animate, and staggered_animations for rich UX
-**Firebase Integration**: Core setup complete, messaging configured for push notifications
+**Centralized Routing**: All routes defined in `AppRoutes` class - never use hardcoded route strings
+**Google Sign-In**: Event-based API with Completer pattern for async authentication flow
+**Content Sharing**: Unified handling of text, URLs, images, videos from external apps
+**Responsive UI**: ScreenUtil (.w, .h, .sp, .r) for all size and spacing values
+**Image Loading**: CachedNetworkImage with Shimmer placeholders for all network images
+**Internationalization**: AppLocalizations for all user-facing text
 
 ## Assets & Fonts
 
-**Logo**: `assets/logo.png` - Main app logo used in splash screen
+**Logos**:
+- `assets/logo.png` - Main app logo
+- `assets/app_logo_black.png` - Black logo with tagline for login screen
+
 **Custom Font**: Pretendard family with 9 weights (100-900) located in `assets/fonts/`
 
 Use Pretendard font in widgets:
@@ -88,37 +132,167 @@ Use Pretendard font in widgets:
 TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w500)
 ```
 
-## Testing
+## Current Implementation Status
 
-Single widget test exists in `test/widget_test.dart` but needs updating to match current app structure (currently tests non-existent counter functionality).
+### ✅ Completed Features
 
-## Current Limitations
+1. **Authentication System**
+   - Google OAuth 2.0 with Sign-In 7.2.0 event-based API
+   - LoginProvider with Riverpod for state management
+   - Automatic navigation after successful login
+   - Proper lifecycle management with ref.mounted checks
 
-- Basic app structure with splash screen and placeholder home page
-- Widget tests need updating to match actual app functionality
-- Firebase services configured but analytics/crashlytics commented out due to package conflicts
-- No routing structure implemented yet (GoRouter dependency added but not configured)
-- Freezed/JSON serialization packages commented out (not currently used)
+2. **Routing System**
+   - GoRouter configuration with nested routes
+   - Centralized route management via AppRoutes class
+   - All hardcoded routes replaced with AppRoutes constants
+   - Support for route parameters (:placeId, :contentId)
 
-## Sharing Functionality
+3. **Content Sharing**
+   - receive_sharing_intent integration
+   - Support for text, URLs, images, videos, documents
+   - URL cleaning and platform detection (YouTube, Instagram)
+   - Android and iOS platform configuration
 
-**Current Implementation**: Uses `receive_sharing_intent` package for receiving shared content from other apps
+4. **Home Screen**
+   - SNS content display with horizontal scroll
+   - Saved places with vertical list layout
+   - Shared data handling and processing
+   - Pull-to-refresh and infinite scroll patterns
+
+5. **UI Components**
+   - Responsive design with flutter_screenutil
+   - Shimmer loading effects
+   - CachedNetworkImage for performance
+   - CommonAppBar for consistent navigation
+   - Custom card layouts for content and places
+
+6. **Internationalization**
+   - Korean and English support
+   - ARB-based localization system
+   - AppLocalizations throughout the app
+
+### 🚧 Work in Progress
+
+- Backend API integration (currently using dummy data)
+- User profile management
+- Trip creation and collaboration features
+- Map integration for place details
+- Push notifications with Firebase Cloud Messaging
+
+### ⚠️ Known Limitations
+
+- Widget tests need updating to match current app structure
+- Firebase analytics/crashlytics disabled due to package conflicts
+- Some detail screens (place detail, SNS content detail) not fully implemented
+- No data persistence layer yet (local database)
+
+## Authentication & Routing
+
+### Google OAuth Implementation
+
+**Service Location**: `lib/core/services/auth/google_auth_service.dart`
+
+```dart
+// Google Sign-In with event-based API (7.2.0)
+final user = await GoogleAuthService.signIn();
+if (user != null) {
+  final auth = await user.authentication;
+  final idToken = auth.idToken; // Send to backend for validation
+}
+
+// Sign out
+await GoogleAuthService.signOut();
+```
+
+**Provider Location**: `lib/features/auth/providers/login_provider.dart`
+
+```dart
+// Login with Google
+final success = await ref.read(loginProvider.notifier).loginWithGoogle();
+if (success) {
+  context.go(AppRoutes.home);
+}
+```
+
+**Key Implementation Details**:
+- Event-based API with Completer pattern for async flow
+- No accessToken or serverAuthCode in 7.x (use idToken only)
+- Provider lifecycle management with ref.mounted checks
+- Automatic navigation after successful authentication
+
+### Routing System
+
+**Route Definition**: `lib/core/router/routes.dart`
+
+```dart
+class AppRoutes {
+  static const String login = '/auth/login';
+  static const String home = '/home';
+  static const String snsContentsList = '/home/sns-contents';
+  static const String snsContentDetail = '/home/sns-contents/detail/:contentId';
+  static const String placeDetail = '/place-detail/:placeId';
+  // ... more routes
+}
+```
+
+**Usage in Navigation**:
+
+```dart
+// Simple navigation
+context.go(AppRoutes.home);
+
+// With parameters
+final detailPath = AppRoutes.placeDetail.replaceFirst(':placeId', place.id);
+context.go(detailPath, extra: place);
+
+// Push (preserves back stack)
+context.push(AppRoutes.snsContentsList);
+```
+
+**⚠️ IMPORTANT**: Never use hardcoded route strings. Always use AppRoutes constants.
+
+## Content Sharing Functionality
+
+**Service Location**: `lib/core/services/sharing_service.dart`
+
 **Supported Types**: Text, URLs, Images, Videos, Documents
-**Key Files**:
-- `lib/services/sharing_service.dart` - Main sharing service with unified handling
-- Android configuration in `android/app/src/main/AndroidManifest.xml`
-- iOS configuration in `ios/Runner/Info.plist`
+
+**Platform Configuration**:
+- Android: `android/app/src/main/AndroidManifest.xml`
+- iOS: `ios/Runner/Info.plist`
 
 **Usage Pattern**:
+
 ```dart
-// Text and media sharing handled through single getMediaStream()
-// Text content appears as SharedMediaType.text with content in file.path
-SharingService().onDataReceived = (SharedData data) {
-  if (data.isTextData && data.sharedText != null) {
-    // Handle shared text/URL
+// Initialize in main.dart
+await SharingService.instance.initialize();
+
+// Listen to shared data in HomeScreen
+_sharingService.dataStream.listen((SharedData data) {
+  if (data.hasTextData) {
+    // Handle text/URLs
+    for (final text in data.sharedTexts) {
+      if (UrlFormatter.isValidUrl(text)) {
+        final cleanUrl = UrlFormatter.cleanUrl(text);
+        final urlType = UrlFormatter.getUrlType(cleanUrl);
+        // Process based on platform (youtube, instagram, etc.)
+      }
+    }
   }
-};
+
+  if (data.hasMediaData) {
+    // Handle images, videos, documents
+    final images = data.images;
+    final videos = data.videos;
+  }
+});
 ```
+
+**URL Processing**:
+- Automatic tracking parameter removal (utm_, fbclid, etc.)
+- Platform detection (YouTube, Instagram, Blog, etc.)
+- Domain extraction for display
 
 ## Claude Code 개발 지침
 
@@ -155,16 +329,34 @@ SharingService().onDataReceived = (SharedData data) {
 
 ### Flutter 개발 특화 지침
 
-- **상태 관리**: Riverpod 패턴과 @riverpod 어노테이션 활용
-- **UI 구성**: Material Design과 Pretendard 폰트 패밀리 사용
-- **반응형 UI**: ScreenUtil을 사용하여 모든 디바이스 크기에 대응하는 동적 UI 구현
-- **로딩 효과**: Shimmer 패키지를 사용한 스켈레톤 로딩 화면 구현
-- **애니메이션**: Lottie, Flutter Animate, Staggered Animations 조합 활용
-- **네트워킹**: Dio + Retrofit 패턴으로 REST API 통신
-- **이미지 처리**: CachedNetworkImage로 네트워크 이미지 캐싱 및 성능 최적화
-- **아이콘**: flutter_svg를 사용한 커스텀 SVG 아이콘 적용
+#### 필수 사항
+
+1. **라우팅**:
+   - ❌ 절대 하드코딩된 경로 사용 금지 (`'/home'`, `'/login'` 등)
+   - ✅ 반드시 `AppRoutes` 상수 사용 (`AppRoutes.home`, `AppRoutes.login`)
+   - 동적 파라미터는 `replaceFirst()` 사용
+
+2. **상태 관리**:
+   - Riverpod `@riverpod` 어노테이션 사용
+   - Provider disposal 전 `ref.mounted` 체크 필수
+   - 비즈니스 로직 성공/실패와 UI 상태 관리 분리
+
+3. **반응형 UI**:
+   - 모든 크기 값에 ScreenUtil 사용 (`.w`, `.h`, `.sp`, `.r`)
+   - 절대 하드코딩된 픽셀 값 사용 금지
+
+4. **다국어 지원**:
+   - 모든 사용자 노출 텍스트는 `AppLocalizations.of(context)` 사용
+   - 하드코딩된 문자열 금지
+
+#### 권장 사항
+
+- **로딩 효과**: Shimmer 패키지로 스켈레톤 화면 구현
+- **이미지**: CachedNetworkImage + Shimmer placeholder
+- **폰트**: Pretendard 폰트 패밀리 사용
+- **애니메이션**: Lottie, Flutter Animate 조합
+- **SVG 아이콘**: flutter_svg 사용
 - **보안**: Flutter Secure Storage로 민감 데이터 관리
-- **테스팅**: 위젯 테스트와 단위 테스트 작성 권장
 
 ## 주요 패키지 사용 예제
 
