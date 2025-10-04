@@ -423,12 +423,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: l10n.recentSnsContent,
                 onSeeMoreTap: () {
                   // SNS 콘텐츠 목록 화면으로 이동
-                  context.push('/home/sns-contents');
+                  context.push(AppRoutes.snsContentsList);
                 },
                 onContentTap: (content, index) {
                   // 개별 콘텐츠 카드 탭 시 상세 화면으로 이동
                   // 전체 리스트와 현재 인덱스를 전달하여 가로 스와이프 네비게이션 지원
-                  final detailPath = '/home/sns-contents/detail/${content.id}';
+                  final detailPath = AppRoutes.snsContentDetail.replaceFirst(
+                    ':contentId',
+                    content.id,
+                  );
                   context.go(
                     detailPath,
                     extra: {
@@ -454,11 +457,15 @@ class _HomeScreenState extends State<HomeScreen> {
               maxItems: 3,
               onPlaceTap: (place) {
                 // 장소 카드 클릭 시 바로 상세 화면으로 이동
-                context.go('/map/place/${place.id}', extra: place);
+                final detailPath = AppRoutes.placeDetail.replaceFirst(
+                  ':placeId',
+                  place.id,
+                );
+                context.go(detailPath, extra: place);
               },
               onSeeMoreTap: () {
                 // 저장한 장소 목록 화면으로 이동
-                context.push('/home/saved-places');
+                context.push(AppRoutes.savedPlacesList);
               },
             ),
 

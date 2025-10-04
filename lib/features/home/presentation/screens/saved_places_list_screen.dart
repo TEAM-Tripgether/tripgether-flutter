@@ -105,18 +105,15 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
 
     // 현재 장소 개수를 기반으로 고유한 ID를 가진 더미 데이터 생성
     final currentCount = _allPlaces.length;
-    final morePlaces = List.generate(
-      6,
-      (index) {
-        final dummyData = _getDummyData(currentCount + index);
-        return SavedPlace.dummy(
-          id: '${currentCount + index + 1}',
-          name: dummyData['name'] as String,
-          category: dummyData['category'] as PlaceCategory,
-          address: dummyData['address'] as String,
-        );
-      },
-    );
+    final morePlaces = List.generate(6, (index) {
+      final dummyData = _getDummyData(currentCount + index);
+      return SavedPlace.dummy(
+        id: '${currentCount + index + 1}',
+        name: dummyData['name'] as String,
+        category: dummyData['category'] as PlaceCategory,
+        address: dummyData['address'] as String,
+      );
+    });
 
     setState(() {
       _allPlaces.addAll(morePlaces);
@@ -190,9 +187,7 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: CommonAppBar.forSubPage(
-        title: l10n.recentSavedPlaces,
-      ),
+      appBar: CommonAppBar.forSubPage(title: l10n.recentSavedPlaces),
       body: Column(
         children: [
           // 카테고리 필터 칩들

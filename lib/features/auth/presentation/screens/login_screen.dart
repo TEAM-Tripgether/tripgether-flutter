@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/router/routes.dart';
 import '../../providers/login_provider.dart';
 import '../widgets/login_form.dart';
 import '../widgets/social_login_section.dart';
@@ -37,8 +38,8 @@ class LoginScreen extends ConsumerWidget {
 
     // 로그인 성공 시 홈으로 이동
     if (success && context.mounted) {
-      debugPrint('[LoginScreen] 🏠 홈 화면으로 이동 중... (/home)');
-      context.go('/home');
+      debugPrint('[LoginScreen] 🏠 홈 화면으로 이동 중... (${AppRoutes.home})');
+      context.go(AppRoutes.home);
       debugPrint('[LoginScreen] ✅ 화면 전환 완료');
     } else if (context.mounted) {
       // 로그인 실패 시 에러 메시지 표시
@@ -63,8 +64,8 @@ class LoginScreen extends ConsumerWidget {
 
     // 로그인 성공 시 홈으로 이동
     if (success && context.mounted) {
-      debugPrint('[LoginScreen] 🏠 홈 화면으로 이동 중... (/home)');
-      context.go('/home');
+      debugPrint('[LoginScreen] 🏠 홈 화면으로 이동 중... (${AppRoutes.home})');
+      context.go(AppRoutes.home);
       debugPrint('[LoginScreen] ✅ 화면 전환 완료');
     } else if (!success && context.mounted) {
       // 로그인 실패 시 에러 메시지 표시
