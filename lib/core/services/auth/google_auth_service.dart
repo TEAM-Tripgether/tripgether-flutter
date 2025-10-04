@@ -7,20 +7,29 @@ import 'package:google_sign_in/google_sign_in.dart';
 /// Google 소셜 로그인 서비스
 ///
 /// iOS와 Android에서 Google 계정을 통한 로그인 기능을 제공합니다.
-/// iOS는 .env 파일의 클라이언트 ID를 사용하고,
-/// Android는 Google Play Services가 자동으로 처리합니다.
+///
+/// **플랫폼별 설정**:
+/// - iOS: GOOGLE_IOS_CLIENT_ID (clientId)
+/// - Android: GOOGLE_WEB_CLIENT_ID (serverClientId)
+///   - Android Client ID는 google-services.json에서 자동 처리됨
 class GoogleAuthService {
   /// Google Sign-In 초기화
   ///
-  /// iOS의 경우 .env 파일에서 GOOGLE_IOS_CLIENT_ID를 읽어 초기화합니다.
-  /// Android는 자동으로 처리됩니다.
+  /// **필수 환경변수**:
+  /// - iOS: GOOGLE_IOS_CLIENT_ID
+  /// - Android: GOOGLE_WEB_CLIENT_ID
   static Future<void> initialize() async {
     try {
       await GoogleSignIn.instance.initialize(
-        // iOS만 클라이언트 ID 필요 (Android는 자동 처리)
+        // iOS: iOS Client ID 필요
         clientId: Platform.isIOS ? dotenv.env['GOOGLE_IOS_CLIENT_ID'] : null,
+        // Android: Web Client ID를 serverClientId로 사용 (필수)
+        serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
       );
       debugPrint('[GoogleAuthService] ✅ Google Sign-In 초기화 완료');
+      debugPrint(
+        '[GoogleAuthService] 🔑 Server Client ID: ${dotenv.env['GOOGLE_WEB_CLIENT_ID']?.substring(0, 20)}...',
+      );
     } catch (error) {
       debugPrint('[GoogleAuthService] 🚨 Google Sign-In 초기화 오류: $error');
       rethrow;
