@@ -25,16 +25,24 @@ class LoginScreen extends ConsumerWidget {
     String email,
     String password,
   ) async {
+    debugPrint('[LoginScreen] 📝 이메일 로그인 버튼 클릭');
+    debugPrint('[LoginScreen] 📧 Email: $email');
+
     // LoginProvider를 통한 로그인 API 호출
     final success = await ref
         .read(loginProvider.notifier)
         .loginWithEmail(email: email, password: password);
 
+    debugPrint('[LoginScreen] 로그인 결과: ${success ? "성공 ✅" : "실패 ❌"}');
+
     // 로그인 성공 시 홈으로 이동
     if (success && context.mounted) {
+      debugPrint('[LoginScreen] 🏠 홈 화면으로 이동 중... (/home)');
       context.go('/home');
+      debugPrint('[LoginScreen] ✅ 화면 전환 완료');
     } else if (context.mounted) {
       // 로그인 실패 시 에러 메시지 표시
+      debugPrint('[LoginScreen] ⚠️ 로그인 실패 - 에러 메시지 표시');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('로그인에 실패했습니다. 다시 시도해주세요.'),
@@ -46,20 +54,29 @@ class LoginScreen extends ConsumerWidget {
 
   /// 구글 로그인 핸들러
   Future<void> _handleGoogleLogin(BuildContext context, WidgetRef ref) async {
+    debugPrint('[LoginScreen] 🔘 구글 로그인 버튼 클릭');
+
     // LoginProvider를 통한 구글 로그인
     final success = await ref.read(loginProvider.notifier).loginWithGoogle();
 
+    debugPrint('[LoginScreen] 구글 로그인 결과: ${success ? "성공 ✅" : "실패 ❌"}');
+
     // 로그인 성공 시 홈으로 이동
     if (success && context.mounted) {
+      debugPrint('[LoginScreen] 🏠 홈 화면으로 이동 중... (/home)');
       context.go('/home');
-    } else if (context.mounted) {
+      debugPrint('[LoginScreen] ✅ 화면 전환 완료');
+    } else if (!success && context.mounted) {
       // 로그인 실패 시 에러 메시지 표시
+      debugPrint('[LoginScreen] ⚠️ 구글 로그인 실패 - 에러 메시지 표시');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('구글 로그인에 실패했습니다.'),
           backgroundColor: Colors.red,
         ),
       );
+    } else if (!context.mounted) {
+      debugPrint('[LoginScreen] ⚠️ context가 unmounted됨 - 화면 전환 불가');
     }
   }
 

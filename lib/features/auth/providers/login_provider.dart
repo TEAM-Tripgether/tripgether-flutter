@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter/foundation.dart';
+import '../../../core/services/auth/google_auth_service.dart';
 
 part 'login_provider.g.dart';
 
@@ -25,6 +26,10 @@ class LoginNotifier extends _$LoginNotifier {
     required String email,
     required String password,
   }) async {
+    debugPrint('[LoginProvider] 🔄 이메일 로그인 시도...');
+    debugPrint('  📧 Email: $email');
+    debugPrint('  🔑 Password: ${"*" * password.length}');
+
     // 로딩 상태로 전환
     state = const AsyncValue.loading();
 
@@ -44,7 +49,12 @@ class LoginNotifier extends _$LoginNotifier {
       // TODO: 사용자 정보 저장
       // ref.read(userProvider.notifier).setUser(response.user);
 
-      debugPrint('[LoginProvider] ✅ 이메일 로그인 성공: $email');
+      // 임시: 2초 대기 (실제 API 호출 시뮬레이션)
+      await Future.delayed(const Duration(seconds: 1));
+
+      debugPrint('[LoginProvider] ✅ 이메일 로그인 성공!');
+      debugPrint('  👤 사용자: $email');
+      debugPrint('  🏠 홈 화면으로 이동 예정');
 
       // 임시: 성공 상태로 전환
       state = const AsyncValue.data(null);
@@ -60,40 +70,100 @@ class LoginNotifier extends _$LoginNotifier {
 
   /// 구글 로그인
   ///
-  /// Returns: 로그인 성공 시 true, 실패 시 false
+  /// Google OAuth를 통해 사용자 인증을 수행합니다.
+  /// 1. GoogleAuthService를 통해 Google 로그인 수행
+  /// 2. 사용자가 Google 계정을 선택하고 권한 동의
+  /// 3. 로그인 성공 시 사용자 정보 및 토큰 획득
+  ///
+  /// Returns: 로그인 성공 시 true, 실패 또는 취소 시 false
   /// Throws: [Exception] 구글 SDK 호출 실패 시
   Future<bool> loginWithGoogle() async {
+    debugPrint('[LoginProvider] 🔄 구글 로그인 시작...');
+
+    // 로딩 상태로 전환 (UI에 로딩 인디케이터 표시)
     state = const AsyncValue.loading();
 
     try {
-      // TODO: 구글 SDK를 통한 로그인
-      // 1. 구글 로그인 실행
-      // final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      // 1. GoogleAuthService를 통해 구글 로그인 실행
+      final googleUser = await GoogleAuthService.signIn();
+
+      // 사용자가 로그인을 취소한 경우
+      if (googleUser == null) {
+        debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨');
+        if (ref.mounted) {
+          state = const AsyncValue.data(null);
+        }
+        return false;
+      }
+
+      // 2. 구글 인증 정보 가져오기 (accessToken, idToken)
+      final googleAuth = googleUser.authentication;
+
+      debugPrint('[LoginProvider] ✅ 구글 인증 정보 획득');
+      debugPrint('');
+      debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      debugPrint('📦 백엔드로 전송할 데이터:');
+      debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      debugPrint('🔑 idToken (필수):');
+      debugPrint('   ${googleAuth.idToken}');
+      debugPrint('');
+      debugPrint('📧 email: ${googleUser.email}');
+      debugPrint('👤 displayName: ${googleUser.displayName}');
+      debugPrint('🖼️ photoUrl: ${googleUser.photoUrl}');
+      debugPrint('🆔 googleId: ${googleUser.id}');
+      debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      debugPrint('');
+
+      // TODO: 3. 백엔드 API에 구글 토큰 전송하여 JWT 발급받기
+      // POST /auth/google/login
+      // Body:
+      // {
+      //   "idToken": googleAuth.idToken,        // ⭐ 필수: 백엔드에서 검증
+      //   "email": googleUser.email,             // 필수
+      //   "displayName": googleUser.displayName, // 선택
+      //   "photoUrl": googleUser.photoUrl,       // 선택
+      //   "googleId": googleUser.id              // 선택
+      // }
       //
-      // 2. 구글 인증 정보 가져오기
-      // final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
-      //
-      // 3. 백엔드에 구글 토큰 전송하여 JWT 발급
       // final response = await ref.read(authServiceProvider).loginWithGoogle(
-      //   googleToken: googleAuth.idToken,
-      //   googleUserId: googleUser.id,
+      //   idToken: googleAuth.idToken!,
+      //   email: googleUser.email,
+      //   displayName: googleUser.displayName,
+      //   photoUrl: googleUser.photoUrl,
+      //   googleId: googleUser.id,
       // );
       //
-      // 4. JWT 토큰 저장
+      // TODO: 4. 발급받은 JWT 토큰을 안전하게 저장
       // await ref.read(secureStorageProvider).write(
       //   key: 'access_token',
       //   value: response.accessToken,
       // );
+      //
+      // TODO: 5. 사용자 정보를 앱 상태에 저장
+      // ref.read(userProvider.notifier).setUser(response.user);
 
-      debugPrint('[LoginProvider] ✅ 구글 로그인 성공');
+      debugPrint('[LoginProvider] ✅ 구글 로그인 성공!');
+      debugPrint('  👤 사용자: ${googleUser.email}');
+      debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // 임시: 성공 상태로 전환
-      state = const AsyncValue.data(null);
+      // 성공 상태로 전환 (mounted일 때만)
+      if (ref.mounted) {
+        state = const AsyncValue.data(null);
+        debugPrint('[LoginProvider] 📝 Provider 상태 업데이트 완료');
+      } else {
+        debugPrint('[LoginProvider] ⚠️ Provider가 dispose됨 - 상태 업데이트 스킵 (로그인은 성공)');
+      }
 
+      // Provider가 dispose되었어도 로그인 자체는 성공했으므로 true 반환
       return true;
     } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
       debugPrint('[LoginProvider] ❌ 구글 로그인 실패: $e');
+
+      // 에러 상태로 전환 (mounted 체크)
+      if (ref.mounted) {
+        state = AsyncValue.error(e, stack);
+      }
+
       return false;
     }
   }

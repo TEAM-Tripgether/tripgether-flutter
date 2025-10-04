@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/services/sharing_service.dart';
+import '../../../../core/services/auth/google_auth_service.dart';
 import '../../../../core/utils/url_formatter.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
@@ -306,6 +308,63 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// 로그아웃 확인 다이얼로그 표시
+  ///
+  /// 사용자에게 로그아웃 여부를 확인하고,
+  /// 확인 시 Google 로그아웃을 수행한 후 로그인 화면으로 이동합니다.
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('로그아웃'),
+        content: const Text('정말 로그아웃하시겠습니까?'),
+        actions: [
+          // 취소 버튼
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+            },
+            child: const Text('취소'),
+          ),
+
+          // 로그아웃 버튼
+          TextButton(
+            onPressed: () async {
+              // 다이얼로그 닫기
+              Navigator.of(dialogContext).pop();
+
+              try {
+                // Google 로그아웃 실행
+                await GoogleAuthService.signOut();
+
+                // 로그인 화면으로 이동 (context.mounted 체크)
+                if (context.mounted) {
+                  context.go(AppRoutes.login);
+                }
+              } catch (error) {
+                debugPrint('[HomeScreen] 로그아웃 오류: $error');
+
+                // 에러 발생 시 스낵바 표시
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('로그아웃 중 오류가 발생했습니다: $error'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text(
+              '로그아웃',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -313,10 +372,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       // CommonAppBar를 사용하여 일관된 AppBar UI 제공
       appBar: CommonAppBar.forHome(
-        onMenuPressed: () {
-          // 햄버거 메뉴 버튼을 눌렀을 때의 동작
-          debugPrint('홈 화면 메뉴 버튼 클릭');
-        },
+        onMenuPressed: () => _showLogoutDialog(context),
         onNotificationPressed: () {
           // 알림 버튼을 눌렀을 때의 동작
           debugPrint('홈 화면 알림 버튼 클릭');

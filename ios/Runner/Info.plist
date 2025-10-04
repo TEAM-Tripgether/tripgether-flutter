@@ -53,12 +53,23 @@
     <!-- 앱 딥링크를 위한 URL 스킴 설정 -->
     <key>CFBundleURLTypes</key>
     <array>
+        <!-- 앱 자체 딥링크 -->
         <dict>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>tripgether</string>
+            </array>
+        </dict>
+        <!-- Google 로그인을 위한 URL Scheme -->
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <!-- iOS 클라이언트 ID를 역순으로 변환한 값 -->
+                <string>com.googleusercontent.apps.810846342989-bq9tq1261tgurg1tusq9q6ce29omddob</string>
             </array>
         </dict>
     </array>

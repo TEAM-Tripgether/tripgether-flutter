@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'core/router/router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/services/sharing_service.dart';
+import 'core/services/auth/google_auth_service.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
   // Flutter 바인딩 초기화
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 환경 변수 로드 (.env 파일)
+  await dotenv.load(fileName: ".env");
+
+  // Google Sign-In 초기화
+  await GoogleAuthService.initialize();
 
   // 공유 서비스 초기화 (앱 시작 시 Share Extension 데이터 확인)
   await SharingService.instance.initialize();

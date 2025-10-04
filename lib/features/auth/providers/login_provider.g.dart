@@ -45,7 +45,7 @@ final class LoginNotifierProvider
   LoginNotifier create() => LoginNotifier();
 }
 
-String _$loginNotifierHash() => r'6b8c3085c0bcf7da03fbc3800cefb67fe80c17d5';
+String _$loginNotifierHash() => r'154d4847b5245806f553104654989dc8b2c1b4bf';
 
 /// 로그인 상태 관리 Provider
 ///
