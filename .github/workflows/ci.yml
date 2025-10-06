@@ -31,15 +31,25 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # 4. 코드 생성 (Riverpod 등)
+      # 4. 환경 변수 파일 생성 (analyze 전에 필요)
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          # CI용 더미 Google OAuth 환경 변수
+          GOOGLE_IOS_CLIENT_ID=dummy-ios-client-id.apps.googleusercontent.com
+          GOOGLE_WEB_CLIENT_ID=dummy-web-client-id.apps.googleusercontent.com
+          GOOGLE_WEB_CLIENT_SECRET=GOCSPX-dummy-client-secret
+          EOF
+
+      # 5. 코드 생성 (Riverpod 등)
       - name: Generate code
         run: dart run build_runner build --delete-conflicting-outputs
 
-      # 5. 코드 포맷팅 검사
+      # 6. 코드 포맷팅 검사
       - name: Check formatting
         run: dart format --set-exit-if-changed .
 
-      # 6. 정적 분석
+      # 7. 정적 분석
       - name: Analyze code
         run: flutter analyze
 
