@@ -48,3 +48,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Claude Code (프로젝트 설정 파일과 캐시)
+.claude/
+.claude-plugins/
+.claudedocs/
+CLAUDE.md
