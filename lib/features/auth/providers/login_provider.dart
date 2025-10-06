@@ -151,7 +151,9 @@ class LoginNotifier extends _$LoginNotifier {
         state = const AsyncValue.data(null);
         debugPrint('[LoginProvider] 📝 Provider 상태 업데이트 완료');
       } else {
-        debugPrint('[LoginProvider] ⚠️ Provider가 dispose됨 - 상태 업데이트 스킵 (로그인은 성공)');
+        debugPrint(
+          '[LoginProvider] ⚠️ Provider가 dispose됨 - 상태 업데이트 스킵 (로그인은 성공)',
+        );
       }
 
       // Provider가 dispose되었어도 로그인 자체는 성공했으므로 true 반환

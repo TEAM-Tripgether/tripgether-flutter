@@ -355,10 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               }
             },
-            child: const Text(
-              '로그아웃',
-              style: TextStyle(color: Colors.red),
-            ),
+            child: const Text('로그아웃', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

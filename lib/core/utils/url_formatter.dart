@@ -32,23 +32,21 @@ class UrlFormatter {
     'utm_source_platform',
 
     // 광고 플랫폼
-    'fbclid',      // Facebook
-    'gclid',       // Google Ads
-    'msclkid',     // Microsoft Ads
-    'dclid',       // DoubleClick
-
+    'fbclid', // Facebook
+    'gclid', // Google Ads
+    'msclkid', // Microsoft Ads
+    'dclid', // DoubleClick
     // 소셜 미디어
-    'igshid',      // Instagram
-    'share_id',    // 일반 공유
+    'igshid', // Instagram
+    'share_id', // 일반 공유
     'ig_web_button_native_share', // Instagram 웹
-
     // 기타 추적
-    'ref',         // Referral
-    'source',      // Source tracking
-    '_hsenc',      // HubSpot
-    '_hsmi',       // HubSpot
-    'mc_cid',      // MailChimp
-    'mc_eid',      // MailChimp
+    'ref', // Referral
+    'source', // Source tracking
+    '_hsenc', // HubSpot
+    '_hsmi', // HubSpot
+    'mc_cid', // MailChimp
+    'mc_eid', // MailChimp
   ];
 
   /// URL에서 추적 파라미터를 제거합니다
@@ -124,8 +122,8 @@ class UrlFormatter {
     try {
       final uri = Uri.parse(url);
       return uri.hasScheme &&
-             (uri.scheme == 'http' || uri.scheme == 'https') &&
-             uri.host.isNotEmpty;
+          (uri.scheme == 'http' || uri.scheme == 'https') &&
+          uri.host.isNotEmpty;
     } catch (e) {
       return false;
     }
@@ -186,11 +184,4 @@ class UrlFormatter {
 }
 
 /// URL 타입 분류
-enum UrlType {
-  instagram,
-  youtube,
-  twitter,
-  facebook,
-  tiktok,
-  other,
-}
+enum UrlType { instagram, youtube, twitter, facebook, tiktok, other }

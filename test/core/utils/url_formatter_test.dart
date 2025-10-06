@@ -52,8 +52,7 @@ void main() {
     });
 
     test('fragment(#)는 유지', () {
-      const original =
-          'https://example.com/page?utm_source=share#section1';
+      const original = 'https://example.com/page?utm_source=share#section1';
       const expected = 'https://example.com/page#section1';
 
       final result = UrlFormatter.cleanUrl(original);
@@ -96,10 +95,7 @@ void main() {
     });
 
     test('youtu.be 단축 URL도 YouTube로 감지', () {
-      expect(
-        UrlFormatter.getUrlType('https://youtu.be/123'),
-        UrlType.youtube,
-      );
+      expect(UrlFormatter.getUrlType('https://youtu.be/123'), UrlType.youtube);
     });
 
     test('Twitter URL 타입 감지', () {
@@ -117,10 +113,7 @@ void main() {
     });
 
     test('알 수 없는 URL은 other 타입', () {
-      expect(
-        UrlFormatter.getUrlType('https://example.com'),
-        UrlType.other,
-      );
+      expect(UrlFormatter.getUrlType('https://example.com'), UrlType.other);
     });
   });
 
@@ -140,10 +133,7 @@ void main() {
     });
 
     test('잘못된 URL은 빈 문자열 반환', () {
-      expect(
-        UrlFormatter.extractDomain('not a url'),
-        '',
-      );
+      expect(UrlFormatter.extractDomain('not a url'), '');
     });
   });
 }

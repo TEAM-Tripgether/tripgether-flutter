@@ -123,10 +123,7 @@ class PlaceGridCard extends StatelessWidget {
           // 카테고리와 이름
           Row(
             children: [
-              Text(
-                place.category.emoji,
-                style: TextStyle(fontSize: 14.sp),
-              ),
+              Text(place.category.emoji, style: TextStyle(fontSize: 14.sp)),
               SizedBox(width: 4.w),
               Expanded(
                 child: Text(

@@ -56,7 +56,9 @@ class SnsContent {
       thumbnailUrl: thumbnailUrl ?? 'https://picsum.photos/400/300?random=$id',
       source: source,
       contentUrl: 'https://example.com/content/$id',
-      creatorName: creatorName ?? (source == SnsSource.youtube ? 'Travel Channel' : '@traveler'),
+      creatorName:
+          creatorName ??
+          (source == SnsSource.youtube ? 'Travel Channel' : '@traveler'),
       viewCount: (100 + (id.hashCode % 900)) * 1000, // 100K ~ 999K 랜덤
       createdAt: DateTime.now().subtract(Duration(days: id.hashCode % 30)),
       type: source == SnsSource.youtube ? ContentType.video : ContentType.image,

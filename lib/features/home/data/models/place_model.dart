@@ -112,8 +112,8 @@ class SavedPlace {
     // 실제로는 현재 위치와의 거리 계산 필요
     final distance = (id.hashCode % 50) / 10; // 0.0 ~ 5.0 km
     return distance < 1
-      ? '${(distance * 1000).toInt()}m'
-      : '${distance.toStringAsFixed(1)}km';
+        ? '${(distance * 1000).toInt()}m'
+        : '${distance.toStringAsFixed(1)}km';
   }
 }
 

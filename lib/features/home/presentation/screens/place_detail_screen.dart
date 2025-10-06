@@ -14,10 +14,7 @@ class PlaceDetailScreen extends StatelessWidget {
   /// 표시할 장소 정보
   final SavedPlace place;
 
-  const PlaceDetailScreen({
-    super.key,
-    required this.place,
-  });
+  const PlaceDetailScreen({super.key, required this.place});
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +193,10 @@ class PlaceDetailScreen extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(place.category.emoji, style: TextStyle(fontSize: 14.sp)),
+                    Text(
+                      place.category.emoji,
+                      style: TextStyle(fontSize: 14.sp),
+                    ),
                     SizedBox(width: 4.w),
                     Text(
                       place.category.displayName,
@@ -213,7 +213,10 @@ class PlaceDetailScreen extends StatelessWidget {
               SizedBox(width: 8.w),
               if (place.isVisited)
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 6.h,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.green[50],
                     borderRadius: BorderRadius.circular(20.r),
@@ -222,7 +225,11 @@ class PlaceDetailScreen extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.check_circle, size: 14.w, color: Colors.green[700]),
+                      Icon(
+                        Icons.check_circle,
+                        size: 14.w,
+                        color: Colors.green[700],
+                      ),
                       SizedBox(width: 4.w),
                       Text(
                         l10n.placeVisited,
@@ -264,7 +271,9 @@ class PlaceDetailScreen extends StatelessWidget {
                   (index) => Icon(
                     index < place.rating!.floor()
                         ? Icons.star
-                        : (index < place.rating! ? Icons.star_half : Icons.star_border),
+                        : (index < place.rating!
+                              ? Icons.star_half
+                              : Icons.star_border),
                     size: 20.w,
                     color: Colors.amber,
                   ),
@@ -319,7 +328,11 @@ class PlaceDetailScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.info_outline, size: 20.w, color: Theme.of(context).primaryColor),
+              Icon(
+                Icons.info_outline,
+                size: 20.w,
+                color: Theme.of(context).primaryColor,
+              ),
               SizedBox(width: 8.w),
               Text(
                 '장소 정보',
@@ -370,7 +383,11 @@ class PlaceDetailScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.access_time, size: 20.w, color: Theme.of(context).primaryColor),
+              Icon(
+                Icons.access_time,
+                size: 20.w,
+                color: Theme.of(context).primaryColor,
+              ),
               SizedBox(width: 8.w),
               Text(
                 '영업 정보',
@@ -451,7 +468,11 @@ class PlaceDetailScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.location_on, size: 20.w, color: Theme.of(context).primaryColor),
+              Icon(
+                Icons.location_on,
+                size: 20.w,
+                color: Theme.of(context).primaryColor,
+              ),
               SizedBox(width: 8.w),
               Text(
                 '위치',

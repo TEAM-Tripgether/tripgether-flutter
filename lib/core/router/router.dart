@@ -138,37 +138,39 @@ class AppRouter {
                         child: detailScreen,
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
-                          // Fade 애니메이션 (0.0 → 1.0)
-                          final fadeAnimation = Tween<double>(
-                            begin: 0.0,
-                            end: 1.0,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeOut,
-                            ),
-                          );
+                              // Fade 애니메이션 (0.0 → 1.0)
+                              final fadeAnimation =
+                                  Tween<double>(begin: 0.0, end: 1.0).animate(
+                                    CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.easeOut,
+                                    ),
+                                  );
 
-                          // Slide 애니메이션 (아래 → 위)
-                          final slideAnimation = Tween<Offset>(
-                            begin: const Offset(0.0, 0.1), // 아래에서 살짝 올라오는 효과
-                            end: Offset.zero,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeOutCubic,
-                            ),
-                          );
+                              // Slide 애니메이션 (아래 → 위)
+                              final slideAnimation =
+                                  Tween<Offset>(
+                                    begin: const Offset(
+                                      0.0,
+                                      0.1,
+                                    ), // 아래에서 살짝 올라오는 효과
+                                    end: Offset.zero,
+                                  ).animate(
+                                    CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.easeOutCubic,
+                                    ),
+                                  );
 
-                          // Fade와 Slide 애니메이션 결합
-                          return FadeTransition(
-                            opacity: fadeAnimation,
-                            child: SlideTransition(
-                              position: slideAnimation,
-                              child: child,
-                            ),
-                          );
-                        },
+                              // Fade와 Slide 애니메이션 결합
+                              return FadeTransition(
+                                opacity: fadeAnimation,
+                                child: SlideTransition(
+                                  position: slideAnimation,
+                                  child: child,
+                                ),
+                              );
+                            },
                       );
                     },
                   ),
@@ -203,36 +205,35 @@ class AppRouter {
                         child: PlaceDetailScreen(place: place),
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
-                          // Fade 애니메이션
-                          final fadeAnimation = Tween<double>(
-                            begin: 0.0,
-                            end: 1.0,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeOut,
-                            ),
-                          );
+                              // Fade 애니메이션
+                              final fadeAnimation =
+                                  Tween<double>(begin: 0.0, end: 1.0).animate(
+                                    CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.easeOut,
+                                    ),
+                                  );
 
-                          // Slide 애니메이션 (아래 → 위)
-                          final slideAnimation = Tween<Offset>(
-                            begin: const Offset(0.0, 0.1),
-                            end: Offset.zero,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeOutCubic,
-                            ),
-                          );
+                              // Slide 애니메이션 (아래 → 위)
+                              final slideAnimation =
+                                  Tween<Offset>(
+                                    begin: const Offset(0.0, 0.1),
+                                    end: Offset.zero,
+                                  ).animate(
+                                    CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.easeOutCubic,
+                                    ),
+                                  );
 
-                          return FadeTransition(
-                            opacity: fadeAnimation,
-                            child: SlideTransition(
-                              position: slideAnimation,
-                              child: child,
-                            ),
-                          );
-                        },
+                              return FadeTransition(
+                                opacity: fadeAnimation,
+                                child: SlideTransition(
+                                  position: slideAnimation,
+                                  child: child,
+                                ),
+                              );
+                            },
                       );
                     },
                   ),
@@ -412,7 +413,6 @@ class CourseDetailScreen extends StatelessWidget {
   }
 }
 
-
 class ScheduleDetailScreen extends StatelessWidget {
   final String scheduleId;
 
@@ -462,4 +462,3 @@ class MyCoursesScreen extends StatelessWidget {
     );
   }
 }
-

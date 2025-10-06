@@ -27,8 +27,9 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
   final List<Course> _popularCourses = CourseDummyData.getPopularCourses();
 
   /// 내 주변 코스 더미 데이터
-  final List<Course> _nearbyCourses =
-      CourseDummyData.getNearbyCoursesById(placeId: 'current_location');
+  final List<Course> _nearbyCourses = CourseDummyData.getNearbyCoursesById(
+    placeId: 'current_location',
+  );
 
   /// 좋아요한 코스 ID 목록 (임시 상태)
   final Set<String> _likedCourseIds = {};
@@ -104,14 +105,15 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
                           const CourseSearchScreen(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
-                        // 페이드 인 애니메이션 (Hero 애니메이션과 조화)
-                        return FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        );
-                      },
-                      transitionDuration:
-                          const Duration(milliseconds: 300), // 전환 시간
+                            // 페이드 인 애니메이션 (Hero 애니메이션과 조화)
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                      transitionDuration: const Duration(
+                        milliseconds: 300,
+                      ), // 전환 시간
                     ),
                   );
                 },

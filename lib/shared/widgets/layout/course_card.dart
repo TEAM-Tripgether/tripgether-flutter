@@ -38,9 +38,11 @@ class CourseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap ?? () {
-        debugPrint('코스 카드 클릭: ${course.title}');
-      },
+      onTap:
+          onTap ??
+          () {
+            debugPrint('코스 카드 클릭: ${course.title}');
+          },
       child: Container(
         width: width ?? 280.w, // 가로 스크롤용 기본 너비
         margin: EdgeInsets.only(right: 12.w),
@@ -117,10 +119,7 @@ class CourseCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  course.category.emoji,
-                  style: TextStyle(fontSize: 12.sp),
-                ),
+                Text(course.category.emoji, style: TextStyle(fontSize: 12.sp)),
                 SizedBox(width: 4.w),
                 Text(
                   course.category.displayName,
@@ -141,9 +140,11 @@ class CourseCard extends StatelessWidget {
           top: 8.h,
           right: 8.w,
           child: GestureDetector(
-            onTap: onLikeTap ?? () {
-              debugPrint('좋아요 클릭: ${course.title}');
-            },
+            onTap:
+                onLikeTap ??
+                () {
+                  debugPrint('좋아요 클릭: ${course.title}');
+                },
             child: Container(
               width: 32.w,
               height: 32.w,
@@ -312,7 +313,11 @@ class CourseCard extends StatelessWidget {
                 width: 20.w,
                 height: 20.w,
                 color: AppColors.neutral95,
-                child: Icon(Icons.person, size: 12.w, color: AppColors.neutral70),
+                child: Icon(
+                  Icons.person,
+                  size: 12.w,
+                  color: AppColors.neutral70,
+                ),
               ),
             ),
           ),
@@ -334,7 +339,11 @@ class CourseCard extends StatelessWidget {
         ),
 
         // 좋아요 수
-        Icon(Icons.favorite, size: 12.w, color: AppColors.error.withValues(alpha: 0.7)),
+        Icon(
+          Icons.favorite,
+          size: 12.w,
+          color: AppColors.error.withValues(alpha: 0.7),
+        ),
         SizedBox(width: 2.w),
         Text(
           '${course.likeCount}',
@@ -357,10 +366,7 @@ class CourseCardSkeleton extends StatelessWidget {
   /// 카드 너비
   final double? width;
 
-  const CourseCardSkeleton({
-    super.key,
-    this.width,
-  });
+  const CourseCardSkeleton({super.key, this.width});
 
   @override
   Widget build(BuildContext context) {

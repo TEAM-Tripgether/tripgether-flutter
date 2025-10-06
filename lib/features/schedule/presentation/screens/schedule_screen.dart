@@ -78,16 +78,16 @@ class ScheduleScreen extends StatelessWidget {
             SizedBox(height: 16.h),
             Text(
               AppStrings.of(context).navSchedule,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Colors.grey[700],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: Colors.grey[700]),
             ),
             SizedBox(height: 8.h),
             Text(
               '여행 일정 목록 및 캘린더 뷰 표시 예정',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[500],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
             ),
           ],
         ),

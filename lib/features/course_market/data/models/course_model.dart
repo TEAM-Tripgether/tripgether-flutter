@@ -125,7 +125,7 @@ class Course {
       '데이트코스',
       '주말여행',
       '감성여행',
-      '로컬탐방'
+      '로컬탐방',
     ];
     return names[random % names.length];
   }

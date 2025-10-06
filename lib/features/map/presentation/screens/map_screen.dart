@@ -52,16 +52,16 @@ class MapScreen extends StatelessWidget {
             SizedBox(height: 16.h),
             Text(
               AppStrings.of(context).navMap,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Colors.grey[700],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: Colors.grey[700]),
             ),
             SizedBox(height: 8.h),
             Text(
               "임시 플레이스홀더 텍스트",
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[500],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
             ),
           ],
         ),
