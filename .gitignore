@@ -32,6 +32,7 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
@@ -48,6 +49,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# iOS/macOS build artifacts
+/ios/build/
+/macos/build/
+/macos/DerivedData/
 
 # Claude Code (프로젝트 설정 파일과 캐시)
 .claude/

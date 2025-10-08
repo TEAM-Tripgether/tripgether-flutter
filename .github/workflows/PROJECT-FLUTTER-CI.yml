@@ -7,6 +7,7 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+  workflow_dispatch: # 수동 실행 허용
 
 jobs:
   # 코드 품질 검증 작업
@@ -31,25 +32,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # 4. 환경 변수 파일 생성 (analyze 전에 필요)
-      - name: Create .env file
-        run: |
-          cat > .env << EOF
-          # CI용 더미 Google OAuth 환경 변수
-          GOOGLE_IOS_CLIENT_ID=dummy-ios-client-id.apps.googleusercontent.com
-          GOOGLE_WEB_CLIENT_ID=dummy-web-client-id.apps.googleusercontent.com
-          GOOGLE_WEB_CLIENT_SECRET=GOCSPX-dummy-client-secret
-          EOF
-
-      # 5. 코드 생성 (Riverpod 등)
-      - name: Generate code
-        run: dart run build_runner build --delete-conflicting-outputs
-
-      # 6. 코드 포맷팅 검사
+      # 4. 코드 포맷팅 검사
       - name: Check formatting
         run: dart format --set-exit-if-changed .
 
-      # 7. 정적 분석
+      # 5. 정적 분석
       - name: Analyze code
         run: flutter analyze
 
@@ -72,19 +59,6 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-
-      - name: Generate code
-        run: dart run build_runner build --delete-conflicting-outputs
-
-      # 환경 변수 파일 생성 (CI용 더미 값)
-      - name: Create .env file
-        run: |
-          cat > .env << EOF
-          # CI/CD용 더미 Google OAuth 환경 변수
-          GOOGLE_IOS_CLIENT_ID=dummy-ios-client-id.apps.googleusercontent.com
-          GOOGLE_WEB_CLIENT_ID=dummy-web-client-id.apps.googleusercontent.com
-          GOOGLE_WEB_CLIENT_SECRET=GOCSPX-dummy-client-secret
-          EOF
 
       # 유닛 테스트 실행
       - name: Run unit tests

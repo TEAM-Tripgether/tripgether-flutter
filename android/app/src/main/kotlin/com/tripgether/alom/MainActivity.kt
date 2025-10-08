@@ -1,4 +1,4 @@
-package com.tripgether.app
+package com.tripgether.alom
 
 import android.content.Intent
 import android.net.Uri

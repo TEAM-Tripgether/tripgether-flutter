@@ -50,13 +50,11 @@ jobs:
       - name: Generate code
         run: dart run build_runner build --delete-conflicting-outputs
 
-      # 6. 더미 환경 변수 파일 생성 (빌드 테스트용)
+      # 6. 환경 변수 파일 생성 (GitHub Secret의 ENV 값 사용)
       - name: Create .env file
         run: |
-          cat > .env << EOF
-          GOOGLE_IOS_CLIENT_ID=test-ios-client.apps.googleusercontent.com
-          GOOGLE_WEB_CLIENT_ID=test-web-client.apps.googleusercontent.com
-          GOOGLE_WEB_CLIENT_SECRET=GOCSPX-test-secret
+          cat > .env << 'EOF'
+          ${{ secrets.ENV }}
           EOF
 
       # 7. Android APK 빌드 (Release 모드)
@@ -98,13 +96,11 @@ jobs:
       - name: Generate code
         run: dart run build_runner build --delete-conflicting-outputs
 
-      # 5. 더미 환경 변수 파일 생성
+      # 5. 환경 변수 파일 생성 (GitHub Secret의 ENV 값 사용)
       - name: Create .env file
         run: |
-          cat > .env << EOF
-          GOOGLE_IOS_CLIENT_ID=test-ios-client.apps.googleusercontent.com
-          GOOGLE_WEB_CLIENT_ID=test-web-client.apps.googleusercontent.com
-          GOOGLE_WEB_CLIENT_SECRET=GOCSPX-test-secret
+          cat > .env << 'EOF'
+          ${{ secrets.ENV }}
           EOF
 
       # 6. CocoaPods 의존성 설치

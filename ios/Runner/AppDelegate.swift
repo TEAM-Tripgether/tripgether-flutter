@@ -5,7 +5,7 @@ import UserNotifications
 @main
 @objc class AppDelegate: FlutterAppDelegate {
 
-  private let hostAppBundleIdentifier = "com.tripgether.app"
+  private let hostAppBundleIdentifier = "com.tripgether.alom"
   private let sharedKey = "ShareKey"
 
   override func application(

@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "lastUpdated": "2025-10-08T18:11:27Z",
+    "currentVersion": "1.0.3",
+    "projectType": "flutter",
+    "totalReleases": 1
+  },
+  "releases": [
+    {
+      "version": "1.0.3",
+      "project_type": "flutter",
+      "date": "2025-10-08",
+      "pr_number": 3,
+      "raw_summary": "Summary by CodeRabbit\n\n\nChores\n\nCI 워크플로 간소화 및 수동 실행 지원 추가\niOS TestFlight 자동 배포 워크플로 도입\n빌드 시 환경변수 관리를 GitHub Secrets 기반으로 전환\nFlutter/iOS/macOS 빌드 산출물 및 플러그인 상태 추가 무시(.gitignore)\n샘플 환경설정 파일(.env.example) 제거\n앱 버전 1.0.3으로 업데이트\n\n\n\nPlatform\n\nAndroid 패키지명 및 iOS 번들 식별자/앱 그룹 ID를 com.tripgether.alom으로 업데이트",
+      "parsed_changes": {
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "CI 워크플로 간소화 및 수동 실행 지원 추가",
+            "iOS TestFlight 자동 배포 워크플로 도입",
+            "빌드 시 환경변수 관리를 GitHub Secrets 기반으로 전환",
+            "Flutter/iOS/macOS 빌드 산출물 및 플러그인 상태 추가 무시(.gitignore)",
+            "샘플 환경설정 파일(.env.example) 제거",
+            "앱 버전 1.0.3으로 업데이트"
+          ]
+        },
+        "platform": {
+          "title": "Platform",
+          "items": [
+            "Android 패키지명 및 iOS 번들 식별자/앱 그룹 ID를 com.tripgether.alom으로 업데이트"
+          ]
+        }
+      }
+    }
+  ]
+}
