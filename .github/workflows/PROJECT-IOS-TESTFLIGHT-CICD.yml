@@ -390,10 +390,20 @@ jobs:
             --build-name="${{ needs.prepare-build.outputs.version }}" \
             --build-number="${{ needs.prepare-build.outputs.build_number }}"
 
-      # Archive 생성 (manual signing - 프로파일은 프로젝트 파일에 설정됨)
+      # Archive 생성 (UUID로 프로파일 직접 지정)
       - name: Create Archive
         run: |
           cd ios
+          
+          # Runner 타겟용 프로파일 UUID
+          RUNNER_UUID="${{ steps.install_profile.outputs.profile_uuid }}"
+          
+          # Share Extension 타겟용 프로파일 UUID
+          SHARE_UUID="${{ steps.install_profile.outputs.share_profile_uuid }}"
+          
+          echo "Runner Profile UUID: $RUNNER_UUID"
+          echo "Share Extension Profile UUID: $SHARE_UUID"
+          
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -archivePath build/Runner.xcarchive \
@@ -401,7 +411,8 @@ jobs:
             archive \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
-            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}"
+            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
+            PROVISIONING_PROFILE="$RUNNER_UUID"
 
       # IPA 생성
       - name: Export IPA

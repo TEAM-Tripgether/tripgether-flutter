@@ -619,7 +619,6 @@
 			);
 			PRODUCT_BUNDLE_IDENTIFIER = com.tripgether.alom;
 			PRODUCT_NAME = "$(TARGET_NAME)";
-			PROVISIONING_PROFILE_SPECIFIER = "Tripgether Distribution";
 			SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 			SWIFT_VERSION = 5.0;
 			VERSIONING_SYSTEM = "apple-generic";
@@ -691,7 +690,6 @@
 			CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 			CODE_SIGN_IDENTITY = "Apple Distribution";
 			CODE_SIGN_STYLE = Manual;
-			PROVISIONING_PROFILE_SPECIFIER = "Tripgether Share Extension Distribution";
 				CURRENT_PROJECT_VERSION = 1;
 				CUSTOM_GROUP_ID = group.com.tripgether.alom;
 				DEVELOPMENT_TEAM = CUK22HY6YC;
@@ -737,7 +735,6 @@
 			CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 			CODE_SIGN_IDENTITY = "Apple Distribution";
 			CODE_SIGN_STYLE = Manual;
-			PROVISIONING_PROFILE_SPECIFIER = "Tripgether Share Extension Distribution";
 				CURRENT_PROJECT_VERSION = 1;
 				CUSTOM_GROUP_ID = group.com.tripgether.alom;
 				DEVELOPMENT_TEAM = CUK22HY6YC;
@@ -780,7 +777,6 @@
 			CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 			CODE_SIGN_IDENTITY = "Apple Distribution";
 			CODE_SIGN_STYLE = Manual;
-			PROVISIONING_PROFILE_SPECIFIER = "Tripgether Share Extension Distribution";
 				CURRENT_PROJECT_VERSION = 1;
 				CUSTOM_GROUP_ID = group.com.tripgether.alom;
 				DEVELOPMENT_TEAM = CUK22HY6YC;
@@ -943,7 +939,6 @@
 			);
 			PRODUCT_BUNDLE_IDENTIFIER = com.tripgether.alom;
 			PRODUCT_NAME = "$(TARGET_NAME)";
-			PROVISIONING_PROFILE_SPECIFIER = "Tripgether Distribution";
 			SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 			SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			SWIFT_VERSION = 5.0;
@@ -972,7 +967,6 @@
 			);
 			PRODUCT_BUNDLE_IDENTIFIER = com.tripgether.alom;
 			PRODUCT_NAME = "$(TARGET_NAME)";
-			PROVISIONING_PROFILE_SPECIFIER = "Tripgether Distribution";
 			SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 			SWIFT_VERSION = 5.0;
 			VERSIONING_SYSTEM = "apple-generic";
