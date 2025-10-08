@@ -325,9 +325,10 @@ jobs:
             -destination 'generic/platform=iOS' \
             archive \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE="${{ steps.install_profile.outputs.profile_uuid }}" \
+            PROVISIONING_PROFILE_SPECIFIER="Tripgether Distribution" \
             CODE_SIGN_IDENTITY="Apple Distribution" \
-            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}"
+            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
+            ONLY_ACTIVE_ARCH=NO
 
       # IPA 생성
       - name: Export IPA
