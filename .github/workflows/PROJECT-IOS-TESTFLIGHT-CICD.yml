@@ -1,4 +1,4 @@
-name: Project-iOS-TestFlight-Deploy
+name: PROJECT-IOS-TESTFLIGHT-CICD
 
 on:
   push:
