@@ -275,8 +275,8 @@ jobs:
           uuid=$(grep -A1 -a "UUID" profile.mobileprovision | grep string | sed -e "s/<string>//" -e "s/<\/string>//" -e "s/[[:space:]]//g")
           cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$uuid.mobileprovision
           
-          # 프로파일 이름 추출
-          profile_name=$(grep -A1 -a "Name" profile.mobileprovision | grep string | sed -e "s/<string>//" -e "s/<\/string>//" -e "s/[[:space:]]//g" | head -1)
+          # 프로파일 이름 추출 (더 정확한 방법)
+          profile_name=$(security cms -D -i profile.mobileprovision | plutil -extract Name xml1 -o - - | sed -n 's/.*<string>\(.*\)<\/string>.*/\1/p')
           
           echo "profile_uuid=$uuid" >> $GITHUB_OUTPUT
           echo "profile_name=$profile_name" >> $GITHUB_OUTPUT
