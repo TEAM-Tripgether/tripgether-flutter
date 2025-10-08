@@ -390,7 +390,7 @@ jobs:
             --build-name="${{ needs.prepare-build.outputs.version }}" \
             --build-number="${{ needs.prepare-build.outputs.build_number }}"
 
-      # Archive 생성 (manual signing)
+      # Archive 생성 (manual signing - 프로파일은 프로젝트 파일에 설정됨)
       - name: Create Archive
         run: |
           cd ios
@@ -400,8 +400,8 @@ jobs:
             -destination 'generic/platform=iOS' \
             archive \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="${{ steps.install_profile.outputs.profile_name }}" \
-            CODE_SIGN_IDENTITY="Apple Distribution"
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}"
 
       # IPA 생성
       - name: Export IPA
