@@ -404,15 +404,16 @@ jobs:
           echo "Runner Profile UUID: $RUNNER_UUID"
           echo "Share Extension Profile UUID: $SHARE_UUID"
           
+          # Automatic Signing으로 자동 매칭
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -archivePath build/Runner.xcarchive \
             -destination 'generic/platform=iOS' \
+            -allowProvisioningUpdates \
             archive \
-            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_STYLE=Automatic \
             CODE_SIGN_IDENTITY="Apple Distribution" \
-            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
-            PROVISIONING_PROFILE="$RUNNER_UUID"
+            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}"
 
       # IPA 생성
       - name: Export IPA

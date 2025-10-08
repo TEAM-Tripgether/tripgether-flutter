@@ -606,7 +606,7 @@
 				CLANG_ENABLE_MODULES = YES;
 			CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 			CODE_SIGN_IDENTITY = "Apple Distribution";
-			CODE_SIGN_STYLE = Manual;
+			CODE_SIGN_STYLE = Automatic;
 			CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 			CUSTOM_GROUP_ID = group.com.tripgether.alom;
 			DEVELOPMENT_TEAM = CUK22HY6YC;
@@ -689,7 +689,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 			CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 			CODE_SIGN_IDENTITY = "Apple Distribution";
-			CODE_SIGN_STYLE = Manual;
+			CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				CUSTOM_GROUP_ID = group.com.tripgether.alom;
 				DEVELOPMENT_TEAM = CUK22HY6YC;
@@ -734,7 +734,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 			CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 			CODE_SIGN_IDENTITY = "Apple Distribution";
-			CODE_SIGN_STYLE = Manual;
+			CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				CUSTOM_GROUP_ID = group.com.tripgether.alom;
 				DEVELOPMENT_TEAM = CUK22HY6YC;
@@ -776,7 +776,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 			CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 			CODE_SIGN_IDENTITY = "Apple Distribution";
-			CODE_SIGN_STYLE = Manual;
+			CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				CUSTOM_GROUP_ID = group.com.tripgether.alom;
 				DEVELOPMENT_TEAM = CUK22HY6YC;
@@ -926,7 +926,7 @@
 				CLANG_ENABLE_MODULES = YES;
 			CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 			CODE_SIGN_IDENTITY = "Apple Distribution";
-			CODE_SIGN_STYLE = Manual;
+			CODE_SIGN_STYLE = Automatic;
 			CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 			CUSTOM_GROUP_ID = group.com.tripgether.alom;
 			DEVELOPMENT_TEAM = CUK22HY6YC;
@@ -954,7 +954,7 @@
 				CLANG_ENABLE_MODULES = YES;
 			CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 			CODE_SIGN_IDENTITY = "Apple Distribution";
-			CODE_SIGN_STYLE = Manual;
+			CODE_SIGN_STYLE = Automatic;
 			CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 			CUSTOM_GROUP_ID = group.com.tripgether.alom;
 			DEVELOPMENT_TEAM = CUK22HY6YC;
