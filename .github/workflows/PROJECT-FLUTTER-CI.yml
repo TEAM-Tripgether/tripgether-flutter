@@ -1,4 +1,4 @@
-name: Flutter CI
+name: Project Flutter CI
 
 # PR과 main/develop 브랜치 push 시 자동 실행
 # Android, iOS 플랫폼만 검증 (macOS, Linux, Web 제외)
