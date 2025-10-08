@@ -11,6 +11,7 @@
 #
 # 자동 버전 업데이트:
 # - patch: 자동으로 세 번째 자리 증가 (x.x.x -> x.x.x+1)
+# - version_code: 매 빌드마다 자동으로 1씩 증가
 # - minor/major: 수동으로 직접 수정 필요
 #
 # 프로젝트 타입별 동기화 파일:
@@ -27,7 +28,8 @@
 # ===================================================================
 
 version: "1.0.4"
+version_code: 1  # app build number
 project_type: "flutter" # spring, flutter, react, react-native, react-native-expo, node, basic
 metadata:
-  last_updated: "2025-10-08 18:24:43"
+  last_updated: "2025-10-08 18:04:03"
   last_updated_by: "Cassiiopeia"
