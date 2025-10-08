@@ -270,12 +270,21 @@ jobs:
           echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > profile.mobileprovision
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # UUID 추출
           uuid=$(grep -A1 -a "UUID" profile.mobileprovision | grep string | sed -e "s/<string>//" -e "s/<\/string>//" -e "s/[[:space:]]//g")
           cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$uuid.mobileprovision
+          
+          # 프로파일 이름 추출
+          profile_name=$(grep -A1 -a "Name" profile.mobileprovision | grep string | sed -e "s/<string>//" -e "s/<\/string>//" -e "s/[[:space:]]//g" | head -1)
+          
           echo "profile_uuid=$uuid" >> $GITHUB_OUTPUT
-          echo "✅ Provisioning Profile installed with UUID: $uuid"
+          echo "profile_name=$profile_name" >> $GITHUB_OUTPUT
+          echo "✅ Provisioning Profile installed"
+          echo "   UUID: $uuid"
+          echo "   Name: $profile_name"
 
-      # ExportOptions.plist 파일 생성 (UUID 기반)
+      # ExportOptions.plist 파일 생성 (동적 생성)
       - name: Create ExportOptions.plist
         run: |
           cd ios
@@ -306,7 +315,9 @@ jobs:
           </dict>
           </plist>
           EOF
-          echo "✅ ExportOptions.plist created with profile UUID: ${{ steps.install_profile.outputs.profile_uuid }}"
+          echo "✅ ExportOptions.plist 생성 완료"
+          echo "   Profile UUID: ${{ steps.install_profile.outputs.profile_uuid }}"
+          echo "   Profile Name: ${{ steps.install_profile.outputs.profile_name }}"
 
       # Flutter build (no codesign) to generate Xcode project artifacts
       - name: Flutter build (no codesign)
@@ -315,7 +326,7 @@ jobs:
             --build-name="${{ needs.prepare-build.outputs.version }}" \
             --build-number="${{ needs.prepare-build.outputs.build_number }}"
 
-      # Archive 생성 (manual signing with UUID)
+      # Archive 생성 (manual signing)
       - name: Create Archive
         run: |
           cd ios
@@ -325,10 +336,8 @@ jobs:
             -destination 'generic/platform=iOS' \
             archive \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="Tripgether Distribution" \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
-            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
-            ONLY_ACTIVE_ARCH=NO
+            PROVISIONING_PROFILE_SPECIFIER="${{ steps.install_profile.outputs.profile_name }}" \
+            CODE_SIGN_IDENTITY="Apple Distribution"
 
       # IPA 생성
       - name: Export IPA
