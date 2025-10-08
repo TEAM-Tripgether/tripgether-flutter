@@ -265,14 +265,17 @@ jobs:
           p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
 
       - name: Install Provisioning Profile
+        id: install_profile
         run: |
           echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > profile.mobileprovision
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           uuid=$(grep -A1 -a "UUID" profile.mobileprovision | grep string | sed -e "s/<string>//" -e "s/<\/string>//" -e "s/[[:space:]]//g")
           cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$uuid.mobileprovision
+          echo "profile_uuid=$uuid" >> $GITHUB_OUTPUT
+          echo "✅ Provisioning Profile installed with UUID: $uuid"
 
-      # ExportOptions.plist 파일 생성 (Tripgether용으로 수정)
+      # ExportOptions.plist 파일 생성 (UUID 기반)
       - name: Create ExportOptions.plist
         run: |
           cd ios
@@ -288,7 +291,7 @@ jobs:
               <key>provisioningProfiles</key>
               <dict>
                   <key>com.tripgether.alom</key>
-                  <string>Tripgether Distribution</string>
+                  <string>${{ steps.install_profile.outputs.profile_uuid }}</string>
               </dict>
               <key>signingStyle</key>
               <string>manual</string>
@@ -303,6 +306,7 @@ jobs:
           </dict>
           </plist>
           EOF
+          echo "✅ ExportOptions.plist created with profile UUID: ${{ steps.install_profile.outputs.profile_uuid }}"
 
       # Flutter build (no codesign) to generate Xcode project artifacts
       - name: Flutter build (no codesign)
@@ -311,7 +315,7 @@ jobs:
             --build-name="${{ needs.prepare-build.outputs.version }}" \
             --build-number="${{ needs.prepare-build.outputs.build_number }}"
 
-      # Archive 생성 (manual signing)
+      # Archive 생성 (manual signing with UUID)
       - name: Create Archive
         run: |
           cd ios
@@ -321,8 +325,9 @@ jobs:
             -destination 'generic/platform=iOS' \
             archive \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="Tripgether Distribution" \
-            CODE_SIGN_IDENTITY="Apple Distribution"
+            PROVISIONING_PROFILE="${{ steps.install_profile.outputs.profile_uuid }}" \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}"
 
       # IPA 생성
       - name: Export IPA
