@@ -1,11 +1,26 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-08T18:49:46Z",
-    "currentVersion": "1.0.6",
+    "lastUpdated": "2025-10-08T19:11:31Z",
+    "currentVersion": "1.0.7",
     "projectType": "flutter",
-    "totalReleases": 3
+    "totalReleases": 4
   },
   "releases": [
+    {
+      "version": "1.0.7",
+      "project_type": "flutter",
+      "date": "2025-10-08",
+      "pr_number": 6,
+      "raw_summary": "Summary by CodeRabbit\n\nChores\n\niOS 배포 파이프라인 프로비저닝 프로파일 UUID, 프로비저닝 프로파일 이름 자동 추출하여 안정성 향상",
+      "parsed_changes": {
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "iOS 배포 파이프라인 프로비저닝 프로파일 UUID, 프로비저닝 프로파일 이름 자동 추출하여 안정성 향상"
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.6",
       "project_type": "flutter",
