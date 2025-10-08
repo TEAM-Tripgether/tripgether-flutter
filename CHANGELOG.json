@@ -1,11 +1,26 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-08T19:11:31Z",
-    "currentVersion": "1.0.7",
+    "lastUpdated": "2025-10-08T19:27:41Z",
+    "currentVersion": "1.0.8",
     "projectType": "flutter",
-    "totalReleases": 4
+    "totalReleases": 5
   },
   "releases": [
+    {
+      "version": "1.0.8",
+      "project_type": "flutter",
+      "date": "2025-10-08",
+      "pr_number": 7,
+      "raw_summary": "Summary by CodeRabbit\n\nChores\n\niOS 배포 파이프라인 : 잘못된 팀 ID 수정",
+      "parsed_changes": {
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "iOS 배포 파이프라인 : 잘못된 팀 ID 수정"
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.7",
       "project_type": "flutter",
