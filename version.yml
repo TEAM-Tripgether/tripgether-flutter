@@ -27,7 +27,7 @@
 # ===================================================================
 
 version: "1.0.1"
-project_type: "spring" # spring, flutter, react, react-native, react-native-expo, node, basic
+project_type: "flutter" # spring, flutter, react, react-native, react-native-expo, node, basic
 metadata:
   last_updated: "2025-10-08 07:43:58"
   last_updated_by: "Cassiiopeia"
