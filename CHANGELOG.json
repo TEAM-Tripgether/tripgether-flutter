@@ -1,11 +1,34 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-09T09:18:43Z",
-    "currentVersion": "1.0.20",
+    "lastUpdated": "2025-10-09T10:19:28Z",
+    "currentVersion": "1.0.21",
     "projectType": "flutter",
-    "totalReleases": 8
+    "totalReleases": 9
   },
   "releases": [
+    {
+      "version": "1.0.21",
+      "project_type": "flutter",
+      "date": "2025-10-09",
+      "pr_number": 17,
+      "raw_summary": "Summary by CodeRabbit\n\n문서화\n\nREADME의 표시 버전을 v1.0.19에서 v1.0.20으로 업데이트했습니다.\n\n\n잡무(Chores)\n\n앱 패치 버전을 1.0.20에서 1.0.21로, 빌드 코드를 17에서 18로 상승시켰습니다.\niOS 플랫폼에 비암호화 사용 선언을 추가해 암호화 면제 설정을 명시하고, 스토어 제출 요구사항 준수도를 개선했습니다.\n프로젝트 메타데이터(최종 업데이트 시각/작성자)를 최신 상태로 동기화했습니다.",
+      "parsed_changes": {
+        "문서화": {
+          "title": "문서화",
+          "items": [
+            "README의 표시 버전을 v1.0.19에서 v1.0.20으로 업데이트했습니다."
+          ]
+        },
+        "잡무_chores": {
+          "title": "잡무(Chores)",
+          "items": [
+            "앱 패치 버전을 1.0.20에서 1.0.21로, 빌드 코드를 17에서 18로 상승시켰습니다.",
+            "iOS 플랫폼에 비암호화 사용 선언을 추가해 암호화 면제 설정을 명시하고, 스토어 제출 요구사항 준수도를 개선했습니다.",
+            "프로젝트 메타데이터(최종 업데이트 시각/작성자)를 최신 상태로 동기화했습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.20",
       "project_type": "flutter",
