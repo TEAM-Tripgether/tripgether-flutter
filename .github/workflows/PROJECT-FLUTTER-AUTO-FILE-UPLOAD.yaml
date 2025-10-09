@@ -1,0 +1,411 @@
+# ===================================================================
+# Flutter 설정 파일 자동 업로드 워크플로우
+# ===================================================================
+
+name: PROJECT-FLUTTER-AUTO-FILE-UPLOAD
+
+# ===================================================================
+# 📋 필수 GitHub Secrets 설정 가이드
+# ===================================================================
+#
+# ⚠️ 사용하기 전에 반드시 다음 GitHub Secrets를 설정하세요!
+# (저장소 Settings > Secrets and variables > Actions에서 설정)
+#
+# 🔧 필수 Secrets:
+# ┌─────────────────────────────────────────────┬────────────────────────────────────┐
+# │ Secret 이름                                 │ 설명                               │
+# ├─────────────────────────────────────────────┼────────────────────────────────────┤
+# │ ENV                                         │ Flutter .env 파일 내용             │
+# │ SERVER_HOST                                 │ 배포 대상 서버 IP/도메인           │
+# │ SERVER_USER                                 │ 서버 SSH 접속 사용자명             │
+# │ SERVER_PASSWORD                             │ 서버 SSH 접속 비밀번호             │
+# │ IOS_CERTIFICATE_BASE64                      │ iOS 인증서 (Base64)                │
+# │ IOS_CERTIFICATE_PASSWORD                    │ iOS 인증서 비밀번호                │
+# │ IOS_PROVISIONING_PROFILE_BASE64             │ iOS 프로비저닝 프로파일 (Base64)   │
+# │ IOS_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64 │ Share Extension 프로파일 (Base64) │
+# │ APPLE_TEAM_ID                               │ Apple 팀 ID                        │
+# │ APP_STORE_CONNECT_API_KEY_BASE64            │ App Store Connect API 키 (Base64)  │
+# │ APP_STORE_CONNECT_API_KEY_ID                │ App Store Connect API 키 ID        │
+# │ APP_STORE_CONNECT_ISSUER_ID                 │ App Store Connect Issuer ID        │
+# └─────────────────────────────────────────────┴────────────────────────────────────┘
+#
+# 🚀 워크플로우 기능:
+# - .env 파일을 서버에 자동 업로드
+# - iOS 인증서 및 프로비저닝 프로파일 업로드 (Base64 디코딩)
+# - 최신 파일 + 타임스탬프 백업본 동시 저장
+# - 메타데이터 JSON 파일 자동 생성 (실제 Secret 값 포함)
+#
+# 📝 사용 방법:
+# 1. 위의 GitHub Secrets 설정
+# 2. 워크플로우 활성화: 'on' 섹션 확인
+#
+# ===================================================================
+
+# ===================================================================
+# 트리거 설정
+# ===================================================================
+on:
+  pull_request_target:
+    types: [closed]  # PR이 닫혔을 때 (merge 포함)
+    branches:
+      - deploy    # deploy 브랜치로의 PR
+  workflow_dispatch:  # 수동 실행 허용
+
+# ===================================================================
+# 환경 변수 설정
+# ===================================================================
+env:
+  PROJECT_NAME: "tripgether"
+  BACKUP_DIR: "frontend"
+
+jobs:
+  # ===================================================================
+  # 파일 업로드 작업
+  # ===================================================================
+  upload-files:
+    name: 설정 파일 서버 업로드
+    runs-on: ubuntu-latest
+    # PR이 실제로 merge된 경우에만 실행 (닫히기만 한 경우 제외)
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+
+    steps:
+      # 1. 소스코드 체크아웃
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      # 2. PR 작성자 또는 실행자 확인
+      - name: PR 작성자 또는 실행자 확인
+        id: get_actor
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request_target" ]; then
+            ACTOR="${{ github.event.pull_request.user.login }}"
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+            echo "🔍 PR 작성자: $ACTOR (PR #$PR_NUMBER)"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            ACTOR="${{ github.actor }}"
+            PR_NUMBER="manual"
+            echo "👤 수동 실행자: $ACTOR"
+          else
+            ACTOR="${{ github.actor }}"
+            PR_NUMBER="push"
+            echo "📤 Push 실행자: $ACTOR"
+          fi
+
+          echo "ACTOR=$ACTOR" >> $GITHUB_OUTPUT
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+      # 3. 타임스탬프 폴더명 생성
+      - name: 타임스탬프 폴더명 생성
+        run: |
+          export TZ='Asia/Seoul'
+          ACTOR="${{ steps.get_actor.outputs.ACTOR }}"
+          TIMESTAMP=$(date '+%Y-%m-%d_%H-%M-%S')_$ACTOR
+          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+          echo "생성된 타임스탬프: $TIMESTAMP"
+
+      # 4. 짧은 커밋 해시 계산
+      - name: 짧은 커밋 해시 계산
+        run: |
+          echo "SHORT_COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
+          echo "짧은 커밋 해시: $(echo ${{ github.sha }} | cut -c1-7)"
+
+      # 5. 서버에 파일 업로드
+      - name: 서버에 파일 업로드
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 2022
+          envs: TIMESTAMP,SHORT_COMMIT_HASH,BUILD_DATE
+          script: |
+            set -e
+
+            echo "🔧 환경변수 설정..."
+            export PW=${{ secrets.SERVER_PASSWORD }}
+            export PROJECT_NAME="${{ env.PROJECT_NAME }}"
+
+            # 디렉토리 생성
+            echo "📁 디렉토리 생성 중..."
+            echo $PW | sudo -S mkdir -p /volume1/projects/${PROJECT_NAME}/github_secret/frontend
+            echo $PW | sudo -S mkdir -p /volume1/projects/${PROJECT_NAME}/github_secret/frontend/ios
+            echo $PW | sudo -S mkdir -p /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP
+            echo $PW | sudo -S mkdir -p /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/ios
+
+            # .env 파일 업로드
+            echo "📤 .env 파일 업로드 중..."
+            cat << 'EOF' | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/.env > /dev/null
+            ${{ secrets.ENV }}
+            EOF
+            cat << 'EOF' | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/.env > /dev/null
+            ${{ secrets.ENV }}
+            EOF
+            echo $PW | sudo -S chmod 600 /volume1/projects/${PROJECT_NAME}/github_secret/frontend/.env
+            echo $PW | sudo -S chmod 600 /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/.env
+            echo "✅ .env 업로드 완료"
+
+            # iOS 인증서 업로드 (Base64 디코딩)
+            echo "📤 iOS 인증서 업로드 중..."
+            echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 -d | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/ios/certificate.p12 > /dev/null
+            echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 -d | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/ios/certificate.p12 > /dev/null
+            echo $PW | sudo -S chmod 600 /volume1/projects/${PROJECT_NAME}/github_secret/frontend/ios/certificate.p12
+            echo $PW | sudo -S chmod 600 /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/ios/certificate.p12
+            echo "✅ iOS 인증서 업로드 완료"
+
+            # 프로비저닝 프로파일 업로드 (Base64 디코딩)
+            echo "📤 프로비저닝 프로파일 업로드 중..."
+            echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 -d | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/ios/provisioning_profile.mobileprovision > /dev/null
+            echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 -d | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/ios/provisioning_profile.mobileprovision > /dev/null
+            echo "✅ Main 프로비저닝 프로파일 업로드 완료"
+
+            # Share Extension 프로비저닝 프로파일 업로드
+            echo "📤 Share Extension 프로비저닝 프로파일 업로드 중..."
+            echo "${{ secrets.IOS_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64 }}" | base64 -d | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/ios/share_extension.mobileprovision > /dev/null
+            echo "${{ secrets.IOS_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64 }}" | base64 -d | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/ios/share_extension.mobileprovision > /dev/null
+            echo $PW | sudo -S chmod 644 /volume1/projects/${PROJECT_NAME}/github_secret/frontend/ios/*.mobileprovision
+            echo $PW | sudo -S chmod 644 /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/ios/*.mobileprovision
+            echo "✅ Share Extension 프로파일 업로드 완료"
+
+            # App Store Connect API 키 업로드 (Base64 디코딩)
+            echo "📤 App Store Connect API 키 업로드 중..."
+            echo "${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}" | base64 -d | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/ios/app_store_connect_api_key.p8 > /dev/null
+            echo "${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}" | base64 -d | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/ios/app_store_connect_api_key.p8 > /dev/null
+            echo $PW | sudo -S chmod 600 /volume1/projects/${PROJECT_NAME}/github_secret/frontend/ios/app_store_connect_api_key.p8
+            echo $PW | sudo -S chmod 600 /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/ios/app_store_connect_api_key.p8
+            echo "✅ App Store Connect API 키 업로드 완료"
+
+            # 메타데이터 JSON 파일 생성 (실제 값 포함)
+            echo "📝 메타데이터 JSON 파일 생성 중..."
+            cat << EOF | sudo tee /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/cicd-gitignore-file.json > /dev/null
+            {
+              "build_info": {
+                "timestamp": "$TIMESTAMP",
+                "workflow": "Flutter 설정 파일 관리",
+                "platform": "Flutter/Dart",
+                "project_type": "mobile_app",
+                "run_id": "${{ github.run_id }}",
+                "run_number": "${{ github.run_number }}",
+                "job": "upload-files",
+                "event": "${{ github.event_name }}",
+                "repository": "${{ github.repository }}",
+                "owner": "${{ github.repository_owner }}",
+                "branch": "${{ github.ref_name }}",
+                "commit_hash": "${{ github.sha }}",
+                "short_hash": "$SHORT_COMMIT_HASH",
+                "commit_url": "https://github.com/${{ github.repository }}/commit/${{ github.sha }}",
+                "actor": "${{ steps.get_actor.outputs.ACTOR }}",
+                "pr_number": "${{ steps.get_actor.outputs.PR_NUMBER }}",
+                "pr_author": "${{ github.event.pull_request.user.login || 'N/A' }}",
+                "merged_by": "${{ github.event.pull_request.merged_by.login || 'N/A' }}",
+                "triggering_actor": "${{ github.triggering_actor }}",
+                "build_date": "$BUILD_DATE",
+                "runner_os": "${{ runner.os }}"
+              },
+              "files": [
+                {
+                  "file_name": ".env",
+                  "file_path": "/",
+                  "type": "environment_variables",
+                  "last_updated": "$BUILD_DATE",
+                  "source_secret": "ENV",
+                  "description": "Flutter 환경 변수 (API 키, 엔드포인트 등)"
+                },
+                {
+                  "file_name": "certificate.p12",
+                  "file_path": "/ios/",
+                  "type": "ios_certificate",
+                  "last_updated": "$BUILD_DATE",
+                  "source_secret": "IOS_CERTIFICATE_BASE64",
+                  "description": "iOS 코드 서명 인증서 (Base64 디코딩됨)"
+                },
+                {
+                  "file_name": "provisioning_profile.mobileprovision",
+                  "file_path": "/ios/",
+                  "type": "ios_provisioning_profile",
+                  "last_updated": "$BUILD_DATE",
+                  "source_secret": "IOS_PROVISIONING_PROFILE_BASE64",
+                  "description": "iOS 앱 프로비저닝 프로파일 (Base64 디코딩됨)"
+                },
+                {
+                  "file_name": "share_extension.mobileprovision",
+                  "file_path": "/ios/",
+                  "type": "ios_provisioning_profile",
+                  "last_updated": "$BUILD_DATE",
+                  "source_secret": "IOS_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64",
+                  "description": "iOS Share Extension 프로비저닝 프로파일 (Base64 디코딩됨)"
+                },
+                {
+                  "file_name": "app_store_connect_api_key.p8",
+                  "file_path": "/ios/",
+                  "type": "app_store_connect_api_key",
+                  "last_updated": "$BUILD_DATE",
+                  "source_secret": "APP_STORE_CONNECT_API_KEY_BASE64",
+                  "description": "App Store Connect API 키 (Base64 디코딩됨)"
+                }
+              ],
+              "github_secrets_used": [
+                {
+                  "name": "ENV",
+                  "type": "configuration",
+                  "usage": "Flutter 환경 변수",
+                  "category": "application",
+                  "value_preview": "파일로 저장됨 (.env)"
+                },
+                {
+                  "name": "IOS_CERTIFICATE_BASE64",
+                  "type": "credential",
+                  "usage": "iOS 코드 서명",
+                  "category": "ios_build",
+                  "value_preview": "바이너리 파일로 저장됨 (certificate.p12)"
+                },
+                {
+                  "name": "IOS_CERTIFICATE_PASSWORD",
+                  "type": "credential",
+                  "usage": "iOS 인증서 암호",
+                  "category": "ios_build",
+                  "value": "${{ secrets.IOS_CERTIFICATE_PASSWORD }}"
+                },
+                {
+                  "name": "IOS_PROVISIONING_PROFILE_BASE64",
+                  "type": "credential",
+                  "usage": "iOS 앱 배포 프로파일",
+                  "category": "ios_build",
+                  "value_preview": "바이너리 파일로 저장됨 (provisioning_profile.mobileprovision)"
+                },
+                {
+                  "name": "IOS_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64",
+                  "type": "credential",
+                  "usage": "iOS Share Extension 배포",
+                  "category": "ios_build",
+                  "value_preview": "바이너리 파일로 저장됨 (share_extension.mobileprovision)"
+                },
+                {
+                  "name": "APPLE_TEAM_ID",
+                  "type": "configuration",
+                  "usage": "Apple 개발자 팀 식별",
+                  "category": "ios_build",
+                  "value": "${{ secrets.APPLE_TEAM_ID }}"
+                },
+                {
+                  "name": "APP_STORE_CONNECT_API_KEY_BASE64",
+                  "type": "credential",
+                  "usage": "App Store Connect API 인증",
+                  "category": "ios_deployment",
+                  "value_preview": "바이너리 파일로 저장됨 (app_store_connect_api_key.p8)"
+                },
+                {
+                  "name": "APP_STORE_CONNECT_API_KEY_ID",
+                  "type": "configuration",
+                  "usage": "App Store Connect API 키 ID",
+                  "category": "ios_deployment",
+                  "value": "${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}"
+                },
+                {
+                  "name": "APP_STORE_CONNECT_ISSUER_ID",
+                  "type": "configuration",
+                  "usage": "App Store Connect Issuer ID",
+                  "category": "ios_deployment",
+                  "value": "${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}"
+                },
+                {
+                  "name": "SERVER_HOST",
+                  "type": "credential",
+                  "usage": "SSH 접속용 서버 호스트",
+                  "category": "infrastructure",
+                  "value": "${{ secrets.SERVER_HOST }}"
+                },
+                {
+                  "name": "SERVER_USER",
+                  "type": "credential",
+                  "usage": "SSH 접속용 사용자명",
+                  "category": "infrastructure",
+                  "value": "${{ secrets.SERVER_USER }}"
+                },
+                {
+                  "name": "_GITHUB_PAT_TOKEN",
+                  "type": "credential",
+                  "usage": "GitHub API 인증 토큰 (Organization Secret)",
+                  "category": "github",
+                  "scope": "organization",
+                  "value_preview": "보안상 노출하지 않음"
+                }
+              ],
+              "deployment_targets": {
+                "ios": {
+                  "enabled": true,
+                  "team_id": "${{ secrets.APPLE_TEAM_ID }}",
+                  "has_certificate": true,
+                  "has_provisioning_profile": true,
+                  "has_share_extension": true,
+                  "app_store_connect": {
+                    "api_key_id": "${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}",
+                    "issuer_id": "${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}"
+                  }
+                },
+                "android": {
+                  "enabled": false,
+                  "note": "Android 배포 설정은 별도 구성 필요"
+                }
+              },
+              "server_info": {
+                "host": "${{ secrets.SERVER_HOST }}",
+                "user": "${{ secrets.SERVER_USER }}",
+                "port": 2022,
+                "base_path": "/volume1/projects/${PROJECT_NAME}/github_secret/frontend"
+              }
+            }
+            EOF
+            echo "✅ 메타데이터 JSON 파일 생성 완료"
+
+            echo ""
+            echo "✅ 모든 파일 업로드 완료!"
+            echo ""
+            echo "📋 업로드 결과 요약:"
+            echo "  🎯 프로젝트: ${PROJECT_NAME}"
+            echo "  📱 플랫폼: Flutter Mobile App"
+            echo "  👤 PR 작성자: ${{ steps.get_actor.outputs.ACTOR }}"
+            echo "  🔢 PR 번호: #${{ steps.get_actor.outputs.PR_NUMBER }}"
+            echo "  🌿 브랜치: ${{ github.ref_name }}"
+            echo "  📁 저장 경로: /volume1/projects/${PROJECT_NAME}/github_secret/frontend/"
+            echo "  💾 백업 경로: /volume1/projects/${PROJECT_NAME}/github_secret/frontend/$TIMESTAMP/"
+            echo "  ⏰ 업로드 시간: $BUILD_DATE"
+            echo "  📊 업로드된 파일:"
+            echo "     - .env (환경 변수)"
+            echo "     - ios/certificate.p12 (인증서)"
+            echo "     - ios/provisioning_profile.mobileprovision (프로파일)"
+            echo "     - ios/share_extension.mobileprovision (Share Extension)"
+            echo "     - ios/app_store_connect_api_key.p8 (App Store Connect API 키)"
+            echo "     - cicd-gitignore-file.json (메타데이터)"
+            echo "  🔑 사용된 Secrets: 12개"
+            echo "     - Repository Secrets: 9개"
+            echo "     - Organization Secrets: 1개"
+            echo "     - Server Credentials: 2개"
+            echo ""
+            echo "📝 메타데이터 정보:"
+            echo "  - APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}"
+            echo "  - APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}"
+            echo "  - APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}"
+            echo "  - IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}"
+            echo "  - SERVER_HOST: ${{ secrets.SERVER_HOST }}"
+            echo "  - SERVER_USER: ${{ secrets.SERVER_USER }}"
+
+# ===================================================================
+# 사용 예시
+# ===================================================================
+#
+# deploy 브랜치로 PR merge 시 자동 업로드
+#
+# 필요한 Secrets:
+# - ENV (필수)
+# - IOS_CERTIFICATE_BASE64 (필수)
+# - IOS_CERTIFICATE_PASSWORD (필수)
+# - IOS_PROVISIONING_PROFILE_BASE64 (필수)
+# - IOS_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64 (필수)
+# - APPLE_TEAM_ID (필수)
+# - APP_STORE_CONNECT_API_KEY_BASE64 (필수)
+# - APP_STORE_CONNECT_API_KEY_ID (필수)
+# - APP_STORE_CONNECT_ISSUER_ID (필수)
+# - SERVER_HOST, SERVER_USER, SERVER_PASSWORD (필수)
+#
+# ===================================================================
