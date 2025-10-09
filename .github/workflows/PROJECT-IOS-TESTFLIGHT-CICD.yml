@@ -390,34 +390,23 @@ jobs:
             --build-name="${{ needs.prepare-build.outputs.version }}" \
             --build-number="${{ needs.prepare-build.outputs.build_number }}"
 
-      # Archive 생성 (Manual Signing - 동적으로 추출된 프로파일 이름 사용)
+      # Archive 생성 (Manual Signing)
+      # 주의: Archive 단계에서는 메인 앱 프로파일만 지정
+      # Share Extension 프로파일은 Export 단계의 ExportOptions.plist에서 처리됨
       - name: Create Archive
         run: |
           cd ios
+          echo "📦 Creating Archive with Manual Signing"
+          echo "   Main Profile: ${{ steps.install_profile.outputs.profile_name }}"
 
-          # Share Extension이 있는 경우 두 개의 프로파일 지정
-          if [ -n "${{ steps.install_profile.outputs.share_profile_name }}" ]; then
-            echo "📦 Building with Share Extension support"
-            xcodebuild -workspace Runner.xcworkspace \
-              -scheme Runner \
-              -archivePath build/Runner.xcarchive \
-              -destination 'generic/platform=iOS' \
-              archive \
-              CODE_SIGN_STYLE=Manual \
-              PROVISIONING_PROFILE_SPECIFIER="${{ steps.install_profile.outputs.profile_name }}" \
-              PROVISIONING_PROFILE_SPECIFIER[Share-Extension]="${{ steps.install_profile.outputs.share_profile_name }}" \
-              CODE_SIGN_IDENTITY="Apple Distribution"
-          else
-            echo "📦 Building without Share Extension"
-            xcodebuild -workspace Runner.xcworkspace \
-              -scheme Runner \
-              -archivePath build/Runner.xcarchive \
-              -destination 'generic/platform=iOS' \
-              archive \
-              CODE_SIGN_STYLE=Manual \
-              PROVISIONING_PROFILE_SPECIFIER="${{ steps.install_profile.outputs.profile_name }}" \
-              CODE_SIGN_IDENTITY="Apple Distribution"
-          fi
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -archivePath build/Runner.xcarchive \
+            -destination 'generic/platform=iOS' \
+            archive \
+            CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE_SPECIFIER="${{ steps.install_profile.outputs.profile_name }}" \
+            CODE_SIGN_IDENTITY="Apple Distribution"
 
       # IPA 생성
       - name: Export IPA
