@@ -390,23 +390,65 @@ jobs:
             --build-name="${{ needs.prepare-build.outputs.version }}" \
             --build-number="${{ needs.prepare-build.outputs.build_number }}"
 
-      # Archive 생성 (Manual Signing)
-      # 주의: Archive 단계에서는 메인 앱 프로파일만 지정
-      # Share Extension 프로파일은 Export 단계의 ExportOptions.plist에서 처리됨
+      # Xcode 프로젝트에 각 타겟별 코드 사이닝 설정 주입 (Ruby 스크립트)
+      - name: Configure Code Signing in Project
+        run: |
+          cd ios
+
+          # xcodeproj gem 설치
+          gem install xcodeproj
+
+          # Ruby 스크립트로 프로젝트 설정 수정
+          ruby <<RUBY_SCRIPT
+          require 'xcodeproj'
+
+          project = Xcodeproj::Project.open('Runner.xcodeproj')
+
+          # Runner 타겟 설정
+          runner_target = project.targets.find { |t| t.name == 'Runner' }
+          if runner_target
+            runner_target.build_configurations.each do |config|
+              if config.name == 'Release'
+                config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
+                config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Distribution'
+                config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = '${{ steps.install_profile.outputs.profile_name }}'
+                puts "✅ Runner target configured with profile: ${{ steps.install_profile.outputs.profile_name }}"
+              end
+            end
+          end
+
+          # Share Extension 타겟 설정 (있는 경우)
+          share_profile = '${{ steps.install_profile.outputs.share_profile_name }}'
+          if !share_profile.empty?
+            share_target = project.targets.find { |t| t.name == 'Share Extension' }
+            if share_target
+              share_target.build_configurations.each do |config|
+                if config.name == 'Release'
+                  config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
+                  config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Distribution'
+                  config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = share_profile
+                  puts "✅ Share Extension target configured with profile: #{share_profile}"
+                end
+              end
+            end
+          end
+
+          project.save
+          puts "✅ Project signing configuration saved"
+          RUBY_SCRIPT
+
+      # Archive 생성
       - name: Create Archive
         run: |
           cd ios
           echo "📦 Creating Archive with Manual Signing"
-          echo "   Main Profile: ${{ steps.install_profile.outputs.profile_name }}"
 
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
+            -configuration Release \
             -archivePath build/Runner.xcarchive \
             -destination 'generic/platform=iOS' \
-            archive \
-            CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="${{ steps.install_profile.outputs.profile_name }}" \
-            CODE_SIGN_IDENTITY="Apple Distribution"
+            archive
 
       # IPA 생성
       - name: Export IPA
