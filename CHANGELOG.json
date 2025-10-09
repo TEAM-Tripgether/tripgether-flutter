@@ -1,11 +1,40 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-08T20:42:33Z",
-    "currentVersion": "1.0.9",
+    "lastUpdated": "2025-10-09T08:37:28Z",
+    "currentVersion": "1.0.19",
     "projectType": "flutter",
-    "totalReleases": 6
+    "totalReleases": 7
   },
   "releases": [
+    {
+      "version": "1.0.19",
+      "project_type": "flutter",
+      "date": "2025-10-09",
+      "pr_number": 12,
+      "raw_summary": "Summary by CodeRabbit\n\nNew Features\n\nFlutter 비밀 파일을 원격 서버로 업로드하는 자동화 워크플로 추가(수동 실행/PR 병합 트리거, 타임스탬프 백업·요약 포함).\n\n\nDocumentation\n\nREADME 개편: 기능 섹션 재구성, 기술 스택 간소화, 최신 버전·체인지로그 링크, MIT 라이선스 명시.\n\n\nChores\n\niOS TestFlight 파이프라인 서명 구성 개선(프로비저닝 프로파일 이름 기반, 로그 가시성 향상).\niOS 프로젝트 자동 서명 설정 명시.\n앱 버전 및 빌드 번호 업데이트.",
+      "parsed_changes": {
+        "new_features": {
+          "title": "New Features",
+          "items": [
+            "Flutter 비밀 파일을 원격 서버로 업로드하는 자동화 워크플로 추가(수동 실행/PR 병합 트리거, 타임스탬프 백업·요약 포함)."
+          ]
+        },
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "README 개편: 기능 섹션 재구성, 기술 스택 간소화, 최신 버전·체인지로그 링크, MIT 라이선스 명시."
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "iOS TestFlight 파이프라인 서명 구성 개선(프로비저닝 프로파일 이름 기반, 로그 가시성 향상).",
+            "iOS 프로젝트 자동 서명 설정 명시.",
+            "앱 버전 및 빌드 번호 업데이트."
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.9",
       "project_type": "flutter",
