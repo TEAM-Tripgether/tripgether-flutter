@@ -78,5 +78,9 @@
     <key>NSPhotoLibraryUsageDescription</key>
     <string>To upload photos, please allow permission to access your photo library.</string>
 
+    <!-- 암호화 규정 자동 설정 (App Store Connect 업로드 시 매번 묻지 않음) -->
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+
 </dict>
 </plist>
