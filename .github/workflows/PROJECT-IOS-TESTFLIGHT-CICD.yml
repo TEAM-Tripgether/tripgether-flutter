@@ -264,11 +264,61 @@ jobs:
           p12-file-base64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
           p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
 
-      # ExportOptions.plist 파일 생성
+      # Provisioning Profile 설치 및 정보 추출
+      - name: Install Provisioning Profiles
+        id: install_profile
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+
+          # 메인 앱 프로파일 설치
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > profile.mobileprovision
+          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+          # UUID 추출
+          uuid=$(grep -A1 -a "UUID" profile.mobileprovision | grep string | sed -e "s/<string>//" -e "s/<\/string>//" -e "s/[[:space:]]//g")
+          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$uuid.mobileprovision
+
+          # 프로파일 이름 추출 (동적)
+          profile_name=$(security cms -D -i profile.mobileprovision | plutil -extract Name xml1 -o - - | sed -n 's/.*<string>\(.*\)<\/string>.*/\1/p')
+
+          echo "✅ Main App Provisioning Profile installed"
+          echo "   UUID: $uuid"
+          echo "   Name: $profile_name"
+
+          # 출력 저장
+          echo "profile_uuid=$uuid" >> $GITHUB_OUTPUT
+          echo "profile_name=$profile_name" >> $GITHUB_OUTPUT
+
+          # Share Extension 프로파일 설치 (선택적)
+          if [ -n "${{ secrets.IOS_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64 }}" ]; then
+            echo "${{ secrets.IOS_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > share_extension_profile.mobileprovision
+            cp share_extension_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+            # Share Extension UUID 추출
+            share_uuid=$(grep -A1 -a "UUID" share_extension_profile.mobileprovision | grep string | sed -e "s/<string>//" -e "s/<\/string>//" -e "s/[[:space:]]//g")
+            cp share_extension_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$share_uuid.mobileprovision
+
+            # Share Extension 프로파일 이름 추출 (동적)
+            share_profile_name=$(security cms -D -i share_extension_profile.mobileprovision | plutil -extract Name xml1 -o - - | sed -n 's/.*<string>\(.*\)<\/string>.*/\1/p')
+
+            echo "✅ Share Extension Provisioning Profile installed"
+            echo "   UUID: $share_uuid"
+            echo "   Name: $share_profile_name"
+
+            # 출력 저장
+            echo "share_profile_uuid=$share_uuid" >> $GITHUB_OUTPUT
+            echo "share_profile_name=$share_profile_name" >> $GITHUB_OUTPUT
+          fi
+
+      # ExportOptions.plist 파일 생성 (동적)
       - name: Create ExportOptions.plist
         run: |
           cd ios
-          cat > ExportOptions.plist << 'EOF'
+
+          # Share Extension 프로파일이 있는지 확인
+          if [ -n "${{ steps.install_profile.outputs.share_profile_name }}" ]; then
+            # Share Extension 포함
+            cat > ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -277,8 +327,17 @@ jobs:
               <string>app-store</string>
               <key>teamID</key>
               <string>${{ secrets.APPLE_TEAM_ID }}</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.tripgether.alom</key>
+                  <string>${{ steps.install_profile.outputs.profile_name }}</string>
+                  <key>com.tripgether.alom.Share-Extension</key>
+                  <string>${{ steps.install_profile.outputs.share_profile_name }}</string>
+              </dict>
               <key>signingStyle</key>
-              <string>automatic</string>
+              <string>manual</string>
+              <key>signingCertificate</key>
+              <string>Apple Distribution</string>
               <key>stripSwiftSymbols</key>
               <true/>
               <key>uploadBitcode</key>
@@ -288,7 +347,41 @@ jobs:
           </dict>
           </plist>
           EOF
-          echo "✅ ExportOptions.plist 생성 완료"
+            echo "✅ ExportOptions.plist 생성 완료 (Share Extension 포함)"
+            echo "   Main Profile: ${{ steps.install_profile.outputs.profile_name }}"
+            echo "   Share Extension Profile: ${{ steps.install_profile.outputs.share_profile_name }}"
+          else
+            # 메인 앱만
+            cat > ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>teamID</key>
+              <string>${{ secrets.APPLE_TEAM_ID }}</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.tripgether.alom</key>
+                  <string>${{ steps.install_profile.outputs.profile_name }}</string>
+              </dict>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>signingCertificate</key>
+              <string>Apple Distribution</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+            echo "✅ ExportOptions.plist 생성 완료 (메인 앱만)"
+            echo "   Main Profile: ${{ steps.install_profile.outputs.profile_name }}"
+          fi
 
       # Flutter build (no codesign) to generate Xcode project artifacts
       - name: Flutter build (no codesign)
@@ -297,29 +390,34 @@ jobs:
             --build-name="${{ needs.prepare-build.outputs.version }}" \
             --build-number="${{ needs.prepare-build.outputs.build_number }}"
 
-      # Archive 생성 (UUID로 프로파일 직접 지정)
+      # Archive 생성 (Manual Signing - 동적으로 추출된 프로파일 이름 사용)
       - name: Create Archive
         run: |
           cd ios
-          
-          # Runner 타겟용 프로파일 UUID
-          RUNNER_UUID="${{ steps.install_profile.outputs.profile_uuid }}"
-          
-          # Share Extension 타겟용 프로파일 UUID
-          SHARE_UUID="${{ steps.install_profile.outputs.share_profile_uuid }}"
-          
-          echo "Runner Profile UUID: $RUNNER_UUID"
-          echo "Share Extension Profile UUID: $SHARE_UUID"
-          
-          # Automatic Signing - Identity는 Xcode가 자동 선택
-          xcodebuild -workspace Runner.xcworkspace \
-            -scheme Runner \
-            -archivePath build/Runner.xcarchive \
-            -destination 'generic/platform=iOS' \
-            -allowProvisioningUpdates \
-            archive \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}"
+
+          # Share Extension이 있는 경우 두 개의 프로파일 지정
+          if [ -n "${{ steps.install_profile.outputs.share_profile_name }}" ]; then
+            echo "📦 Building with Share Extension support"
+            xcodebuild -workspace Runner.xcworkspace \
+              -scheme Runner \
+              -archivePath build/Runner.xcarchive \
+              -destination 'generic/platform=iOS' \
+              archive \
+              CODE_SIGN_STYLE=Manual \
+              PROVISIONING_PROFILE_SPECIFIER="${{ steps.install_profile.outputs.profile_name }}" \
+              PROVISIONING_PROFILE_SPECIFIER[Share-Extension]="${{ steps.install_profile.outputs.share_profile_name }}" \
+              CODE_SIGN_IDENTITY="Apple Distribution"
+          else
+            echo "📦 Building without Share Extension"
+            xcodebuild -workspace Runner.xcworkspace \
+              -scheme Runner \
+              -archivePath build/Runner.xcarchive \
+              -destination 'generic/platform=iOS' \
+              archive \
+              CODE_SIGN_STYLE=Manual \
+              PROVISIONING_PROFILE_SPECIFIER="${{ steps.install_profile.outputs.profile_name }}" \
+              CODE_SIGN_IDENTITY="Apple Distribution"
+          fi
 
       # IPA 생성
       - name: Export IPA
