@@ -1,11 +1,68 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-08T20:42:33Z",
-    "currentVersion": "1.0.9",
+    "lastUpdated": "2025-10-09T09:18:43Z",
+    "currentVersion": "1.0.20",
     "projectType": "flutter",
-    "totalReleases": 6
+    "totalReleases": 8
   },
   "releases": [
+    {
+      "version": "1.0.20",
+      "project_type": "flutter",
+      "date": "2025-10-09",
+      "pr_number": 14,
+      "raw_summary": "Summary by CodeRabbit\n\n스타일\n\n앱 런처 아이콘을 새 이미지로 교체해 홈 화면과 앱 전환기에서 표시되는 아이콘이 업데이트되었습니다.\n\n\n문서\n\nREADME의 버전 배지/텍스트를 최신 버전으로 갱신했습니다.\n\n\n잡무\n\n앱 버전을 1.0.20으로, 내부 version_code를 17로 업데이트했습니다.\n마지막 업데이트 시각과 업데이트 수행자 메타데이터를 갱신했습니다.",
+      "parsed_changes": {
+        "스타일": {
+          "title": "스타일",
+          "items": [
+            "앱 런처 아이콘을 새 이미지로 교체해 홈 화면과 앱 전환기에서 표시되는 아이콘이 업데이트되었습니다."
+          ]
+        },
+        "문서": {
+          "title": "문서",
+          "items": [
+            "README의 버전 배지/텍스트를 최신 버전으로 갱신했습니다."
+          ]
+        },
+        "잡무": {
+          "title": "잡무",
+          "items": [
+            "앱 버전을 1.0.20으로, 내부 version_code를 17로 업데이트했습니다.",
+            "마지막 업데이트 시각과 업데이트 수행자 메타데이터를 갱신했습니다."
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.0.19",
+      "project_type": "flutter",
+      "date": "2025-10-09",
+      "pr_number": 12,
+      "raw_summary": "Summary by CodeRabbit\n\nNew Features\n\nFlutter 비밀 파일을 원격 서버로 업로드하는 자동화 워크플로 추가(수동 실행/PR 병합 트리거, 타임스탬프 백업·요약 포함).\n\n\nDocumentation\n\nREADME 개편: 기능 섹션 재구성, 기술 스택 간소화, 최신 버전·체인지로그 링크, MIT 라이선스 명시.\n\n\nChores\n\niOS TestFlight 파이프라인 서명 구성 개선(프로비저닝 프로파일 이름 기반, 로그 가시성 향상).\niOS 프로젝트 자동 서명 설정 명시.\n앱 버전 및 빌드 번호 업데이트.",
+      "parsed_changes": {
+        "new_features": {
+          "title": "New Features",
+          "items": [
+            "Flutter 비밀 파일을 원격 서버로 업로드하는 자동화 워크플로 추가(수동 실행/PR 병합 트리거, 타임스탬프 백업·요약 포함)."
+          ]
+        },
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "README 개편: 기능 섹션 재구성, 기술 스택 간소화, 최신 버전·체인지로그 링크, MIT 라이선스 명시."
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "iOS TestFlight 파이프라인 서명 구성 개선(프로비저닝 프로파일 이름 기반, 로그 가시성 향상).",
+            "iOS 프로젝트 자동 서명 설정 명시.",
+            "앱 버전 및 빌드 번호 업데이트."
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.9",
       "project_type": "flutter",
