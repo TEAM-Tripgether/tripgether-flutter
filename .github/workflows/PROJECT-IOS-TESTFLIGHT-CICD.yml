@@ -86,25 +86,15 @@ jobs:
       # 버전 관리 스크립트 권한 설정
       - name: 버전 관리 스크립트 권한 설정
         run: |
-          if [ -f .github/scripts/version_manager.sh ]; then
-            chmod +x ./.github/scripts/version_manager.sh
-          fi
-          if [ -f .github/scripts/changelog_manager.py ]; then
-            chmod +x ./.github/scripts/changelog_manager.py
-          fi
+          chmod +x ./.github/scripts/version_manager.sh
+          chmod +x ./.github/scripts/changelog_manager.py
 
       # version_manager.sh를 사용하여 현재 버전 정보 가져오기
       - name: 현재 버전 정보 가져오기
         id: current_version
         run: |
-          # pubspec.yaml에서 버전 가져오기
-          if [ -f .github/scripts/version_manager.sh ]; then
-            VERSION=$(./.github/scripts/version_manager.sh get | tail -n 1)
-          else
-            # version_manager.sh가 없으면 pubspec.yaml에서 직접 파싱
-            VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
-          fi
-          
+          # 버전 관리 스크립트로 버전 정보 가져오기
+          VERSION=$(./.github/scripts/version_manager.sh get | tail -n 1)
           echo "📋 버전 정보: $VERSION"
 
           # Flutter 버전이 x.x.x+y 형식인지 확인하고, 없다면 빌드 번호를 별도로 관리
@@ -147,7 +137,7 @@ jobs:
         run: |
           VERSION="${{ steps.current_version.outputs.version }}"
 
-          if [ -f "CHANGELOG.json" ] && [ -f .github/scripts/changelog_manager.py ]; then
+          if [ -f "CHANGELOG.json" ]; then
             echo "📄 CHANGELOG.json에서 v$VERSION 릴리즈 노트 추출 중..."
             # CHANGELOG.md 생성
             python3 ./.github/scripts/changelog_manager.py generate-md
@@ -168,7 +158,7 @@ jobs:
               echo "v$VERSION 업데이트" > final_release_notes.txt
             fi
           else
-            echo "⚠️ CHANGELOG.json 파일 또는 스크립트가 없습니다. 기본 릴리즈 노트를 사용합니다."
+            echo "⚠️ CHANGELOG.json 파일이 없습니다. 기본 릴리즈 노트를 사용합니다."
             echo "RELEASE_NOTES_FOUND=false" >> $GITHUB_ENV
             echo "v$VERSION 업데이트" > final_release_notes.txt
           fi
