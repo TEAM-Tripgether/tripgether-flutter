@@ -1,11 +1,39 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-09T08:37:28Z",
-    "currentVersion": "1.0.19",
+    "lastUpdated": "2025-10-09T09:18:43Z",
+    "currentVersion": "1.0.20",
     "projectType": "flutter",
-    "totalReleases": 7
+    "totalReleases": 8
   },
   "releases": [
+    {
+      "version": "1.0.20",
+      "project_type": "flutter",
+      "date": "2025-10-09",
+      "pr_number": 14,
+      "raw_summary": "Summary by CodeRabbit\n\n스타일\n\n앱 런처 아이콘을 새 이미지로 교체해 홈 화면과 앱 전환기에서 표시되는 아이콘이 업데이트되었습니다.\n\n\n문서\n\nREADME의 버전 배지/텍스트를 최신 버전으로 갱신했습니다.\n\n\n잡무\n\n앱 버전을 1.0.20으로, 내부 version_code를 17로 업데이트했습니다.\n마지막 업데이트 시각과 업데이트 수행자 메타데이터를 갱신했습니다.",
+      "parsed_changes": {
+        "스타일": {
+          "title": "스타일",
+          "items": [
+            "앱 런처 아이콘을 새 이미지로 교체해 홈 화면과 앱 전환기에서 표시되는 아이콘이 업데이트되었습니다."
+          ]
+        },
+        "문서": {
+          "title": "문서",
+          "items": [
+            "README의 버전 배지/텍스트를 최신 버전으로 갱신했습니다."
+          ]
+        },
+        "잡무": {
+          "title": "잡무",
+          "items": [
+            "앱 버전을 1.0.20으로, 내부 version_code를 17로 업데이트했습니다.",
+            "마지막 업데이트 시각과 업데이트 수행자 메타데이터를 갱신했습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.19",
       "project_type": "flutter",
