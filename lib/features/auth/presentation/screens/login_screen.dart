@@ -58,7 +58,9 @@ class LoginScreen extends ConsumerWidget {
     debugPrint('[LoginScreen] 🔘 구글 로그인 버튼 클릭');
 
     // LoginProvider를 통한 구글 로그인
-    final success = await ref.read(loginNotifierProvider.notifier).loginWithGoogle();
+    final success = await ref
+        .read(loginNotifierProvider.notifier)
+        .loginWithGoogle();
 
     debugPrint('[LoginScreen] 구글 로그인 결과: ${success ? "성공 ✅" : "실패 ❌"}');
 

@@ -9,7 +9,7 @@ part 'place_model.g.dart';
 /// 사용자가 저장한 여행 장소 정보를 표현하는 모델 클래스
 @freezed
 class SavedPlace with _$SavedPlace {
-  const SavedPlace._();  // private constructor for custom getters
+  const SavedPlace._(); // private constructor for custom getters
 
   const factory SavedPlace({
     /// 장소 고유 ID

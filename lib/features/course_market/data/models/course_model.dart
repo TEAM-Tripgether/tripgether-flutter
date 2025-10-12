@@ -9,7 +9,7 @@ part 'course_model.g.dart';
 /// 사용자가 공유하거나 구매할 수 있는 여행 코스 정보를 표현하는 모델 클래스
 @freezed
 class Course with _$Course {
-  const Course._();  // private constructor for custom getters
+  const Course._(); // private constructor for custom getters
 
   const factory Course({
     /// 코스 고유 ID
@@ -71,8 +71,7 @@ class Course with _$Course {
   }) = _Course;
 
   /// JSON 직렬화 (API 통신용)
-  factory Course.fromJson(Map<String, dynamic> json) =>
-      _$CourseFromJson(json);
+  factory Course.fromJson(Map<String, dynamic> json) => _$CourseFromJson(json);
 
   /// 더미 데이터 생성을 위한 팩토리 메서드
   static Course dummy({

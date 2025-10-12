@@ -10,7 +10,7 @@ part 'sns_content_model.g.dart';
 /// 여행 관련 콘텐츠를 표현하는 모델 클래스
 @freezed
 class SnsContent with _$SnsContent {
-  const SnsContent._();  // private constructor for custom methods
+  const SnsContent._(); // private constructor for custom methods
 
   const factory SnsContent({
     /// 콘텐츠 고유 ID
