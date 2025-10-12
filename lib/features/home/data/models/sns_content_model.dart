@@ -1,49 +1,52 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+// freezed가 생성할 파일들
+part 'sns_content_model.freezed.dart';
+part 'sns_content_model.g.dart';
+
 /// SNS 콘텐츠 데이터 모델
 ///
 /// YouTube, Instagram 등의 SNS 플랫폼에서 가져온
 /// 여행 관련 콘텐츠를 표현하는 모델 클래스
-class SnsContent {
-  /// 콘텐츠 고유 ID
-  final String id;
+@freezed
+class SnsContent with _$SnsContent {
+  const SnsContent._(); // private constructor for custom methods
 
-  /// 콘텐츠 제목
-  final String title;
+  const factory SnsContent({
+    /// 콘텐츠 고유 ID
+    required String id,
 
-  /// 썸네일 이미지 URL
-  final String thumbnailUrl;
+    /// 콘텐츠 제목
+    required String title,
 
-  /// 콘텐츠 출처 (YouTube, Instagram 등)
-  final SnsSource source;
+    /// 썸네일 이미지 URL
+    required String thumbnailUrl,
 
-  /// 원본 콘텐츠 URL
-  final String contentUrl;
+    /// 콘텐츠 출처 (YouTube, Instagram 등)
+    required SnsSource source,
 
-  /// 생성자 이름 (예: 채널명, 인스타그램 사용자명)
-  final String creatorName;
+    /// 원본 콘텐츠 URL
+    required String contentUrl,
 
-  /// 조회수 (YouTube) 또는 좋아요 수 (Instagram)
-  final int viewCount;
+    /// 생성자 이름 (예: 채널명, 인스타그램 사용자명)
+    required String creatorName,
 
-  /// 콘텐츠 생성 날짜
-  final DateTime createdAt;
+    /// 조회수 (YouTube) 또는 좋아요 수 (Instagram)
+    required int viewCount,
 
-  /// 콘텐츠 타입 (비디오, 이미지, 릴스 등)
-  final ContentType type;
+    /// 콘텐츠 생성 날짜
+    required DateTime createdAt,
 
-  const SnsContent({
-    required this.id,
-    required this.title,
-    required this.thumbnailUrl,
-    required this.source,
-    required this.contentUrl,
-    required this.creatorName,
-    required this.viewCount,
-    required this.createdAt,
-    required this.type,
-  });
+    /// 콘텐츠 타입 (비디오, 이미지, 릴스 등)
+    required ContentType type,
+  }) = _SnsContent;
+
+  /// JSON 직렬화 (API 통신용)
+  factory SnsContent.fromJson(Map<String, dynamic> json) =>
+      _$SnsContentFromJson(json);
 
   /// 더미 데이터 생성을 위한 팩토리 메서드
-  factory SnsContent.dummy({
+  static SnsContent dummy({
     required String id,
     required String title,
     required SnsSource source,
@@ -68,8 +71,11 @@ class SnsContent {
 
 /// SNS 플랫폼 종류
 enum SnsSource {
+  @JsonValue('youtube')
   youtube('YouTube'),
+  @JsonValue('instagram')
   instagram('Instagram'),
+  @JsonValue('tiktok')
   tiktok('TikTok');
 
   final String displayName;
@@ -78,9 +84,13 @@ enum SnsSource {
 
 /// 콘텐츠 타입
 enum ContentType {
+  @JsonValue('video')
   video('동영상'),
+  @JsonValue('image')
   image('이미지'),
+  @JsonValue('reels')
   reels('릴스'),
+  @JsonValue('shorts')
   shorts('쇼츠');
 
   final String displayName;

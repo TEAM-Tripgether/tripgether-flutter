@@ -38,7 +38,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 현재 선택된 언어 설정 가져오기 (null = 시스템 언어)
-    final currentLocale = ref.watch(localeProvider);
+    final currentLocale = ref.watch(localeNotifierProvider);
 
     return ScreenUtilInit(
       // 디자인 기준 사이즈 (iPhone 14 기준)
