@@ -1,88 +1,81 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+// freezed가 생성할 파일들
+part 'course_model.freezed.dart';
+part 'course_model.g.dart';
+
 /// 여행 코스 데이터 모델
 ///
 /// 사용자가 공유하거나 구매할 수 있는 여행 코스 정보를 표현하는 모델 클래스
-class Course {
-  /// 코스 고유 ID
-  final String id;
+@freezed
+class Course with _$Course {
+  const Course._();  // private constructor for custom getters
 
-  /// 코스 제목
-  final String title;
+  const factory Course({
+    /// 코스 고유 ID
+    required String id,
 
-  /// 코스 설명
-  final String description;
+    /// 코스 제목
+    required String title,
 
-  /// 코스 카테고리 (데이트, 산책, 빈티지 등)
-  final CourseCategory category;
+    /// 코스 설명
+    required String description,
 
-  /// 코스에 포함된 장소 수
-  final int placeCount;
+    /// 코스 카테고리 (데이트, 산책, 빈티지 등)
+    required CourseCategory category,
 
-  /// 예상 소요 시간 (분 단위)
-  final int estimatedMinutes;
+    /// 코스에 포함된 장소 수
+    required int placeCount,
 
-  /// 코스 썸네일 이미지 URL
-  final String thumbnailUrl;
+    /// 예상 소요 시간 (분 단위)
+    required int estimatedMinutes,
 
-  /// 코스 작성자 이름
-  final String authorName;
+    /// 코스 썸네일 이미지 URL
+    required String thumbnailUrl,
 
-  /// 작성자 프로필 이미지 URL
-  final String? authorProfileUrl;
+    /// 코스 작성자 이름
+    required String authorName,
 
-  /// 코스 가격 (0이면 무료)
-  final int price;
+    /// 작성자 프로필 이미지 URL
+    String? authorProfileUrl,
 
-  /// 좋아요 수
-  final int likeCount;
+    /// 코스 가격 (0이면 무료)
+    required int price,
 
-  /// 구매/다운로드 수
-  final int downloadCount;
+    /// 좋아요 수
+    required int likeCount,
 
-  /// 평점 (1.0 ~ 5.0)
-  final double? rating;
+    /// 구매/다운로드 수
+    required int downloadCount,
 
-  /// 리뷰 개수
-  final int? reviewCount;
+    /// 평점 (1.0 ~ 5.0)
+    double? rating,
 
-  /// 지역 정보 (예: 서울 강진구)
-  final String location;
+    /// 리뷰 개수
+    int? reviewCount,
 
-  /// 코스 생성일
-  final DateTime createdAt;
+    /// 지역 정보 (예: 서울 강진구)
+    required String location,
 
-  /// 인기 코스 여부
-  final bool isPopular;
+    /// 코스 생성일
+    required DateTime createdAt,
 
-  /// 프리미엄 코스 여부
-  final bool isPremium;
+    /// 인기 코스 여부
+    @Default(false) bool isPopular,
 
-  /// 거리 (km)
-  final double? distance;
+    /// 프리미엄 코스 여부
+    @Default(false) bool isPremium,
 
-  const Course({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.category,
-    required this.placeCount,
-    required this.estimatedMinutes,
-    required this.thumbnailUrl,
-    required this.authorName,
-    this.authorProfileUrl,
-    required this.price,
-    required this.likeCount,
-    required this.downloadCount,
-    this.rating,
-    this.reviewCount,
-    required this.location,
-    required this.createdAt,
-    this.isPopular = false,
-    this.isPremium = false,
-    this.distance,
-  });
+    /// 거리 (km)
+    double? distance,
+  }) = _Course;
+
+  /// JSON 직렬화 (API 통신용)
+  factory Course.fromJson(Map<String, dynamic> json) =>
+      _$CourseFromJson(json);
 
   /// 더미 데이터 생성을 위한 팩토리 메서드
-  factory Course.dummy({
+  static Course dummy({
     required String id,
     required String title,
     required String description,
@@ -163,15 +156,25 @@ class Course {
 
 /// 코스 카테고리
 enum CourseCategory {
+  @JsonValue('date')
   date('데이트', '💕', '연인과 함께하는 로맨틱한 코스'),
+  @JsonValue('walk')
   walk('산책', '🚶', '여유로운 걷기 좋은 코스'),
+  @JsonValue('vintage')
   vintage('빈티지', '📷', '감성적인 빈티지 스팟 코스'),
+  @JsonValue('food')
   food('맛집', '🍽️', '미식가를 위한 맛집 투어'),
+  @JsonValue('cafe')
   cafe('카페', '☕', '카페 호핑 코스'),
+  @JsonValue('photo')
   photo('사진', '📸', '인스타 감성 포토존 코스'),
+  @JsonValue('culture')
   culture('문화', '🎭', '문화예술 체험 코스'),
+  @JsonValue('shopping')
   shopping('쇼핑', '🛍️', '쇼핑 명소 투어'),
+  @JsonValue('night')
   night('야경', '🌃', '아름다운 야경 명소'),
+  @JsonValue('nature')
   nature('자연', '🌳', '자연 속 힐링 코스');
 
   final String displayName;

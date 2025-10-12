@@ -1,76 +1,72 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+// freezed가 생성할 파일들
+part 'place_model.freezed.dart';
+part 'place_model.g.dart';
+
 /// 저장된 장소 데이터 모델
 ///
 /// 사용자가 저장한 여행 장소 정보를 표현하는 모델 클래스
-class SavedPlace {
-  /// 장소 고유 ID
-  final String id;
+@freezed
+class SavedPlace with _$SavedPlace {
+  const SavedPlace._();  // private constructor for custom getters
 
-  /// 장소명
-  final String name;
+  const factory SavedPlace({
+    /// 장소 고유 ID
+    required String id,
 
-  /// 업종/카테고리 (카페, 음식점, 관광지 등)
-  final PlaceCategory category;
+    /// 장소명
+    required String name,
 
-  /// 주소
-  final String address;
+    /// 업종/카테고리 (카페, 음식점, 관광지 등)
+    required PlaceCategory category,
 
-  /// 상세 주소
-  final String? detailAddress;
+    /// 주소
+    required String address,
 
-  /// 위도
-  final double latitude;
+    /// 상세 주소
+    String? detailAddress,
 
-  /// 경도
-  final double longitude;
+    /// 위도
+    required double latitude,
 
-  /// 장소 설명
-  final String? description;
+    /// 경도
+    required double longitude,
 
-  /// 장소 이미지 URL 리스트
-  final List<String> imageUrls;
+    /// 장소 설명
+    String? description,
 
-  /// 평점 (1.0 ~ 5.0)
-  final double? rating;
+    /// 장소 이미지 URL 리스트
+    required List<String> imageUrls,
 
-  /// 리뷰 개수
-  final int? reviewCount;
+    /// 평점 (1.0 ~ 5.0)
+    double? rating,
 
-  /// 영업 시간
-  final String? businessHours;
+    /// 리뷰 개수
+    int? reviewCount,
 
-  /// 전화번호
-  final String? phoneNumber;
+    /// 영업 시간
+    String? businessHours,
 
-  /// 저장 날짜
-  final DateTime savedAt;
+    /// 전화번호
+    String? phoneNumber,
 
-  /// 방문 여부
-  final bool isVisited;
+    /// 저장 날짜
+    required DateTime savedAt,
 
-  /// 즐겨찾기 여부
-  final bool isFavorite;
+    /// 방문 여부
+    @Default(false) bool isVisited,
 
-  const SavedPlace({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.address,
-    this.detailAddress,
-    required this.latitude,
-    required this.longitude,
-    this.description,
-    required this.imageUrls,
-    this.rating,
-    this.reviewCount,
-    this.businessHours,
-    this.phoneNumber,
-    required this.savedAt,
-    this.isVisited = false,
-    this.isFavorite = false,
-  });
+    /// 즐겨찾기 여부
+    @Default(false) bool isFavorite,
+  }) = _SavedPlace;
+
+  /// JSON 직렬화 (API 통신용)
+  factory SavedPlace.fromJson(Map<String, dynamic> json) =>
+      _$SavedPlaceFromJson(json);
 
   /// 더미 데이터 생성을 위한 팩토리 메서드
-  factory SavedPlace.dummy({
+  static SavedPlace dummy({
     required String id,
     required String name,
     required PlaceCategory category,
@@ -119,15 +115,25 @@ class SavedPlace {
 
 /// 장소 카테고리
 enum PlaceCategory {
+  @JsonValue('restaurant')
   restaurant('음식점', '🍽️'),
+  @JsonValue('cafe')
   cafe('카페', '☕'),
+  @JsonValue('attraction')
   attraction('관광지', '🏛️'),
+  @JsonValue('accommodation')
   accommodation('숙소', '🏨'),
+  @JsonValue('shopping')
   shopping('쇼핑', '🛍️'),
+  @JsonValue('activity')
   activity('액티비티', '🎯'),
+  @JsonValue('bar')
   bar('주점', '🍺'),
+  @JsonValue('dessert')
   dessert('디저트', '🍰'),
+  @JsonValue('museum')
   museum('박물관', '🎨'),
+  @JsonValue('park')
   park('공원', '🌳');
 
   final String displayName;
