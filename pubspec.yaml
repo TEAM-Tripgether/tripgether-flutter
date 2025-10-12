@@ -4,7 +4,7 @@ description: "Tripgether - Share your travel moments and discover local places t
 publish_to: 'none' 
 
 
-version: 1.0.22
+version: 1.0.23
 
 environment:
   sdk: ^3.9.2
@@ -17,8 +17,10 @@ dependencies:
   cupertino_icons: ^1.0.8 
 
   # 상태 관리 및 데이터 모델
-  flutter_riverpod: ^3.0.0         # Riverpod 상태 관리
-  riverpod_annotation: ^3.0.0      # @riverpod 어노테이션 지원
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+  freezed_annotation: ^2.4.4       # freezed 어노테이션 (불변 데이터 클래스)
+  json_annotation: ^4.9.0          # JSON 직렬화 어노테이션
   shared_preferences: ^2.3.4      # 로컬 설정 저장 (테마, 온보딩 등)
   intl: ^0.20.2                   # 국제화 및 날짜/숫자 포맷팅
 
@@ -80,8 +82,12 @@ dev_dependencies:
 
   # 코드 품질 및 자동화 도구
   flutter_lints: ^6.0.0            # 추천 코드 린트 규칙
-  build_runner: ^2.7.1             # 코드 자동 생성 툴
-  riverpod_generator: ^3.0.0       # @riverpod 코드 생성
+  build_runner: ^2.4.14            # 코드 자동 생성 툴
+  riverpod_generator: ^2.6.2       # @riverpod 코드 생성
+  freezed: ^2.5.7                  # freezed 코드 생성기 (불변 클래스)
+  json_serializable: ^6.9.2        # JSON 직렬화 코드 생성기
+  retrofit_generator: ^9.1.8       # REST API 클라이언트 코드 생성기
+  
 
 
   # 앱 통합 관리 도구

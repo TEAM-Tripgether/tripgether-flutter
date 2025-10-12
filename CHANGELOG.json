@@ -1,11 +1,45 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-09T11:07:55Z",
-    "currentVersion": "1.0.22",
+    "lastUpdated": "2025-10-12T15:59:53Z",
+    "currentVersion": "1.0.23",
     "projectType": "flutter",
-    "totalReleases": 10
+    "totalReleases": 11
   },
   "releases": [
+    {
+      "version": "1.0.23",
+      "project_type": "flutter",
+      "date": "2025-10-12",
+      "pr_number": 22,
+      "raw_summary": "Summary by CodeRabbit\n\n버그 수정\n\n이메일/구글 로그인 성공·취소·에러 처리의 일관성 개선으로 로그인 흐름 안정화\n\n\n리팩터\n\n상태 관리 프로바이더 구조 정비 및 최신 패턴으로 마이그레이션(성능·메모리 효율 개선)\n\n\n문서\n\n코드 생성 워크플로 가이드 추가(모델/프로바이더 예시와 트러블슈팅 포함)\n\n\n기타(Chores)\n\n앱 버전 1.0.23 및 빌드 번호 갱신, README 배지 업데이트\n의존성 정리 및 코드 생성 도구 세팅(개발 환경 개선)",
+      "parsed_changes": {
+        "버그_수정": {
+          "title": "버그 수정",
+          "items": [
+            "이메일/구글 로그인 성공·취소·에러 처리의 일관성 개선으로 로그인 흐름 안정화"
+          ]
+        },
+        "리팩터": {
+          "title": "리팩터",
+          "items": [
+            "상태 관리 프로바이더 구조 정비 및 최신 패턴으로 마이그레이션(성능·메모리 효율 개선)"
+          ]
+        },
+        "문서": {
+          "title": "문서",
+          "items": [
+            "코드 생성 워크플로 가이드 추가(모델/프로바이더 예시와 트러블슈팅 포함)"
+          ]
+        },
+        "기타_chores": {
+          "title": "기타(Chores)",
+          "items": [
+            "앱 버전 1.0.23 및 빌드 번호 갱신, README 배지 업데이트",
+            "의존성 정리 및 코드 생성 도구 세팅(개발 환경 개선)"
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.22",
       "project_type": "flutter",

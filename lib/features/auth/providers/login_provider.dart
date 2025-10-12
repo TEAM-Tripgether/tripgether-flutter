@@ -56,12 +56,11 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('  👤 사용자: $email');
       debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // 임시: 성공 상태로 전환
-      state = const AsyncValue.data(null);
-
+      // ✅ 성공 시에는 state를 변경하지 않고 바로 true 반환
+      // (화면 전환 시 위젯 트리 재구성으로 인한 state 충돌 방지)
       return true;
     } catch (e, stack) {
-      // 에러 상태로 전환
+      // ❌ 에러 발생 시에만 state를 에러로 설정
       state = AsyncValue.error(e, stack);
       debugPrint('[LoginProvider] ❌ 이메일 로그인 실패: $e');
       return false;
@@ -90,9 +89,7 @@ class LoginNotifier extends _$LoginNotifier {
       // 사용자가 로그인을 취소한 경우
       if (googleUser == null) {
         debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨');
-        if (ref.mounted) {
-          state = const AsyncValue.data(null);
-        }
+        state = const AsyncValue.data(null);
         return false;
       }
 
@@ -146,25 +143,14 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('  👤 사용자: ${googleUser.email}');
       debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // 성공 상태로 전환 (mounted일 때만)
-      if (ref.mounted) {
-        state = const AsyncValue.data(null);
-        debugPrint('[LoginProvider] 📝 Provider 상태 업데이트 완료');
-      } else {
-        debugPrint(
-          '[LoginProvider] ⚠️ Provider가 dispose됨 - 상태 업데이트 스킵 (로그인은 성공)',
-        );
-      }
-
-      // Provider가 dispose되었어도 로그인 자체는 성공했으므로 true 반환
+      // ✅ 성공 시에는 state를 변경하지 않고 바로 true 반환
+      // (화면 전환 시 위젯 트리 재구성으로 인한 state 충돌 방지)
       return true;
     } catch (e, stack) {
       debugPrint('[LoginProvider] ❌ 구글 로그인 실패: $e');
 
-      // 에러 상태로 전환 (mounted 체크)
-      if (ref.mounted) {
-        state = AsyncValue.error(e, stack);
-      }
+      // ❌ 에러 발생 시에만 state를 에러로 설정
+      state = AsyncValue.error(e, stack);
 
       return false;
     }
