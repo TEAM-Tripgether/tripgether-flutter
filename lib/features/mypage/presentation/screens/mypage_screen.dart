@@ -16,7 +16,7 @@ class MyPageScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final currentLocale = ref.watch(localeProvider);
+    final currentLocale = ref.watch(localeNotifierProvider);
     return Scaffold(
       // 마이페이지에 최적화된 AppBar
       // 개인 계정 관리 중심으로 설정 기능을 강조
@@ -155,7 +155,7 @@ class MyPageScreen extends ConsumerWidget {
           : null,
       onTap: () async {
         // 언어 변경
-        await ref.read(localeProvider.notifier).setLocale(locale);
+        await ref.read(localeNotifierProvider.notifier).setLocale(locale);
 
         // 스낵바로 알림
         if (context.mounted) {
