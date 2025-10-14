@@ -25,6 +25,9 @@ class SnsContentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Theme의 textTheme을 가져와서 일관된 스타일 적용
+    final textTheme = Theme.of(context).textTheme;
+
     return GestureDetector(
       onTap: onTap ?? () => debugPrint('SNS 콘텐츠 클릭: ${content.contentUrl}'),
       child: Container(
@@ -86,15 +89,13 @@ class SnsContentCard extends StatelessWidget {
                     SizedBox(height: AppSpacing.xs.h),
                     Text(
                       content.title,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontSize: 13.sp,
+                      style: textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                         height: 1.3,
                         shadows: [
                           Shadow(
-                            offset: Offset(0, 1),
+                            offset: const Offset(0, 1),
                             blurRadius: 3.0,
                             color: Colors.black.withValues(alpha: 0.5),
                           ),
@@ -168,6 +169,8 @@ class SnsContentHorizontalList extends StatelessWidget {
   /// 섹션 헤더 위젯 빌드
   Widget _buildSectionHeader(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final primaryColor = Theme.of(context).primaryColor;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -176,11 +179,8 @@ class SnsContentHorizontalList extends StatelessWidget {
         children: [
           Text(
             title!,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 18.sp,
+            style: textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
-              color: Colors.black87,
             ),
           ),
           if (onSeeMoreTap != null)
@@ -190,18 +190,16 @@ class SnsContentHorizontalList extends StatelessWidget {
                 children: [
                   Text(
                     l10n.seeMore,
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 13.sp,
+                    style: textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w500,
-                      color: Theme.of(context).primaryColor,
+                      color: primaryColor,
                     ),
                   ),
                   AppSpacing.horizontalSpaceXS,
                   Icon(
                     Icons.arrow_forward_ios,
                     size: AppSizes.iconSmall,
-                    color: Theme.of(context).primaryColor,
+                    color: primaryColor,
                   ),
                 ],
               ),

@@ -75,6 +75,8 @@ class CourseCard extends StatelessWidget {
 
   /// 썸네일 이미지 영역 빌드
   Widget _buildThumbnail(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Stack(
       children: [
         // 썸네일 이미지
@@ -120,13 +122,14 @@ class CourseCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(course.category.emoji, style: TextStyle(fontSize: 12.sp)),
+                Text(
+                  course.category.emoji,
+                  style: textTheme.labelSmall,
+                ),
                 SizedBox(width: AppSpacing.xs),
                 Text(
                   course.category.displayName,
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 11.sp,
+                  style: textTheme.labelSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.onPrimary,
                   ),
@@ -175,9 +178,7 @@ class CourseCard extends StatelessWidget {
               ),
               child: Text(
                 course.priceText,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 11.sp,
+                style: textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: AppColors.onPrimary,
                 ),
@@ -190,6 +191,8 @@ class CourseCard extends StatelessWidget {
 
   /// 코스 정보 영역 빌드
   Widget _buildCourseInfo(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
@@ -198,9 +201,7 @@ class CourseCard extends StatelessWidget {
           // 코스 제목
           Text(
             course.title,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 15.sp,
+            style: textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.onSurface,
               height: 1.3,
@@ -213,9 +214,7 @@ class CourseCard extends StatelessWidget {
           // 코스 설명
           Text(
             course.description,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 12.sp,
+            style: textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
               color: AppColors.neutral60,
               height: 1.3,
@@ -242,6 +241,7 @@ class CourseCard extends StatelessWidget {
     return Builder(
       builder: (context) {
         final l10n = AppLocalizations.of(context);
+        final textTheme = Theme.of(context).textTheme;
 
         return Row(
           children: [
@@ -250,9 +250,7 @@ class CourseCard extends StatelessWidget {
             AppSpacing.horizontalSpaceXS,
             Text(
               l10n.placesCount(course.placeCount),
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 11.sp,
+              style: textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w500,
                 color: AppColors.neutral60,
               ),
@@ -264,9 +262,7 @@ class CourseCard extends StatelessWidget {
             AppSpacing.horizontalSpaceXS,
             Text(
               course.durationText,
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 11.sp,
+              style: textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w500,
                 color: AppColors.neutral60,
               ),
@@ -279,9 +275,7 @@ class CourseCard extends StatelessWidget {
               AppSpacing.horizontalSpaceXS,
               Text(
                 course.distanceText,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 11.sp,
+                style: textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: AppColors.neutral60,
                 ),
@@ -295,67 +289,69 @@ class CourseCard extends StatelessWidget {
 
   /// 작성자 정보 위젯
   Widget _buildAuthorInfo() {
-    return Row(
-      children: [
-        // 작성자 프로필 이미지
-        if (course.authorProfileUrl != null)
-          ClipOval(
-            child: CachedNetworkImage(
-              imageUrl: course.authorProfileUrl!,
-              width: AppSizes.iconMedium,
-              height: AppSizes.iconMedium,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                width: AppSizes.iconMedium.w,
-                height: AppSizes.iconMedium.w,
-                color: AppColors.neutral95,
-              ),
-              errorWidget: (context, url, error) => Container(
-                width: AppSizes.iconMedium.w,
-                height: AppSizes.iconMedium.w,
-                color: AppColors.neutral95,
-                child: Icon(
-                  Icons.person,
-                  size: AppSizes.iconSmall,
-                  color: AppColors.neutral70,
+    return Builder(
+      builder: (context) {
+        final textTheme = Theme.of(context).textTheme;
+
+        return Row(
+          children: [
+            // 작성자 프로필 이미지
+            if (course.authorProfileUrl != null)
+              ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: course.authorProfileUrl!,
+                  width: AppSizes.iconMedium,
+                  height: AppSizes.iconMedium,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    width: AppSizes.iconMedium.w,
+                    height: AppSizes.iconMedium.w,
+                    color: AppColors.neutral95,
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: AppSizes.iconMedium.w,
+                    height: AppSizes.iconMedium.w,
+                    color: AppColors.neutral95,
+                    child: Icon(
+                      Icons.person,
+                      size: AppSizes.iconSmall,
+                      color: AppColors.neutral70,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        if (course.authorProfileUrl != null) SizedBox(width: AppSpacing.xs),
+            if (course.authorProfileUrl != null) SizedBox(width: AppSpacing.xs),
 
-        // 작성자 이름
-        Expanded(
-          child: Text(
-            course.authorName,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w500,
-              color: AppColors.neutral50,
+            // 작성자 이름
+            Expanded(
+              child: Text(
+                course.authorName,
+                style: textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.neutral50,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
 
-        // 좋아요 수
-        Icon(
-          Icons.favorite,
-          size: AppSizes.iconSmall,
-          color: AppColors.error.withValues(alpha: 0.7),
-        ),
-        SizedBox(width: AppSpacing.xs.w / 2),
-        Text(
-          '${course.likeCount}',
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 11.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.neutral50,
-          ),
-        ),
-      ],
+            // 좋아요 수
+            Icon(
+              Icons.favorite,
+              size: AppSizes.iconSmall,
+              color: AppColors.error.withValues(alpha: 0.7),
+            ),
+            SizedBox(width: AppSpacing.xs.w / 2),
+            Text(
+              '${course.likeCount}',
+              style: textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.neutral50,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -530,6 +526,7 @@ class CourseHorizontalList extends StatelessWidget {
   /// 섹션 헤더 위젯 빌드
   Widget _buildSectionHeader(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -538,9 +535,7 @@ class CourseHorizontalList extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 18.sp,
+            style: textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.onSurface,
             ),
@@ -552,9 +547,7 @@ class CourseHorizontalList extends StatelessWidget {
                 children: [
                   Text(
                     l10n.more,
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 13.sp,
+                    style: textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w500,
                       color: AppColors.primary,
                     ),
