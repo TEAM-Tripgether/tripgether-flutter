@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/router/routes.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// PRD.md 구조에 따른 공유 바텀 네비게이션 바 위젯
 ///
@@ -26,7 +27,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // 바텀 네비게이션 바의 전체 높이 (반응형)
-      height: 90.h,
+      height: AppSizes.navigationBarHeight,
       decoration: BoxDecoration(
         color: Colors.white,
         // 상단에만 그림자 효과 추가
@@ -41,7 +42,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(top: 8.h), // 상단에 추가 패딩 적용
+          padding: EdgeInsets.only(top: AppSpacing.sm.h), // 상단에 추가 패딩 적용
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(
@@ -67,7 +68,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       // 탭 영역을 확장하여 터치하기 쉽게 만듦
       behavior: HitTestBehavior.translucent,
       child: SizedBox(
-        width: 60.w, // 각 탭의 최소 너비 보장
+        width: AppSizes.fabSize.w, // 각 탭의 최소 너비 보장
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,7 +76,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             // SVG 아이콘 표시
             _buildIcon(context, index, isSelected),
 
-            SizedBox(height: 4.h),
+            SizedBox(height: AppSpacing.xs.h),
 
             // 탭 라벨 텍스트
             _buildLabel(context, index, isSelected),
@@ -98,8 +99,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
     return SvgPicture.asset(
       iconPath,
-      width: 24.w, // 반응형 아이콘 크기
-      height: 24.h,
+      width: AppSizes.iconDefault.w, // 반응형 아이콘 크기
+      height: AppSizes.iconDefault.h,
       // SVG 색상 필터링 (필요한 경우)
       colorFilter: isSelected
           ? ColorFilter.mode(

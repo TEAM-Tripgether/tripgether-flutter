@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../features/home/data/models/sns_content_model.dart';
 
 /// 플랫폼별 아이콘을 표시하는 공통 위젯
@@ -30,15 +31,15 @@ class PlatformIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = size ?? 24.w;
+    final iconSize = size ?? AppSizes.iconDefault.w;
 
     // 배경이 있는 경우
     if (showBackground) {
       return Container(
-        padding: EdgeInsets.all(backgroundPadding ?? 6.w),
+        padding: EdgeInsets.all(backgroundPadding ?? AppSpacing.xs),
         decoration: BoxDecoration(
           color: _getBackgroundColor(),
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: AppRadius.allMedium,
         ),
         child: _buildIcon(iconSize),
       );

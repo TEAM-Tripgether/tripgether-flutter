@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// 홈 화면 검색창 위젯
@@ -100,11 +101,11 @@ class _TripSearchBarState extends State<TripSearchBar> {
     final l10n = AppLocalizations.of(context);
 
     return Container(
-      height: 48.h,
+      height: AppSizes.buttonHeight,
       decoration: BoxDecoration(
         color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
+        borderRadius: AppRadius.circular(24),
+        border: Border.all(color: Colors.grey[300]!, width: AppSizes.borderThin),
       ),
       child: TextField(
         controller: _effectiveController,
@@ -127,19 +128,19 @@ class _TripSearchBarState extends State<TripSearchBar> {
             fontWeight: FontWeight.w400,
             color: Colors.grey[500],
           ),
-          prefixIcon: Icon(Icons.search, size: 20.w, color: Colors.grey[600]),
+          prefixIcon: Icon(Icons.search, size: AppSizes.iconMedium.w, color: Colors.grey[600]),
           // 텍스트가 있을 때만 X 아이콘 표시 (동적으로 업데이트, 국제화 적용)
           suffixIcon: _hasText
               ? IconButton(
-                  icon: Icon(Icons.clear, size: 18.w, color: Colors.grey[600]),
+                  icon: Icon(Icons.clear, size: AppSizes.iconSmall.w, color: Colors.grey[600]),
                   onPressed: _clearText,
                   tooltip: l10n.clearInput,
                 )
               : null,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 12.h,
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md.h,
           ),
           // 기본 InputDecoration 테마 오버라이드
           filled: false,

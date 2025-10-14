@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// Tripgether 앱에서 사용하는 공용 AppBar 컴포넌트
@@ -117,7 +118,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       // 아이콘 테마
       iconTheme: IconThemeData(
         color: AppColors.onSurface,
-        size: 24.w, // ScreenUtil로 반응형 크기
+        size: AppSizes.iconDefault.w, // ScreenUtil로 반응형 크기
       ),
     );
   }
@@ -141,7 +142,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
-            size: 20.w, // ScreenUtil로 반응형 크기
+            size: AppSizes.iconMedium.w, // ScreenUtil로 반응형 크기
           ),
           onPressed: () {
             // GoRouter 사용 시 context.pop() 사용
@@ -163,7 +164,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: IconButton(
           icon: Icon(
             Icons.menu,
-            size: 24.w, // ScreenUtil로 반응형 크기
+            size: AppSizes.iconDefault.w, // ScreenUtil로 반응형 크기
           ),
           onPressed: onMenuPressed ?? () => _openDrawer(context),
           tooltip: '메뉴', // 접근성을 위한 툴팁
@@ -190,7 +191,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: IconButton(
             icon: Icon(
               Icons.notifications_outlined,
-              size: 24.w, // ScreenUtil로 반응형 크기
+              size: AppSizes.iconDefault.w, // ScreenUtil로 반응형 크기
             ),
             onPressed:
                 onNotificationPressed ?? () => _showNotificationDialog(context),
@@ -198,7 +199,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         // 오른쪽 마진 추가 (Material Design 가이드라인)
-        SizedBox(width: 8.w),
+        SizedBox(width: AppSpacing.sm),
       ];
     }
 
@@ -294,7 +295,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
                   tooltip: '설정',
                 ),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: AppSpacing.sm),
             ]
           : null,
     );
@@ -322,7 +323,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
                   tooltip: '검색',
                 ),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: AppSpacing.sm),
             ]
           : null,
     );

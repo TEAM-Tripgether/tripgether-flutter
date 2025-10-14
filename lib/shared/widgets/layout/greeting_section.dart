@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
 import 'search_bar.dart';
 
@@ -20,7 +21,7 @@ class GreetingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,7 +36,7 @@ class GreetingSection extends StatelessWidget {
               height: 1.3,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: AppSpacing.xs.h),
 
           // 부제목
           Text(
@@ -132,10 +133,10 @@ class HomeHeader extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.only(
-        left: 16.w,
-        right: 16.w,
-        top: 24.h,
-        bottom: 16.h, // 검색창을 위한 하단 패딩 추가
+        left: AppSpacing.lg,
+        right: AppSpacing.lg,
+        top: AppSpacing.xxl.h,
+        bottom: AppSpacing.lg.h, // 검색창을 위한 하단 패딩 추가
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,7 +151,7 @@ class HomeHeader extends StatelessWidget {
               color: Colors.white, // 그라데이션 배경에 맞춰 흰색으로 변경
             ),
           ),
-          SizedBox(height: 2.h),
+          AppSpacing.verticalSpaceXS,
           // 부제목 (국제화 적용)
           Text(
             greetingSubtitle ?? l10n.greetingSubtitle,
@@ -162,7 +163,7 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 16.h),
+          AppSpacing.verticalSpaceLG,
 
           // 검색창 (그라데이션 배경 위에 표시)
           TripSearchBar(
