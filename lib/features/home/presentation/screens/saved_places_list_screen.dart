@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
-import '../../../../shared/widgets/layout/place_card.dart';
+import '../../../../shared/widgets/cards/place_card.dart';
 import '../../data/models/place_model.dart';
 
 /// 저장한 장소 목록 화면
@@ -204,7 +206,7 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
   Widget _buildFilterChips(AppLocalizations l10n) {
     return Container(
       height: 50.h,
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _filterConfigs.length,
@@ -223,14 +225,14 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
     final hasEmoji = config.emoji.isNotEmpty;
 
     return Padding(
-      padding: EdgeInsets.only(right: 8.w),
+      padding: EdgeInsets.only(right: AppSpacing.sm),
       child: FilterChip(
         label: hasEmoji
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(config.emoji),
-                  SizedBox(width: 4.w),
+                  SizedBox(width: AppSpacing.xs),
                   Text(config.label),
                 ],
               )
@@ -244,14 +246,16 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
 
   /// 장소 그리드 빌드
   Widget _buildPlaceGrid(AppLocalizations l10n) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     if (_filteredPlaces.isEmpty && !_isLoading) {
       return Center(
         child: Text(
           l10n.noData,
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 16.sp,
-            color: Colors.grey[600],
+          style: textTheme.bodyLarge?.copyWith(
+            color: colorScheme.onSurfaceVariant,
           ),
         ),
       );
@@ -267,11 +271,11 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
       },
       child: GridView.builder(
         controller: _scrollController,
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(AppSpacing.lg.w),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, // 2열 그리드
-          crossAxisSpacing: 12.w,
-          mainAxisSpacing: 12.w,
+          crossAxisSpacing: AppSpacing.md,
+          mainAxisSpacing: AppSpacing.md,
           childAspectRatio: 0.75, // 세로로 긴 비율
         ),
         itemCount: _filteredPlaces.length + (_isLoading ? 2 : 0),
@@ -299,15 +303,13 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
   Widget _buildLoadingCard() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12.r),
+        color: AppColors.neutral90,
+        borderRadius: AppRadius.allLarge,
       ),
       child: Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(
-            Theme.of(context).primaryColor,
-          ),
+          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
         ),
       ),
     );

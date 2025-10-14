@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// 홈 화면 검색창 위젯
@@ -98,13 +99,19 @@ class _TripSearchBarState extends State<TripSearchBar> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
 
     return Container(
-      height: 48.h,
+      height: AppSizes.buttonHeight,
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: AppRadius.circular(24),
+        border: Border.all(
+          color: theme.dividerColor,
+          width: AppSizes.borderThin,
+        ),
       ),
       child: TextField(
         controller: _effectiveController,
@@ -113,33 +120,37 @@ class _TripSearchBarState extends State<TripSearchBar> {
         onTap: widget.onTap,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
-        style: TextStyle(
-          fontFamily: 'Pretendard',
-          fontSize: 14.sp,
+        style: textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w500,
-          color: Colors.black87,
+          color: colorScheme.onSurface,
         ),
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 14.sp,
+          hintStyle: textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w400,
-            color: Colors.grey[500],
+            color: colorScheme.onSurfaceVariant,
           ),
-          prefixIcon: Icon(Icons.search, size: 20.w, color: Colors.grey[600]),
+          prefixIcon: Icon(
+            Icons.search,
+            size: AppSizes.iconMedium,
+            color: colorScheme.onSurfaceVariant,
+          ),
           // 텍스트가 있을 때만 X 아이콘 표시 (동적으로 업데이트, 국제화 적용)
           suffixIcon: _hasText
               ? IconButton(
-                  icon: Icon(Icons.clear, size: 18.w, color: Colors.grey[600]),
+                  icon: Icon(
+                    Icons.clear,
+                    size: AppSizes.iconSmall,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                   onPressed: _clearText,
                   tooltip: l10n.clearInput,
                 )
               : null,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 12.h,
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md.h,
           ),
           // 기본 InputDecoration 테마 오버라이드
           filled: false,

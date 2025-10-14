@@ -17,6 +17,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
   static const MethodChannel _channel = MethodChannel('sharing_service');
   String _logContent = '로그를 불러오는 중...';
   bool _isLoading = true;
+  int _logCount = 0;
 
   @override
   void initState() {
@@ -32,13 +33,22 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
 
     try {
       final result = await _channel.invokeMethod<String>('getShareLog');
+
+      // 로그 엔트리 개수 계산 (빈 줄 제외)
+      final logLines = (result ?? '')
+          .split('\n')
+          .where((line) => line.trim().isNotEmpty)
+          .toList();
+
       setState(() {
         _logContent = result ?? '로그 파일이 없습니다';
+        _logCount = logLines.length;
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _logContent = '로그 읽기 실패: $e';
+        _logCount = 0;
         _isLoading = false;
       });
     }
@@ -58,7 +68,20 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Share Extension 로그'),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Share Extension 로그'),
+            Text(
+              '최신 5개만 자동 유지 (현재: $_logCount개)',
+              style: TextStyle(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

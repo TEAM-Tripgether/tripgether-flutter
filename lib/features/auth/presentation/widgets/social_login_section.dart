@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_colors.dart';
-import 'social_login_button.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/buttons/social_login_button.dart';
 
 /// 소셜 로그인 섹션 위젯
 ///
@@ -28,50 +30,53 @@ class SocialLoginSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
+
     return Column(
       children: [
         /// 구글 로그인 버튼
-        /// 흰색 배경 + 회색 테두리 + 구글 로고
+        /// Surface 배경 + 회색 테두리 + 구글 로고
         SocialLoginButton(
-          text: 'Google로 시작하기',
-          backgroundColor: Colors.white,
-          textColor: Colors.black.withValues(alpha: 0.87),
+          text: l10n.signInWithGoogle,
+          backgroundColor: colorScheme.surface,
+          textColor: colorScheme.onSurface,
           borderColor: AppColors.outline, // 회색 테두리
           onPressed: onGoogleLogin,
           // 구글 아이콘 - 'G' 텍스트로 임시 대체 (향후 실제 로고로 교체)
           icon: Container(
-            width: 20.w,
-            height: 20.h,
+            width: AppSizes.iconMedium,
+            height: AppSizes.iconMedium.h,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(2.r),
+              color: colorScheme.surface,
+              borderRadius: AppRadius.circular(2),
             ),
             child: Center(
               child: Text(
                 'G',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
+                style: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF4285F4), // 구글 블루
+                  color: const Color(0xFF4285F4), // 구글 브랜드 색상 유지
                 ),
               ),
             ),
           ),
         ),
 
-        SizedBox(height: 12.h),
+        SizedBox(height: AppSpacing.sm),
 
         /// 이메일로 가입하기 버튼
-        /// 흰색 배경 + textSecondary 색상 텍스트 (테두리 없음)
+        /// Surface 배경 + onSurfaceVariant 색상 텍스트 (테두리 없음)
         SocialLoginButton(
-          text: '이메일로 가입하기',
-          backgroundColor: Colors.white,
-          textColor: AppColors.textSecondary, // #828693
+          text: l10n.signUpWithEmail,
+          backgroundColor: colorScheme.surface,
+          textColor: colorScheme.onSurfaceVariant,
           onPressed: onEmailSignup,
         ),
 
-        SizedBox(height: 32.h),
+        SizedBox(height: AppSpacing.xxl),
       ],
     );
   }

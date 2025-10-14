@@ -19,9 +19,11 @@ class PlaceDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: colorScheme.surfaceContainerLowest,
       // CommonAppBar 사용
       appBar: CommonAppBar.forSubPage(
         title: place.name,
@@ -31,7 +33,9 @@ class PlaceDetailScreen extends StatelessWidget {
             icon: Icon(
               place.isFavorite ? Icons.favorite : Icons.favorite_border,
               size: 24.w,
-              color: place.isFavorite ? Colors.red : Colors.grey[700],
+              color: place.isFavorite
+                  ? colorScheme.error
+                  : colorScheme.onSurfaceVariant,
             ),
             onPressed: () {
               // TODO: 즐겨찾기 토글
@@ -107,25 +111,31 @@ class PlaceDetailScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 300.h,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[200],
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).primaryColor,
+                placeholder: (context, url) {
+                  final theme = Theme.of(context);
+                  return Container(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          theme.primaryColor,
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.grey[200],
-                  child: Icon(
-                    Icons.image_not_supported,
-                    size: 64.w,
-                    color: Colors.grey[400],
-                  ),
-                ),
+                  );
+                },
+                errorWidget: (context, url, error) {
+                  final colorScheme = Theme.of(context).colorScheme;
+                  return Container(
+                    color: colorScheme.surfaceContainerHighest,
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 64.w,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  );
+                },
               ),
             );
           }
@@ -136,25 +146,31 @@ class PlaceDetailScreen extends StatelessWidget {
             width: double.infinity,
             height: 300.h,
             fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
-              color: Colors.grey[200],
-              child: Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor,
+            placeholder: (context, url) {
+              final theme = Theme.of(context);
+              return Container(
+                color: theme.colorScheme.surfaceContainerHighest,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.primaryColor,
+                    ),
                   ),
                 ),
-              ),
-            ),
-            errorWidget: (context, url, error) => Container(
-              color: Colors.grey[200],
-              child: Icon(
-                Icons.image_not_supported,
-                size: 64.w,
-                color: Colors.grey[400],
-              ),
-            ),
+              );
+            },
+            errorWidget: (context, url, error) {
+              final colorScheme = Theme.of(context).colorScheme;
+              return Container(
+                color: colorScheme.surfaceContainerHighest,
+                child: Icon(
+                  Icons.image_not_supported,
+                  size: 64.w,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              );
+            },
           );
         },
       ),
@@ -163,16 +179,20 @@ class PlaceDetailScreen extends StatelessWidget {
 
   /// 기본 정보 카드 (이름, 카테고리, 평점)
   Widget _buildBasicInfoCard(BuildContext context, AppLocalizations l10n) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -187,24 +207,19 @@ class PlaceDetailScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                  color: theme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      place.category.emoji,
-                      style: TextStyle(fontSize: 14.sp),
-                    ),
+                    Text(place.category.emoji, style: textTheme.labelLarge),
                     SizedBox(width: 4.w),
                     Text(
                       place.category.displayName,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontSize: 13.sp,
+                      style: textTheme.labelLarge?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: Theme.of(context).primaryColor,
+                        color: theme.primaryColor,
                       ),
                     ),
                   ],
@@ -233,11 +248,9 @@ class PlaceDetailScreen extends StatelessWidget {
                       SizedBox(width: 4.w),
                       Text(
                         l10n.placeVisited,
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontSize: 12.sp,
+                        style: textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: Colors.green[700],
+                          color: Colors.green[700], // 의미론적 녹색 유지
                         ),
                       ),
                     ],
@@ -251,11 +264,9 @@ class PlaceDetailScreen extends StatelessWidget {
           // 장소명
           Text(
             place.name,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 24.sp,
+            style: textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: Colors.black87,
+              color: colorScheme.onSurface,
               height: 1.3,
             ),
           ),
@@ -281,20 +292,16 @@ class PlaceDetailScreen extends StatelessWidget {
                 SizedBox(width: 8.w),
                 Text(
                   place.rating!.toStringAsFixed(1),
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 18.sp,
+                  style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: Colors.black87,
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 if (place.reviewCount != null)
                   Text(
                     ' (${place.reviewCount}개 리뷰)',
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 14.sp,
-                      color: Colors.grey[600],
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
               ],
@@ -308,16 +315,20 @@ class PlaceDetailScreen extends StatelessWidget {
   Widget _buildDetailInfoCard(BuildContext context, AppLocalizations l10n) {
     if (place.description == null) return SizedBox.shrink();
 
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -328,19 +339,13 @@ class PlaceDetailScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.info_outline,
-                size: 20.w,
-                color: Theme.of(context).primaryColor,
-              ),
+              Icon(Icons.info_outline, size: 20.w, color: theme.primaryColor),
               SizedBox(width: 8.w),
               Text(
                 '장소 정보',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
+                style: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: Colors.black87,
+                  color: colorScheme.onSurface,
                 ),
               ),
             ],
@@ -348,11 +353,8 @@ class PlaceDetailScreen extends StatelessWidget {
           SizedBox(height: 12.h),
           Text(
             place.description!,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey[800],
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
               height: 1.6,
             ),
           ),
@@ -363,16 +365,20 @@ class PlaceDetailScreen extends StatelessWidget {
 
   /// 영업 정보 카드
   Widget _buildBusinessInfoCard(BuildContext context, AppLocalizations l10n) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -383,19 +389,13 @@ class PlaceDetailScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.access_time,
-                size: 20.w,
-                color: Theme.of(context).primaryColor,
-              ),
+              Icon(Icons.access_time, size: 20.w, color: theme.primaryColor),
               SizedBox(width: 8.w),
               Text(
                 '영업 정보',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
+                style: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: Colors.black87,
+                  color: colorScheme.onSurface,
                 ),
               ),
             ],
@@ -406,14 +406,16 @@ class PlaceDetailScreen extends StatelessWidget {
           if (place.businessHours != null) ...[
             Row(
               children: [
-                Icon(Icons.schedule, size: 18.w, color: Colors.grey[600]),
+                Icon(
+                  Icons.schedule,
+                  size: 18.w,
+                  color: colorScheme.onSurfaceVariant,
+                ),
                 SizedBox(width: 12.w),
                 Text(
                   place.businessHours!,
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 14.sp,
-                    color: Colors.grey[800],
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -427,14 +429,16 @@ class PlaceDetailScreen extends StatelessWidget {
               onTap: () => _makePhoneCall(place.phoneNumber!),
               child: Row(
                 children: [
-                  Icon(Icons.phone, size: 18.w, color: Colors.grey[600]),
+                  Icon(
+                    Icons.phone,
+                    size: 18.w,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                   SizedBox(width: 12.w),
                   Text(
                     place.phoneNumber!,
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 14.sp,
-                      color: Theme.of(context).primaryColor,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: theme.primaryColor,
                       decoration: TextDecoration.underline,
                     ),
                   ),
@@ -448,16 +452,20 @@ class PlaceDetailScreen extends StatelessWidget {
 
   /// 위치 정보 카드
   Widget _buildLocationCard(BuildContext context, AppLocalizations l10n) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -468,19 +476,13 @@ class PlaceDetailScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.location_on,
-                size: 20.w,
-                color: Theme.of(context).primaryColor,
-              ),
+              Icon(Icons.location_on, size: 20.w, color: theme.primaryColor),
               SizedBox(width: 8.w),
               Text(
                 '위치',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
+                style: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: Colors.black87,
+                  color: colorScheme.onSurface,
                 ),
               ),
             ],
@@ -488,10 +490,8 @@ class PlaceDetailScreen extends StatelessWidget {
           SizedBox(height: 12.h),
           Text(
             place.address,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
-              color: Colors.grey[800],
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
           ),
@@ -499,25 +499,25 @@ class PlaceDetailScreen extends StatelessWidget {
             SizedBox(height: 4.h),
             Text(
               place.detailAddress!,
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 13.sp,
-                color: Colors.grey[600],
+              style: textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
           ],
           SizedBox(height: 12.h),
           Row(
             children: [
-              Icon(Icons.directions, size: 16.w, color: Colors.grey[600]),
+              Icon(
+                Icons.directions,
+                size: 16.w,
+                color: colorScheme.onSurfaceVariant,
+              ),
               SizedBox(width: 6.w),
               Text(
                 place.distanceText,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 13.sp,
+                style: textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey[700],
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -529,13 +529,17 @@ class PlaceDetailScreen extends StatelessWidget {
 
   /// 하단 액션 버튼
   Widget _buildBottomActions(BuildContext context, AppLocalizations l10n) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -553,15 +557,13 @@ class PlaceDetailScreen extends StatelessWidget {
               icon: Icon(Icons.map, size: 20.w),
               label: Text(
                 '지도에서 보기',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 15.sp,
+                style: textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: theme.primaryColor,
+                foregroundColor: colorScheme.onPrimary,
                 padding: EdgeInsets.symmetric(vertical: 14.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),
@@ -580,19 +582,14 @@ class PlaceDetailScreen extends StatelessWidget {
               icon: Icon(Icons.directions, size: 20.w),
               label: Text(
                 '길찾기',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 15.sp,
+                style: textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
               style: OutlinedButton.styleFrom(
-                foregroundColor: Theme.of(context).primaryColor,
+                foregroundColor: theme.primaryColor,
                 padding: EdgeInsets.symmetric(vertical: 14.h),
-                side: BorderSide(
-                  color: Theme.of(context).primaryColor,
-                  width: 1.5,
-                ),
+                side: BorderSide(color: theme.primaryColor, width: 1.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),
                 ),

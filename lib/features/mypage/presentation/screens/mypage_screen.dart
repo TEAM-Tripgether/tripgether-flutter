@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
+import '../../../demo/button_examples.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -52,8 +53,82 @@ class MyPageScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: [
+          // 🎨 임시: 버튼 예제 화면으로 가기 (개발용)
+          _buildDebugSection(context),
+
           // 언어 선택 섹션
           _buildLanguageSection(context, ref, l10n, currentLocale),
+        ],
+      ),
+    );
+  }
+
+  /// 🎨 개발용 디버그 섹션 (임시)
+  Widget _buildDebugSection(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: Colors.orange.withValues(alpha: 0.1),
+        border: Border.all(color: Colors.orange, width: 2),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.bug_report, color: Colors.orange, size: 20.w),
+              SizedBox(width: 8.w),
+              Text(
+                '🎨 개발자 도구 (임시)',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.orange[900],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ButtonExamplesScreen(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.palette, size: 20.w),
+              label: Text(
+                '버튼 컴포넌트 예제 보기',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+              ),
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            '💡 이 섹션은 임시 개발용입니다. 삭제 예정',
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 12.sp,
+              color: Colors.grey[600],
+              fontStyle: FontStyle.italic,
+            ),
+          ),
         ],
       ),
     );

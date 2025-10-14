@@ -15,6 +15,20 @@ class LoginNotifier extends _$LoginNotifier {
     // 초기 상태: 아무것도 하지 않음
   }
 
+  /// 안전한 상태 업데이트 헬퍼 메서드
+  ///
+  /// StateError를 방지하기 위해 try-catch로 감싸서 상태 업데이트를 시도합니다.
+  /// Provider가 이미 dispose된 경우 상태 업데이트를 조용히 무시합니다.
+  void _safeUpdateState(AsyncValue<void> newState) {
+    try {
+      state = newState;
+    } catch (e) {
+      // Provider가 이미 dispose된 경우 StateError 발생 가능
+      // 이 경우 조용히 무시 (로그인 화면에서 벗어난 경우)
+      debugPrint('[LoginProvider] ⚠️ 상태 업데이트 실패 (Provider dispose됨): $e');
+    }
+  }
+
   /// 이메일/비밀번호 로그인
   ///
   /// [email] 사용자 이메일
@@ -30,10 +44,10 @@ class LoginNotifier extends _$LoginNotifier {
     debugPrint('  📧 Email: $email');
     debugPrint('  🔑 Password: ${"*" * password.length}');
 
-    // 로딩 상태로 전환
-    state = const AsyncValue.loading();
-
     try {
+      // ✅ 로딩 상태 시작
+      _safeUpdateState(const AsyncValue.loading());
+
       // TODO: 실제 로그인 API 호출
       // final response = await ref.read(authServiceProvider).login(
       //   email: email,
@@ -49,20 +63,21 @@ class LoginNotifier extends _$LoginNotifier {
       // TODO: 사용자 정보 저장
       // ref.read(userProvider.notifier).setUser(response.user);
 
-      // 임시: 2초 대기 (실제 API 호출 시뮬레이션)
+      // 임시: 1초 대기 (실제 API 호출 시뮬레이션)
       await Future.delayed(const Duration(seconds: 1));
 
       debugPrint('[LoginProvider] ✅ 이메일 로그인 성공!');
       debugPrint('  👤 사용자: $email');
       debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // ✅ 성공 시에는 state를 변경하지 않고 바로 true 반환
-      // (화면 전환 시 위젯 트리 재구성으로 인한 state 충돌 방지)
+      // ✅ 성공 상태로 업데이트
+      _safeUpdateState(const AsyncValue.data(null));
       return true;
     } catch (e, stack) {
-      // ❌ 에러 발생 시에만 state를 에러로 설정
-      state = AsyncValue.error(e, stack);
       debugPrint('[LoginProvider] ❌ 이메일 로그인 실패: $e');
+
+      // ✅ 에러 상태로 업데이트
+      _safeUpdateState(AsyncValue.error(e, stack));
       return false;
     }
   }
@@ -75,21 +90,21 @@ class LoginNotifier extends _$LoginNotifier {
   /// 3. 로그인 성공 시 사용자 정보 및 토큰 획득
   ///
   /// Returns: 로그인 성공 시 true, 실패 또는 취소 시 false
-  /// Throws: [Exception] 구글 SDK 호출 실패 시
   Future<bool> loginWithGoogle() async {
     debugPrint('[LoginProvider] 🔄 구글 로그인 시작...');
 
-    // 로딩 상태로 전환 (UI에 로딩 인디케이터 표시)
-    state = const AsyncValue.loading();
-
     try {
+      // ✅ 로딩 상태 시작
+      _safeUpdateState(const AsyncValue.loading());
+
       // 1. GoogleAuthService를 통해 구글 로그인 실행
       final googleUser = await GoogleAuthService.signIn();
 
       // 사용자가 로그인을 취소한 경우
       if (googleUser == null) {
         debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨');
-        state = const AsyncValue.data(null);
+        // 취소는 에러가 아니므로 data 상태로 설정
+        _safeUpdateState(const AsyncValue.data(null));
         return false;
       }
 
@@ -143,15 +158,24 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('  👤 사용자: ${googleUser.email}');
       debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // ✅ 성공 시에는 state를 변경하지 않고 바로 true 반환
-      // (화면 전환 시 위젯 트리 재구성으로 인한 state 충돌 방지)
+      // ✅ 성공 상태로 업데이트
+      _safeUpdateState(const AsyncValue.data(null));
       return true;
     } catch (e, stack) {
+      // 취소 예외 감지: 사용자가 로그인을 취소한 경우
+      final errorString = e.toString();
+      if (errorString.contains('canceled') ||
+          errorString.contains('cancelled') ||
+          errorString.contains('GoogleSignInExceptionCode.canceled')) {
+        debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨 (예외 경로)');
+        // 취소는 에러가 아니므로 data 상태로 설정
+        _safeUpdateState(const AsyncValue.data(null));
+        return false;
+      }
+
+      // 실제 에러: AsyncValue.error로 상태 업데이트
       debugPrint('[LoginProvider] ❌ 구글 로그인 실패: $e');
-
-      // ❌ 에러 발생 시에만 state를 에러로 설정
-      state = AsyncValue.error(e, stack);
-
+      _safeUpdateState(AsyncValue.error(e, stack));
       return false;
     }
   }

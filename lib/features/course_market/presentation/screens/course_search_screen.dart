@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../shared/widgets/layout/search_bar.dart';
-import '../../../../shared/widgets/layout/course_card.dart';
+import '../../../../shared/widgets/inputs/search_bar.dart';
+import '../../../../shared/widgets/cards/course_card.dart';
+import '../../../../shared/widgets/common/empty_state.dart';
+import '../../../../shared/widgets/common/chip_list.dart';
+import '../../../../shared/widgets/common/custom_list_tile.dart';
 import '../../data/models/course_model.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -251,89 +254,28 @@ class _CourseSearchScreenState extends State<CourseSearchScreen> {
 
   /// 최근 검색어 아이템
   Widget _buildRecentSearchItem(String query) {
-    return ListTile(
+    return ActionListTile(
       leading: Icon(Icons.history, size: 20.w, color: AppColors.neutral60),
-      title: Text(
-        query,
-        style: TextStyle(
-          fontFamily: 'Pretendard',
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w500,
-          color: AppColors.onSurface,
-        ),
-      ),
-      trailing: IconButton(
-        icon: Icon(Icons.close, size: 20.w, color: AppColors.neutral60),
-        onPressed: () => _removeRecentSearch(query),
-      ),
+      title: query,
+      actionIcon: Icons.close,
+      actionIconSize: 20.w,
+      onActionTap: () => _removeRecentSearch(query),
       onTap: () => _onSearchQueryTap(query),
     );
   }
 
   /// 추천 검색어 칩 리스트
   Widget _buildRecommendedSearches() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Wrap(
-        spacing: 8.w,
-        runSpacing: 8.h,
-        children: _recommendedSearches.map((query) {
-          return GestureDetector(
-            onTap: () => _onSearchQueryTap(query),
-            child: Chip(
-              label: Text(
-                query,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.onSurface,
-                ),
-              ),
-              backgroundColor: AppColors.neutral95,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.r),
-                side: BorderSide(color: AppColors.neutral90, width: 1),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-            ),
-          );
-        }).toList(),
-      ),
-    );
+    return ChipList(items: _recommendedSearches, onItemTap: _onSearchQueryTap);
   }
 
   /// 검색 결과 없음
   Widget _buildEmptyResults() {
     final l10n = AppLocalizations.of(context);
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.search_off, size: 64.w, color: AppColors.neutral70),
-          SizedBox(height: 16.h),
-          Text(
-            l10n.noSearchResults,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.neutral50,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            l10n.tryDifferentKeyword,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              color: AppColors.neutral60,
-            ),
-          ),
-        ],
-      ),
+    return EmptyStates.noSearchResults(
+      title: l10n.noSearchResults,
+      message: l10n.tryDifferentKeyword,
     );
   }
 

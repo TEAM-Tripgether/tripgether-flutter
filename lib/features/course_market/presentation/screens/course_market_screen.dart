@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import '../../../../shared/widgets/layout/search_bar.dart';
-import '../../../../shared/widgets/layout/course_card.dart';
+import '../../../../shared/widgets/inputs/search_bar.dart';
+import '../../../../shared/widgets/cards/course_card.dart';
+import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../data/models/course_model.dart';
 import 'course_search_screen.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -38,46 +39,20 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: _buildAppBar(),
-      body: _buildBody(),
-      floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: _buildExpandableFab(),
-    );
-  }
-
-  /// AppBar 빌드
-  PreferredSizeWidget _buildAppBar() {
-    final l10n = AppLocalizations.of(context);
-
-    return AppBar(
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      centerTitle: true,
-      title: Text(
-        l10n.appTitle,
-        style: TextStyle(
-          fontFamily: 'Pretendard',
-          fontSize: 20.sp,
-          fontWeight: FontWeight.w700,
-          color: AppColors.onSurface,
-        ),
-      ),
-      leading: IconButton(
-        icon: Icon(Icons.menu, color: AppColors.onSurface),
-        onPressed: () {
+      // CommonAppBar 사용으로 일관된 디자인 시스템 적용
+      appBar: CommonAppBar.forHome(
+        onMenuPressed: () {
           // 메뉴 열기
           debugPrint('메뉴 열기');
         },
+        onNotificationPressed: () {
+          // 알림 화면으로 이동
+          debugPrint('알림 화면으로 이동');
+        },
       ),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.notifications_outlined, color: AppColors.onSurface),
-          onPressed: () {
-            // 알림 화면으로 이동
-            debugPrint('알림 화면으로 이동');
-          },
-        ),
-      ],
+      body: _buildBody(),
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: _buildExpandableFab(),
     );
   }
 

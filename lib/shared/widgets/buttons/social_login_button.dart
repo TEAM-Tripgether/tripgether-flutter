@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 /// 소셜 로그인 버튼 위젯
 ///
@@ -54,38 +54,40 @@ class SocialLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Theme의 textTheme을 가져와서 일관된 텍스트 스타일 적용
+    final textTheme = Theme.of(context).textTheme;
+
     return SizedBox(
       width: double.infinity, // 전체 너비
-      height: height ?? 48.h, // 기본 높이 48.h
+      height: height ?? AppSizes.buttonHeight, // Theme의 버튼 높이 사용
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: textColor,
-          elevation: 0, // 그림자 제거 (플랫 디자인)
+          elevation: AppElevation.none, // Theme의 elevation 사용
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: AppRadius.allLarge, // Theme의 border radius 사용
             // 테두리가 지정된 경우에만 표시
             side: borderColor != null
-                ? BorderSide(color: borderColor!, width: 1.5)
+                ? BorderSide(color: borderColor!, width: AppSizes.borderMedium)
                 : BorderSide.none,
           ),
-          // 탭 시 리플 효과 색상 (어두운 오버레이)
-          overlayColor: Colors.black.withValues(alpha: 0.1),
+          // 탭 시 리플 효과 색상 (배경색 기반으로 자동 조정)
+          splashFactory: InkRipple.splashFactory,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // 아이콘이 있는 경우 표시
-            if (icon != null) ...[icon!, SizedBox(width: 8.w)],
-            // 버튼 텍스트
+            if (icon != null) ...[icon!, SizedBox(width: AppSpacing.sm)],
+            // 버튼 텍스트 (Theme의 textTheme 활용)
             Text(
               text,
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
+              style: textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.1,
                 color: textColor,
               ),
             ),
