@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/theme/app_spacing.dart';
-import 'common_button.dart';
+import '../buttons/common_button.dart';
 
 /// 공용 버튼 컴포넌트 사용 예제 화면
 ///
