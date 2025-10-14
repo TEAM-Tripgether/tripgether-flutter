@@ -72,7 +72,8 @@ class ChipList extends StatelessWidget {
     // 기본 텍스트 스타일
     final effectiveTextStyle =
         textStyle ??
-        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500);
+        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500) ??
+        const TextStyle(fontWeight: FontWeight.w500);
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -82,7 +83,7 @@ class ChipList extends StatelessWidget {
         spacing: horizontalSpacing ?? AppSpacing.xs.w,
         runSpacing: verticalSpacing ?? AppSpacing.xs.h,
         children: items.map((item) {
-          return _buildChipItem(context, item, effectiveTextStyle!);
+          return _buildChipItem(context, item, effectiveTextStyle);
         }).toList(),
       ),
     );
@@ -203,7 +204,8 @@ class SelectableChipList extends StatelessWidget {
     // 기본 텍스트 스타일
     final effectiveTextStyle =
         textStyle ??
-        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500);
+        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500) ??
+        const TextStyle(fontWeight: FontWeight.w500);
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -218,7 +220,7 @@ class SelectableChipList extends StatelessWidget {
             context,
             item,
             isSelected,
-            effectiveTextStyle!,
+            effectiveTextStyle,
           );
         }).toList(),
       ),
