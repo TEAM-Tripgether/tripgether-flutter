@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../shared/widgets/buttons/common_button.dart';
 
 /// 로그인 입력 폼 위젯
 ///
@@ -108,7 +110,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
 
           /// 비밀번호 입력 필드
           TextFormField(
@@ -141,7 +143,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
 
-          SizedBox(height: 12.h),
+          SizedBox(height: AppSpacing.sm),
 
           /// 자동로그인 & 아이디/비밀번호 찾기 Row
           Row(
@@ -164,7 +166,7 @@ class _LoginFormState extends State<LoginForm> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: AppSpacing.xs),
                   Text(
                     '자동로그인',
                     style: TextStyle(
@@ -177,79 +179,39 @@ class _LoginFormState extends State<LoginForm> {
                 ],
               ),
 
-              // 아이디 | 비밀번호 찾기
+              // 아이디 | 비밀번호 찾기 (공용 TertiaryButton 사용)
               Row(
                 children: [
-                  TextButton(
+                  TertiaryButton(
+                    text: '아이디',
                     onPressed: widget.onFindId,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                     child: Text(
-                      '아이디',
+                      '|',
                       style: TextStyle(
-                        fontFamily: 'Pretendard',
                         fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
                         color: AppColors.textSecondary,
                       ),
                     ),
                   ),
-                  Text(
-                    '|',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  TextButton(
+                  TertiaryButton(
+                    text: '비밀번호 찾기',
                     onPressed: widget.onFindPassword,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Text(
-                      '비밀번호 찾기',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
                   ),
                 ],
               ),
             ],
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: AppSpacing.lg),
 
-          /// 로그인 버튼
-          SizedBox(
-            width: double.infinity,
-            height: 48.h,
-            child: ElevatedButton(
-              onPressed: _handleLogin,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.onPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-              child: Text(
-                '로그인',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+          /// 로그인 버튼 (공용 PrimaryButton 컴포넌트 사용)
+          PrimaryButton(
+            text: '로그인',
+            onPressed: _handleLogin,
+            isFullWidth: true,
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons/social_login_button.dart';
 
 /// 소셜 로그인 섹션 위젯
@@ -60,7 +61,7 @@ class SocialLoginSection extends StatelessWidget {
           ),
         ),
 
-        SizedBox(height: 12.h),
+        SizedBox(height: AppSpacing.sm),
 
         /// 이메일로 가입하기 버튼
         /// 흰색 배경 + textSecondary 색상 텍스트 (테두리 없음)
@@ -71,7 +72,7 @@ class SocialLoginSection extends StatelessWidget {
           onPressed: onEmailSignup,
         ),
 
-        SizedBox(height: 32.h),
+        SizedBox(height: AppSpacing.xxl),
       ],
     );
   }
