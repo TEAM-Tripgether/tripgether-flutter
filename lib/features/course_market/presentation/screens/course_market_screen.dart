@@ -173,7 +173,9 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
       childrenAnimation: ExpandableFabAnimation.none,
       overlayStyle: ExpandableFabOverlayStyle(
         blur: 5,
-        color: AppColors.scrim.withValues(alpha: 0.5),
+        color: AppColors.scrim.withValues(
+          alpha: 0.5,
+        ),
       ),
       openButtonBuilder: RotateFloatingActionButtonBuilder(
         child: Icon(Icons.add, size: 28.w),
@@ -201,7 +203,9 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
                 borderRadius: BorderRadius.circular(8.r),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.shadow.withValues(alpha: 0.1),
+                    color: AppColors.shadow.withValues(
+                      alpha: 0.1,
+                    ),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -247,7 +251,9 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
                 borderRadius: BorderRadius.circular(8.r),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.shadow.withValues(alpha: 0.1),
+                    color: AppColors.shadow.withValues(
+                      alpha: 0.1,
+                    ),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
