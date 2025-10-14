@@ -100,7 +100,7 @@ class CourseCard extends StatelessWidget {
               color: AppColors.neutral95,
               child: Icon(
                 Icons.image_not_supported,
-                size: 48.w,
+                size: AppSizes.iconXLarge.w,
                 color: AppColors.neutral70,
               ),
             ),
@@ -109,8 +109,8 @@ class CourseCard extends StatelessWidget {
 
         // 상단 좌측 뱃지 (카테고리)
         Positioned(
-          top: 8.h,
-          left: 8.w,
+          top: AppSpacing.sm.h,
+          left: AppSpacing.sm.w,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs.h),
             decoration: BoxDecoration(
@@ -138,8 +138,8 @@ class CourseCard extends StatelessWidget {
 
         // 상단 우측 좋아요 버튼
         Positioned(
-          top: 8.h,
-          right: 8.w,
+          top: AppSpacing.sm.h,
+          right: AppSpacing.sm.w,
           child: GestureDetector(
             onTap:
                 onLikeTap ??
@@ -147,15 +147,15 @@ class CourseCard extends StatelessWidget {
                   debugPrint('좋아요 클릭: ${course.title}');
                 },
             child: Container(
-              width: 32.w,
-              height: 32.w,
+              width: AppSizes.iconLarge.w,
+              height: AppSizes.iconLarge.w,
               decoration: BoxDecoration(
                 color: AppColors.surface.withValues(alpha: 0.9),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 isLiked ? Icons.favorite : Icons.favorite_border,
-                size: 18.w,
+                size: AppSizes.iconMedium.w,
                 color: isLiked ? AppColors.error : AppColors.neutral60,
               ),
             ),
@@ -165,8 +165,8 @@ class CourseCard extends StatelessWidget {
         // 하단 좌측 가격 뱃지
         if (course.price > 0)
           Positioned(
-            bottom: 8.h,
-            left: 8.w,
+            bottom: AppSpacing.sm.h,
+            left: AppSpacing.sm.w,
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs.h),
               decoration: BoxDecoration(
@@ -302,17 +302,17 @@ class CourseCard extends StatelessWidget {
           ClipOval(
             child: CachedNetworkImage(
               imageUrl: course.authorProfileUrl!,
-              width: 20.w,
-              height: 20.w,
+              width: AppSizes.iconMedium.w,
+              height: AppSizes.iconMedium.w,
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
-                width: 20.w,
-                height: 20.w,
+                width: AppSizes.iconMedium.w,
+                height: AppSizes.iconMedium.w,
                 color: AppColors.neutral95,
               ),
               errorWidget: (context, url, error) => Container(
-                width: 20.w,
-                height: 20.w,
+                width: AppSizes.iconMedium.w,
+                height: AppSizes.iconMedium.w,
                 color: AppColors.neutral95,
                 child: Icon(
                   Icons.person,
@@ -342,10 +342,10 @@ class CourseCard extends StatelessWidget {
         // 좋아요 수
         Icon(
           Icons.favorite,
-          size: 12.w,
+          size: AppSizes.iconSmall.w,
           color: AppColors.error.withValues(alpha: 0.7),
         ),
-        SizedBox(width: 2.w),
+        SizedBox(width: AppSpacing.xs.w / 2),
         Text(
           '${course.likeCount}',
           style: TextStyle(
@@ -428,14 +428,14 @@ class CourseCardSkeleton extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        width: 20.w,
-                        height: 20.w,
+                        width: AppSizes.iconMedium.w,
+                        height: AppSizes.iconMedium.w,
                         decoration: BoxDecoration(
                           color: AppColors.surface,
                           shape: BoxShape.circle,
                         ),
                       ),
-                      SizedBox(width: 6.w),
+                      SizedBox(width: AppSpacing.xs.w / 2),
                       Container(
                         width: 80.w,
                         height: 12.h,
@@ -532,7 +532,7 @@ class CourseHorizontalList extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

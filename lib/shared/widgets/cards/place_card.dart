@@ -92,7 +92,7 @@ class PlaceGridCard extends StatelessWidget {
               children: [
                 Icon(
                   Icons.image_not_supported,
-                  size: 48.w,
+                  size: AppSizes.iconXLarge.w,
                   color: Colors.grey[400],
                 ),
                 SizedBox(height: AppSpacing.sm.h),
@@ -452,7 +452,7 @@ class PlaceCard extends StatelessWidget {
                     color: Colors.grey[200],
                     child: Icon(
                       Icons.image_not_supported,
-                      size: 24.w,
+                      size: AppSizes.iconDefault.w,
                       color: Colors.grey[400],
                     ),
                   ),
@@ -610,7 +610,7 @@ class PlaceListSection extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: AppSpacing.md.h),
         decoration: BoxDecoration(
           border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: AppRadius.allMedium,
         ),
         child: Center(
           child: Text(
