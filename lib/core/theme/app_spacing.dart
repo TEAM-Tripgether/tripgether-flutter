@@ -282,25 +282,26 @@ class AppElevation {
 /// 앱 전체에서 사용하는 Size 상수
 ///
 /// 아이콘 크기, 컴포넌트 높이 등 다양한 크기 값을 관리합니다.
+/// ScreenUtil을 사용하여 반응형 크기를 지원합니다.
 class AppSizes {
   AppSizes._(); // Private constructor to prevent instantiation
 
   // ==================== Icon Sizes ====================
 
   /// 작은 아이콘: 16
-  static const double iconSmall = 16;
+  static double get iconSmall => 16.w;
 
   /// 중간 아이콘: 20
-  static const double iconMedium = 20;
+  static double get iconMedium => 20.w;
 
   /// 일반 아이콘: 24 (기본)
-  static const double iconDefault = 24;
+  static double get iconDefault => 24.w;
 
   /// 큰 아이콘: 32
-  static const double iconLarge = 32;
+  static double get iconLarge => 32.w;
 
   /// 매우 큰 아이콘: 48
-  static const double iconXLarge = 48;
+  static double get iconXLarge => 48.w;
 
   // ==================== Border Widths ====================
 
@@ -333,18 +334,18 @@ class AppSizes {
   // ==================== Component Widths ====================
 
   /// 버튼 최소 너비: 88
-  static const double buttonMinWidth = 88;
+  static double get buttonMinWidth => 88.w;
 
   /// 텍스트 버튼 최소 너비: 48
-  static const double textButtonMinWidth = 48;
+  static double get textButtonMinWidth => 48.w;
 
   /// FAB 크기: 56
-  static const double fabSize = 56;
+  static double get fabSize => 56.w;
 
   /// FAB 작은 크기: 40
-  static const double fabSmallSize = 40;
+  static double get fabSmallSize => 40.w;
 
   /// FAB 큰 크기: 96
-  static const double fabLargeSize = 96;
+  static double get fabLargeSize => 96.w;
 }
 

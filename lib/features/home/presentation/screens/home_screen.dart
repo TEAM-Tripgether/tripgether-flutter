@@ -9,12 +9,14 @@ import '../../../../core/services/auth/google_auth_service.dart';
 import '../../../../core/utils/url_formatter.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
+import '../../../../shared/widgets/common/info_container.dart';
 import '../../../../shared/widgets/layout/greeting_section.dart';
 import '../../../../shared/widgets/cards/sns_content_card.dart';
 import '../../../../shared/widgets/cards/place_card.dart';
 import '../../../debug/share_extension_log_screen.dart';
 import '../../data/models/sns_content_model.dart';
 import '../../data/models/place_model.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 /// 홈 화면 위젯
 /// 앱의 메인 화면이며, 공유 데이터를 받아서 처리하는 기능을 포함
@@ -162,72 +164,80 @@ class _HomeScreenState extends State<HomeScreen> {
       return const SizedBox.shrink();
     }
 
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.blue.shade200),
-      ),
+    return InfoContainer(
+      title: '공유 데이터 수신됨',
+      titleIcon: Icons.share_arrival_time,
+      titleTrailing: _isProcessingSharedData
+          ? SizedBox(
+              width: 16.w,
+              height: 16.w,
+              child: const CircularProgressIndicator(strokeWidth: 2),
+            )
+          : null,
+      actions: [
+        TextButton(
+          onPressed: () {
+            // 공유 데이터 삭제
+            setState(() {
+              _currentSharedData = null;
+            });
+            _sharingService.clearCurrentData();
+          },
+          child: const Text('닫기'),
+        ),
+        SizedBox(width: AppSpacing.xs),
+        ElevatedButton(
+          onPressed: () {
+            // TODO: 공유 데이터를 활용한 액션 (여행 생성 등)
+            debugPrint('[HomeScreen] 공유 데이터 활용 액션 실행');
+          },
+          child: const Text('여행 만들기'),
+        ),
+      ],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.share_arrival_time,
-                color: Colors.blue.shade700,
-                size: 24,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '공유 데이터 수신됨',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: Colors.blue.shade700,
-                ),
-              ),
-              const Spacer(),
-              if (_isProcessingSharedData)
-                const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
           // 텍스트 데이터 표시
           if (_currentSharedData!.hasTextData) ...[
             Text(
               '텍스트 (${_currentSharedData!.sharedTexts.length}개):',
-              style: const TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: AppSpacing.xs),
             ..._currentSharedData!.sharedTexts.map(
               (text) => Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 4),
+                padding: EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.xs),
                 child: Text(
                   '• ${text.length > 50 ? '${text.substring(0, 50)}...' : text}',
-                  style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 14.sp,
+                    color: Colors.grey.shade700,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.xs),
           ],
 
           // 미디어 파일 정보 표시
           if (_currentSharedData!.hasMediaData) ...[
             Text(
               '미디어 파일 (${_currentSharedData!.sharedFiles.length}개):',
-              style: const TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            const SizedBox(height: 4),
-            Row(
+            SizedBox(height: AppSpacing.xs),
+            Wrap(
+              spacing: AppSpacing.xs,
               children: [
                 if (_currentSharedData!.images.isNotEmpty)
                   _buildFileTypeChip(
@@ -235,51 +245,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     '이미지 ${_currentSharedData!.images.length}',
                   ),
                 if (_currentSharedData!.videos.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: _buildFileTypeChip(
-                      Icons.video_library,
-                      '동영상 ${_currentSharedData!.videos.length}',
-                    ),
+                  _buildFileTypeChip(
+                    Icons.video_library,
+                    '동영상 ${_currentSharedData!.videos.length}',
                   ),
                 if (_currentSharedData!.files.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: _buildFileTypeChip(
-                      Icons.description,
-                      '파일 ${_currentSharedData!.files.length}',
-                    ),
+                  _buildFileTypeChip(
+                    Icons.description,
+                    '파일 ${_currentSharedData!.files.length}',
                   ),
               ],
             ),
           ],
-
-          const SizedBox(height: 12),
-
-          // 액션 버튼들
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () {
-                  // 공유 데이터 삭제
-                  setState(() {
-                    _currentSharedData = null;
-                  });
-                  _sharingService.clearCurrentData();
-                },
-                child: const Text('닫기'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: 공유 데이터를 활용한 액션 (여행 생성 등)
-                  debugPrint('[HomeScreen] 공유 데이터 활용 액션 실행');
-                },
-                child: const Text('여행 만들기'),
-              ),
-            ],
-          ),
         ],
       ),
     );
@@ -288,20 +265,24 @@ class _HomeScreenState extends State<HomeScreen> {
   /// 파일 타입 표시용 칩 위젯
   Widget _buildFileTypeChip(IconData icon, String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs / 2),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.circular(16),
         border: Border.all(color: Colors.blue.shade200),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: Colors.blue.shade600),
-          const SizedBox(width: 4),
+          Icon(icon, size: 16.w, color: Colors.blue.shade600),
+          SizedBox(width: AppSpacing.xs),
           Text(
             label,
-            style: TextStyle(fontSize: 12, color: Colors.blue.shade700),
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 12.sp,
+              color: Colors.blue.shade700,
+            ),
           ),
         ],
       ),
@@ -400,7 +381,10 @@ class _HomeScreenState extends State<HomeScreen> {
             if (_snsContents.isEmpty)
               // SNS 콘텐츠가 없을 때 빈 상태 메시지 표시
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 40.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.huge,
+                ),
                 child: Center(
                   child: Text(
                     l10n.noSnsContentYet,
@@ -469,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // 디버깅용 버튼
             if (const bool.fromEnvironment('dart.vm.product') == false) ...[
               Padding(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(AppSpacing.lg),
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () async {
