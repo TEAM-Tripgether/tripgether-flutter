@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
-import '../../../../shared/widgets/examples/button_examples.dart';
+import '../../../demo/button_examples.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../../../l10n/app_localizations.dart';

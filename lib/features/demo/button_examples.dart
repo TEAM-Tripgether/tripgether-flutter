@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../core/theme/app_spacing.dart';
-import '../buttons/common_button.dart';
+import '../../core/theme/app_spacing.dart';
+import '../../shared/widgets/buttons/common_button.dart';
 
 /// 공용 버튼 컴포넌트 사용 예제 화면
 ///
@@ -24,17 +24,15 @@ class _ButtonExamplesScreenState extends State<ButtonExamplesScreen> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('버튼 컴포넌트 예제'),
-      ),
+      appBar: AppBar(title: const Text('버튼 컴포넌트 예제')),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -99,10 +97,7 @@ class _ButtonExamplesScreenState extends State<ButtonExamplesScreen> {
                   onPressed: _toggleLoading,
                 ),
                 AppSpacing.verticalSpaceMD,
-                SecondaryButton(
-                  text: '비활성화 상태',
-                  onPressed: null,
-                ),
+                SecondaryButton(text: '비활성화 상태', onPressed: null),
               ],
             ),
 
@@ -124,10 +119,7 @@ class _ButtonExamplesScreenState extends State<ButtonExamplesScreen> {
                   onPressed: () => _showSnackBar('아이콘 버튼 클릭'),
                 ),
                 AppSpacing.verticalSpaceMD,
-                TertiaryButton(
-                  text: '비활성화 상태',
-                  onPressed: null,
-                ),
+                TertiaryButton(text: '비활성화 상태', onPressed: null),
                 AppSpacing.verticalSpaceMD,
                 TertiaryButton(
                   text: '전체 너비',
@@ -306,18 +298,12 @@ class _ButtonExamplesScreenState extends State<ButtonExamplesScreen> {
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700),
         ),
         AppSpacing.verticalSpaceXS,
         Text(
           description,
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: Colors.grey[600],
-          ),
+          style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
         ),
         AppSpacing.verticalSpaceMD,
         ...children,
