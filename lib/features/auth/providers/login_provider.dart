@@ -30,8 +30,8 @@ class LoginNotifier extends _$LoginNotifier {
     debugPrint('  📧 Email: $email');
     debugPrint('  🔑 Password: ${"*" * password.length}');
 
-    // 로딩 상태로 전환
-    state = const AsyncValue.loading();
+    // ✅ Riverpod AsyncNotifier는 자동으로 상태 관리
+    // state = loading() 하지 않아도 됨!
 
     try {
       // TODO: 실제 로그인 API 호출
@@ -56,14 +56,13 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('  👤 사용자: $email');
       debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // ✅ 성공 시에는 state를 변경하지 않고 바로 true 반환
-      // (화면 전환 시 위젯 트리 재구성으로 인한 state 충돌 방지)
+      // ✅ 그냥 true 반환 - Riverpod가 자동으로 상태 관리
       return true;
-    } catch (e, stack) {
-      // ❌ 에러 발생 시에만 state를 에러로 설정
-      state = AsyncValue.error(e, stack);
+    } catch (e) {
       debugPrint('[LoginProvider] ❌ 이메일 로그인 실패: $e');
-      return false;
+
+      // ✅ 예외는 다시 던져서 Riverpod가 자동으로 error 상태로 전환하게 함
+      rethrow;
     }
   }
 
@@ -79,8 +78,8 @@ class LoginNotifier extends _$LoginNotifier {
   Future<bool> loginWithGoogle() async {
     debugPrint('[LoginProvider] 🔄 구글 로그인 시작...');
 
-    // 로딩 상태로 전환 (UI에 로딩 인디케이터 표시)
-    state = const AsyncValue.loading();
+    // ✅ Riverpod AsyncNotifier는 자동으로 상태 관리
+    // state = loading() 하지 않아도 됨!
 
     try {
       // 1. GoogleAuthService를 통해 구글 로그인 실행
@@ -89,7 +88,6 @@ class LoginNotifier extends _$LoginNotifier {
       // 사용자가 로그인을 취소한 경우
       if (googleUser == null) {
         debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨');
-        state = const AsyncValue.data(null);
         return false;
       }
 
@@ -143,16 +141,22 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('  👤 사용자: ${googleUser.email}');
       debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // ✅ 성공 시에는 state를 변경하지 않고 바로 true 반환
-      // (화면 전환 시 위젯 트리 재구성으로 인한 state 충돌 방지)
+      // ✅ 그냥 true 반환 - Riverpod가 자동으로 상태 관리
       return true;
-    } catch (e, stack) {
+    } catch (e) {
+      // 취소 예외 감지: 사용자가 로그인을 취소한 경우
+      final errorString = e.toString();
+      if (errorString.contains('canceled') ||
+          errorString.contains('cancelled') ||
+          errorString.contains('GoogleSignInExceptionCode.canceled')) {
+        debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨 (예외 경로)');
+        // 취소는 에러가 아니므로 false 반환 (예외 던지지 않음)
+        return false;
+      }
+
+      // 실제 에러만 로그 출력하고 다시 던짐
       debugPrint('[LoginProvider] ❌ 구글 로그인 실패: $e');
-
-      // ❌ 에러 발생 시에만 state를 에러로 설정
-      state = AsyncValue.error(e, stack);
-
-      return false;
+      rethrow;
     }
   }
 
