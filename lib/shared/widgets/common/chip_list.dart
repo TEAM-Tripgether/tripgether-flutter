@@ -70,22 +70,19 @@ class ChipList extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     // 기본 텍스트 스타일
-    final effectiveTextStyle = textStyle ??
-        textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-        );
+    final effectiveTextStyle =
+        textStyle ??
+        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding ?? AppSpacing.lg),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding ?? AppSpacing.lg,
+      ),
       child: Wrap(
         spacing: horizontalSpacing ?? AppSpacing.xs.w,
         runSpacing: verticalSpacing ?? AppSpacing.xs.h,
         children: items.map((item) {
-          return _buildChipItem(
-            context,
-            item,
-            effectiveTextStyle!,
-          );
+          return _buildChipItem(context, item, effectiveTextStyle!);
         }).toList(),
       ),
     );
@@ -109,12 +106,10 @@ class ChipList extends StatelessWidget {
         backgroundColor: backgroundColor ?? AppColors.neutral95,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.large),
-          side: BorderSide(
-            color: borderColor ?? AppColors.neutral90,
-            width: 1,
-          ),
+          side: BorderSide(color: borderColor ?? AppColors.neutral90, width: 1),
         ),
-        padding: chipPadding ??
+        padding:
+            chipPadding ??
             EdgeInsets.symmetric(
               horizontal: AppSpacing.sm.w,
               vertical: AppSpacing.xs.h,
@@ -206,13 +201,14 @@ class SelectableChipList extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     // 기본 텍스트 스타일
-    final effectiveTextStyle = textStyle ??
-        textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-        );
+    final effectiveTextStyle =
+        textStyle ??
+        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding ?? AppSpacing.lg),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding ?? AppSpacing.lg,
+      ),
       child: Wrap(
         spacing: horizontalSpacing ?? AppSpacing.xs.w,
         runSpacing: verticalSpacing ?? AppSpacing.xs.h,
@@ -237,9 +233,7 @@ class SelectableChipList extends StatelessWidget {
     TextStyle baseTextStyle,
   ) {
     return GestureDetector(
-      onTap: onSelectionChanged != null
-          ? () => _handleSelection(item)
-          : null,
+      onTap: onSelectionChanged != null ? () => _handleSelection(item) : null,
       child: Chip(
         label: Text(
           item,
@@ -261,7 +255,8 @@ class SelectableChipList extends StatelessWidget {
             width: 1,
           ),
         ),
-        padding: chipPadding ??
+        padding:
+            chipPadding ??
             EdgeInsets.symmetric(
               horizontal: AppSpacing.sm.w,
               vertical: AppSpacing.xs.h,

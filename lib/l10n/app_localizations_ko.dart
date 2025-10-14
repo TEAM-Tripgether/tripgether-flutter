@@ -363,4 +363,55 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get goBack => '뒤로 가기';
+
+  @override
+  String get loginFailedTryAgain => '로그인에 실패했습니다. 다시 시도해주세요.';
+
+  @override
+  String get googleLoginFailed => '구글 로그인에 실패했습니다.';
+
+  @override
+  String get signupScreenPreparation => '회원가입 화면 준비 중입니다';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get emailHint => 'support@tripgether-official.com';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get passwordHint => '••••••••••••';
+
+  @override
+  String get emailRequired => '이메일을 입력해주세요';
+
+  @override
+  String get emailInvalidFormat => '올바른 이메일 형식을 입력해주세요';
+
+  @override
+  String get passwordRequired => '비밀번호를 입력해주세요';
+
+  @override
+  String get passwordMinLength => '비밀번호는 최소 6자 이상이어야 합니다';
+
+  @override
+  String get autoLogin => '자동로그인';
+
+  @override
+  String get findId => '아이디';
+
+  @override
+  String get findPassword => '비밀번호 찾기';
+
+  @override
+  String get login => '로그인';
+
+  @override
+  String get signInWithGoogle => 'Google로 시작하기';
+
+  @override
+  String get signUpWithEmail => '이메일로 가입하기';
 }

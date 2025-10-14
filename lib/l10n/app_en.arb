@@ -640,5 +640,90 @@
   "goBack": "Go Back",
   "@goBack": {
     "description": "Go back button"
+  },
+
+  "loginFailedTryAgain": "Login failed. Please try again.",
+  "@loginFailedTryAgain": {
+    "description": "Email login failure message"
+  },
+
+  "googleLoginFailed": "Google login failed.",
+  "@googleLoginFailed": {
+    "description": "Google login failure message"
+  },
+
+  "signupScreenPreparation": "Sign up screen is under preparation",
+  "@signupScreenPreparation": {
+    "description": "Sign up screen preparation message"
+  },
+
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Email input field label"
+  },
+
+  "emailHint": "support@tripgether-official.com",
+  "@emailHint": {
+    "description": "Email input hint"
+  },
+
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Password input field label"
+  },
+
+  "passwordHint": "••••••••••••",
+  "@passwordHint": {
+    "description": "Password input hint"
+  },
+
+  "emailRequired": "Please enter your email",
+  "@emailRequired": {
+    "description": "Email required error message"
+  },
+
+  "emailInvalidFormat": "Please enter a valid email format",
+  "@emailInvalidFormat": {
+    "description": "Email format error message"
+  },
+
+  "passwordRequired": "Please enter your password",
+  "@passwordRequired": {
+    "description": "Password required error message"
+  },
+
+  "passwordMinLength": "Password must be at least 6 characters",
+  "@passwordMinLength": {
+    "description": "Password minimum length error message"
+  },
+
+  "autoLogin": "Remember me",
+  "@autoLogin": {
+    "description": "Auto login checkbox label"
+  },
+
+  "findId": "Find ID",
+  "@findId": {
+    "description": "Find ID button"
+  },
+
+  "findPassword": "Find Password",
+  "@findPassword": {
+    "description": "Find password button"
+  },
+
+  "login": "Login",
+  "@login": {
+    "description": "Login button"
+  },
+
+  "signInWithGoogle": "Sign in with Google",
+  "@signInWithGoogle": {
+    "description": "Google sign in button"
+  },
+
+  "signUpWithEmail": "Sign up with Email",
+  "@signUpWithEmail": {
+    "description": "Email sign up button"
   }
 }

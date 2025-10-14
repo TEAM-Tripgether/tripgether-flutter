@@ -364,4 +364,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goBack => 'Go Back';
+
+  @override
+  String get loginFailedTryAgain => 'Login failed. Please try again.';
+
+  @override
+  String get googleLoginFailed => 'Google login failed.';
+
+  @override
+  String get signupScreenPreparation => 'Sign up screen is under preparation';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get emailHint => 'support@tripgether-official.com';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get passwordHint => '••••••••••••';
+
+  @override
+  String get emailRequired => 'Please enter your email';
+
+  @override
+  String get emailInvalidFormat => 'Please enter a valid email format';
+
+  @override
+  String get passwordRequired => 'Please enter your password';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get autoLogin => 'Remember me';
+
+  @override
+  String get findId => 'Find ID';
+
+  @override
+  String get findPassword => 'Find Password';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get signInWithGoogle => 'Sign in with Google';
+
+  @override
+  String get signUpWithEmail => 'Sign up with Email';
 }

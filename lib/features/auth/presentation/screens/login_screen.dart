@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../providers/login_provider.dart';
@@ -47,7 +48,7 @@ class LoginScreen extends ConsumerWidget {
       debugPrint('[LoginScreen] ⚠️ 로그인 실패 - 에러 메시지 표시');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('로그인에 실패했습니다. 다시 시도해주세요.'),
+          content: Text(AppLocalizations.of(context)!.loginFailedTryAgain),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -75,7 +76,7 @@ class LoginScreen extends ConsumerWidget {
       debugPrint('[LoginScreen] ⚠️ 구글 로그인 실패 - 에러 메시지 표시');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('구글 로그인에 실패했습니다.'),
+          content: Text(AppLocalizations.of(context)!.googleLoginFailed),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -89,9 +90,11 @@ class LoginScreen extends ConsumerWidget {
     // TODO: 회원가입 화면으로 이동
     debugPrint('[Login] 이메일 회원가입 이동');
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('회원가입 화면 준비 중입니다')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.signupScreenPreparation),
+      ),
+    );
   }
 
   /// 아이디 찾기 핸들러
