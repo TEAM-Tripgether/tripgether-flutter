@@ -321,8 +321,8 @@ class AppSizes {
   /// 텍스트 버튼 최소 높이: 40
   static double get textButtonHeight => 40.h;
 
-  /// Navigation Bar 높이: 80
-  static double get navigationBarHeight => 80.h;
+  /// Navigation Bar 높이: 90
+  static double get navigationBarHeight => 90.h;
 
   /// App Bar 높이: 56 (Material Design 기본)
   static double get appBarHeight => 56.h;
