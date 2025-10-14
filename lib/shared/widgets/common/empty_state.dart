@@ -68,14 +68,16 @@ class EmptyState extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     // 기본 제목 스타일
-    final effectiveTitleStyle = titleStyle ??
+    final effectiveTitleStyle =
+        titleStyle ??
         textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w600,
           color: AppColors.neutral50,
         );
 
     // 기본 메시지 스타일
-    final effectiveMessageStyle = messageStyle ??
+    final effectiveMessageStyle =
+        messageStyle ??
         textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w400,
           color: AppColors.neutral60,

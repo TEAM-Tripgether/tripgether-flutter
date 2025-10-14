@@ -81,10 +81,7 @@ class SocialLoginButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // 아이콘이 있는 경우 표시
-            if (icon != null) ...[
-              icon!,
-              SizedBox(width: AppSpacing.sm),
-            ],
+            if (icon != null) ...[icon!, SizedBox(width: AppSpacing.sm)],
             // 버튼 텍스트 (Theme의 textTheme 활용)
             Text(
               text,

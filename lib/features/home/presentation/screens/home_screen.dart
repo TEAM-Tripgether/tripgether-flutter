@@ -213,7 +213,10 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: AppSpacing.xs),
             ..._currentSharedData!.sharedTexts.map(
               (text) => Padding(
-                padding: EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.xs),
+                padding: EdgeInsets.only(
+                  left: AppSpacing.xs,
+                  bottom: AppSpacing.xs,
+                ),
                 child: Text(
                   '• ${text.length > 50 ? '${text.substring(0, 50)}...' : text}',
                   style: textTheme.bodyMedium?.copyWith(
@@ -267,7 +270,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final colorScheme = theme.colorScheme;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs / 2),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.xs / 2,
+      ),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: AppRadius.circular(16),
@@ -280,9 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(width: AppSpacing.xs),
           Text(
             label,
-            style: textTheme.labelMedium?.copyWith(
-              color: colorScheme.primary,
-            ),
+            style: textTheme.labelMedium?.copyWith(color: colorScheme.primary),
           ),
         ],
       ),

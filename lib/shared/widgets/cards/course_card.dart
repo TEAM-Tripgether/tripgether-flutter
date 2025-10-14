@@ -115,7 +115,10 @@ class CourseCard extends StatelessWidget {
           top: AppSpacing.sm.h,
           left: AppSpacing.sm.w,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs.h,
+            ),
             decoration: BoxDecoration(
               color: AppColors.neutral10.withValues(alpha: 0.6),
               borderRadius: AppRadius.allLarge,
@@ -123,10 +126,7 @@ class CourseCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  course.category.emoji,
-                  style: textTheme.labelSmall,
-                ),
+                Text(course.category.emoji, style: textTheme.labelSmall),
                 SizedBox(width: AppSpacing.xs),
                 Text(
                   course.category.displayName,
@@ -172,7 +172,10 @@ class CourseCard extends StatelessWidget {
             bottom: AppSpacing.sm.h,
             left: AppSpacing.sm.w,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs.h,
+              ),
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: AppRadius.allLarge,
@@ -247,7 +250,11 @@ class CourseCard extends StatelessWidget {
         return Row(
           children: [
             // 장소 수
-            Icon(Icons.location_on, size: AppSizes.iconSmall, color: AppColors.neutral60),
+            Icon(
+              Icons.location_on,
+              size: AppSizes.iconSmall,
+              color: AppColors.neutral60,
+            ),
             AppSpacing.horizontalSpaceXS,
             Text(
               l10n.placesCount(course.placeCount),
@@ -259,7 +266,11 @@ class CourseCard extends StatelessWidget {
             SizedBox(width: AppSpacing.sm),
 
             // 소요 시간
-            Icon(Icons.access_time, size: AppSizes.iconSmall, color: AppColors.neutral60),
+            Icon(
+              Icons.access_time,
+              size: AppSizes.iconSmall,
+              color: AppColors.neutral60,
+            ),
             AppSpacing.horizontalSpaceXS,
             Text(
               course.durationText,
@@ -272,7 +283,11 @@ class CourseCard extends StatelessWidget {
             // 거리
             if (course.distance != null) ...[
               SizedBox(width: AppSpacing.sm),
-              Icon(Icons.straighten, size: AppSizes.iconSmall, color: AppColors.neutral60),
+              Icon(
+                Icons.straighten,
+                size: AppSizes.iconSmall,
+                color: AppColors.neutral60,
+              ),
               AppSpacing.horizontalSpaceXS,
               Text(
                 course.distanceText,
@@ -488,10 +503,7 @@ class CourseHorizontalList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 섹션 헤더
-        SectionHeaderWithSpacing(
-          title: title,
-          onSeeMoreTap: onSeeMoreTap,
-        ),
+        SectionHeaderWithSpacing(title: title, onSeeMoreTap: onSeeMoreTap),
 
         // 코스 리스트 (가로 스크롤)
         SizedBox(

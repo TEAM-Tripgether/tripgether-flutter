@@ -71,14 +71,16 @@ class CustomListTile extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     // 기본 제목 스타일
-    final effectiveTitleStyle = titleStyle ??
+    final effectiveTitleStyle =
+        titleStyle ??
         textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w500,
           color: AppColors.onSurface,
         );
 
     // 기본 부제목 스타일
-    final effectiveSubtitleStyle = subtitleStyle ??
+    final effectiveSubtitleStyle =
+        subtitleStyle ??
         textTheme.bodySmall?.copyWith(
           fontWeight: FontWeight.w400,
           color: AppColors.neutral60,
@@ -93,7 +95,8 @@ class CustomListTile extends StatelessWidget {
       trailing: trailing,
       onTap: onTap,
       tileColor: backgroundColor,
-      contentPadding: contentPadding ??
+      contentPadding:
+          contentPadding ??
           EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.sm.h,

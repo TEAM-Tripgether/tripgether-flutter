@@ -84,7 +84,9 @@ class SnsContentCard extends StatelessWidget {
                   children: [
                     PlatformIcon(
                       source: content.source,
-                      size: isGridLayout ? AppSizes.iconSmall : AppSizes.iconDefault,
+                      size: isGridLayout
+                          ? AppSizes.iconSmall
+                          : AppSizes.iconDefault,
                     ),
                     SizedBox(height: AppSpacing.xs.h),
                     Text(
@@ -179,9 +181,7 @@ class SnsContentHorizontalList extends StatelessWidget {
         children: [
           Text(
             title!,
-            style: textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           if (onSeeMoreTap != null)
             GestureDetector(

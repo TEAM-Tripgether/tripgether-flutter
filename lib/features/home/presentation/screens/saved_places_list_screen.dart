@@ -309,9 +309,7 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
       child: Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: const AlwaysStoppedAnimation<Color>(
-            AppColors.primary,
-          ),
+          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
         ),
       ),
     );

@@ -66,8 +66,9 @@ class AppTheme {
         surfaceTintColor: AppColors.surfaceTint,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         // titleLarge (22px, w600)를 사용하되 색상만 오버라이드
-        titleTextStyle:
-            textTheme.titleLarge?.copyWith(color: AppColors.onSurface),
+        titleTextStyle: textTheme.titleLarge?.copyWith(
+          color: AppColors.onSurface,
+        ),
         iconTheme: IconThemeData(
           color: AppColors.onSurface,
           size: AppSizes.iconDefault,
@@ -113,8 +114,10 @@ class AppTheme {
           foregroundColor: AppColors.primary,
           disabledForegroundColor: AppColors.textDisabled,
           shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
-          minimumSize:
-              Size(AppSizes.textButtonMinWidth, AppSizes.textButtonHeight),
+          minimumSize: Size(
+            AppSizes.textButtonMinWidth,
+            AppSizes.textButtonHeight,
+          ),
           // labelLarge 그대로 사용
           textStyle: textTheme.labelLarge,
         ),
@@ -198,9 +201,7 @@ class AppTheme {
           color: AppColors.textSecondary,
         ),
         // bodySmall (12px, w400)를 error로 색상만 변경
-        errorStyle: textTheme.bodySmall?.copyWith(
-          color: AppColors.error,
-        ),
+        errorStyle: textTheme.bodySmall?.copyWith(color: AppColors.error),
       ),
 
       /// 카드 테마
@@ -248,10 +249,7 @@ class AppTheme {
           color: AppColors.chipSelectedText,
         ),
         shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
-        side: BorderSide(
-          color: AppColors.outline,
-          width: AppSizes.borderThin,
-        ),
+        side: BorderSide(color: AppColors.outline, width: AppSizes.borderThin),
         padding: EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,

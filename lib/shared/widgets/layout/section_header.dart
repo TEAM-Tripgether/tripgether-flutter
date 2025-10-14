@@ -62,14 +62,16 @@ class SectionHeader extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     // 기본 제목 스타일
-    final effectiveTitleStyle = titleStyle ??
+    final effectiveTitleStyle =
+        titleStyle ??
         textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
           color: AppColors.onSurface,
         );
 
     // 기본 더보기 버튼 스타일
-    final effectiveSeeMoreStyle = seeMoreStyle ??
+    final effectiveSeeMoreStyle =
+        seeMoreStyle ??
         textTheme.labelMedium?.copyWith(
           fontWeight: FontWeight.w500,
           color: AppColors.primary,

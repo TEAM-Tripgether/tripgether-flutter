@@ -301,7 +301,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
     return Row(
       children: [
-        Icon(Icons.label_outline, size: 16.w, color: colorScheme.onSurfaceVariant),
+        Icon(
+          Icons.label_outline,
+          size: 16.w,
+          color: colorScheme.onSurfaceVariant,
+        ),
         SizedBox(width: 4.w),
         Text(
           l10n.aiContentSummary,

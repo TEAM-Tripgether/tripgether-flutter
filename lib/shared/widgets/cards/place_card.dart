@@ -127,10 +127,7 @@ class PlaceGridCard extends StatelessWidget {
           // 카테고리와 이름
           Row(
             children: [
-              Text(
-                place.category.emoji,
-                style: textTheme.titleSmall,
-              ),
+              Text(place.category.emoji, style: textTheme.titleSmall),
               SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: Text(
@@ -157,13 +154,15 @@ class PlaceGridCard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: AppSpacing.xs),
-              Icon(Icons.location_on, size: AppSizes.iconSmall, color: Colors.grey[500]),
+              Icon(
+                Icons.location_on,
+                size: AppSizes.iconSmall,
+                color: Colors.grey[500],
+              ),
               AppSpacing.horizontalSpaceXS,
               Text(
                 place.distanceText,
-                style: textTheme.bodySmall?.copyWith(
-                  color: Colors.grey[600],
-                ),
+                style: textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
               ),
             ],
           ),
@@ -227,7 +226,10 @@ class PlaceCard extends StatelessWidget {
             debugPrint('장소 카드 클릭: ${place.name}');
           },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm.h),
+        margin: EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm.h,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: AppRadius.allLarge,
@@ -271,10 +273,7 @@ class PlaceCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // 카테고리 이모지
-              Text(
-                place.category.emoji,
-                style: textTheme.titleMedium,
-              ),
+              Text(place.category.emoji, style: textTheme.titleMedium),
               SizedBox(width: AppSpacing.xs),
               // 장소명
               Expanded(
@@ -353,7 +352,11 @@ class PlaceCard extends StatelessWidget {
             ],
 
             // 거리
-            Icon(Icons.location_on, size: AppSizes.iconSmall.w, color: Colors.grey[500]),
+            Icon(
+              Icons.location_on,
+              size: AppSizes.iconSmall.w,
+              color: Colors.grey[500],
+            ),
             AppSpacing.horizontalSpaceXS,
             Text(
               place.distanceText,
@@ -367,7 +370,10 @@ class PlaceCard extends StatelessWidget {
             if (place.isVisited) ...[
               SizedBox(width: AppSpacing.md),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.xs,
+                  vertical: AppSpacing.xs.h,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.green[50],
                   borderRadius: AppRadius.allSmall,
@@ -496,7 +502,10 @@ class PlaceListSection extends StatelessWidget {
         if (places.isEmpty)
           // 저장한 장소가 없을 때 빈 상태 메시지 표시
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.huge.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.huge.h,
+            ),
             child: Center(
               child: Text(
                 l10n.noSavedPlacesYet,
@@ -549,9 +558,7 @@ class PlaceListSection extends StatelessWidget {
         children: [
           Text(
             title!,
-            style: textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           if (onSeeMoreTap != null)
             GestureDetector(

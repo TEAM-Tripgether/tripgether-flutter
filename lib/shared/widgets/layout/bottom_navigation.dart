@@ -135,7 +135,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
       style: textTheme.labelSmall?.copyWith(
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         color: isSelected
-            ? theme.primaryColor // 선택된 상태 색상
+            ? theme
+                  .primaryColor // 선택된 상태 색상
             : colorScheme.onSurfaceVariant, // 비선택 상태 색상
       ),
       maxLines: 1, // 한 줄로 제한

@@ -350,9 +350,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
       child: Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(
-            theme.primaryColor,
-          ),
+          valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
         ),
       ),
     );

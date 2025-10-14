@@ -45,7 +45,9 @@ class SectionDivider extends StatelessWidget {
     switch (type) {
       case SectionDividerType.thin:
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding ?? AppSpacing.lg),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding ?? AppSpacing.lg,
+          ),
           child: Divider(
             thickness: AppSizes.borderThin,
             height: AppSizes.borderThin,

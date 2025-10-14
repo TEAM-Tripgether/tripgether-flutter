@@ -266,10 +266,7 @@ class _CourseSearchScreenState extends State<CourseSearchScreen> {
 
   /// 추천 검색어 칩 리스트
   Widget _buildRecommendedSearches() {
-    return ChipList(
-      items: _recommendedSearches,
-      onItemTap: _onSearchQueryTap,
-    );
+    return ChipList(items: _recommendedSearches, onItemTap: _onSearchQueryTap);
   }
 
   /// 검색 결과 없음

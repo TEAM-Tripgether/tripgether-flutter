@@ -111,10 +111,7 @@ class InfoContainer extends StatelessWidget {
           // 액션 버튼들
           if (actions != null && actions!.isNotEmpty) ...[
             SizedBox(height: AppSpacing.sm),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: actions!,
-            ),
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: actions!),
           ],
         ],
       ),

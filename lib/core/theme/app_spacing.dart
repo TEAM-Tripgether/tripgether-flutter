@@ -214,21 +214,21 @@ class AppRadius {
 
   /// 상단만 large radius 적용 (바텀시트)
   static BorderRadius get topLarge => BorderRadius.only(
-        topLeft: Radius.circular(large),
-        topRight: Radius.circular(large),
-      );
+    topLeft: Radius.circular(large),
+    topRight: Radius.circular(large),
+  );
 
   /// 상단만 xlarge radius 적용
   static BorderRadius get topXLarge => BorderRadius.only(
-        topLeft: Radius.circular(xlarge),
-        topRight: Radius.circular(xlarge),
-      );
+    topLeft: Radius.circular(xlarge),
+    topRight: Radius.circular(xlarge),
+  );
 
   /// 하단만 large radius 적용
   static BorderRadius get bottomLarge => BorderRadius.only(
-        bottomLeft: Radius.circular(large),
-        bottomRight: Radius.circular(large),
-      );
+    bottomLeft: Radius.circular(large),
+    bottomRight: Radius.circular(large),
+  );
 
   /// 커스텀 radius
   static BorderRadius circular(double radius) =>
@@ -240,13 +240,12 @@ class AppRadius {
     double? topRight,
     double? bottomLeft,
     double? bottomRight,
-  }) =>
-      BorderRadius.only(
-        topLeft: Radius.circular((topLeft ?? 0).r),
-        topRight: Radius.circular((topRight ?? 0).r),
-        bottomLeft: Radius.circular((bottomLeft ?? 0).r),
-        bottomRight: Radius.circular((bottomRight ?? 0).r),
-      );
+  }) => BorderRadius.only(
+    topLeft: Radius.circular((topLeft ?? 0).r),
+    topRight: Radius.circular((topRight ?? 0).r),
+    bottomLeft: Radius.circular((bottomLeft ?? 0).r),
+    bottomRight: Radius.circular((bottomRight ?? 0).r),
+  );
 }
 
 // ==================== Elevation 상수 ====================
@@ -348,4 +347,3 @@ class AppSizes {
   /// FAB 큰 크기: 96
   static double get fabLargeSize => 96.w;
 }
-

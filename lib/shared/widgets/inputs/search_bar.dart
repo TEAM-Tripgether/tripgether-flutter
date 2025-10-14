@@ -108,7 +108,10 @@ class _TripSearchBarState extends State<TripSearchBar> {
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         borderRadius: AppRadius.circular(24),
-        border: Border.all(color: theme.dividerColor, width: AppSizes.borderThin),
+        border: Border.all(
+          color: theme.dividerColor,
+          width: AppSizes.borderThin,
+        ),
       ),
       child: TextField(
         controller: _effectiveController,
@@ -127,11 +130,19 @@ class _TripSearchBarState extends State<TripSearchBar> {
             fontWeight: FontWeight.w400,
             color: colorScheme.onSurfaceVariant,
           ),
-          prefixIcon: Icon(Icons.search, size: AppSizes.iconMedium, color: colorScheme.onSurfaceVariant),
+          prefixIcon: Icon(
+            Icons.search,
+            size: AppSizes.iconMedium,
+            color: colorScheme.onSurfaceVariant,
+          ),
           // 텍스트가 있을 때만 X 아이콘 표시 (동적으로 업데이트, 국제화 적용)
           suffixIcon: _hasText
               ? IconButton(
-                  icon: Icon(Icons.clear, size: AppSizes.iconSmall, color: colorScheme.onSurfaceVariant),
+                  icon: Icon(
+                    Icons.clear,
+                    size: AppSizes.iconSmall,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                   onPressed: _clearText,
                   tooltip: l10n.clearInput,
                 )

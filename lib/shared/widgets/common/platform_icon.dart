@@ -51,10 +51,7 @@ class PlatformIcon extends StatelessWidget {
     }
 
     // 아이콘만 표시
-    return Semantics(
-      label: semanticsLabel,
-      child: _buildIcon(iconSize),
-    );
+    return Semantics(label: semanticsLabel, child: _buildIcon(iconSize));
   }
 
   /// 플랫폼별 아이콘 위젯 생성
