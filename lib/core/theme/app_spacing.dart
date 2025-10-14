@@ -73,32 +73,32 @@ class AppSpacing {
 
   /// 버튼 큰 패딩: 가로 32, 세로 16
   static EdgeInsets get buttonPaddingLarge =>
-      EdgeInsets.symmetric(horizontal: xxxl, vertical: lg.h);
+      EdgeInsets.symmetric(horizontal: xxxl, vertical: lg);
 
   // ==================== 수직 간격 (SizedBox용) ====================
   /// 최소 수직 간격: 4
-  static SizedBox get verticalSpaceXS => SizedBox(height: xs.h);
+  static SizedBox get verticalSpaceXS => SizedBox(height: xs);
 
   /// 아주 작은 수직 간격: 8
-  static SizedBox get verticalSpaceSM => SizedBox(height: sm.h);
+  static SizedBox get verticalSpaceSM => SizedBox(height: sm);
 
   /// 작은 수직 간격: 12
-  static SizedBox get verticalSpaceMD => SizedBox(height: md.h);
+  static SizedBox get verticalSpaceMD => SizedBox(height: md);
 
   /// 중간 수직 간격: 16
-  static SizedBox get verticalSpaceLG => SizedBox(height: lg.h);
+  static SizedBox get verticalSpaceLG => SizedBox(height: lg);
 
   /// 큰 수직 간격: 20
-  static SizedBox get verticalSpaceXL => SizedBox(height: xl.h);
+  static SizedBox get verticalSpaceXL => SizedBox(height: xl);
 
   /// 아주 큰 수직 간격: 24
-  static SizedBox get verticalSpaceXXL => SizedBox(height: xxl.h);
+  static SizedBox get verticalSpaceXXL => SizedBox(height: xxl);
 
   /// 매우 큰 수직 간격: 32
-  static SizedBox get verticalSpaceXXXL => SizedBox(height: xxxl.h);
+  static SizedBox get verticalSpaceXXXL => SizedBox(height: xxxl);
 
   /// 초대형 수직 간격: 40
-  static SizedBox get verticalSpaceHuge => SizedBox(height: huge.h);
+  static SizedBox get verticalSpaceHuge => SizedBox(height: huge);
 
   // ==================== 수평 간격 (SizedBox용) ====================
   /// 최소 수평 간격: 4
@@ -132,7 +132,7 @@ class AppSpacing {
   // ==================== 특수 패딩 ====================
   /// 세션 정보 컨테이너 패딩: 가로 16, 세로 12
   static EdgeInsets get sessionInfoPadding =>
-      EdgeInsets.symmetric(horizontal: lg, vertical: md.h);
+      EdgeInsets.symmetric(horizontal: lg, vertical: md);
 
   /// AppBar 타이틀 좌측 패딩: 8
   static EdgeInsets get appBarTitlePadding => EdgeInsets.only(left: sm);
@@ -148,7 +148,7 @@ class AppSpacing {
   static SizedBox verticalSpace(double height) => SizedBox(height: height.h);
 
   /// 커스텀 수평 간격
-  static SizedBox horizontalSpace(double width) => SizedBox(width: width);
+  static SizedBox horizontalSpace(double width) => SizedBox(width: width.w);
 
   /// 커스텀 패딩 (전체)
   static EdgeInsets all(double value) => EdgeInsets.all(value.w);

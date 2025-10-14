@@ -88,7 +88,7 @@ class AppTextStyles {
 
       // ==================== Title Styles (섹션 제목용) ====================
 
-      /// titleLarge: 22px, 세미볼드 (600)
+      /// titleLarge: 20px, 세미볼드 (600)
       /// 사용처: 앱바 제목, 섹션 타이틀
       titleLarge: TextStyle(
         fontFamily: fontFamily,
