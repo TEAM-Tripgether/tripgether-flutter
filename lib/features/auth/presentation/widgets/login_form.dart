@@ -88,6 +88,10 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Form(
       key: _formKey,
       child: Column(
@@ -169,11 +173,9 @@ class _LoginFormState extends State<LoginForm> {
                   SizedBox(width: AppSpacing.xs),
                   Text(
                     '자동로그인',
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 14.sp,
+                    style: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w400,
-                      color: AppColors.textPrimary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -190,9 +192,8 @@ class _LoginFormState extends State<LoginForm> {
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                     child: Text(
                       '|',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: AppColors.textSecondary,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ),

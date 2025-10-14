@@ -46,9 +46,9 @@ class LoginScreen extends ConsumerWidget {
       // 로그인 실패 시 에러 메시지 표시
       debugPrint('[LoginScreen] ⚠️ 로그인 실패 - 에러 메시지 표시');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('로그인에 실패했습니다. 다시 시도해주세요.'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: const Text('로그인에 실패했습니다. 다시 시도해주세요.'),
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     }
@@ -74,9 +74,9 @@ class LoginScreen extends ConsumerWidget {
       // 로그인 실패 시 에러 메시지 표시
       debugPrint('[LoginScreen] ⚠️ 구글 로그인 실패 - 에러 메시지 표시');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('구글 로그인에 실패했습니다.'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: const Text('구글 로그인에 실패했습니다.'),
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     } else if (!context.mounted) {
@@ -108,8 +108,11 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       // 키보드가 올라올 때 화면이 넘치지 않도록 스크롤 가능하게 설정
       body: SafeArea(
         child: SingleChildScrollView(
