@@ -40,6 +40,8 @@ class SectionDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     switch (type) {
       case SectionDividerType.thin:
         return Padding(
@@ -47,14 +49,14 @@ class SectionDivider extends StatelessWidget {
           child: Divider(
             thickness: AppSizes.borderThin,
             height: AppSizes.borderThin,
-            color: color ?? Colors.grey[300],
+            color: color ?? theme.dividerColor,
           ),
         );
 
       case SectionDividerType.thick:
         return Container(
           height: height ?? AppSpacing.sm.h,
-          color: color ?? Colors.grey[100],
+          color: color ?? theme.colorScheme.surfaceContainerHighest,
         );
     }
   }

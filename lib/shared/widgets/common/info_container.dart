@@ -57,11 +57,15 @@ class InfoContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 기본 색상 설정 (파란색 계열)
-    final defaultBackgroundColor = Colors.blue.shade50;
-    final defaultBorderColor = Colors.blue.shade200;
-    final defaultTitleColor = Colors.blue.shade700;
-    final defaultIconColor = Colors.blue.shade700;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
+    // 기본 색상 설정 (Theme의 primary 색상 활용)
+    final defaultBackgroundColor = colorScheme.primaryContainer;
+    final defaultBorderColor = colorScheme.outline;
+    final defaultTitleColor = colorScheme.onPrimaryContainer;
+    final defaultIconColor = colorScheme.primary;
 
     return Container(
       margin: margin ?? EdgeInsets.all(AppSpacing.lg),
@@ -89,9 +93,7 @@ class InfoContainer extends StatelessWidget {
                 ],
                 Text(
                   title!,
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 16.sp,
+                  style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: titleColor ?? defaultTitleColor,
                   ),
@@ -191,13 +193,15 @@ class ErrorInfoContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return InfoContainer(
       title: title,
       titleIcon: Icons.error_outline,
-      backgroundColor: Colors.red.shade50,
-      borderColor: Colors.red.shade200,
-      titleColor: Colors.red.shade700,
-      iconColor: Colors.red.shade700,
+      backgroundColor: colorScheme.errorContainer,
+      borderColor: colorScheme.error.withValues(alpha: 0.3),
+      titleColor: colorScheme.onErrorContainer,
+      iconColor: colorScheme.error,
       actions: actions,
       child: child,
     );
