@@ -56,7 +56,7 @@ class _LoginFormState extends State<LoginForm> {
 
   /// 이메일 형식 검증
   String? _validateEmail(String? value, BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.isEmpty) {
       return l10n.emailRequired;
     }
@@ -70,7 +70,7 @@ class _LoginFormState extends State<LoginForm> {
 
   /// 비밀번호 검증
   String? _validatePassword(String? value, BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.isEmpty) {
       return l10n.passwordRequired;
     }
@@ -94,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Form(
       key: _formKey,
@@ -188,10 +188,7 @@ class _LoginFormState extends State<LoginForm> {
               // 아이디 | 비밀번호 찾기 (공용 TertiaryButton 사용)
               Row(
                 children: [
-                  TertiaryButton(
-                    text: l10n.findId,
-                    onPressed: widget.onFindId,
-                  ),
+                  TertiaryButton(text: l10n.findId, onPressed: widget.onFindId),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                     child: Text(
