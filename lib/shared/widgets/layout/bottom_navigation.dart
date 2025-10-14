@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/router/routes.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// PRD.md 구조에 따른 공유 바텀 네비게이션 바 위젯
 ///
@@ -24,15 +25,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       // 바텀 네비게이션 바의 전체 높이 (반응형)
-      height: 90.h,
+      height: AppSizes.navigationBarHeight,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         // 상단에만 그림자 효과 추가
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: colorScheme.shadow.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, -2),
@@ -41,7 +45,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(top: 8.h), // 상단에 추가 패딩 적용
+          padding: EdgeInsets.only(top: AppSpacing.sm.h), // 상단에 추가 패딩 적용
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(
@@ -67,7 +71,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       // 탭 영역을 확장하여 터치하기 쉽게 만듦
       behavior: HitTestBehavior.translucent,
       child: SizedBox(
-        width: 60.w, // 각 탭의 최소 너비 보장
+        width: AppSizes.fabSize, // 각 탭의 최소 너비 보장
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,7 +79,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             // SVG 아이콘 표시
             _buildIcon(context, index, isSelected),
 
-            SizedBox(height: 4.h),
+            SizedBox(height: AppSpacing.xs.h),
 
             // 탭 라벨 텍스트
             _buildLabel(context, index, isSelected),
@@ -91,6 +95,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
   /// [index] 탭 인덱스
   /// [isSelected] 선택 여부 (active/inactive 아이콘 결정)
   Widget _buildIcon(BuildContext context, int index, bool isSelected) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     // 선택 상태에 따른 아이콘 경로 결정
     final String iconPath = isSelected
         ? NavigationIcons.getActiveIcon(index)
@@ -98,16 +105,16 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
     return SvgPicture.asset(
       iconPath,
-      width: 24.w, // 반응형 아이콘 크기
-      height: 24.h,
+      width: AppSizes.iconDefault, // 반응형 아이콘 크기
+      height: AppSizes.iconDefault.h,
       // SVG 색상 필터링 (필요한 경우)
       colorFilter: isSelected
           ? ColorFilter.mode(
-              Theme.of(context).primaryColor, // 선택된 상태 - 테마의 기본 색상
+              theme.primaryColor, // 선택된 상태 - 테마의 기본 색상
               BlendMode.srcIn,
             )
           : ColorFilter.mode(
-              Colors.grey[600]!, // 비선택 상태 - 회색
+              colorScheme.onSurfaceVariant, // 비선택 상태 - 보조 색상
               BlendMode.srcIn,
             ),
     );
@@ -119,15 +126,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
   /// [index] 탭 인덱스
   /// [isSelected] 선택 여부 (텍스트 스타일 결정)
   Widget _buildLabel(BuildContext context, int index, bool isSelected) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Text(
       AppRoutes.getTabLabels(context)[index],
-      style: TextStyle(
-        fontSize: 10.sp, // 반응형 폰트 크기
+      style: textTheme.labelSmall?.copyWith(
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         color: isSelected
-            ? Theme.of(context)
+            ? theme
                   .primaryColor // 선택된 상태 색상
-            : Colors.grey[600], // 비선택 상태 색상
+            : colorScheme.onSurfaceVariant, // 비선택 상태 색상
       ),
       maxLines: 1, // 한 줄로 제한
       overflow: TextOverflow.ellipsis, // 텍스트가 길 경우 말줄임표 처리

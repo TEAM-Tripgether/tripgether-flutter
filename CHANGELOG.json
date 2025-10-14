@@ -1,11 +1,50 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-12T15:59:53Z",
-    "currentVersion": "1.0.23",
+    "lastUpdated": "2025-10-14T16:31:17Z",
+    "currentVersion": "1.0.24",
     "projectType": "flutter",
-    "totalReleases": 11
+    "totalReleases": 12
   },
   "releases": [
+    {
+      "version": "1.0.24",
+      "project_type": "flutter",
+      "date": "2025-10-14",
+      "pr_number": 26,
+      "raw_summary": "Summary by CodeRabbit\n\n\nNew Features\n\n공통 버튼, 칩 리스트(선택형 포함), 빈 상태, 안내 컨테이너, 섹션 헤더 추가\n버튼 데모 화면 추가(마이페이지에 임시 노출)\n\n\n\nImprovements\n\n앱 전반 테마·타이포·간격 토큰화로 UI 일관성 향상\n인증 화면 문구 전면 로컬라이즈 및 스낵바/검증 메시지 개선\n홈/장소/콘텐츠/검색/코스 마켓 화면 스타일 정리 및 공통 컴포넌트 적용\n검색바·하단 내비·소셜 로그인 버튼 시각 개선\n플랫폼 아이콘 접근성 라벨 추가\niOS 공유 로그 최신 5개만 보관 및 화면에 개수 표시\n\n\n\nDocumentation\n\n디자인 시스템 가이드 갱신, README 배지 최신화\n\n\n\nChores\n\n앱 버전 1.0.24로 업데이트, VS Code 디버그 설정 추가",
+      "parsed_changes": {
+        "new_features": {
+          "title": "New Features",
+          "items": [
+            "공통 버튼, 칩 리스트(선택형 포함), 빈 상태, 안내 컨테이너, 섹션 헤더 추가",
+            "버튼 데모 화면 추가(마이페이지에 임시 노출)"
+          ]
+        },
+        "improvements": {
+          "title": "Improvements",
+          "items": [
+            "앱 전반 테마·타이포·간격 토큰화로 UI 일관성 향상",
+            "인증 화면 문구 전면 로컬라이즈 및 스낵바/검증 메시지 개선",
+            "홈/장소/콘텐츠/검색/코스 마켓 화면 스타일 정리 및 공통 컴포넌트 적용",
+            "검색바·하단 내비·소셜 로그인 버튼 시각 개선",
+            "플랫폼 아이콘 접근성 라벨 추가",
+            "iOS 공유 로그 최신 5개만 보관 및 화면에 개수 표시"
+          ]
+        },
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "디자인 시스템 가이드 갱신, README 배지 최신화"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "앱 버전 1.0.24로 업데이트, VS Code 디버그 설정 추가"
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.23",
       "project_type": "flutter",

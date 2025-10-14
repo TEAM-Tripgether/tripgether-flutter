@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/buttons/common_button.dart';
 
 /// 로그인 입력 폼 위젯
 ///
@@ -52,25 +55,27 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   /// 이메일 형식 검증
-  String? _validateEmail(String? value) {
+  String? _validateEmail(String? value, BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.isEmpty) {
-      return '이메일을 입력해주세요';
+      return l10n.emailRequired;
     }
     // 이메일 정규식 검증
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(value)) {
-      return '올바른 이메일 형식을 입력해주세요';
+      return l10n.emailInvalidFormat;
     }
     return null;
   }
 
   /// 비밀번호 검증
-  String? _validatePassword(String? value) {
+  String? _validatePassword(String? value, BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.isEmpty) {
-      return '비밀번호를 입력해주세요';
+      return l10n.passwordRequired;
     }
     if (value.length < 6) {
-      return '비밀번호는 최소 6자 이상이어야 합니다';
+      return l10n.passwordMinLength;
     }
     return null;
   }
@@ -86,6 +91,11 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -96,19 +106,19 @@ class _LoginFormState extends State<LoginForm> {
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next, // 다음 필드로 이동
-            validator: _validateEmail,
+            validator: (value) => _validateEmail(value, context),
             decoration: InputDecoration(
-              labelText: 'Email',
-              hintText: 'support@tripgether-official.com',
+              labelText: l10n.emailLabel,
+              hintText: l10n.emailHint,
               prefixIcon: Icon(
                 Icons.email_outlined,
                 color: AppColors.textSecondary,
-                size: 20.w,
+                size: AppSizes.iconMedium,
               ),
             ),
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
 
           /// 비밀번호 입력 필드
           TextFormField(
@@ -116,21 +126,21 @@ class _LoginFormState extends State<LoginForm> {
             obscureText: _obscurePassword, // 비밀번호 마스킹
             textInputAction: TextInputAction.done, // 완료 버튼
             onFieldSubmitted: (_) => _handleLogin(), // 엔터 시 로그인
-            validator: _validatePassword,
+            validator: (value) => _validatePassword(value, context),
             decoration: InputDecoration(
-              labelText: 'Password',
-              hintText: '••••••••••••',
+              labelText: l10n.passwordLabel,
+              hintText: l10n.passwordHint,
               prefixIcon: Icon(
                 Icons.lock_outlined,
                 color: AppColors.textSecondary,
-                size: 20.w,
+                size: AppSizes.iconMedium,
               ),
               // 비밀번호 보기/숨기기 토글 버튼
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
                   color: AppColors.textSecondary,
-                  size: 20.w,
+                  size: AppSizes.iconMedium,
                 ),
                 onPressed: () {
                   setState(() {
@@ -141,7 +151,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
 
-          SizedBox(height: 12.h),
+          SizedBox(height: AppSpacing.sm),
 
           /// 자동로그인 & 아이디/비밀번호 찾기 Row
           Row(
@@ -151,8 +161,8 @@ class _LoginFormState extends State<LoginForm> {
               Row(
                 children: [
                   SizedBox(
-                    width: 24.w,
-                    height: 24.h,
+                    width: AppSizes.iconDefault,
+                    height: AppSizes.iconDefault.h,
                     child: Checkbox(
                       value: _rememberMe,
                       onChanged: (value) {
@@ -164,92 +174,46 @@ class _LoginFormState extends State<LoginForm> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: AppSpacing.xs),
                   Text(
-                    '자동로그인',
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 14.sp,
+                    l10n.autoLogin,
+                    style: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w400,
-                      color: AppColors.textPrimary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ],
               ),
 
-              // 아이디 | 비밀번호 찾기
+              // 아이디 | 비밀번호 찾기 (공용 TertiaryButton 사용)
               Row(
                 children: [
-                  TextButton(
-                    onPressed: widget.onFindId,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
+                  TertiaryButton(text: l10n.findId, onPressed: widget.onFindId),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                     child: Text(
-                      '아이디',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.textSecondary,
+                      '|',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ),
-                  Text(
-                    '|',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  TextButton(
+                  TertiaryButton(
+                    text: l10n.findPassword,
                     onPressed: widget.onFindPassword,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Text(
-                      '비밀번호 찾기',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
                   ),
                 ],
               ),
             ],
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: AppSpacing.lg),
 
-          /// 로그인 버튼
-          SizedBox(
-            width: double.infinity,
-            height: 48.h,
-            child: ElevatedButton(
-              onPressed: _handleLogin,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.onPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-              child: Text(
-                '로그인',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+          /// 로그인 버튼 (공용 PrimaryButton 컴포넌트 사용)
+          PrimaryButton(
+            text: l10n.login,
+            onPressed: _handleLogin,
+            isFullWidth: true,
           ),
         ],
       ),

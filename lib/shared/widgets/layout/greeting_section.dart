@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
-import 'search_bar.dart';
+import '../inputs/search_bar.dart';
 
 /// 홈 화면 상단 인사말 섹션 위젯
 ///
@@ -19,32 +20,31 @@ class GreetingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 인사말
           Text(
             _getGreetingText(),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 24.sp,
+            style: textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
-              color: Colors.black87,
+              color: colorScheme.onSurface,
               height: 1.3,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: AppSpacing.xs.h),
 
           // 부제목
           Text(
             subtitle ?? _getSubtitleText(),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
+            style: textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
-              color: Colors.grey[600],
+              color: colorScheme.onSurfaceVariant,
               height: 1.4,
             ),
           ),
@@ -118,6 +118,7 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       // 전체 너비 명시적으로 지정
@@ -132,10 +133,10 @@ class HomeHeader extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.only(
-        left: 16.w,
-        right: 16.w,
-        top: 24.h,
-        bottom: 16.h, // 검색창을 위한 하단 패딩 추가
+        left: AppSpacing.lg,
+        right: AppSpacing.lg,
+        top: AppSpacing.xxl.h,
+        bottom: AppSpacing.lg.h, // 검색창을 위한 하단 패딩 추가
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,26 +144,22 @@ class HomeHeader extends StatelessWidget {
           // 인사말 (국제화 적용)
           Text(
             greeting ?? l10n.greeting(userName),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 22.sp,
+            style: textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
               color: Colors.white, // 그라데이션 배경에 맞춰 흰색으로 변경
             ),
           ),
-          SizedBox(height: 2.h),
+          AppSpacing.verticalSpaceXS,
           // 부제목 (국제화 적용)
           Text(
             greetingSubtitle ?? l10n.greetingSubtitle,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 13.sp,
+            style: textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w400,
               color: Colors.white.withValues(alpha: 0.9), // 약간 투명한 흰색
             ),
           ),
 
-          SizedBox(height: 16.h),
+          AppSpacing.verticalSpaceLG,
 
           // 검색창 (그라데이션 배경 위에 표시)
           TripSearchBar(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../features/home/data/models/sns_content_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../common/platform_icon.dart';
@@ -24,14 +25,17 @@ class SnsContentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Theme의 textTheme을 가져와서 일관된 스타일 적용
+    final textTheme = Theme.of(context).textTheme;
+
     return GestureDetector(
       onTap: onTap ?? () => debugPrint('SNS 콘텐츠 클릭: ${content.contentUrl}'),
       child: Container(
         width: isGridLayout ? null : (width ?? 120.w),
         height: isGridLayout ? 250.h : 170.h,
-        margin: margin ?? EdgeInsets.only(right: 12.w),
+        margin: margin ?? EdgeInsets.only(right: AppSpacing.md),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: AppRadius.allLarge,
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -54,7 +58,7 @@ class SnsContentCard extends StatelessWidget {
                   color: Colors.grey[200],
                   child: Icon(
                     Icons.image_not_supported,
-                    size: 48.w,
+                    size: AppSizes.iconXLarge,
                     color: Colors.grey[400],
                   ),
                 ),
@@ -73,27 +77,27 @@ class SnsContentCard extends StatelessWidget {
                     stops: [0.5, 1.0],
                   ),
                 ),
-                padding: EdgeInsets.all(8.w),
+                padding: EdgeInsets.all(AppSpacing.sm),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     PlatformIcon(
                       source: content.source,
-                      size: isGridLayout ? 18.w : 24.w,
+                      size: isGridLayout
+                          ? AppSizes.iconSmall
+                          : AppSizes.iconDefault,
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: AppSpacing.xs.h),
                     Text(
                       content.title,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontSize: 13.sp,
+                      style: textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                         height: 1.3,
                         shadows: [
                           Shadow(
-                            offset: Offset(0, 1),
+                            offset: const Offset(0, 1),
                             blurRadius: 3.0,
                             color: Colors.black.withValues(alpha: 0.5),
                           ),
@@ -143,12 +147,12 @@ class SnsContentHorizontalList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (title != null) _buildSectionHeader(context),
-        SizedBox(height: 16.h),
+        AppSpacing.verticalSpaceLG,
         SizedBox(
           height: 170.h, // 썸네일 높이만 (제목과 크리에이터 정보는 이미지 내부에 오버레이)
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             itemCount: contents.length,
             itemBuilder: (context, index) {
               return SnsContentCard(
@@ -167,20 +171,17 @@ class SnsContentHorizontalList extends StatelessWidget {
   /// 섹션 헤더 위젯 빌드
   Widget _buildSectionHeader(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final primaryColor = Theme.of(context).primaryColor;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title!,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w700,
-              color: Colors.black87,
-            ),
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           if (onSeeMoreTap != null)
             GestureDetector(
@@ -189,18 +190,16 @@ class SnsContentHorizontalList extends StatelessWidget {
                 children: [
                   Text(
                     l10n.seeMore,
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 13.sp,
+                    style: textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w500,
-                      color: Theme.of(context).primaryColor,
+                      color: primaryColor,
                     ),
                   ),
-                  SizedBox(width: 2.w),
+                  AppSpacing.horizontalSpaceXS,
                   Icon(
                     Icons.arrow_forward_ios,
-                    size: 12.w,
-                    color: Theme.of(context).primaryColor,
+                    size: AppSizes.iconSmall,
+                    color: primaryColor,
                   ),
                 ],
               ),

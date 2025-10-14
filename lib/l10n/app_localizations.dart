@@ -745,6 +745,108 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'뒤로 가기'**
   String get goBack;
+
+  /// 이메일 로그인 실패 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인에 실패했습니다. 다시 시도해주세요.'**
+  String get loginFailedTryAgain;
+
+  /// 구글 로그인 실패 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'구글 로그인에 실패했습니다.'**
+  String get googleLoginFailed;
+
+  /// 회원가입 화면 준비 중 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'회원가입 화면 준비 중입니다'**
+  String get signupScreenPreparation;
+
+  /// 이메일 입력 필드 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// 이메일 입력 힌트
+  ///
+  /// In ko, this message translates to:
+  /// **'support@tripgether-official.com'**
+  String get emailHint;
+
+  /// 비밀번호 입력 필드 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'Password'**
+  String get passwordLabel;
+
+  /// 비밀번호 입력 힌트
+  ///
+  /// In ko, this message translates to:
+  /// **'••••••••••••'**
+  String get passwordHint;
+
+  /// 이메일 필수 입력 오류 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'이메일을 입력해주세요'**
+  String get emailRequired;
+
+  /// 이메일 형식 오류 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'올바른 이메일 형식을 입력해주세요'**
+  String get emailInvalidFormat;
+
+  /// 비밀번호 필수 입력 오류 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호를 입력해주세요'**
+  String get passwordRequired;
+
+  /// 비밀번호 최소 길이 오류 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호는 최소 6자 이상이어야 합니다'**
+  String get passwordMinLength;
+
+  /// 자동로그인 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'자동로그인'**
+  String get autoLogin;
+
+  /// 아이디 찾기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'아이디'**
+  String get findId;
+
+  /// 비밀번호 찾기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'비밀번호 찾기'**
+  String get findPassword;
+
+  /// 로그인 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인'**
+  String get login;
+
+  /// 구글 로그인 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'Google로 시작하기'**
+  String get signInWithGoogle;
+
+  /// 이메일 회원가입 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'이메일로 가입하기'**
+  String get signUpWithEmail;
 }
 
 class _AppLocalizationsDelegate

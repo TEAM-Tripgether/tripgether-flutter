@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// 섹션 구분선 위젯
 ///
@@ -39,21 +40,25 @@ class SectionDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     switch (type) {
       case SectionDividerType.thin:
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding ?? 16.w),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding ?? AppSpacing.lg,
+          ),
           child: Divider(
-            thickness: 1,
-            height: 1,
-            color: color ?? Colors.grey[300],
+            thickness: AppSizes.borderThin,
+            height: AppSizes.borderThin,
+            color: color ?? theme.dividerColor,
           ),
         );
 
       case SectionDividerType.thick:
         return Container(
-          height: height ?? 8.h,
-          color: color ?? Colors.grey[100],
+          height: height ?? AppSpacing.sm.h,
+          color: color ?? theme.colorScheme.surfaceContainerHighest,
         );
     }
   }

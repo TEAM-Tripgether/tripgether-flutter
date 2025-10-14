@@ -4,7 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../features/course_market/data/models/course_model.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
+import '../layout/section_header.dart';
 
 /// 여행 코스 카드 위젯
 ///
@@ -45,10 +47,10 @@ class CourseCard extends StatelessWidget {
           },
       child: Container(
         width: width ?? 280.w, // 가로 스크롤용 기본 너비
-        margin: EdgeInsets.only(right: 12.w),
+        margin: EdgeInsets.only(right: AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: AppRadius.allXLarge,
           boxShadow: [
             BoxShadow(
               color: AppColors.shadow.withValues(alpha: 0.08),
@@ -74,11 +76,13 @@ class CourseCard extends StatelessWidget {
 
   /// 썸네일 이미지 영역 빌드
   Widget _buildThumbnail(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Stack(
       children: [
         // 썸네일 이미지
         ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+          borderRadius: AppRadius.topXLarge,
           child: CachedNetworkImage(
             imageUrl: course.thumbnailUrl,
             width: double.infinity,
@@ -99,7 +103,7 @@ class CourseCard extends StatelessWidget {
               color: AppColors.neutral95,
               child: Icon(
                 Icons.image_not_supported,
-                size: 48.w,
+                size: AppSizes.iconXLarge,
                 color: AppColors.neutral70,
               ),
             ),
@@ -108,24 +112,25 @@ class CourseCard extends StatelessWidget {
 
         // 상단 좌측 뱃지 (카테고리)
         Positioned(
-          top: 8.h,
-          left: 8.w,
+          top: AppSpacing.sm.h,
+          left: AppSpacing.sm.w,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs.h,
+            ),
             decoration: BoxDecoration(
               color: AppColors.neutral10.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: AppRadius.allLarge,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(course.category.emoji, style: TextStyle(fontSize: 12.sp)),
-                SizedBox(width: 4.w),
+                Text(course.category.emoji, style: textTheme.labelSmall),
+                SizedBox(width: AppSpacing.xs),
                 Text(
                   course.category.displayName,
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 11.sp,
+                  style: textTheme.labelSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.onPrimary,
                   ),
@@ -137,8 +142,8 @@ class CourseCard extends StatelessWidget {
 
         // 상단 우측 좋아요 버튼
         Positioned(
-          top: 8.h,
-          right: 8.w,
+          top: AppSpacing.sm.h,
+          right: AppSpacing.sm.w,
           child: GestureDetector(
             onTap:
                 onLikeTap ??
@@ -146,15 +151,15 @@ class CourseCard extends StatelessWidget {
                   debugPrint('좋아요 클릭: ${course.title}');
                 },
             child: Container(
-              width: 32.w,
-              height: 32.w,
+              width: AppSizes.iconLarge,
+              height: AppSizes.iconLarge,
               decoration: BoxDecoration(
                 color: AppColors.surface.withValues(alpha: 0.9),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 isLiked ? Icons.favorite : Icons.favorite_border,
-                size: 18.w,
+                size: AppSizes.iconMedium,
                 color: isLiked ? AppColors.error : AppColors.neutral60,
               ),
             ),
@@ -164,19 +169,20 @@ class CourseCard extends StatelessWidget {
         // 하단 좌측 가격 뱃지
         if (course.price > 0)
           Positioned(
-            bottom: 8.h,
-            left: 8.w,
+            bottom: AppSpacing.sm.h,
+            left: AppSpacing.sm.w,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs.h,
+              ),
               decoration: BoxDecoration(
                 color: AppColors.primary,
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: AppRadius.allLarge,
               ),
               child: Text(
                 course.priceText,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 11.sp,
+                style: textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: AppColors.onPrimary,
                 ),
@@ -189,17 +195,17 @@ class CourseCard extends StatelessWidget {
 
   /// 코스 정보 영역 빌드
   Widget _buildCourseInfo(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 코스 제목
           Text(
             course.title,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 15.sp,
+            style: textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.onSurface,
               height: 1.3,
@@ -207,14 +213,12 @@ class CourseCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: AppSpacing.xs.h),
 
           // 코스 설명
           Text(
             course.description,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 12.sp,
+            style: textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
               color: AppColors.neutral60,
               height: 1.3,
@@ -222,12 +226,12 @@ class CourseCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: AppSpacing.sm.h),
 
           // 코스 메타 정보 (장소 수, 소요시간, 거리)
           _buildMetaInfo(),
 
-          SizedBox(height: 8.h),
+          SizedBox(height: AppSpacing.sm.h),
 
           // 작성자 정보 및 좋아요 수
           _buildAuthorInfo(),
@@ -241,31 +245,36 @@ class CourseCard extends StatelessWidget {
     return Builder(
       builder: (context) {
         final l10n = AppLocalizations.of(context);
+        final textTheme = Theme.of(context).textTheme;
 
         return Row(
           children: [
             // 장소 수
-            Icon(Icons.location_on, size: 14.w, color: AppColors.neutral60),
-            SizedBox(width: 2.w),
+            Icon(
+              Icons.location_on,
+              size: AppSizes.iconSmall,
+              color: AppColors.neutral60,
+            ),
+            AppSpacing.horizontalSpaceXS,
             Text(
               l10n.placesCount(course.placeCount),
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 11.sp,
+              style: textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w500,
                 color: AppColors.neutral60,
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: AppSpacing.sm),
 
             // 소요 시간
-            Icon(Icons.access_time, size: 14.w, color: AppColors.neutral60),
-            SizedBox(width: 2.w),
+            Icon(
+              Icons.access_time,
+              size: AppSizes.iconSmall,
+              color: AppColors.neutral60,
+            ),
+            AppSpacing.horizontalSpaceXS,
             Text(
               course.durationText,
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 11.sp,
+              style: textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w500,
                 color: AppColors.neutral60,
               ),
@@ -273,14 +282,16 @@ class CourseCard extends StatelessWidget {
 
             // 거리
             if (course.distance != null) ...[
-              SizedBox(width: 8.w),
-              Icon(Icons.straighten, size: 14.w, color: AppColors.neutral60),
-              SizedBox(width: 2.w),
+              SizedBox(width: AppSpacing.sm),
+              Icon(
+                Icons.straighten,
+                size: AppSizes.iconSmall,
+                color: AppColors.neutral60,
+              ),
+              AppSpacing.horizontalSpaceXS,
               Text(
                 course.distanceText,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 11.sp,
+                style: textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: AppColors.neutral60,
                 ),
@@ -294,67 +305,69 @@ class CourseCard extends StatelessWidget {
 
   /// 작성자 정보 위젯
   Widget _buildAuthorInfo() {
-    return Row(
-      children: [
-        // 작성자 프로필 이미지
-        if (course.authorProfileUrl != null)
-          ClipOval(
-            child: CachedNetworkImage(
-              imageUrl: course.authorProfileUrl!,
-              width: 20.w,
-              height: 20.w,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                width: 20.w,
-                height: 20.w,
-                color: AppColors.neutral95,
-              ),
-              errorWidget: (context, url, error) => Container(
-                width: 20.w,
-                height: 20.w,
-                color: AppColors.neutral95,
-                child: Icon(
-                  Icons.person,
-                  size: 12.w,
-                  color: AppColors.neutral70,
+    return Builder(
+      builder: (context) {
+        final textTheme = Theme.of(context).textTheme;
+
+        return Row(
+          children: [
+            // 작성자 프로필 이미지
+            if (course.authorProfileUrl != null)
+              ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: course.authorProfileUrl!,
+                  width: AppSizes.iconMedium,
+                  height: AppSizes.iconMedium,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    width: AppSizes.iconMedium.w,
+                    height: AppSizes.iconMedium.w,
+                    color: AppColors.neutral95,
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: AppSizes.iconMedium.w,
+                    height: AppSizes.iconMedium.w,
+                    color: AppColors.neutral95,
+                    child: Icon(
+                      Icons.person,
+                      size: AppSizes.iconSmall,
+                      color: AppColors.neutral70,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        if (course.authorProfileUrl != null) SizedBox(width: 6.w),
+            if (course.authorProfileUrl != null) SizedBox(width: AppSpacing.xs),
 
-        // 작성자 이름
-        Expanded(
-          child: Text(
-            course.authorName,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w500,
-              color: AppColors.neutral50,
+            // 작성자 이름
+            Expanded(
+              child: Text(
+                course.authorName,
+                style: textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.neutral50,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
 
-        // 좋아요 수
-        Icon(
-          Icons.favorite,
-          size: 12.w,
-          color: AppColors.error.withValues(alpha: 0.7),
-        ),
-        SizedBox(width: 2.w),
-        Text(
-          '${course.likeCount}',
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 11.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.neutral50,
-          ),
-        ),
-      ],
+            // 좋아요 수
+            Icon(
+              Icons.favorite,
+              size: AppSizes.iconSmall,
+              color: AppColors.error.withValues(alpha: 0.7),
+            ),
+            SizedBox(width: AppSpacing.xs.w / 2),
+            Text(
+              '${course.likeCount}',
+              style: textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.neutral50,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -375,10 +388,10 @@ class CourseCardSkeleton extends StatelessWidget {
       highlightColor: AppColors.neutral99,
       child: Container(
         width: width ?? 280.w,
-        margin: EdgeInsets.only(right: 12.w),
+        margin: EdgeInsets.only(right: AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: AppRadius.allXLarge,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,12 +403,12 @@ class CourseCardSkeleton extends StatelessWidget {
               height: 160.h,
               decoration: BoxDecoration(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+                borderRadius: AppRadius.topXLarge,
               ),
             ),
 
             Padding(
-              padding: EdgeInsets.all(12.w),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -405,7 +418,7 @@ class CourseCardSkeleton extends StatelessWidget {
                     height: 16.h,
                     color: AppColors.surface,
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: AppSpacing.sm.h),
 
                   // 설명
                   Container(
@@ -413,7 +426,7 @@ class CourseCardSkeleton extends StatelessWidget {
                     height: 12.h,
                     color: AppColors.surface,
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: AppSpacing.md.h),
 
                   // 메타 정보
                   Container(
@@ -421,20 +434,20 @@ class CourseCardSkeleton extends StatelessWidget {
                     height: 12.h,
                     color: AppColors.surface,
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: AppSpacing.md.h),
 
                   // 작성자 정보
                   Row(
                     children: [
                       Container(
-                        width: 20.w,
-                        height: 20.w,
+                        width: AppSizes.iconMedium.w,
+                        height: AppSizes.iconMedium.w,
                         decoration: BoxDecoration(
                           color: AppColors.surface,
                           shape: BoxShape.circle,
                         ),
                       ),
-                      SizedBox(width: 6.w),
+                      SizedBox(width: AppSpacing.xs.w / 2),
                       Container(
                         width: 80.w,
                         height: 12.h,
@@ -490,16 +503,14 @@ class CourseHorizontalList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 섹션 헤더
-        _buildSectionHeader(context),
-
-        SizedBox(height: 12.h),
+        SectionHeaderWithSpacing(title: title, onSeeMoreTap: onSeeMoreTap),
 
         // 코스 리스트 (가로 스크롤)
         SizedBox(
           height: 330.h, // 카드 높이
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             itemCount: courses.length,
             itemBuilder: (context, index) {
               final course = courses[index];
@@ -523,52 +534,6 @@ class CourseHorizontalList extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  /// 섹션 헤더 위젯 빌드
-  Widget _buildSectionHeader(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.onSurface,
-            ),
-          ),
-          if (onSeeMoreTap != null)
-            GestureDetector(
-              onTap: onSeeMoreTap,
-              child: Row(
-                children: [
-                  Text(
-                    l10n.more,
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  SizedBox(width: 2.w),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 12.w,
-                    color: AppColors.primary,
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

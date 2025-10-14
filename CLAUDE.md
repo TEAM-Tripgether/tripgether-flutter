@@ -79,6 +79,10 @@ dart run change_app_package_name:main com.new.package.name
 ```
 lib/
 ├── core/                           # 핵심 공통 기능
+│   ├── theme/ ⭐                   # 디자인 시스템 (중앙화된 스타일)
+│   │   ├── app_colors.dart        # 색상 팔레트
+│   │   ├── app_text_styles.dart   # 타이포그래피
+│   │   └── app_theme.dart         # 통합 테마 설정
 │   ├── router/                     # 라우팅 설정
 │   │   ├── app_router.dart        # GoRouter 설정 및 라우트 정의
 │   │   └── routes.dart            # AppRoutes 클래스 (경로 상수 중앙 관리)
@@ -100,24 +104,29 @@ lib/
 │   │   └── presentation/
 │   │       └── screens/          # 홈, SNS 콘텐츠, 장소 목록 화면
 │   └── debug/                     # 디버깅 도구
-├── shared/                        # 공유 위젯 및 리소스
+├── shared/ ⭐                      # 공유 위젯 및 리소스 (재사용 필수)
 │   └── widgets/
-│       ├── common/               # 공통 위젯 (AppBar 등)
-│       └── layout/               # 레이아웃 위젯 (카드, 섹션 등)
+│       ├── common/               # 공통 위젯 (AppBar, 로딩 등)
+│       ├── layout/               # 레이아웃 위젯
+│       ├── buttons/              # 버튼 컴포넌트
+│       ├── cards/                # 카드 컴포넌트
+│       └── inputs/               # 입력 컴포넌트
 └── l10n/                         # 다국어 지원
     ├── app_localizations.dart    # 자동 생성된 다국어 클래스
     └── arb/                      # ARB 파일 (ko.arb, en.arb)
 ```
 
+⭐ = 특별히 중요한 디렉토리 (모든 개발에서 우선 확인 필수)
+
 ## Key Dependencies & Usage Patterns
 
-**Riverpod State Management**: Use @riverpod annotations with build_runner for provider code generation
-**Centralized Routing**: All routes defined in `AppRoutes` class - never use hardcoded route strings
-**Google Sign-In**: Event-based API with Completer pattern for async authentication flow
-**Content Sharing**: Unified handling of text, URLs, images, videos from external apps
-**Responsive UI**: ScreenUtil (.w, .h, .sp, .r) for all size and spacing values
-**Image Loading**: CachedNetworkImage with Shimmer placeholders for all network images
-**Internationalization**: AppLocalizations for all user-facing text
+**Design System** (최우선): `core/theme/` 스타일과 `shared/widgets/` 컴포넌트 필수 사용
+**Centralized Routing**: `AppRoutes` 상수만 사용, 하드코딩 경로 금지
+**Riverpod State Management**: @riverpod 어노테이션 + build_runner 코드 생성
+**Responsive UI**: ScreenUtil (.w, .h, .sp, .r) 모든 크기 값에 사용
+**Image Loading**: CachedNetworkImage + Shimmer 로딩 효과
+**Internationalization**: AppLocalizations 모든 사용자 텍스트
+**Content Sharing**: 외부 앱 공유 데이터 처리 (완료됨)
 
 ## Assets & Fonts
 
@@ -252,47 +261,121 @@ context.push(AppRoutes.snsContentsList);
 
 **⚠️ IMPORTANT**: Never use hardcoded route strings. Always use AppRoutes constants.
 
-## Content Sharing Functionality
+## Design System & Common Components
 
-**Service Location**: `lib/core/services/sharing_service.dart`
+### 🎨 Core Theme System (`lib/core/theme/`)
 
-**Supported Types**: Text, URLs, Images, Videos, Documents
+**⚠️ CRITICAL**: 모든 스타일은 `core/theme`의 중앙화된 시스템을 사용해야 합니다.
 
-**Platform Configuration**:
-- Android: `android/app/src/main/AndroidManifest.xml`
-- iOS: `ios/Runner/Info.plist`
+#### Available Theme Files
+- `app_colors.dart` - 색상 팔레트 (Primary, Secondary, Neutral, Semantic colors)
+- `app_text_styles.dart` - 타이포그래피 시스템 (Heading, Body, Caption, Label styles)
+- `app_theme.dart` - 통합 테마 설정
 
-**Usage Pattern**:
+#### Usage Pattern
 
 ```dart
-// Initialize in main.dart
-await SharingService.instance.initialize();
+// ✅ CORRECT: Use centralized theme
+import 'package:tripgether/core/theme/app_colors.dart';
+import 'package:tripgether/core/theme/app_text_styles.dart';
 
-// Listen to shared data in HomeScreen
-_sharingService.dataStream.listen((SharedData data) {
-  if (data.hasTextData) {
-    // Handle text/URLs
-    for (final text in data.sharedTexts) {
-      if (UrlFormatter.isValidUrl(text)) {
-        final cleanUrl = UrlFormatter.cleanUrl(text);
-        final urlType = UrlFormatter.getUrlType(cleanUrl);
-        // Process based on platform (youtube, instagram, etc.)
-      }
-    }
-  }
+Text(
+  '제목',
+  style: AppTextStyles.heading1,  // 중앙화된 텍스트 스타일
+);
 
-  if (data.hasMediaData) {
-    // Handle images, videos, documents
-    final images = data.images;
-    final videos = data.videos;
-  }
-});
+Container(
+  color: AppColors.primary,  // 중앙화된 색상
+);
+
+// ❌ WRONG: Direct inline styles
+Text(
+  '제목',
+  style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w600),  // 금지!
+);
+
+Container(
+  color: Color(0xFF6366F1),  // 금지!
+);
 ```
 
-**URL Processing**:
-- Automatic tracking parameter removal (utm_, fbclid, etc.)
-- Platform detection (YouTube, Instagram, Blog, etc.)
-- Domain extraction for display
+### 🧩 Shared Widgets (`lib/shared/widgets/`)
+
+**⚠️ CRITICAL**: 공통 UI 컴포넌트는 반드시 `shared/widgets`를 재사용해야 합니다.
+
+#### Available Widget Categories
+
+**Common Widgets** (`shared/widgets/common/`)
+- `common_app_bar.dart` - 일관된 앱바 컴포넌트
+- `shimmer_loading.dart` - 스켈레톤 로딩 효과
+- 기타 공통 UI 요소
+
+**Layout Widgets** (`shared/widgets/layout/`)
+- 카드, 섹션, 컨테이너 등 레이아웃 컴포넌트
+
+**Buttons** (`shared/widgets/buttons/`)
+- 다양한 스타일의 버튼 컴포넌트
+
+**Cards** (`shared/widgets/cards/`)
+- 재사용 가능한 카드 컴포넌트
+
+**Inputs** (`shared/widgets/inputs/`)
+- 폼 입력 컴포넌트
+
+#### Widget Usage Pattern
+
+```dart
+// ✅ CORRECT: Use shared widgets
+import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
+import 'package:tripgether/shared/widgets/buttons/primary_button.dart';
+
+Scaffold(
+  appBar: CommonAppBar(title: '페이지 제목'),  // 공통 위젯 사용
+  body: Column(
+    children: [
+      PrimaryButton(
+        onPressed: () {},
+        text: '확인',
+      ),
+    ],
+  ),
+);
+
+// ❌ WRONG: Create duplicate widgets
+AppBar(
+  title: Text('페이지 제목'),  // 중복 생성 금지!
+  backgroundColor: AppColors.primary,
+);
+
+ElevatedButton(  // 중복 버튼 생성 금지!
+  onPressed: () {},
+  child: Text('확인'),
+);
+```
+
+### Development Workflow
+
+1. **새 화면 개발 시**:
+   - `core/theme/app_text_styles.dart`에서 텍스트 스타일 선택
+   - `core/theme/app_colors.dart`에서 색상 선택
+   - `shared/widgets/` 에서 재사용 가능한 컴포넌트 확인
+
+2. **공통 위젯이 없는 경우**:
+   - 새 위젯을 `shared/widgets/` 에 생성
+   - 적절한 카테고리 폴더에 배치 (common, layout, buttons, cards, inputs)
+   - 다른 화면에서도 재사용 가능하도록 설계
+
+3. **스타일 수정 필요 시**:
+   - `core/theme/` 파일 수정 (전역 적용)
+   - 개별 위젯에서 직접 수정 금지
+
+## Content Sharing (완료됨)
+
+**Location**: `lib/core/services/sharing_service.dart`
+**Supported**: Text, URLs, Images, Videos, Documents
+**Status**: ✅ Fully implemented with URL cleaning and platform detection
+
+자세한 사용법은 코드의 주석을 참고하세요.
 
 ## Claude Code 개발 지침
 
@@ -331,21 +414,27 @@ _sharingService.dataStream.listen((SharedData data) {
 
 #### 필수 사항
 
-1. **라우팅**:
+1. **디자인 시스템** (최우선):
+   - ❌ 인라인 스타일 절대 금지 (`TextStyle(...)`, `Color(0xFF...)`)
+   - ✅ `AppTextStyles`, `AppColors` 사용 필수
+   - ❌ 개별 위젯에서 중복 UI 컴포넌트 생성 금지
+   - ✅ `shared/widgets/` 재사용 필수
+
+2. **라우팅**:
    - ❌ 절대 하드코딩된 경로 사용 금지 (`'/home'`, `'/login'` 등)
    - ✅ 반드시 `AppRoutes` 상수 사용 (`AppRoutes.home`, `AppRoutes.login`)
    - 동적 파라미터는 `replaceFirst()` 사용
 
-2. **상태 관리**:
+3. **상태 관리**:
    - Riverpod `@riverpod` 어노테이션 사용
    - Provider disposal 전 `ref.mounted` 체크 필수
    - 비즈니스 로직 성공/실패와 UI 상태 관리 분리
 
-3. **반응형 UI**:
+4. **반응형 UI**:
    - 모든 크기 값에 ScreenUtil 사용 (`.w`, `.h`, `.sp`, `.r`)
    - 절대 하드코딩된 픽셀 값 사용 금지
 
-4. **다국어 지원**:
+5. **다국어 지원**:
    - 모든 사용자 노출 텍스트는 `AppLocalizations.of(context)` 사용
    - 하드코딩된 문자열 금지
 
