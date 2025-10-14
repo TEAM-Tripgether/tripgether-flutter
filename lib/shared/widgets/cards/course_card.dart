@@ -6,6 +6,7 @@ import '../../../features/course_market/data/models/course_model.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
+import '../layout/section_header.dart';
 
 /// 여행 코스 카드 위젯
 ///
@@ -487,9 +488,10 @@ class CourseHorizontalList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 섹션 헤더
-        _buildSectionHeader(context),
-
-        SizedBox(height: AppSpacing.md.h),
+        SectionHeaderWithSpacing(
+          title: title,
+          onSeeMoreTap: onSeeMoreTap,
+        ),
 
         // 코스 리스트 (가로 스크롤)
         SizedBox(
@@ -520,49 +522,6 @@ class CourseHorizontalList extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  /// 섹션 헤더 위젯 빌드
-  Widget _buildSectionHeader(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.onSurface,
-            ),
-          ),
-          if (onSeeMoreTap != null)
-            GestureDetector(
-              onTap: onSeeMoreTap,
-              child: Row(
-                children: [
-                  Text(
-                    l10n.more,
-                    style: textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  AppSpacing.horizontalSpaceXS,
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: AppSizes.iconSmall,
-                    color: AppColors.primary,
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
