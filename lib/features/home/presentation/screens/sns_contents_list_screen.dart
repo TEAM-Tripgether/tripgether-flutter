@@ -255,14 +255,16 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
 
   /// 콘텐츠 그리드 빌드
   Widget _buildContentGrid(AppLocalizations l10n) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     if (_filteredContents.isEmpty && !_isLoading) {
       return Center(
         child: Text(
           l10n.noData,
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 16.sp,
-            color: Colors.grey[600],
+          style: textTheme.bodyLarge?.copyWith(
+            color: colorScheme.onSurfaceVariant,
           ),
         ),
       );
@@ -299,10 +301,8 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
                   padding: EdgeInsets.all(16.h),
                   child: Text(
                     l10n.noMoreContent,
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 14.sp,
-                      color: Colors.grey[500],
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),
@@ -339,16 +339,19 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
 
   /// 로딩 카드 빌드
   Widget _buildLoadingCard() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
           valueColor: AlwaysStoppedAnimation<Color>(
-            Theme.of(context).primaryColor,
+            theme.primaryColor,
           ),
         ),
       ),

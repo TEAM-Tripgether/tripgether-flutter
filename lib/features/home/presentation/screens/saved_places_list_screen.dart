@@ -246,14 +246,16 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
 
   /// 장소 그리드 빌드
   Widget _buildPlaceGrid(AppLocalizations l10n) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     if (_filteredPlaces.isEmpty && !_isLoading) {
       return Center(
         child: Text(
           l10n.noData,
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 16.sp,
-            color: AppColors.textSecondary,
+          style: textTheme.bodyLarge?.copyWith(
+            color: colorScheme.onSurfaceVariant,
           ),
         ),
       );

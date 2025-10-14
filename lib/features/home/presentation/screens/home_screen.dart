@@ -164,6 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
       return const SizedBox.shrink();
     }
 
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return InfoContainer(
       title: '공유 데이터 수신됨',
       titleIcon: Icons.share_arrival_time,
@@ -202,9 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (_currentSharedData!.hasTextData) ...[
             Text(
               '텍스트 (${_currentSharedData!.sharedTexts.length}개):',
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 14.sp,
+              style: textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -214,10 +216,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.xs),
                 child: Text(
                   '• ${text.length > 50 ? '${text.substring(0, 50)}...' : text}',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 14.sp,
-                    color: Colors.grey.shade700,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -229,9 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (_currentSharedData!.hasMediaData) ...[
             Text(
               '미디어 파일 (${_currentSharedData!.sharedFiles.length}개):',
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 14.sp,
+              style: textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -264,24 +262,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// 파일 타입 표시용 칩 위젯
   Widget _buildFileTypeChip(IconData icon, String label) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs / 2),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: AppRadius.circular(16),
-        border: Border.all(color: Colors.blue.shade200),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16.w, color: Colors.blue.shade600),
+          Icon(icon, size: 16.w, color: colorScheme.primary),
           SizedBox(width: AppSpacing.xs),
           Text(
             label,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 12.sp,
-              color: Colors.blue.shade700,
+            style: textTheme.labelMedium?.copyWith(
+              color: colorScheme.primary,
             ),
           ),
         ],
@@ -330,13 +330,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('로그아웃 중 오류가 발생했습니다: $error'),
-                      backgroundColor: Colors.red,
+                      backgroundColor: Theme.of(context).colorScheme.error,
                     ),
                   );
                 }
               }
             },
-            child: const Text('로그아웃', style: TextStyle(color: Colors.red)),
+            child: Text(
+              '로그아웃',
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
         ],
       ),
@@ -346,6 +349,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       // CommonAppBar를 사용하여 일관된 AppBar UI 제공
@@ -388,11 +394,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Center(
                   child: Text(
                     l10n.noSnsContentYet,
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: 14.sp,
+                    style: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w400,
-                      color: Colors.grey[600],
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),
