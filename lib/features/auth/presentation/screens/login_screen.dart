@@ -48,7 +48,7 @@ class LoginScreen extends ConsumerWidget {
       debugPrint('[LoginScreen] ⚠️ 로그인 실패 - 에러 메시지 표시');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.loginFailedTryAgain),
+          content: Text(AppLocalizations.of(context).loginFailedTryAgain),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -76,7 +76,7 @@ class LoginScreen extends ConsumerWidget {
       debugPrint('[LoginScreen] ⚠️ 구글 로그인 실패 - 에러 메시지 표시');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.googleLoginFailed),
+          content: Text(AppLocalizations.of(context).googleLoginFailed),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -92,7 +92,7 @@ class LoginScreen extends ConsumerWidget {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(AppLocalizations.of(context)!.signupScreenPreparation),
+        content: Text(AppLocalizations.of(context).signupScreenPreparation),
       ),
     );
   }
