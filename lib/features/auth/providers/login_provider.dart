@@ -30,11 +30,10 @@ class LoginNotifier extends _$LoginNotifier {
     debugPrint('  📧 Email: $email');
     debugPrint('  🔑 Password: ${"*" * password.length}');
 
-    // ✅ AsyncValue.guard()로 자동 상태 관리 (loading → data/error)
-    state = const AsyncValue.loading();
+    try {
+      // ✅ 로딩 상태 시작
+      state = const AsyncValue.loading();
 
-    // guard()는 try-catch를 자동으로 처리하고 AsyncValue를 반환
-    state = await AsyncValue.guard(() async {
       // TODO: 실제 로그인 API 호출
       // final response = await ref.read(authServiceProvider).login(
       //   email: email,
@@ -56,10 +55,17 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('[LoginProvider] ✅ 이메일 로그인 성공!');
       debugPrint('  👤 사용자: $email');
       debugPrint('  🏠 홈 화면으로 이동 예정');
-    });
 
-    // state가 성공인지 확인하여 boolean 반환
-    return state.hasValue && !state.hasError;
+      // ✅ 성공 상태로 업데이트
+      state = const AsyncValue.data(null);
+      return true;
+    } catch (e, stack) {
+      debugPrint('[LoginProvider] ❌ 이메일 로그인 실패: $e');
+
+      // ✅ 에러 상태로 업데이트
+      state = AsyncValue.error(e, stack);
+      return false;
+    }
   }
 
   /// 구글 로그인
@@ -73,10 +79,10 @@ class LoginNotifier extends _$LoginNotifier {
   Future<bool> loginWithGoogle() async {
     debugPrint('[LoginProvider] 🔄 구글 로그인 시작...');
 
-    // ✅ 로딩 상태 시작
-    state = const AsyncValue.loading();
-
     try {
+      // ✅ 로딩 상태 시작
+      state = const AsyncValue.loading();
+
       // 1. GoogleAuthService를 통해 구글 로그인 실행
       final googleUser = await GoogleAuthService.signIn();
 
@@ -88,62 +94,60 @@ class LoginNotifier extends _$LoginNotifier {
         return false;
       }
 
-      // 2. guard()로 나머지 로직 실행 (자동 에러 처리)
-      state = await AsyncValue.guard(() async {
-        // 구글 인증 정보 가져오기 (accessToken, idToken)
-        final googleAuth = googleUser.authentication;
+      // 2. 구글 인증 정보 가져오기 (accessToken, idToken)
+      final googleAuth = googleUser.authentication;
 
-        debugPrint('[LoginProvider] ✅ 구글 인증 정보 획득');
-        debugPrint('');
-        debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        debugPrint('📦 백엔드로 전송할 데이터:');
-        debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        debugPrint('🔑 idToken (필수):');
-        debugPrint('   ${googleAuth.idToken}');
-        debugPrint('');
-        debugPrint('📧 email: ${googleUser.email}');
-        debugPrint('👤 displayName: ${googleUser.displayName}');
-        debugPrint('🖼️ photoUrl: ${googleUser.photoUrl}');
-        debugPrint('🆔 googleId: ${googleUser.id}');
-        debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        debugPrint('');
+      debugPrint('[LoginProvider] ✅ 구글 인증 정보 획득');
+      debugPrint('');
+      debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      debugPrint('📦 백엔드로 전송할 데이터:');
+      debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      debugPrint('🔑 idToken (필수):');
+      debugPrint('   ${googleAuth.idToken}');
+      debugPrint('');
+      debugPrint('📧 email: ${googleUser.email}');
+      debugPrint('👤 displayName: ${googleUser.displayName}');
+      debugPrint('🖼️ photoUrl: ${googleUser.photoUrl}');
+      debugPrint('🆔 googleId: ${googleUser.id}');
+      debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      debugPrint('');
 
-        // TODO: 3. 백엔드 API에 구글 토큰 전송하여 JWT 발급받기
-        // POST /auth/google/login
-        // Body:
-        // {
-        //   "idToken": googleAuth.idToken,        // ⭐ 필수: 백엔드에서 검증
-        //   "email": googleUser.email,             // 필수
-        //   "displayName": googleUser.displayName, // 선택
-        //   "photoUrl": googleUser.photoUrl,       // 선택
-        //   "googleId": googleUser.id              // 선택
-        // }
-        //
-        // final response = await ref.read(authServiceProvider).loginWithGoogle(
-        //   idToken: googleAuth.idToken!,
-        //   email: googleUser.email,
-        //   displayName: googleUser.displayName,
-        //   photoUrl: googleUser.photoUrl,
-        //   googleId: googleUser.id,
-        // );
-        //
-        // TODO: 4. 발급받은 JWT 토큰을 안전하게 저장
-        // await ref.read(secureStorageProvider).write(
-        //   key: 'access_token',
-        //   value: response.accessToken,
-        // );
-        //
-        // TODO: 5. 사용자 정보를 앱 상태에 저장
-        // ref.read(userProvider.notifier).setUser(response.user);
+      // TODO: 3. 백엔드 API에 구글 토큰 전송하여 JWT 발급받기
+      // POST /auth/google/login
+      // Body:
+      // {
+      //   "idToken": googleAuth.idToken,        // ⭐ 필수: 백엔드에서 검증
+      //   "email": googleUser.email,             // 필수
+      //   "displayName": googleUser.displayName, // 선택
+      //   "photoUrl": googleUser.photoUrl,       // 선택
+      //   "googleId": googleUser.id              // 선택
+      // }
+      //
+      // final response = await ref.read(authServiceProvider).loginWithGoogle(
+      //   idToken: googleAuth.idToken!,
+      //   email: googleUser.email,
+      //   displayName: googleUser.displayName,
+      //   photoUrl: googleUser.photoUrl,
+      //   googleId: googleUser.id,
+      // );
+      //
+      // TODO: 4. 발급받은 JWT 토큰을 안전하게 저장
+      // await ref.read(secureStorageProvider).write(
+      //   key: 'access_token',
+      //   value: response.accessToken,
+      // );
+      //
+      // TODO: 5. 사용자 정보를 앱 상태에 저장
+      // ref.read(userProvider.notifier).setUser(response.user);
 
-        debugPrint('[LoginProvider] ✅ 구글 로그인 성공!');
-        debugPrint('  👤 사용자: ${googleUser.email}');
-        debugPrint('  🏠 홈 화면으로 이동 예정');
-      });
+      debugPrint('[LoginProvider] ✅ 구글 로그인 성공!');
+      debugPrint('  👤 사용자: ${googleUser.email}');
+      debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // state가 성공인지 확인하여 boolean 반환
-      return state.hasValue && !state.hasError;
-    } catch (e) {
+      // ✅ 성공 상태로 업데이트
+      state = const AsyncValue.data(null);
+      return true;
+    } catch (e, stack) {
       // 취소 예외 감지: 사용자가 로그인을 취소한 경우
       final errorString = e.toString();
       if (errorString.contains('canceled') ||
@@ -157,7 +161,7 @@ class LoginNotifier extends _$LoginNotifier {
 
       // 실제 에러: AsyncValue.error로 상태 업데이트
       debugPrint('[LoginProvider] ❌ 구글 로그인 실패: $e');
-      state = AsyncValue.error(e, StackTrace.current);
+      state = AsyncValue.error(e, stack);
       return false;
     }
   }
