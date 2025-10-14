@@ -20,6 +20,9 @@ class GreetingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
@@ -28,11 +31,9 @@ class GreetingSection extends StatelessWidget {
           // 인사말
           Text(
             _getGreetingText(),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 24.sp,
+            style: textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
-              color: Colors.black87,
+              color: colorScheme.onSurface,
               height: 1.3,
             ),
           ),
@@ -41,11 +42,9 @@ class GreetingSection extends StatelessWidget {
           // 부제목
           Text(
             subtitle ?? _getSubtitleText(),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
+            style: textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
-              color: Colors.grey[600],
+              color: colorScheme.onSurfaceVariant,
               height: 1.4,
             ),
           ),
@@ -119,6 +118,7 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       // 전체 너비 명시적으로 지정
@@ -144,9 +144,7 @@ class HomeHeader extends StatelessWidget {
           // 인사말 (국제화 적용)
           Text(
             greeting ?? l10n.greeting(userName),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 22.sp,
+            style: textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
               color: Colors.white, // 그라데이션 배경에 맞춰 흰색으로 변경
             ),
@@ -155,9 +153,7 @@ class HomeHeader extends StatelessWidget {
           // 부제목 (국제화 적용)
           Text(
             greetingSubtitle ?? l10n.greetingSubtitle,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 13.sp,
+            style: textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w400,
               color: Colors.white.withValues(alpha: 0.9), // 약간 투명한 흰색
             ),

@@ -99,13 +99,16 @@ class _TripSearchBarState extends State<TripSearchBar> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
 
     return Container(
       height: AppSizes.buttonHeight,
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: AppRadius.circular(24),
-        border: Border.all(color: Colors.grey[300]!, width: AppSizes.borderThin),
+        border: Border.all(color: theme.dividerColor, width: AppSizes.borderThin),
       ),
       child: TextField(
         controller: _effectiveController,
@@ -114,25 +117,21 @@ class _TripSearchBarState extends State<TripSearchBar> {
         onTap: widget.onTap,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
-        style: TextStyle(
-          fontFamily: 'Pretendard',
-          fontSize: 14.sp,
+        style: textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w500,
-          color: Colors.black87,
+          color: colorScheme.onSurface,
         ),
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 14.sp,
+          hintStyle: textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w400,
-            color: Colors.grey[500],
+            color: colorScheme.onSurfaceVariant,
           ),
-          prefixIcon: Icon(Icons.search, size: AppSizes.iconMedium, color: Colors.grey[600]),
+          prefixIcon: Icon(Icons.search, size: AppSizes.iconMedium, color: colorScheme.onSurfaceVariant),
           // 텍스트가 있을 때만 X 아이콘 표시 (동적으로 업데이트, 국제화 적용)
           suffixIcon: _hasText
               ? IconButton(
-                  icon: Icon(Icons.clear, size: AppSizes.iconSmall, color: Colors.grey[600]),
+                  icon: Icon(Icons.clear, size: AppSizes.iconSmall, color: colorScheme.onSurfaceVariant),
                   onPressed: _clearText,
                   tooltip: l10n.clearInput,
                 )
