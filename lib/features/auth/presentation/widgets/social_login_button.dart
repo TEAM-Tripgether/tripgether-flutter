@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 /// 소셜 로그인 버튼 위젯
 ///
@@ -56,19 +57,19 @@ class SocialLoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity, // 전체 너비
-      height: height ?? 48.h, // 기본 높이 48.h
+      height: height ?? AppSizes.buttonHeight, // Theme의 버튼 높이 사용
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: textColor,
-          elevation: 0, // 그림자 제거 (플랫 디자인)
+          elevation: AppElevation.none, // Theme의 elevation 사용
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: AppRadius.allLarge, // Theme의 border radius 사용
             // 테두리가 지정된 경우에만 표시
             side: borderColor != null
-                ? BorderSide(color: borderColor!, width: 1.5)
+                ? BorderSide(color: borderColor!, width: AppSizes.borderMedium)
                 : BorderSide.none,
           ),
           // 탭 시 리플 효과 색상 (어두운 오버레이)
@@ -78,7 +79,10 @@ class SocialLoginButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // 아이콘이 있는 경우 표시
-            if (icon != null) ...[icon!, SizedBox(width: 8.w)],
+            if (icon != null) ...[
+              icon!,
+              SizedBox(width: AppSpacing.sm),
+            ],
             // 버튼 텍스트
             Text(
               text,
