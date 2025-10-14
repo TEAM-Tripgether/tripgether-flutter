@@ -32,24 +32,36 @@ class PlatformIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final iconSize = size ?? AppSizes.iconDefault;
 
+    // 접근성: 스크린 리더를 위한 플랫폼 라벨
+    final semanticsLabel = _getPlatformLabel();
+
     // 배경이 있는 경우
     if (showBackground) {
-      return Container(
-        padding: EdgeInsets.all(backgroundPadding ?? AppSpacing.xs),
-        decoration: BoxDecoration(
-          color: _getBackgroundColor(),
-          borderRadius: AppRadius.allMedium,
+      return Semantics(
+        label: semanticsLabel,
+        child: Container(
+          padding: EdgeInsets.all(backgroundPadding ?? AppSpacing.xs),
+          decoration: BoxDecoration(
+            color: _getBackgroundColor(),
+            borderRadius: AppRadius.allMedium,
+          ),
+          child: _buildIcon(iconSize, color: _overrideIconColorForBackground()),
         ),
-        child: _buildIcon(iconSize),
       );
     }
 
     // 아이콘만 표시
-    return _buildIcon(iconSize);
+    return Semantics(
+      label: semanticsLabel,
+      child: _buildIcon(iconSize),
+    );
   }
 
   /// 플랫폼별 아이콘 위젯 생성
-  Widget _buildIcon(double iconSize) {
+  ///
+  /// [iconSize] 아이콘의 크기
+  /// [color] 아이콘 색상 오버라이드 (null이면 기본 색상 사용)
+  Widget _buildIcon(double iconSize, {Color? color}) {
     final assetPath = _getAssetPath();
 
     // SVG 파일이 있으면 SVG 사용
@@ -58,13 +70,20 @@ class PlatformIcon extends StatelessWidget {
         assetPath,
         width: iconSize,
         height: iconSize,
-        // Instagram 같은 그라데이션 아이콘은 원본 색상 유지
-        // colorFilter를 적용하지 않아 SVG 내부의 색상을 그대로 표시
+        // color가 제공될 때만 단색 오버레이 적용
+        // Instagram 같은 그라데이션 아이콘은 null로 전달하여 원본 색상 유지
+        colorFilter: color != null
+            ? ColorFilter.mode(color, BlendMode.srcIn)
+            : null,
       );
     }
 
     // SVG가 없으면 Material 아이콘 사용 (폴백)
-    return Icon(_getFallbackIcon(), size: iconSize, color: _getIconColor());
+    return Icon(
+      _getFallbackIcon(),
+      size: iconSize,
+      color: color ?? _getIconColor(),
+    );
   }
 
   /// 플랫폼별 SVG 파일 경로 반환
@@ -112,6 +131,40 @@ class PlatformIcon extends StatelessWidget {
         return Colors.purple;
       case SnsSource.tiktok:
         return Colors.black;
+    }
+  }
+
+  /// 배경 상황에서의 아이콘 색상 오버라이드
+  ///
+  /// showBackground=true일 때 배경색과 아이콘 색이 동일하면 대비가 부족하므로
+  /// 흰색으로 강제 변경하여 명확한 시각적 대비 제공
+  ///
+  /// Instagram은 그라데이션 특성상 null 반환하여 원본 색상 유지
+  Color? _overrideIconColorForBackground() {
+    if (!showBackground) return null;
+
+    switch (source) {
+      case SnsSource.youtube:
+      case SnsSource.tiktok:
+        // YouTube(빨강 배경), TikTok(검정 배경)은 흰색 아이콘으로 대비 확보
+        return Colors.white;
+      case SnsSource.instagram:
+        // Instagram은 그라데이션 SVG 원본 색상 유지
+        return null;
+    }
+  }
+
+  /// 접근성을 위한 플랫폼 라벨 반환
+  ///
+  /// 스크린 리더가 아이콘을 읽을 수 있도록 각 플랫폼 이름 제공
+  String _getPlatformLabel() {
+    switch (source) {
+      case SnsSource.youtube:
+        return 'YouTube 아이콘';
+      case SnsSource.instagram:
+        return 'Instagram 아이콘';
+      case SnsSource.tiktok:
+        return 'TikTok 아이콘';
     }
   }
 }
