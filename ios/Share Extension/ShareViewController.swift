@@ -364,6 +364,7 @@ class ShareViewController: SLComposeServiceViewController {
 
     /// 백그라운드 저장 확인용 디버그 로그 파일 생성
     /// App Groups 컨테이너에 로그 파일을 저장하여 앱에서 확인 가능
+    /// 최신 5개 로그만 유지 (로그 로테이션)
     private func saveDebugLog(message: String) {
         let containerURL = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: "group.\(hostAppBundleIdentifier)"
@@ -383,8 +384,22 @@ class ShareViewController: SLComposeServiceViewController {
             existingLog = existing
         }
 
-        // 새 로그 추가
-        let updatedLog = existingLog + logMessage
+        // 로그 로테이션: 최신 5개만 유지
+        // 1. 기존 로그를 줄 단위로 분리 (빈 줄 제외)
+        var logEntries = existingLog
+            .components(separatedBy: "\n")
+            .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+
+        // 2. 새 로그 메시지 추가 (개행 문자 제거하여 추가)
+        logEntries.append(logMessage.trimmingCharacters(in: .newlines))
+
+        // 3. 5개 초과 시 오래된 것부터 제거 (suffix로 최신 5개만 유지)
+        if logEntries.count > 5 {
+            logEntries = Array(logEntries.suffix(5))
+        }
+
+        // 4. 최종 로그 문자열 생성 (각 엔트리를 줄바꿈으로 연결)
+        let updatedLog = logEntries.joined(separator: "\n") + "\n"
 
         // 로그 파일 저장
         do {
