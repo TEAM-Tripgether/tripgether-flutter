@@ -92,7 +92,7 @@ class AppTextStyles {
       /// 사용처: 앱바 제목, 섹션 타이틀
       titleLarge: TextStyle(
         fontFamily: fontFamily,
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.w600,
         height: 1.27,
         color: AppColors.onSurface,
@@ -203,87 +203,87 @@ extension CustomTextStyles on TextTheme {
   /// 버튼 텍스트 스타일 (16px, 볼드)
   /// 사용처: 모든 버튼의 기본 텍스트
   TextStyle get buttonText => const TextStyle(
-        fontFamily: AppTextStyles.fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 0.1,
-      );
+    fontFamily: AppTextStyles.fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.1,
+  );
 
   /// 입력 필드 텍스트 스타일 (16px, 레귤러)
   /// 사용처: TextField, TextFormField의 입력 텍스트
   TextStyle get inputText => const TextStyle(
-        fontFamily: AppTextStyles.fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        color: AppColors.inputTextColor,
-      );
+    fontFamily: AppTextStyles.fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: AppColors.inputTextColor,
+  );
 
   /// 에러 메시지 스타일 (12px, 세미볼드, 빨강)
   /// 사용처: 폼 유효성 검사 에러, 토스트 에러 메시지
   TextStyle get errorText => const TextStyle(
-        fontFamily: AppTextStyles.fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: AppColors.error,
-      );
+    fontFamily: AppTextStyles.fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: AppColors.error,
+  );
 
   /// 성공 메시지 스타일 (12px, 세미볼드, 초록)
   /// 사용처: 성공 토스트, 완료 메시지
   TextStyle get successText => const TextStyle(
-        fontFamily: AppTextStyles.fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: AppColors.success,
-      );
+    fontFamily: AppTextStyles.fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: AppColors.success,
+  );
 
   /// 캡션 스타일 (12px, 레귤러, 보조 색상)
   /// 사용처: 작은 설명 텍스트, 힌트 메시지
   TextStyle get caption => const TextStyle(
-        fontFamily: AppTextStyles.fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        color: AppColors.textSecondary,
-        height: 1.33,
-      );
+    fontFamily: AppTextStyles.fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: AppColors.textSecondary,
+    height: 1.33,
+  );
 
   /// 오버라인 스타일 (10px, 세미볼드, 상단 라벨)
   /// 사용처: 카드 상단 카테고리, 섹션 라벨
   TextStyle get overline => const TextStyle(
-        fontFamily: AppTextStyles.fontFamily,
-        fontSize: 10,
-        fontWeight: FontWeight.w600,
-        color: AppColors.textSecondary,
-        letterSpacing: 1.5,
-        height: 1.6,
-      );
+    fontFamily: AppTextStyles.fontFamily,
+    fontSize: 10,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textSecondary,
+    letterSpacing: 1.5,
+    height: 1.6,
+  );
 
   /// 초경량 스타일 (14px, 얇은 굵기, 섬세한 캡션용)
   /// 사용처: 배경 워터마크, 섬세한 설명
   TextStyle get ultraLight => const TextStyle(
-        fontFamily: AppTextStyles.fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w200,
-        color: AppColors.textSecondary,
-        height: 1.4,
-      );
+    fontFamily: AppTextStyles.fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w200,
+    color: AppColors.textSecondary,
+    height: 1.4,
+  );
 
   /// 볼드 스타일 (16px, 볼드, 강조 텍스트용)
   /// 사용처: 중요한 정보 강조, 하이라이트
   TextStyle get bold => const TextStyle(
-        fontFamily: AppTextStyles.fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w700,
-        color: AppColors.textPrimary,
-        height: 1.5,
-      );
+    fontFamily: AppTextStyles.fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+    height: 1.5,
+  );
 
   /// 블랙 스타일 (20px, 최대 굵기, 브랜딩 텍스트용)
   /// 사용처: 로고 텍스트, 주요 브랜딩 요소
   TextStyle get black => const TextStyle(
-        fontFamily: AppTextStyles.fontFamily,
-        fontSize: 20,
-        fontWeight: FontWeight.w900,
-        color: AppColors.textPrimary,
-        height: 1.2,
-      );
+    fontFamily: AppTextStyles.fontFamily,
+    fontSize: 20,
+    fontWeight: FontWeight.w900,
+    color: AppColors.textPrimary,
+    height: 1.2,
+  );
 }
