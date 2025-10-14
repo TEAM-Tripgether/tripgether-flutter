@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../core/theme/app_spacing.dart';
 
 /// Tripgether 앱의 공용 버튼 컴포넌트
@@ -293,7 +293,9 @@ class CommonIconButton extends StatelessWidget {
     // 배경이 있는 경우 Container로 감싸기
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerHighest,
+        color:
+            backgroundColor ??
+            Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: AppRadius.allMedium,
       ),
       child: iconButton,
