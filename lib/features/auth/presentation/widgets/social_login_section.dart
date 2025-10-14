@@ -41,11 +41,11 @@ class SocialLoginSection extends StatelessWidget {
           onPressed: onGoogleLogin,
           // 구글 아이콘 - 'G' 텍스트로 임시 대체 (향후 실제 로고로 교체)
           icon: Container(
-            width: 20.w,
-            height: 20.h,
+            width: AppSizes.iconMedium.w,
+            height: AppSizes.iconMedium.h,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(2.r),
+              borderRadius: AppRadius.circular(2),
             ),
             child: Center(
               child: Text(

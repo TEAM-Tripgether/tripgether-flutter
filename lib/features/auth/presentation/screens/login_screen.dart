@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../providers/login_provider.dart';
 import '../widgets/login_form.dart';
 import '../widgets/social_login_section.dart';
@@ -112,13 +113,13 @@ class LoginScreen extends ConsumerWidget {
       // 키보드가 올라올 때 화면이 넘치지 않도록 스크롤 가능하게 설정
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 40.h),
+              SizedBox(height: AppSpacing.huge),
 
-              /// 앱 로고
+              /// 앱 로그인
               /// app_logo_black.png에 이미 "Tripgether" 텍스트와
               /// "More than tours. Real local moments." 태그라인이 포함되어 있음
               Image.asset(
@@ -138,7 +139,7 @@ class LoginScreen extends ConsumerWidget {
                 onFindPassword: () => _handleFindPassword(context),
               ),
 
-              SizedBox(height: 40.h),
+              SizedBox(height: AppSpacing.huge),
 
               /// 소셜 로그인 섹션
               /// "10초만에 빠른가입" 배지 + 구글/이메일 가입 버튼
@@ -147,7 +148,7 @@ class LoginScreen extends ConsumerWidget {
                 onEmailSignup: () => _handleEmailSignup(context),
               ),
 
-              SizedBox(height: 20.h),
+              SizedBox(height: AppSpacing.xl),
             ],
           ),
         ),
