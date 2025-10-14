@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
-import '../../../../shared/widgets/layout/place_card.dart';
+import '../../../../shared/widgets/cards/place_card.dart';
 import '../../data/models/place_model.dart';
 
 /// 저장한 장소 목록 화면

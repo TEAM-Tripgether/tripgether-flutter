@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
-import 'search_bar.dart';
+import '../inputs/search_bar.dart';
 
 /// 홈 화면 상단 인사말 섹션 위젯
 ///

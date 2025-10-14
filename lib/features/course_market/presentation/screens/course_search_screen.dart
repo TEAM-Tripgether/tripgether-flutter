@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../shared/widgets/layout/search_bar.dart';
-import '../../../../shared/widgets/layout/course_card.dart';
+import '../../../../shared/widgets/inputs/search_bar.dart';
+import '../../../../shared/widgets/cards/course_card.dart';
 import '../../data/models/course_model.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';

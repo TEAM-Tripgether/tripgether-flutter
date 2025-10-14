@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_colors.dart';
-import 'social_login_button.dart';
+import '../../../../shared/widgets/buttons/social_login_button.dart';
 
 /// 소셜 로그인 섹션 위젯
 ///

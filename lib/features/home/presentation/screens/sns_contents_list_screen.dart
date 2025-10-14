@@ -5,7 +5,7 @@ import '../../../../core/router/routes.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/platform_icon.dart';
-import '../../../../shared/widgets/layout/sns_content_card.dart';
+import '../../../../shared/widgets/cards/sns_content_card.dart';
 import '../../data/models/sns_content_model.dart';
 
 /// SNS 콘텐츠 목록 화면
