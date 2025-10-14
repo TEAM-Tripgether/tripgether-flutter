@@ -68,7 +68,7 @@ class AppTheme {
         // titleLarge (22px, w600)를 사용하되 색상만 오버라이드
         titleTextStyle:
             textTheme.titleLarge?.copyWith(color: AppColors.onSurface),
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           color: AppColors.onSurface,
           size: AppSizes.iconDefault,
         ),
@@ -293,12 +293,12 @@ class AppTheme {
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const IconThemeData(
+            return IconThemeData(
               color: AppColors.navigationSelected,
               size: AppSizes.iconDefault,
             );
           }
-          return const IconThemeData(
+          return IconThemeData(
             color: AppColors.navigationUnselected,
             size: AppSizes.iconDefault,
           );
