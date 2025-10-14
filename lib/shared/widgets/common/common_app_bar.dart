@@ -118,7 +118,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       // 아이콘 테마
       iconTheme: IconThemeData(
         color: AppColors.onSurface,
-        size: AppSizes.iconDefault.w, // ScreenUtil로 반응형 크기
+        size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
       ),
     );
   }
@@ -142,7 +142,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
-            size: AppSizes.iconMedium.w, // ScreenUtil로 반응형 크기
+            size: AppSizes.iconMedium, // ScreenUtil로 반응형 크기
           ),
           onPressed: () {
             // GoRouter 사용 시 context.pop() 사용
@@ -164,7 +164,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: IconButton(
           icon: Icon(
             Icons.menu,
-            size: AppSizes.iconDefault.w, // ScreenUtil로 반응형 크기
+            size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
           ),
           onPressed: onMenuPressed ?? () => _openDrawer(context),
           tooltip: '메뉴', // 접근성을 위한 툴팁
@@ -191,7 +191,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: IconButton(
             icon: Icon(
               Icons.notifications_outlined,
-              size: AppSizes.iconDefault.w, // ScreenUtil로 반응형 크기
+              size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
             ),
             onPressed:
                 onNotificationPressed ?? () => _showNotificationDialog(context),

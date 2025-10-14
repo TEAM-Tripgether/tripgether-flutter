@@ -69,8 +69,8 @@ class PrimaryButton extends StatelessWidget {
         // Theme의 elevatedButtonTheme 스타일이 자동 적용됨
         child: isLoading
             ? SizedBox(
-                width: AppSizes.iconMedium.w,
-                height: AppSizes.iconMedium.w,
+                width: AppSizes.iconMedium,
+                height: AppSizes.iconMedium,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
@@ -83,7 +83,7 @@ class PrimaryButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, size: AppSizes.iconMedium.w),
+                    Icon(icon, size: AppSizes.iconMedium),
                     SizedBox(width: AppSpacing.sm),
                   ],
                   Text(text),
@@ -146,8 +146,8 @@ class SecondaryButton extends StatelessWidget {
         // Theme의 outlinedButtonTheme 스타일이 자동 적용됨
         child: isLoading
             ? SizedBox(
-                width: AppSizes.iconMedium.w,
-                height: AppSizes.iconMedium.w,
+                width: AppSizes.iconMedium,
+                height: AppSizes.iconMedium,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
@@ -160,7 +160,7 @@ class SecondaryButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, size: AppSizes.iconMedium.w),
+                    Icon(icon, size: AppSizes.iconMedium),
                     SizedBox(width: AppSpacing.sm),
                   ],
                   Text(text),
@@ -222,7 +222,7 @@ class TertiaryButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: AppSizes.iconSmall.w),
+              Icon(icon, size: AppSizes.iconSmall),
               SizedBox(width: AppSpacing.xs),
             ],
             Text(text),

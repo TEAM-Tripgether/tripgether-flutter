@@ -100,7 +100,7 @@ class CourseCard extends StatelessWidget {
               color: AppColors.neutral95,
               child: Icon(
                 Icons.image_not_supported,
-                size: AppSizes.iconXLarge.w,
+                size: AppSizes.iconXLarge,
                 color: AppColors.neutral70,
               ),
             ),
@@ -147,15 +147,15 @@ class CourseCard extends StatelessWidget {
                   debugPrint('좋아요 클릭: ${course.title}');
                 },
             child: Container(
-              width: AppSizes.iconLarge.w,
-              height: AppSizes.iconLarge.w,
+              width: AppSizes.iconLarge,
+              height: AppSizes.iconLarge,
               decoration: BoxDecoration(
                 color: AppColors.surface.withValues(alpha: 0.9),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 isLiked ? Icons.favorite : Icons.favorite_border,
-                size: AppSizes.iconMedium.w,
+                size: AppSizes.iconMedium,
                 color: isLiked ? AppColors.error : AppColors.neutral60,
               ),
             ),
@@ -246,7 +246,7 @@ class CourseCard extends StatelessWidget {
         return Row(
           children: [
             // 장소 수
-            Icon(Icons.location_on, size: AppSizes.iconSmall.w, color: AppColors.neutral60),
+            Icon(Icons.location_on, size: AppSizes.iconSmall, color: AppColors.neutral60),
             AppSpacing.horizontalSpaceXS,
             Text(
               l10n.placesCount(course.placeCount),
@@ -260,7 +260,7 @@ class CourseCard extends StatelessWidget {
             SizedBox(width: AppSpacing.sm),
 
             // 소요 시간
-            Icon(Icons.access_time, size: AppSizes.iconSmall.w, color: AppColors.neutral60),
+            Icon(Icons.access_time, size: AppSizes.iconSmall, color: AppColors.neutral60),
             AppSpacing.horizontalSpaceXS,
             Text(
               course.durationText,
@@ -275,7 +275,7 @@ class CourseCard extends StatelessWidget {
             // 거리
             if (course.distance != null) ...[
               SizedBox(width: AppSpacing.sm),
-              Icon(Icons.straighten, size: AppSizes.iconSmall.w, color: AppColors.neutral60),
+              Icon(Icons.straighten, size: AppSizes.iconSmall, color: AppColors.neutral60),
               AppSpacing.horizontalSpaceXS,
               Text(
                 course.distanceText,
@@ -302,8 +302,8 @@ class CourseCard extends StatelessWidget {
           ClipOval(
             child: CachedNetworkImage(
               imageUrl: course.authorProfileUrl!,
-              width: AppSizes.iconMedium.w,
-              height: AppSizes.iconMedium.w,
+              width: AppSizes.iconMedium,
+              height: AppSizes.iconMedium,
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
                 width: AppSizes.iconMedium.w,
@@ -316,7 +316,7 @@ class CourseCard extends StatelessWidget {
                 color: AppColors.neutral95,
                 child: Icon(
                   Icons.person,
-                  size: AppSizes.iconSmall.w,
+                  size: AppSizes.iconSmall,
                   color: AppColors.neutral70,
                 ),
               ),
@@ -342,7 +342,7 @@ class CourseCard extends StatelessWidget {
         // 좋아요 수
         Icon(
           Icons.favorite,
-          size: AppSizes.iconSmall.w,
+          size: AppSizes.iconSmall,
           color: AppColors.error.withValues(alpha: 0.7),
         ),
         SizedBox(width: AppSpacing.xs.w / 2),
@@ -562,7 +562,7 @@ class CourseHorizontalList extends StatelessWidget {
                   AppSpacing.horizontalSpaceXS,
                   Icon(
                     Icons.arrow_forward_ios,
-                    size: AppSizes.iconSmall.w,
+                    size: AppSizes.iconSmall,
                     color: AppColors.primary,
                   ),
                 ],

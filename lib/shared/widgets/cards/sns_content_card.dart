@@ -55,7 +55,7 @@ class SnsContentCard extends StatelessWidget {
                   color: Colors.grey[200],
                   child: Icon(
                     Icons.image_not_supported,
-                    size: AppSizes.iconXLarge.w,
+                    size: AppSizes.iconXLarge,
                     color: Colors.grey[400],
                   ),
                 ),
@@ -81,7 +81,7 @@ class SnsContentCard extends StatelessWidget {
                   children: [
                     PlatformIcon(
                       source: content.source,
-                      size: isGridLayout ? AppSizes.iconSmall.w : AppSizes.iconDefault.w,
+                      size: isGridLayout ? AppSizes.iconSmall : AppSizes.iconDefault,
                     ),
                     SizedBox(height: AppSpacing.xs.h),
                     Text(
@@ -200,7 +200,7 @@ class SnsContentHorizontalList extends StatelessWidget {
                   AppSpacing.horizontalSpaceXS,
                   Icon(
                     Icons.arrow_forward_ios,
-                    size: AppSizes.iconSmall.w,
+                    size: AppSizes.iconSmall,
                     color: Theme.of(context).primaryColor,
                   ),
                 ],

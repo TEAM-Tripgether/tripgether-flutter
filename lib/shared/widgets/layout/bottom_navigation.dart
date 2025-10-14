@@ -68,7 +68,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       // 탭 영역을 확장하여 터치하기 쉽게 만듦
       behavior: HitTestBehavior.translucent,
       child: SizedBox(
-        width: AppSizes.fabSize.w, // 각 탭의 최소 너비 보장
+        width: AppSizes.fabSize, // 각 탭의 최소 너비 보장
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +99,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
     return SvgPicture.asset(
       iconPath,
-      width: AppSizes.iconDefault.w, // 반응형 아이콘 크기
+      width: AppSizes.iconDefault, // 반응형 아이콘 크기
       height: AppSizes.iconDefault.h,
       // SVG 색상 필터링 (필요한 경우)
       colorFilter: isSelected

@@ -92,7 +92,7 @@ class PlaceGridCard extends StatelessWidget {
               children: [
                 Icon(
                   Icons.image_not_supported,
-                  size: AppSizes.iconXLarge.w,
+                  size: AppSizes.iconXLarge,
                   color: Colors.grey[400],
                 ),
                 SizedBox(height: AppSpacing.sm.h),
@@ -156,7 +156,7 @@ class PlaceGridCard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: AppSpacing.xs),
-              Icon(Icons.location_on, size: AppSizes.iconSmall.w, color: Colors.grey[500]),
+              Icon(Icons.location_on, size: AppSizes.iconSmall, color: Colors.grey[500]),
               AppSpacing.horizontalSpaceXS,
               Text(
                 place.distanceText,
@@ -174,7 +174,7 @@ class PlaceGridCard extends StatelessWidget {
             SizedBox(height: AppSpacing.xs.h),
             Row(
               children: [
-                Icon(Icons.star, size: AppSizes.iconSmall.w, color: Colors.amber),
+                Icon(Icons.star, size: AppSizes.iconSmall, color: Colors.amber),
                 AppSpacing.horizontalSpaceXS,
                 Text(
                   place.rating!.toStringAsFixed(1),
@@ -452,7 +452,7 @@ class PlaceCard extends StatelessWidget {
                     color: Colors.grey[200],
                     child: Icon(
                       Icons.image_not_supported,
-                      size: AppSizes.iconDefault.w,
+                      size: AppSizes.iconDefault,
                       color: Colors.grey[400],
                     ),
                   ),
@@ -588,7 +588,7 @@ class PlaceListSection extends StatelessWidget {
                   AppSpacing.horizontalSpaceXS,
                   Icon(
                     Icons.arrow_forward_ios,
-                    size: AppSizes.iconSmall.w,
+                    size: AppSizes.iconSmall,
                     color: Theme.of(context).primaryColor,
                   ),
                 ],

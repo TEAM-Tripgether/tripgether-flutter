@@ -31,7 +31,7 @@ class PlatformIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = size ?? AppSizes.iconDefault.w;
+    final iconSize = size ?? AppSizes.iconDefault;
 
     // 배경이 있는 경우
     if (showBackground) {

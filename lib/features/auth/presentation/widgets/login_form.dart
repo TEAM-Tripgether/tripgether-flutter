@@ -105,7 +105,7 @@ class _LoginFormState extends State<LoginForm> {
               prefixIcon: Icon(
                 Icons.email_outlined,
                 color: AppColors.textSecondary,
-                size: AppSizes.iconMedium.w,
+                size: AppSizes.iconMedium,
               ),
             ),
           ),
@@ -125,14 +125,14 @@ class _LoginFormState extends State<LoginForm> {
               prefixIcon: Icon(
                 Icons.lock_outlined,
                 color: AppColors.textSecondary,
-                size: AppSizes.iconMedium.w,
+                size: AppSizes.iconMedium,
               ),
               // 비밀번호 보기/숨기기 토글 버튼
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
                   color: AppColors.textSecondary,
-                  size: AppSizes.iconMedium.w,
+                  size: AppSizes.iconMedium,
                 ),
                 onPressed: () {
                   setState(() {
@@ -153,7 +153,7 @@ class _LoginFormState extends State<LoginForm> {
               Row(
                 children: [
                   SizedBox(
-                    width: AppSizes.iconDefault.w,
+                    width: AppSizes.iconDefault,
                     height: AppSizes.iconDefault.h,
                     child: Checkbox(
                       value: _rememberMe,
