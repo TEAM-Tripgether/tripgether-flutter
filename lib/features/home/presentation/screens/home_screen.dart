@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/services/sharing_service.dart';
-import '../../../../core/services/auth/google_auth_service.dart';
 import '../../../../core/utils/url_formatter.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
@@ -17,17 +17,18 @@ import '../../../debug/share_extension_log_screen.dart';
 import '../../data/models/sns_content_model.dart';
 import '../../data/models/place_model.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../auth/providers/user_provider.dart';
 
 /// 홈 화면 위젯
 /// 앱의 메인 화면이며, 공유 데이터를 받아서 처리하는 기능을 포함
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// 공유 서비스 인스턴스
   late SharingService _sharingService;
 
@@ -293,63 +294,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// 로그아웃 확인 다이얼로그 표시
-  ///
-  /// 사용자에게 로그아웃 여부를 확인하고,
-  /// 확인 시 Google 로그아웃을 수행한 후 로그인 화면으로 이동합니다.
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('로그아웃'),
-        content: const Text('정말 로그아웃하시겠습니까?'),
-        actions: [
-          // 취소 버튼
-          TextButton(
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-            },
-            child: const Text('취소'),
-          ),
-
-          // 로그아웃 버튼
-          TextButton(
-            onPressed: () async {
-              // 다이얼로그 닫기
-              Navigator.of(dialogContext).pop();
-
-              try {
-                // Google 로그아웃 실행
-                await GoogleAuthService.signOut();
-
-                // 로그인 화면으로 이동 (context.mounted 체크)
-                if (context.mounted) {
-                  context.go(AppRoutes.login);
-                }
-              } catch (error) {
-                debugPrint('[HomeScreen] 로그아웃 오류: $error');
-
-                // 에러 발생 시 스낵바 표시
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('로그아웃 중 오류가 발생했습니다: $error'),
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                    ),
-                  );
-                }
-              }
-            },
-            child: Text(
-              '로그아웃',
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -359,8 +303,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       // CommonAppBar를 사용하여 일관된 AppBar UI 제공
-      appBar: CommonAppBar.forHome(
-        onMenuPressed: () => _showLogoutDialog(context),
+      appBar: CommonAppBar(
+        title: 'Tripgether',
+        showMenuButton: true, // 햄버거 메뉴 표시 (다른 화면과 일관성 유지)
         onNotificationPressed: () {
           // 알림 버튼을 눌렀을 때의 동작
           debugPrint('홈 화면 알림 버튼 클릭');
@@ -374,14 +319,46 @@ class _HomeScreenState extends State<HomeScreen> {
             if (_currentSharedData != null) _buildSharedDataDisplay(),
 
             // 홈 헤더 (인사말 + 검색창 통합)
-            HomeHeader(
-              userName: 'Kevin',
-              greeting: l10n.greeting('Kevin'),
-              greetingSubtitle: l10n.greetingSubtitle,
-              searchHint: l10n.searchHint,
-              onSearchTap: () {
-                // 검색 화면으로 이동
-                debugPrint('검색창 클릭 - 검색 화면으로 이동');
+            // userNotifierProvider를 통해 실시간 사용자 정보 가져오기
+            Consumer(
+              builder: (context, ref, child) {
+                final userAsync = ref.watch(userNotifierProvider);
+
+                return userAsync.when(
+                  // 로딩 중: 기본 닉네임으로 표시
+                  loading: () => HomeHeader(
+                    nickname: '사용자',
+                    greeting: l10n.greeting('사용자'),
+                    greetingSubtitle: l10n.greetingSubtitle,
+                    searchHint: l10n.searchHint,
+                    onSearchTap: () {
+                      debugPrint('검색창 클릭 - 검색 화면으로 이동');
+                    },
+                  ),
+                  // 에러 발생: 기본 닉네임으로 표시
+                  error: (error, stack) => HomeHeader(
+                    nickname: '사용자',
+                    greeting: l10n.greeting('사용자'),
+                    greetingSubtitle: l10n.greetingSubtitle,
+                    searchHint: l10n.searchHint,
+                    onSearchTap: () {
+                      debugPrint('검색창 클릭 - 검색 화면으로 이동');
+                    },
+                  ),
+                  // 데이터 로드 완료: 실제 사용자 닉네임 표시
+                  data: (user) {
+                    final nickname = user?.nickname ?? '사용자';
+                    return HomeHeader(
+                      nickname: nickname,
+                      greeting: l10n.greeting(nickname),
+                      greetingSubtitle: l10n.greetingSubtitle,
+                      searchHint: l10n.searchHint,
+                      onSearchTap: () {
+                        debugPrint('검색창 클릭 - 검색 화면으로 이동');
+                      },
+                    );
+                  },
+                );
               },
             ),
 

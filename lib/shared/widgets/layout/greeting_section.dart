@@ -7,16 +7,16 @@ import '../inputs/search_bar.dart';
 
 /// 홈 화면 상단 인사말 섹션 위젯
 ///
-/// 사용자 이름과 함께 인사말을 표시하고
+/// 사용자 닉네임과 함께 인사말을 표시하고
 /// 현재 시간대에 맞는 인사말을 자동으로 선택
 class GreetingSection extends StatelessWidget {
-  /// 사용자 이름
-  final String userName;
+  /// 사용자 닉네임
+  final String nickname;
 
   /// 부제목 텍스트
   final String? subtitle;
 
-  const GreetingSection({super.key, required this.userName, this.subtitle});
+  const GreetingSection({super.key, required this.nickname, this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class GreetingSection extends StatelessWidget {
       greeting = '안녕하세요';
     }
 
-    return '$greeting, $userName님!';
+    return '$greeting, $nickname님!';
   }
 
   /// 기본 부제목 텍스트 생성
@@ -91,8 +91,8 @@ class GreetingSection extends StatelessWidget {
 ///
 /// 인사말, 부제목, 검색창을 포함하는 통합 헤더
 class HomeHeader extends StatelessWidget {
-  /// 사용자 이름
-  final String userName;
+  /// 사용자 닉네임
+  final String nickname;
 
   /// 인사말 텍스트 (국제화된)
   final String? greeting;
@@ -108,7 +108,7 @@ class HomeHeader extends StatelessWidget {
 
   const HomeHeader({
     super.key,
-    required this.userName,
+    required this.nickname,
     this.greeting,
     this.greetingSubtitle,
     this.searchHint,
@@ -143,12 +143,13 @@ class HomeHeader extends StatelessWidget {
         children: [
           // 인사말 (국제화 적용)
           Text(
-            greeting ?? l10n.greeting(userName),
+            greeting ?? l10n.greeting(nickname),
             style: textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
               color: Colors.white, // 그라데이션 배경에 맞춰 흰색으로 변경
             ),
           ),
+
           AppSpacing.verticalSpaceXS,
           // 부제목 (국제화 적용)
           Text(
