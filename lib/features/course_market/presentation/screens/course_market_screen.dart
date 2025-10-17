@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../shared/widgets/inputs/search_bar.dart';
 import '../../../../shared/widgets/cards/course_card.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../data/models/course_model.dart';
-import 'course_search_screen.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -72,25 +73,8 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
                 hintText: l10n.searchPlaceholder,
                 readOnly: true,
                 onTap: () {
-                  // 검색 화면으로 이동 (커스텀 페이지 라우트로 부드러운 전환)
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          const CourseSearchScreen(),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                            // 페이드 인 애니메이션 (Hero 애니메이션과 조화)
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
-                      transitionDuration: const Duration(
-                        milliseconds: 300,
-                      ), // 전환 시간
-                    ),
-                  );
+                  // GoRouter로 검색 화면 이동 (Fade 애니메이션 자동 적용)
+                  context.push(AppRoutes.courseMarketSearch);
                 },
               ),
             ),

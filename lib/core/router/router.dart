@@ -14,6 +14,7 @@ import '../../features/home/presentation/screens/place_detail_screen.dart';
 import '../../features/home/data/models/sns_content_model.dart';
 import '../../features/home/data/models/place_model.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
+import '../../features/course_market/presentation/screens/course_search_screen.dart';
 import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/schedule/presentation/screens/schedule_screen.dart';
 import '../../features/mypage/presentation/screens/mypage_screen.dart';
@@ -249,6 +250,25 @@ class AppRouter {
             pageBuilder: (context, state) =>
                 NoTransitionPage(child: const CourseMarketScreen()),
             routes: [
+              // 코스 검색 화면
+              GoRoute(
+                path: 'search',
+                pageBuilder: (context, state) {
+                  // Fade 애니메이션으로 부드러운 전환
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const CourseSearchScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          // Fade 애니메이션 (0.0 → 1.0)
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                  );
+                },
+              ),
               // 코스 상세 화면 (ShellRoute 내부의 서브 라우트)
               GoRoute(
                 path: 'detail/:courseId',

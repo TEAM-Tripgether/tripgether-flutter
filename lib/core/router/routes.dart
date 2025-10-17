@@ -32,6 +32,9 @@ class AppRoutes {
   static const String snsContentDetail = '/home/sns-contents/detail/:contentId';
   static const String savedPlacesList = '/home/saved-places';
 
+  /// 코스마켓 탭 하위 경로들
+  static const String courseMarketSearch = '/course-market/search';
+
   /// 상세 화면 경로들
   static const String courseDetail = '/course-detail/:courseId';
   static const String placeDetail = '/place-detail/:placeId';
