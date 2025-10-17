@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../shared/widgets/common/common_app_bar.dart';
-import '../../../demo/button_examples.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/providers/locale_provider.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
+import 'package:tripgether/core/constants/app_strings.dart';
+import 'package:tripgether/core/providers/locale_provider.dart';
+import 'package:tripgether/core/router/routes.dart';
+import 'package:tripgether/l10n/app_localizations.dart';
+import 'package:tripgether/features/mypage/presentation/widgets/profile_header.dart';
+import 'package:tripgether/features/auth/providers/login_provider.dart';
+import 'package:tripgether/features/auth/providers/user_provider.dart';
 
 /// 마이페이지 화면
 ///
@@ -53,82 +57,21 @@ class MyPageScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: [
-          // 🎨 임시: 버튼 예제 화면으로 가기 (개발용)
-          _buildDebugSection(context),
+          // ✅ 프로필 헤더 (최상단)
+          const ProfileHeader(),
+
+          SizedBox(height: 16.h),
 
           // 언어 선택 섹션
           _buildLanguageSection(context, ref, l10n, currentLocale),
-        ],
-      ),
-    );
-  }
 
-  /// 🎨 개발용 디버그 섹션 (임시)
-  Widget _buildDebugSection(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(16.w),
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.1),
-        border: Border.all(color: Colors.orange, width: 2),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.bug_report, color: Colors.orange, size: 20.w),
-              SizedBox(width: 8.w),
-              Text(
-                '🎨 개발자 도구 (임시)',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.orange[900],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ButtonExamplesScreen(),
-                  ),
-                );
-              },
-              icon: Icon(Icons.palette, size: 20.w),
-              label: Text(
-                '버튼 컴포넌트 예제 보기',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-              ),
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            '💡 이 섹션은 임시 개발용입니다. 삭제 예정',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 12.sp,
-              color: Colors.grey[600],
-              fontStyle: FontStyle.italic,
-            ),
-          ),
+          SizedBox(height: 24.h),
+
+          // 로그아웃 버튼 섹션
+          _buildLogoutSection(context, ref),
+
+          // 하단 여백
+          SizedBox(height: 40.h),
         ],
       ),
     );
@@ -260,6 +203,197 @@ class MyPageScreen extends ConsumerWidget {
         return l10n.english;
       default:
         return locale.languageCode;
+    }
+  }
+
+  /// 로그아웃 버튼 섹션
+  ///
+  /// **기능**:
+  /// - 로그인 상태일 때만 표시
+  /// - 로그아웃 버튼 클릭 시:
+  ///   1. LoginProvider.logout() 호출
+  ///   2. UserNotifier 상태 초기화
+  ///   3. Secure Storage 정리
+  ///   4. 로그인 화면으로 이동
+  Widget _buildLogoutSection(BuildContext context, WidgetRef ref) {
+    // 로그인 상태 확인
+    final userAsync = ref.watch(userNotifierProvider);
+
+    // 로그인하지 않은 상태면 버튼 숨김
+    return userAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (user) {
+        if (user == null) {
+          return const SizedBox.shrink();
+        }
+
+        // 로그인된 상태: 로그아웃 버튼 표시
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 구분선
+              Divider(height: 1.h, thickness: 1.w, color: Colors.grey[300]),
+
+              SizedBox(height: 24.h),
+
+              // 로그아웃 버튼
+              OutlinedButton.icon(
+                onPressed: () => _handleLogout(context, ref),
+                icon: Icon(Icons.logout, size: 20.w, color: Colors.red[700]),
+                label: Text(
+                  AppLocalizations.of(context).logout,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.red[700],
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                  side: BorderSide(color: Colors.red[300]!, width: 1.5.w),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 8.h),
+
+              // 안내 문구
+              Text(
+                AppLocalizations.of(context).logoutHint,
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// 로그아웃 처리
+  ///
+  /// **동작**:
+  /// 1. 사용자에게 확인 다이얼로그 표시
+  /// 2. 확인 시 LoginProvider.logout() 호출
+  /// 3. 로그인 화면으로 이동
+  Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+
+    // 로그아웃 확인 다이얼로그
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          l10n.logoutConfirmTitle,
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: Text(
+          l10n.logoutConfirmMessage,
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        actions: [
+          // 취소 버튼
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              l10n.btnCancel,
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[700],
+              ),
+            ),
+          ),
+
+          // 로그아웃 버튼
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              l10n.logout,
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.red[700],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // 사용자가 취소를 선택한 경우
+    if (confirmed != true || !context.mounted) {
+      return;
+    }
+
+    try {
+      // 로그아웃 실행
+      await ref.read(loginNotifierProvider.notifier).logout();
+
+      if (!context.mounted) return;
+
+      final l10nAfter = AppLocalizations.of(context);
+
+      // 성공 스낵바 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10nAfter.logoutSuccess,
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      // 로그인 화면으로 이동
+      context.go(AppRoutes.login);
+    } catch (e) {
+      if (!context.mounted) return;
+
+      final l10nError = AppLocalizations.of(context);
+
+      // 에러 발생 시 스낵바 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10nError.logoutFailed(e.toString()),
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          backgroundColor: Colors.red[700],
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 }
