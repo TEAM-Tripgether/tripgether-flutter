@@ -883,6 +883,138 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'로그아웃 실패: {error}'**
   String logoutFailed(String error);
+
+  /// 로그인 로딩 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인 중입니다...'**
+  String get loginLoadingMessage;
+
+  /// 느린 연결 시 대기 요청 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'잠시만 기다려주세요'**
+  String get pleaseWait;
+
+  /// 여행 팁 1 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'혼자 여행의 매력'**
+  String get travelTip1Title;
+
+  /// 여행 팁 1 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'현지인 맛집을 찾아보세요. 혼자라서 더 자유롭게!'**
+  String get travelTip1Description;
+
+  /// 여행 팁 2 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'골든 아워를 노려라'**
+  String get travelTip2Title;
+
+  /// 여행 팁 2 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'일출 후 1시간, 일몰 전 1시간이 최고의 사진 시간'**
+  String get travelTip2Description;
+
+  /// 여행 팁 3 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'오프라인 지도 필수'**
+  String get travelTip3Title;
+
+  /// 여행 팁 3 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'구글맵 오프라인 지도를 미리 다운로드하세요'**
+  String get travelTip3Description;
+
+  /// 여행 팁 4 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'환전은 현지에서'**
+  String get travelTip4Title;
+
+  /// 여행 팁 4 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'공항보다 시내 환전소가 환율이 더 좋아요'**
+  String get travelTip4Description;
+
+  /// 여행 팁 5 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'짐은 가볍게'**
+  String get travelTip5Title;
+
+  /// 여행 팁 5 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'여행 일수 × 0.5 = 필요한 옷 개수'**
+  String get travelTip5Description;
+
+  /// 여행 팁 6 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'현지 교통 앱 설치'**
+  String get travelTip6Title;
+
+  /// 여행 팁 6 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'우버, 그랩 같은 현지 교통 앱 미리 설치하기'**
+  String get travelTip6Description;
+
+  /// 여행 팁 7 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'긴급 연락처 저장'**
+  String get travelTip7Title;
+
+  /// 여행 팁 7 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'대사관, 여행자 보험사 번호를 미리 저장하세요'**
+  String get travelTip7Description;
+
+  /// 여행 팁 8 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'숙소 체크인 시간'**
+  String get travelTip8Title;
+
+  /// 여행 팁 8 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'오후 2-3시가 일반적, 미리 확인하세요'**
+  String get travelTip8Description;
+
+  /// 여행 팁 9 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'현지 음식 도전'**
+  String get travelTip9Title;
+
+  /// 여행 팁 9 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'여행의 반은 음식! 낯선 메뉴도 도전해보세요'**
+  String get travelTip9Description;
+
+  /// 여행 팁 10 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'티켓은 미리 예매'**
+  String get travelTip10Title;
+
+  /// 여행 팁 10 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'인기 명소는 현장 구매 시 긴 줄 대기 필수'**
+  String get travelTip10Description;
 }
 
 class _AppLocalizationsDelegate

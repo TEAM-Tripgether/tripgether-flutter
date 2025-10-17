@@ -434,4 +434,70 @@ class AppLocalizationsKo extends AppLocalizations {
   String logoutFailed(String error) {
     return '로그아웃 실패: $error';
   }
+
+  @override
+  String get loginLoadingMessage => '로그인 중입니다...';
+
+  @override
+  String get pleaseWait => '잠시만 기다려주세요';
+
+  @override
+  String get travelTip1Title => '혼자 여행의 매력';
+
+  @override
+  String get travelTip1Description => '현지인 맛집을 찾아보세요. 혼자라서 더 자유롭게!';
+
+  @override
+  String get travelTip2Title => '골든 아워를 노려라';
+
+  @override
+  String get travelTip2Description => '일출 후 1시간, 일몰 전 1시간이 최고의 사진 시간';
+
+  @override
+  String get travelTip3Title => '오프라인 지도 필수';
+
+  @override
+  String get travelTip3Description => '구글맵 오프라인 지도를 미리 다운로드하세요';
+
+  @override
+  String get travelTip4Title => '환전은 현지에서';
+
+  @override
+  String get travelTip4Description => '공항보다 시내 환전소가 환율이 더 좋아요';
+
+  @override
+  String get travelTip5Title => '짐은 가볍게';
+
+  @override
+  String get travelTip5Description => '여행 일수 × 0.5 = 필요한 옷 개수';
+
+  @override
+  String get travelTip6Title => '현지 교통 앱 설치';
+
+  @override
+  String get travelTip6Description => '우버, 그랩 같은 현지 교통 앱 미리 설치하기';
+
+  @override
+  String get travelTip7Title => '긴급 연락처 저장';
+
+  @override
+  String get travelTip7Description => '대사관, 여행자 보험사 번호를 미리 저장하세요';
+
+  @override
+  String get travelTip8Title => '숙소 체크인 시간';
+
+  @override
+  String get travelTip8Description => '오후 2-3시가 일반적, 미리 확인하세요';
+
+  @override
+  String get travelTip9Title => '현지 음식 도전';
+
+  @override
+  String get travelTip9Description => '여행의 반은 음식! 낯선 메뉴도 도전해보세요';
+
+  @override
+  String get travelTip10Title => '티켓은 미리 예매';
+
+  @override
+  String get travelTip10Description => '인기 명소는 현장 구매 시 긴 줄 대기 필수';
 }

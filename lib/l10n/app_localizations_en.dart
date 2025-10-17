@@ -435,4 +435,79 @@ class AppLocalizationsEn extends AppLocalizations {
   String logoutFailed(String error) {
     return 'Logout failed: $error';
   }
+
+  @override
+  String get loginLoadingMessage => 'Logging in...';
+
+  @override
+  String get pleaseWait => 'Please wait a moment';
+
+  @override
+  String get travelTip1Title => 'Solo Travel Magic';
+
+  @override
+  String get travelTip1Description =>
+      'Find local restaurants. More freedom when traveling alone!';
+
+  @override
+  String get travelTip2Title => 'Catch the Golden Hour';
+
+  @override
+  String get travelTip2Description =>
+      '1 hour after sunrise, 1 hour before sunset = best photo time';
+
+  @override
+  String get travelTip3Title => 'Offline Maps Essential';
+
+  @override
+  String get travelTip3Description =>
+      'Download Google Maps offline maps in advance';
+
+  @override
+  String get travelTip4Title => 'Exchange Currency Locally';
+
+  @override
+  String get travelTip4Description =>
+      'City exchange offices have better rates than airports';
+
+  @override
+  String get travelTip5Title => 'Pack Light';
+
+  @override
+  String get travelTip5Description =>
+      'Travel days × 0.5 = number of clothes needed';
+
+  @override
+  String get travelTip6Title => 'Install Local Transport Apps';
+
+  @override
+  String get travelTip6Description =>
+      'Pre-install apps like Uber, Grab for local transportation';
+
+  @override
+  String get travelTip7Title => 'Save Emergency Contacts';
+
+  @override
+  String get travelTip7Description =>
+      'Save embassy and travel insurance numbers in advance';
+
+  @override
+  String get travelTip8Title => 'Check-in Time';
+
+  @override
+  String get travelTip8Description => 'Usually 2-3 PM, check in advance';
+
+  @override
+  String get travelTip9Title => 'Try Local Food';
+
+  @override
+  String get travelTip9Description =>
+      'Half of travel is food! Try unfamiliar menus';
+
+  @override
+  String get travelTip10Title => 'Pre-book Tickets';
+
+  @override
+  String get travelTip10Description =>
+      'Popular attractions require long waits for on-site purchases';
 }
