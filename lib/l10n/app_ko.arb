@@ -725,5 +725,41 @@
   "signUpWithEmail": "이메일로 가입하기",
   "@signUpWithEmail": {
     "description": "이메일 회원가입 버튼"
+  },
+
+  "logout": "로그아웃",
+  "@logout": {
+    "description": "로그아웃 버튼"
+  },
+
+  "logoutConfirmTitle": "로그아웃",
+  "@logoutConfirmTitle": {
+    "description": "로그아웃 확인 다이얼로그 제목"
+  },
+
+  "logoutConfirmMessage": "정말 로그아웃하시겠습니까?",
+  "@logoutConfirmMessage": {
+    "description": "로그아웃 확인 메시지"
+  },
+
+  "logoutHint": "로그아웃하시면 다시 로그인해야 합니다",
+  "@logoutHint": {
+    "description": "로그아웃 안내 문구"
+  },
+
+  "logoutSuccess": "로그아웃되었습니다",
+  "@logoutSuccess": {
+    "description": "로그아웃 성공 메시지"
+  },
+
+  "logoutFailed": "로그아웃 실패: {error}",
+  "@logoutFailed": {
+    "description": "로그아웃 실패 메시지",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "네트워크 오류"
+      }
+    }
   }
 }

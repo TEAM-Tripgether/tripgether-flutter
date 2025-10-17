@@ -847,6 +847,42 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'이메일로 가입하기'**
   String get signUpWithEmail;
+
+  /// 로그아웃 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃'**
+  String get logout;
+
+  /// 로그아웃 확인 다이얼로그 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃'**
+  String get logoutConfirmTitle;
+
+  /// 로그아웃 확인 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'정말 로그아웃하시겠습니까?'**
+  String get logoutConfirmMessage;
+
+  /// 로그아웃 안내 문구
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃하시면 다시 로그인해야 합니다'**
+  String get logoutHint;
+
+  /// 로그아웃 성공 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃되었습니다'**
+  String get logoutSuccess;
+
+  /// 로그아웃 실패 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃 실패: {error}'**
+  String logoutFailed(String error);
 }
 
 class _AppLocalizationsDelegate

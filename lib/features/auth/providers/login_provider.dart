@@ -1,6 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter/foundation.dart';
-import '../../../core/services/auth/google_auth_service.dart';
+import 'package:tripgether/core/services/auth/google_auth_service.dart';
+import 'package:tripgether/features/auth/data/models/user_model.dart';
+import 'package:tripgether/features/auth/data/models/auth_request.dart';
+import 'package:tripgether/features/auth/services/auth_api_service.dart';
+import 'package:tripgether/features/auth/providers/user_provider.dart';
 
 part 'login_provider.g.dart';
 
@@ -126,33 +130,47 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       debugPrint('');
 
-      // TODO: 3. 백엔드 API에 구글 토큰 전송하여 JWT 발급받기
-      // POST /auth/google/login
-      // Body:
-      // {
-      //   "idToken": googleAuth.idToken,        // ⭐ 필수: 백엔드에서 검증
-      //   "email": googleUser.email,             // 필수
-      //   "displayName": googleUser.displayName, // 선택
-      //   "photoUrl": googleUser.photoUrl,       // 선택
-      //   "googleId": googleUser.id              // 선택
-      // }
-      //
-      // final response = await ref.read(authServiceProvider).loginWithGoogle(
-      //   idToken: googleAuth.idToken!,
-      //   email: googleUser.email,
-      //   displayName: googleUser.displayName,
-      //   photoUrl: googleUser.photoUrl,
-      //   googleId: googleUser.id,
-      // );
-      //
-      // TODO: 4. 발급받은 JWT 토큰을 안전하게 저장
-      // await ref.read(secureStorageProvider).write(
-      //   key: 'access_token',
-      //   value: response.accessToken,
-      // );
-      //
-      // TODO: 5. 사용자 정보를 앱 상태에 저장
-      // ref.read(userProvider.notifier).setUser(response.user);
+      // 3. AuthApiService로 백엔드 API 호출 (Mock/Real 자동 전환)
+      debugPrint('[LoginProvider] 🔐 백엔드 API 호출 시작 (토큰 발급)');
+
+      final authService = AuthApiService();
+      final authResponse = await authService.signIn(
+        AuthRequest.signIn(
+          socialPlatform: 'GOOGLE',
+          email: googleUser.email,
+          nickname: googleUser.displayName ?? 'Unknown',
+          profileUrl: googleUser.photoUrl,
+        ),
+      );
+
+      debugPrint('[LoginProvider] ✅ JWT 토큰 발급 완료');
+      debugPrint('  🔑 Access Token: ${authResponse.accessToken.substring(0, 30)}...');
+      debugPrint('  🔄 Refresh Token: ${authResponse.refreshToken.substring(0, 30)}...');
+      debugPrint('  🆕 최초 로그인: ${authResponse.isFirstLogin}');
+
+      // 4. User 객체 생성 (Google 정보 기반)
+      final user = User.fromGoogleSignIn(
+        email: googleUser.email,
+        displayName: googleUser.displayName ?? 'Unknown',
+        photoUrl: googleUser.photoUrl,
+      );
+
+      debugPrint('[LoginProvider] 👤 User 객체 생성 완료');
+      debugPrint('  📧 Email: ${user.email}');
+      debugPrint('  👤 Nickname: ${user.nickname}');
+      debugPrint('  🖼️ Profile: ${user.profileImageUrl ?? "없음"}');
+
+      // 5. UserNotifier에 사용자 정보 + 토큰 저장
+      debugPrint('[LoginProvider] 💾 Secure Storage에 정보 저장 중...');
+
+      await ref.read(userNotifierProvider.notifier).setUser(
+            user: user,
+            accessToken: authResponse.accessToken,
+            refreshToken: authResponse.refreshToken,
+          );
+
+      debugPrint('[LoginProvider] ✅ 사용자 정보 저장 완료 (Secure Storage)');
+      debugPrint('  📁 저장 항목: User, Access Token, Refresh Token');
 
       debugPrint('[LoginProvider] ✅ 구글 로그인 성공!');
       debugPrint('  👤 사용자: ${googleUser.email}');
@@ -183,21 +201,31 @@ class LoginNotifier extends _$LoginNotifier {
   /// 로그아웃
   ///
   /// 저장된 토큰을 삭제하고 사용자 정보를 초기화합니다.
+  ///
+  /// **동작**:
+  /// 1. Google 계정 로그아웃
+  /// 2. UserNotifier에서 사용자 정보 + 토큰 삭제
+  /// 3. Secure Storage 완전 정리
   Future<void> logout() async {
     try {
-      // TODO: 토큰 삭제
-      // await ref.read(secureStorageProvider).delete(key: 'access_token');
-      //
-      // TODO: 사용자 정보 초기화
-      // ref.read(userProvider.notifier).clearUser();
+      debugPrint('[LoginProvider] 🚪 로그아웃 시작');
+
+      // 1. Google 계정 로그아웃
+      await GoogleAuthService.signOut();
+      debugPrint('[LoginProvider] ✅ Google 계정 로그아웃 완료');
+
+      // 2. UserNotifier에서 사용자 정보 + 토큰 삭제
+      // (Secure Storage의 user_info, access_token, refresh_token 모두 삭제됨)
+      await ref.read(userNotifierProvider.notifier).clearUser();
+      debugPrint('[LoginProvider] ✅ 사용자 정보 및 토큰 삭제 완료');
 
       debugPrint('[LoginProvider] ✅ 로그아웃 완료');
 
       // 상태 초기화
-      state = const AsyncValue.data(null);
+      _safeUpdateState(const AsyncValue.data(null));
     } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
       debugPrint('[LoginProvider] ❌ 로그아웃 실패: $e');
+      _safeUpdateState(AsyncValue.error(e, stack));
     }
   }
 }

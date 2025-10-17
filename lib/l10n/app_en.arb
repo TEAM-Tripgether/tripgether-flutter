@@ -725,5 +725,41 @@
   "signUpWithEmail": "Sign up with Email",
   "@signUpWithEmail": {
     "description": "Email sign up button"
+  },
+
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button"
+  },
+
+  "logoutConfirmTitle": "Logout",
+  "@logoutConfirmTitle": {
+    "description": "Logout confirmation dialog title"
+  },
+
+  "logoutConfirmMessage": "Are you sure you want to logout?",
+  "@logoutConfirmMessage": {
+    "description": "Logout confirmation message"
+  },
+
+  "logoutHint": "You will need to login again after logging out",
+  "@logoutHint": {
+    "description": "Logout hint message"
+  },
+
+  "logoutSuccess": "Logged out successfully",
+  "@logoutSuccess": {
+    "description": "Logout success message"
+  },
+
+  "logoutFailed": "Logout failed: {error}",
+  "@logoutFailed": {
+    "description": "Logout failure message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
   }
 }

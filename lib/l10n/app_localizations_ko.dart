@@ -414,4 +414,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get signUpWithEmail => '이메일로 가입하기';
+
+  @override
+  String get logout => '로그아웃';
+
+  @override
+  String get logoutConfirmTitle => '로그아웃';
+
+  @override
+  String get logoutConfirmMessage => '정말 로그아웃하시겠습니까?';
+
+  @override
+  String get logoutHint => '로그아웃하시면 다시 로그인해야 합니다';
+
+  @override
+  String get logoutSuccess => '로그아웃되었습니다';
+
+  @override
+  String logoutFailed(String error) {
+    return '로그아웃 실패: $error';
+  }
 }

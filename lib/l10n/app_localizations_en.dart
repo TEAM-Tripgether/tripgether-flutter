@@ -415,4 +415,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signUpWithEmail => 'Sign up with Email';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get logoutConfirmTitle => 'Logout';
+
+  @override
+  String get logoutConfirmMessage => 'Are you sure you want to logout?';
+
+  @override
+  String get logoutHint => 'You will need to login again after logging out';
+
+  @override
+  String get logoutSuccess => 'Logged out successfully';
+
+  @override
+  String logoutFailed(String error) {
+    return 'Logout failed: $error';
+  }
 }
