@@ -5,88 +5,6 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
 import '../inputs/search_bar.dart';
 
-/// 홈 화면 상단 인사말 섹션 위젯
-///
-/// 사용자 닉네임과 함께 인사말을 표시하고
-/// 현재 시간대에 맞는 인사말을 자동으로 선택
-class GreetingSection extends StatelessWidget {
-  /// 사용자 닉네임
-  final String nickname;
-
-  /// 부제목 텍스트
-  final String? subtitle;
-
-  const GreetingSection({super.key, required this.nickname, this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 인사말
-          Text(
-            _getGreetingText(),
-            style: textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: colorScheme.onSurface,
-              height: 1.3,
-            ),
-          ),
-          SizedBox(height: AppSpacing.xs.h),
-
-          // 부제목
-          Text(
-            subtitle ?? _getSubtitleText(),
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w400,
-              color: colorScheme.onSurfaceVariant,
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 시간대에 따른 인사말 생성
-  String _getGreetingText() {
-    final hour = DateTime.now().hour;
-    String greeting;
-
-    if (hour < 6) {
-      greeting = '새벽이네요';
-    } else if (hour < 12) {
-      greeting = '안녕하세요';
-    } else if (hour < 18) {
-      greeting = '안녕하세요';
-    } else {
-      greeting = '안녕하세요';
-    }
-
-    return '$greeting, $nickname님!';
-  }
-
-  /// 기본 부제목 텍스트 생성
-  String _getSubtitleText() {
-    final hour = DateTime.now().hour;
-
-    if (hour < 6) {
-      return '일찍 일어나셨네요! 오늘도 좋은 여행 되세요.';
-    } else if (hour < 12) {
-      return '오늘은 어디로 떠날까요?';
-    } else if (hour < 18) {
-      return '현지의 하루, 어디로 떠날까요?';
-    } else {
-      return '오늘의 하루는 어떠셨나요?';
-    }
-  }
-}
-
 /// 홈 화면 헤더 위젯 (인사말 + 검색창)
 ///
 /// 인사말, 부제목, 검색창을 포함하는 통합 헤더
@@ -146,7 +64,7 @@ class HomeHeader extends StatelessWidget {
             greeting ?? l10n.greeting(nickname),
             style: textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
-              color: Colors.white, // 그라데이션 배경에 맞춰 흰색으로 변경
+              color: AppColors.onPrimary, // 그라데이션 배경에 맞춰 흰색
             ),
           ),
 
@@ -156,7 +74,7 @@ class HomeHeader extends StatelessWidget {
             greetingSubtitle ?? l10n.greetingSubtitle,
             style: textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w400,
-              color: Colors.white.withValues(alpha: 0.9), // 약간 투명한 흰색
+              color: AppColors.onPrimary.withValues(alpha: 0.9), // 약간 투명
             ),
           ),
 

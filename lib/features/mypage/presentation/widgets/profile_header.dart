@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:tripgether/core/constants/app_colors.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';
 import 'package:tripgether/features/auth/providers/user_provider.dart';
+import 'package:tripgether/shared/widgets/cards/section_card.dart';
 import 'package:tripgether/shared/widgets/common/profile_avatar.dart';
 
 /// 프로필 헤더 위젯
@@ -41,7 +42,7 @@ class ProfileHeader extends ConsumerWidget {
       loading: () => _buildLoading(),
 
       // 에러 발생: 에러 메시지 표시
-      error: (error, stack) => _buildError(error),
+      error: (error, stack) => _buildError(context, error),
 
       // 데이터 로드 완료
       data: (user) {
@@ -60,39 +61,27 @@ class ProfileHeader extends ConsumerWidget {
   ///
   /// **구성**:
   /// - 프로필 사진 (ProfileAvatar)
-  /// - 닉네임 (크고 굵은 폰트)
-  /// - 이메일 (작고 회색)
+  /// - 닉네임 (titleLarge, 굵은 폰트)
+  /// - 이메일 (bodyMedium, 보조 색상)
   Widget _buildProfile(BuildContext context, User user) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10.r,
-            offset: Offset(0, 2.h),
-          ),
-        ],
-      ),
+    final textTheme = Theme.of(context).textTheme;
+
+    return SectionCard(
       child: Column(
         children: [
-          // 프로필 사진
+          // 프로필 사진 (xLarge: 120dp - 프로필 페이지에서 더 눈에 띄게)
           ProfileAvatar(
             imageUrl: user.profileImageUrl,
-            size: ProfileAvatarSize.large,
+            size: ProfileAvatarSize.xLarge,
             showBorder: true,
           ),
 
           SizedBox(height: 16.h),
 
-          // 닉네임
+          // 닉네임 (titleLarge: 20px, 세미볼드)
           Text(
             user.nickname,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 20.sp,
+            style: textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
             ),
@@ -100,13 +89,10 @@ class ProfileHeader extends ConsumerWidget {
 
           SizedBox(height: 4.h),
 
-          // 이메일
+          // 이메일 (bodyMedium: 14px, 레귤러)
           Text(
             user.email,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
+            style: textTheme.bodyMedium?.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
@@ -114,7 +100,8 @@ class ProfileHeader extends ConsumerWidget {
           SizedBox(height: 12.h),
 
           // 로그인 플랫폼 뱃지 (선택 사항)
-          if (user.loginPlatform != null) _buildLoginPlatformBadge(user.loginPlatform!),
+          if (user.loginPlatform != null)
+            _buildLoginPlatformBadge(context, user.loginPlatform!),
         ],
       ),
     );
@@ -122,19 +109,21 @@ class ProfileHeader extends ConsumerWidget {
 
   /// 로그인 플랫폼 뱃지
   ///
-  /// Google, Kakao 등의 로그인 플랫폼을 표시
-  Widget _buildLoginPlatformBadge(String platform) {
-    // 플랫폼별 색상
+  /// Google, Kakao 등의 로그인 플랫폼을 표시 (AppColorPalette 활용)
+  Widget _buildLoginPlatformBadge(BuildContext context, String platform) {
+    final textTheme = Theme.of(context).textTheme;
+
+    // 플랫폼별 색상 (AppColorPalette 사용)
     Color badgeColor;
     IconData icon;
 
     switch (platform.toUpperCase()) {
       case 'GOOGLE':
-        badgeColor = const Color(0xFF4285F4);
+        badgeColor = AppColorPalette.googleButton;
         icon = Icons.g_mobiledata;
         break;
       case 'KAKAO':
-        badgeColor = const Color(0xFFFEE500);
+        badgeColor = AppColorPalette.kakaoButton;
         icon = Icons.chat_bubble;
         break;
       default:
@@ -155,17 +144,11 @@ class ProfileHeader extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 16.w,
-            color: badgeColor,
-          ),
+          Icon(icon, size: 16.w, color: badgeColor),
           SizedBox(width: 4.w),
           Text(
             '$platform 계정',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 12.sp,
+            style: textTheme.labelMedium?.copyWith(
               fontWeight: FontWeight.w500,
               color: badgeColor,
             ),
@@ -182,19 +165,10 @@ class ProfileHeader extends ConsumerWidget {
   /// - "로그인이 필요합니다" 메시지
   /// - "로그인하러 가기" 버튼
   Widget _buildNotLoggedIn(BuildContext context) {
-    return Container(
-      width: double.infinity,
+    final textTheme = Theme.of(context).textTheme;
+
+    return SectionCard(
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 48.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10.r,
-            offset: Offset(0, 2.h),
-          ),
-        ],
-      ),
       child: Column(
         children: [
           // 기본 아이콘
@@ -217,9 +191,7 @@ class ProfileHeader extends ConsumerWidget {
           // 안내 메시지
           Text(
             '로그인이 필요합니다',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 18.sp,
+            style: textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
@@ -229,10 +201,7 @@ class ProfileHeader extends ConsumerWidget {
 
           Text(
             '로그인하시면 더 많은 기능을 이용할 수 있습니다',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
+            style: textTheme.bodyMedium?.copyWith(
               color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,
@@ -248,7 +217,7 @@ class ProfileHeader extends ConsumerWidget {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.onPrimary,
               padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
@@ -256,9 +225,7 @@ class ProfileHeader extends ConsumerWidget {
             ),
             child: Text(
               '로그인하러 가기',
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 14.sp,
+              style: textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -275,28 +242,16 @@ class ProfileHeader extends ConsumerWidget {
   /// - 닉네임 스켈레톤 (긴 막대)
   /// - 이메일 스켈레톤 (짧은 막대)
   Widget _buildLoading() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10.r,
-            offset: Offset(0, 2.h),
-          ),
-        ],
-      ),
+    return SectionCard(
       child: Shimmer.fromColors(
         baseColor: Colors.grey[300]!,
         highlightColor: Colors.grey[100]!,
         child: Column(
           children: [
-            // 프로필 사진 스켈레톤
+            // 프로필 사진 스켈레톤 (xLarge: 120dp와 동일)
             Container(
-              width: 80.w,
-              height: 80.h,
+              width: 120.w,
+              height: 120.h,
               decoration: const BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
@@ -337,35 +292,20 @@ class ProfileHeader extends ConsumerWidget {
   /// **구성**:
   /// - 에러 아이콘
   /// - 에러 메시지
-  Widget _buildError(Object error) {
-    return Container(
-      width: double.infinity,
+  Widget _buildError(BuildContext context, Object error) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return SectionCard(
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 48.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10.r,
-            offset: Offset(0, 2.h),
-          ),
-        ],
-      ),
       child: Column(
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 48.w,
-            color: Colors.red[300],
-          ),
+          Icon(Icons.error_outline, size: 48.w, color: Colors.red[300]),
 
           SizedBox(height: 16.h),
 
           Text(
             '프로필 정보를 불러올 수 없습니다',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 16.sp,
+            style: textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
@@ -375,10 +315,7 @@ class ProfileHeader extends ConsumerWidget {
 
           Text(
             error.toString(),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w400,
+            style: textTheme.bodySmall?.copyWith(
               color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,

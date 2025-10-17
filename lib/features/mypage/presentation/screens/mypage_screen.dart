@@ -42,7 +42,7 @@ class MyPageScreen extends ConsumerWidget {
               icon: Icon(
                 Icons.settings_outlined,
                 size: 24.w,
-                color: Colors.grey[700],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               onPressed: () {
                 debugPrint('마이페이지 설정 버튼 클릭');
@@ -84,6 +84,9 @@ class MyPageScreen extends ConsumerWidget {
     AppLocalizations l10n,
     Locale? currentLocale,
   ) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -92,12 +95,7 @@ class MyPageScreen extends ConsumerWidget {
           padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 12.h),
           child: Text(
             l10n.languageSelection,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w700,
-              color: Colors.black87,
-            ),
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
         ),
 
@@ -106,11 +104,8 @@ class MyPageScreen extends ConsumerWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           child: Text(
             '${l10n.currentLanguage}: ${_getLanguageName(l10n, currentLocale)}',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey[600],
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -153,23 +148,21 @@ class MyPageScreen extends ConsumerWidget {
     Locale? locale,
     bool isSelected,
   ) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final primaryColor = Theme.of(context).primaryColor;
+
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       title: Text(
         languageName,
-        style: TextStyle(
-          fontFamily: 'Pretendard',
-          fontSize: 16.sp,
+        style: textTheme.bodyLarge?.copyWith(
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          color: isSelected ? Theme.of(context).primaryColor : Colors.black87,
+          color: isSelected ? primaryColor : colorScheme.onSurface,
         ),
       ),
       trailing: isSelected
-          ? Icon(
-              Icons.check_circle,
-              color: Theme.of(context).primaryColor,
-              size: 24.w,
-            )
+          ? Icon(Icons.check_circle, color: primaryColor, size: 24.w)
           : null,
       onTap: () async {
         // 언어 변경
@@ -181,7 +174,7 @@ class MyPageScreen extends ConsumerWidget {
             SnackBar(
               content: Text(
                 '${l10n.language}: $languageName',
-                style: TextStyle(fontFamily: 'Pretendard', fontSize: 14.sp),
+                style: textTheme.bodyMedium,
               ),
               duration: const Duration(seconds: 2),
             ),
@@ -222,39 +215,47 @@ class MyPageScreen extends ConsumerWidget {
     // 로그인하지 않은 상태면 버튼 숨김
     return userAsync.when(
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (error, _) => const SizedBox.shrink(),
       data: (user) {
         if (user == null) {
           return const SizedBox.shrink();
         }
 
         // 로그인된 상태: 로그아웃 버튼 표시
+        final textTheme = Theme.of(context).textTheme;
+        final colorScheme = Theme.of(context).colorScheme;
+
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // 구분선
-              Divider(height: 1.h, thickness: 1.w, color: Colors.grey[300]),
+              Divider(
+                height: 1.h,
+                thickness: 1.w,
+                color: colorScheme.outlineVariant,
+              ),
 
               SizedBox(height: 24.h),
 
               // 로그아웃 버튼
               OutlinedButton.icon(
                 onPressed: () => _handleLogout(context, ref),
-                icon: Icon(Icons.logout, size: 20.w, color: Colors.red[700]),
+                icon: Icon(Icons.logout, size: 20.w, color: colorScheme.error),
                 label: Text(
                   AppLocalizations.of(context).logout,
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 16.sp,
+                  style: textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Colors.red[700],
+                    color: colorScheme.error,
                   ),
                 ),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 14.h),
-                  side: BorderSide(color: Colors.red[300]!, width: 1.5.w),
+                  side: BorderSide(
+                    color: colorScheme.error.withValues(alpha: 0.5),
+                    width: 1.5.w,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
                   ),
@@ -266,11 +267,8 @@ class MyPageScreen extends ConsumerWidget {
               // 안내 문구
               Text(
                 AppLocalizations.of(context).logoutHint,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey[600],
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -289,6 +287,8 @@ class MyPageScreen extends ConsumerWidget {
   /// 3. 로그인 화면으로 이동
   Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     // 로그아웃 확인 다이얼로그
     final confirmed = await showDialog<bool>(
@@ -296,31 +296,18 @@ class MyPageScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: Text(
           l10n.logoutConfirmTitle,
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
-          ),
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
-        content: Text(
-          l10n.logoutConfirmMessage,
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
+        content: Text(l10n.logoutConfirmMessage, style: textTheme.bodyMedium),
         actions: [
           // 취소 버튼
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
               l10n.btnCancel,
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 14.sp,
+              style: textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[700],
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -330,11 +317,9 @@ class MyPageScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               l10n.logout,
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontSize: 14.sp,
+              style: textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: Colors.red[700],
+                color: colorScheme.error,
               ),
             ),
           ),
@@ -354,15 +339,14 @@ class MyPageScreen extends ConsumerWidget {
       if (!context.mounted) return;
 
       final l10nAfter = AppLocalizations.of(context);
+      final textThemeAfter = Theme.of(context).textTheme;
 
       // 성공 스낵바 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             l10nAfter.logoutSuccess,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
+            style: textThemeAfter.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -377,19 +361,19 @@ class MyPageScreen extends ConsumerWidget {
       if (!context.mounted) return;
 
       final l10nError = AppLocalizations.of(context);
+      final textThemeError = Theme.of(context).textTheme;
+      final colorSchemeError = Theme.of(context).colorScheme;
 
       // 에러 발생 시 스낵바 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             l10nError.logoutFailed(e.toString()),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
+            style: textThemeError.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),
-          backgroundColor: Colors.red[700],
+          backgroundColor: colorSchemeError.error,
           duration: const Duration(seconds: 3),
           behavior: SnackBarBehavior.floating,
         ),

@@ -116,7 +116,6 @@ class LoginScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      // 키보드가 올라올 때 화면이 넘치지 않도록 스크롤 가능하게 설정
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
@@ -125,7 +124,7 @@ class LoginScreen extends ConsumerWidget {
             children: [
               SizedBox(height: AppSpacing.huge),
 
-              /// 앱 로그인
+              /// 앱 로고
               /// app_logo_black.png에 이미 "Tripgether" 텍스트와
               /// "More than tours. Real local moments." 태그라인이 포함되어 있음
               Image.asset(
