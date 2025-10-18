@@ -6,6 +6,7 @@ import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
 import 'package:tripgether/core/constants/app_strings.dart';
 import 'package:tripgether/core/providers/locale_provider.dart';
 import 'package:tripgether/core/router/routes.dart';
+import 'package:tripgether/core/theme/app_spacing.dart';
 import 'package:tripgether/l10n/app_localizations.dart';
 import 'package:tripgether/features/mypage/presentation/widgets/profile_header.dart';
 import 'package:tripgether/features/auth/providers/login_provider.dart';
@@ -52,7 +53,7 @@ class MyPageScreen extends ConsumerWidget {
             ),
           ),
           // 알림 아이콘은 showNotificationIcon으로 처리됨
-          SizedBox(width: 8.w), // Material Design 가이드라인에 따른 오른쪽 마진
+          AppSpacing.horizontalSpaceSM, // Material Design 가이드라인에 따른 오른쪽 마진
         ],
       ),
       body: ListView(
@@ -60,18 +61,18 @@ class MyPageScreen extends ConsumerWidget {
           // ✅ 프로필 헤더 (최상단)
           const ProfileHeader(),
 
-          SizedBox(height: 16.h),
+          AppSpacing.verticalSpaceLG,
 
           // 언어 선택 섹션
           _buildLanguageSection(context, ref, l10n, currentLocale),
 
-          SizedBox(height: 24.h),
+          AppSpacing.verticalSpaceXXL,
 
           // 로그아웃 버튼 섹션
           _buildLogoutSection(context, ref),
 
           // 하단 여백
-          SizedBox(height: 40.h),
+          AppSpacing.verticalSpaceHuge,
         ],
       ),
     );
@@ -92,7 +93,7 @@ class MyPageScreen extends ConsumerWidget {
       children: [
         // 섹션 헤더
         Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 12.h),
+          padding: AppSpacing.only(left: 16, top: 24, right: 16, bottom: 12),
           child: Text(
             l10n.languageSelection,
             style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
@@ -101,7 +102,7 @@ class MyPageScreen extends ConsumerWidget {
 
         // 현재 언어 표시
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: AppSpacing.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             '${l10n.currentLanguage}: ${_getLanguageName(l10n, currentLocale)}',
             style: textTheme.bodyMedium?.copyWith(
@@ -237,7 +238,7 @@ class MyPageScreen extends ConsumerWidget {
                 color: colorScheme.outlineVariant,
               ),
 
-              SizedBox(height: 24.h),
+              AppSpacing.verticalSpaceXXL,
 
               // 로그아웃 버튼
               OutlinedButton.icon(
@@ -346,10 +347,13 @@ class MyPageScreen extends ConsumerWidget {
         SnackBar(
           content: Text(
             l10nAfter.logoutSuccess,
+            textAlign: TextAlign.center,
             style: textThemeAfter.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
           ),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
         ),

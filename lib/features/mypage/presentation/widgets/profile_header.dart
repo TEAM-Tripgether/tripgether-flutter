@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tripgether/core/constants/app_colors.dart';
+import 'package:tripgether/core/router/routes.dart';
+import 'package:tripgether/core/theme/app_spacing.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';
 import 'package:tripgether/features/auth/providers/user_provider.dart';
-import 'package:tripgether/shared/widgets/cards/section_card.dart';
+import 'package:tripgether/l10n/app_localizations.dart';
 import 'package:tripgether/shared/widgets/common/profile_avatar.dart';
 
 /// 프로필 헤더 위젯
@@ -66,43 +69,49 @@ class ProfileHeader extends ConsumerWidget {
   Widget _buildProfile(BuildContext context, User user) {
     final textTheme = Theme.of(context).textTheme;
 
-    return SectionCard(
-      child: Column(
-        children: [
-          // 프로필 사진 (xLarge: 120dp - 프로필 페이지에서 더 눈에 띄게)
-          ProfileAvatar(
-            imageUrl: user.profileImageUrl,
-            size: ProfileAvatarSize.xLarge,
-            showBorder: true,
-          ),
-
-          SizedBox(height: 16.h),
-
-          // 닉네임 (titleLarge: 20px, 세미볼드)
-          Text(
-            user.nickname,
-            style: textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+    return Card(
+      margin: AppSpacing.cardPadding,
+      color: Colors.transparent,
+      elevation: 0,
+      child: Padding(
+        padding: AppSpacing.cardPadding,
+        child: Column(
+          children: [
+            // 프로필 사진 (xLarge: 120dp - 프로필 페이지에서 더 눈에 띄게)
+            ProfileAvatar(
+              imageUrl: user.profileImageUrl,
+              size: ProfileAvatarSize.xLarge,
+              showBorder: true,
             ),
-          ),
 
-          SizedBox(height: 4.h),
+            AppSpacing.verticalSpaceLG,
 
-          // 이메일 (bodyMedium: 14px, 레귤러)
-          Text(
-            user.email,
-            style: textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
+            // 닉네임 (titleLarge: 20px, 세미볼드)
+            Text(
+              user.nickname,
+              style: textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
             ),
-          ),
 
-          SizedBox(height: 12.h),
+            AppSpacing.verticalSpaceXS,
 
-          // 로그인 플랫폼 뱃지 (선택 사항)
-          if (user.loginPlatform != null)
-            _buildLoginPlatformBadge(context, user.loginPlatform!),
-        ],
+            // 이메일 (bodyMedium: 14px, 레귤러)
+            Text(
+              user.email,
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+
+            AppSpacing.verticalSpaceMD,
+
+            // 로그인 플랫폼 뱃지 (선택 사항)
+            if (user.loginPlatform != null)
+              _buildLoginPlatformBadge(context, user.loginPlatform!),
+          ],
+        ),
       ),
     );
   }
@@ -112,6 +121,7 @@ class ProfileHeader extends ConsumerWidget {
   /// Google, Kakao 등의 로그인 플랫폼을 표시 (AppColorPalette 활용)
   Widget _buildLoginPlatformBadge(BuildContext context, String platform) {
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
 
     // 플랫폼별 색상 (AppColorPalette 사용)
     Color badgeColor;
@@ -132,7 +142,7 @@ class ProfileHeader extends ConsumerWidget {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      padding: AppSpacing.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: badgeColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12.r),
@@ -145,9 +155,9 @@ class ProfileHeader extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16.w, color: badgeColor),
-          SizedBox(width: 4.w),
+          AppSpacing.horizontalSpaceXS,
           Text(
-            '$platform 계정',
+            l10n.accountSuffix(platform),
             style: textTheme.labelMedium?.copyWith(
               fontWeight: FontWeight.w500,
               color: badgeColor,
@@ -166,71 +176,76 @@ class ProfileHeader extends ConsumerWidget {
   /// - "로그인하러 가기" 버튼
   Widget _buildNotLoggedIn(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
 
-    return SectionCard(
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 48.h),
-      child: Column(
-        children: [
-          // 기본 아이콘
-          Container(
-            width: 80.w,
-            height: 80.h,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.person_outline,
-              size: 40.w,
-              color: Colors.grey[400],
-            ),
-          ),
-
-          SizedBox(height: 16.h),
-
-          // 안내 메시지
-          Text(
-            '로그인이 필요합니다',
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
-
-          SizedBox(height: 8.h),
-
-          Text(
-            '로그인하시면 더 많은 기능을 이용할 수 있습니다',
-            style: textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-
-          SizedBox(height: 24.h),
-
-          // 로그인 버튼
-          ElevatedButton(
-            onPressed: () {
-              // TODO: 로그인 화면으로 이동
-              // context.push(AppRoutes.login);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.onPrimary,
-              padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
+    return Card(
+      margin: AppSpacing.cardPadding,
+      color: Colors.transparent,
+      elevation: 0,
+      child: Padding(
+        padding: AppSpacing.symmetric(horizontal: 24, vertical: 48),
+        child: Column(
+          children: [
+            // 기본 아이콘
+            Container(
+              width: 80.w,
+              height: 80.h,
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.person_outline,
+                size: 40.w,
+                color: Colors.grey[400],
               ),
             ),
-            child: Text(
-              '로그인하러 가기',
-              style: textTheme.labelLarge?.copyWith(
+
+            AppSpacing.verticalSpaceLG,
+
+            // 안내 메시지
+            Text(
+              l10n.profileLoginRequired,
+              style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
               ),
             ),
-          ),
-        ],
+
+            AppSpacing.verticalSpaceSM,
+
+            Text(
+              l10n.profileLoginPrompt,
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            AppSpacing.verticalSpaceXXL,
+
+            // 로그인 버튼
+            ElevatedButton(
+              onPressed: () {
+                context.push(AppRoutes.login);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.onPrimary,
+                padding: AppSpacing.buttonPaddingLarge,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+              child: Text(
+                l10n.profileLoginButton,
+                style: textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -242,46 +257,52 @@ class ProfileHeader extends ConsumerWidget {
   /// - 닉네임 스켈레톤 (긴 막대)
   /// - 이메일 스켈레톤 (짧은 막대)
   Widget _buildLoading() {
-    return SectionCard(
-      child: Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        child: Column(
-          children: [
-            // 프로필 사진 스켈레톤 (xLarge: 120dp와 동일)
-            Container(
-              width: 120.w,
-              height: 120.h,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
+    return Card(
+      margin: AppSpacing.cardPadding,
+      color: Colors.transparent,
+      elevation: 0,
+      child: Padding(
+        padding: AppSpacing.cardPadding,
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Column(
+            children: [
+              // 프로필 사진 스켈레톤 (xLarge: 120dp와 동일)
+              Container(
+                width: 120.w,
+                height: 120.h,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
 
-            SizedBox(height: 16.h),
+              AppSpacing.verticalSpaceLG,
 
-            // 닉네임 스켈레톤
-            Container(
-              width: 150.w,
-              height: 20.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4.r),
+              // 닉네임 스켈레톤
+              Container(
+                width: 150.w,
+                height: 20.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
               ),
-            ),
 
-            SizedBox(height: 8.h),
+              AppSpacing.verticalSpaceSM,
 
-            // 이메일 스켈레톤
-            Container(
-              width: 200.w,
-              height: 14.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4.r),
+              // 이메일 스켈레톤
+              Container(
+                width: 200.w,
+                height: 14.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -294,33 +315,39 @@ class ProfileHeader extends ConsumerWidget {
   /// - 에러 메시지
   Widget _buildError(BuildContext context, Object error) {
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
 
-    return SectionCard(
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 48.h),
-      child: Column(
-        children: [
-          Icon(Icons.error_outline, size: 48.w, color: Colors.red[300]),
+    return Card(
+      margin: AppSpacing.cardPadding,
+      color: Colors.transparent,
+      elevation: 0,
+      child: Padding(
+        padding: AppSpacing.symmetric(horizontal: 24, vertical: 48),
+        child: Column(
+          children: [
+            Icon(Icons.error_outline, size: 48.w, color: Colors.red[300]),
 
-          SizedBox(height: 16.h),
+            AppSpacing.verticalSpaceLG,
 
-          Text(
-            '프로필 정보를 불러올 수 없습니다',
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+            Text(
+              l10n.profileLoadError,
+              style: textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
             ),
-          ),
 
-          SizedBox(height: 8.h),
+            AppSpacing.verticalSpaceSM,
 
-          Text(
-            error.toString(),
-            style: textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
+            Text(
+              error.toString(),
+              style: textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
