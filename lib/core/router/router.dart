@@ -40,6 +40,15 @@ class AppRouter {
     initialLocation: AppRoutes.splash, // 앱 시작 시 스플래시 화면으로 이동
     redirect: RouteGuard.redirectLogic, // 인증/권한 가드 적용
     routes: [
+      /// 루트 경로 라우트
+      ///
+      /// 브라우저나 외부에서 '/' 경로로 접근 시 처리
+      /// RouteGuard에서 자동으로 스플래시로 리다이렉트됨
+      GoRoute(
+        path: AppRoutes.root,
+        redirect: (context, state) => AppRoutes.splash,
+      ),
+
       /// 스플래시 화면 라우트
       ///
       /// 앱 시작 시 표시되는 브랜딩 화면으로,
