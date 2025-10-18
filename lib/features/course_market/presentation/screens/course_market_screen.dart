@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tripgether/core/theme/app_spacing.dart';
 import '../../../../shared/widgets/inputs/search_bar.dart';
 import '../../../../shared/widgets/cards/course_card.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
@@ -9,19 +11,20 @@ import '../../data/models/course_model.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../auth/providers/user_provider.dart';
 
 /// 코스마켓 메인 화면
 ///
 /// 실시간 인기 코스와 내 주변 코스를 표시하며
 /// 검색 기능과 코스/장소 추가 기능을 제공
-class CourseMarketScreen extends StatefulWidget {
+class CourseMarketScreen extends ConsumerStatefulWidget {
   const CourseMarketScreen({super.key});
 
   @override
-  State<CourseMarketScreen> createState() => _CourseMarketScreenState();
+  ConsumerState<CourseMarketScreen> createState() => _CourseMarketScreenState();
 }
 
-class _CourseMarketScreenState extends State<CourseMarketScreen> {
+class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen> {
   /// Expandable FAB 컨트롤러
   final _fabKey = GlobalKey<ExpandableFabState>();
 
@@ -38,6 +41,10 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Provider 초기화를 위한 참조
+    // RouteGuard가 인증 상태를 확인할 때 Provider가 이미 초기화되어 있어야 함
+    ref.watch(userNotifierProvider);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       // CommonAppBar 사용으로 일관된 디자인 시스템 적용
@@ -66,7 +73,7 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
         // 검색창 (Hero 애니메이션 적용)
         SliverToBoxAdapter(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            padding: AppSpacing.symmetric(horizontal: 16, vertical: 12),
             child: Hero(
               tag: 'course_search_bar', // Hero 애니메이션을 위한 고유 태그
               child: TripSearchBar(
@@ -86,7 +93,7 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 8.h),
+              AppSpacing.verticalSpaceSM,
               CourseHorizontalList(
                 title: l10n.popularCourses,
                 courses: _popularCourses,
@@ -116,7 +123,7 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
         SliverToBoxAdapter(
           child: Column(
             children: [
-              SizedBox(height: 24.h),
+              AppSpacing.verticalSpaceXXL,
               CourseHorizontalList(
                 title: l10n.nearbyCoursesWithLocation('광진구 군자동'),
                 courses: _nearbyCourses,
@@ -138,7 +145,7 @@ class _CourseMarketScreenState extends State<CourseMarketScreen> {
                 },
                 isLiked: (course) => _likedCourseIds.contains(course.id),
               ),
-              SizedBox(height: 24.h),
+              AppSpacing.verticalSpaceXXL,
             ],
           ),
         ),

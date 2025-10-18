@@ -362,7 +362,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               },
             ),
 
-            SizedBox(height: 16.h),
+            AppSpacing.verticalSpaceLG,
 
             // 최근 SNS에서 본 콘텐츠 섹션 (빈 상태 처리 추가)
             if (_snsContents.isEmpty)

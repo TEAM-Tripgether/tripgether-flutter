@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../auth/providers/user_provider.dart';
 
 /// 지도 화면
 ///
 /// 여행지 위치 정보를 지도로 확인할 수 있는 화면입니다.
 /// 전체 화면을 지도가 차지하므로 미니멀한 AppBar를 사용합니다.
-class MapScreen extends StatelessWidget {
+class MapScreen extends ConsumerWidget {
   const MapScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Provider 초기화를 위한 참조
+    // RouteGuard가 인증 상태를 확인할 때 Provider가 이미 초기화되어 있어야 함
+    ref.watch(userNotifierProvider);
+
     return Scaffold(
       // 지도 화면에 최적화된 커스텀 AppBar
       // 제목 없이 미니멀하게 구성하여 지도 공간을 극대화
@@ -49,14 +56,14 @@ class MapScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.map_outlined, size: 64.w, color: Colors.grey[400]),
-            SizedBox(height: 16.h),
+            AppSpacing.verticalSpaceLG,
             Text(
               AppStrings.of(context).navMap,
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(color: Colors.grey[700]),
             ),
-            SizedBox(height: 8.h),
+            AppSpacing.verticalSpaceSM,
             Text(
               "임시 플레이스홀더 텍스트",
               style: Theme.of(

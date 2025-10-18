@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../auth/providers/user_provider.dart';
 
 /// 일정 관리 화면
 ///
 /// 사용자의 여행 일정을 확인하고 관리할 수 있는 화면입니다.
 /// 캘린더 뷰 전환과 새 일정 추가 기능을 AppBar에 배치했습니다.
-class ScheduleScreen extends StatelessWidget {
+class ScheduleScreen extends ConsumerWidget {
   const ScheduleScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Provider 초기화를 위한 참조
+    // RouteGuard가 인증 상태를 확인할 때 Provider가 이미 초기화되어 있어야 함
+    ref.watch(userNotifierProvider);
+
     return Scaffold(
       // 일정 관리에 최적화된 AppBar
       // 캘린더 뷰와 일정 추가 기능을 강조하여 구성
@@ -75,14 +82,14 @@ class ScheduleScreen extends StatelessWidget {
               size: 64.w,
               color: Colors.grey[400],
             ),
-            SizedBox(height: 16.h),
+            AppSpacing.verticalSpaceLG,
             Text(
               AppStrings.of(context).navSchedule,
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(color: Colors.grey[700]),
             ),
-            SizedBox(height: 8.h),
+            AppSpacing.verticalSpaceSM,
             Text(
               '여행 일정 목록 및 캘린더 뷰 표시 예정',
               style: Theme.of(
