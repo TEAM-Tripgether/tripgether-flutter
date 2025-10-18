@@ -761,5 +761,36 @@
         "example": "네트워크 오류"
       }
     }
+  },
+
+  "profileLoginRequired": "로그인이 필요합니다",
+  "@profileLoginRequired": {
+    "description": "프로필 화면 로그인 필요 메시지"
+  },
+
+  "profileLoginPrompt": "로그인하시면 더 많은 기능을 이용할 수 있습니다",
+  "@profileLoginPrompt": {
+    "description": "프로필 화면 로그인 안내 메시지"
+  },
+
+  "profileLoginButton": "로그인하러 가기",
+  "@profileLoginButton": {
+    "description": "프로필 화면 로그인 버튼 텍스트"
+  },
+
+  "profileLoadError": "프로필 정보를 불러올 수 없습니다",
+  "@profileLoadError": {
+    "description": "프로필 정보 로드 실패 메시지"
+  },
+
+  "accountSuffix": "{platform} 계정",
+  "@accountSuffix": {
+    "description": "로그인 플랫폼 계정 표시",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Google"
+      }
+    }
   }
 }

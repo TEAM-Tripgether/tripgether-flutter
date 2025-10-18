@@ -761,5 +761,36 @@
         "example": "Network error"
       }
     }
+  },
+
+  "profileLoginRequired": "Login required",
+  "@profileLoginRequired": {
+    "description": "Profile screen login required message"
+  },
+
+  "profileLoginPrompt": "Login to access more features",
+  "@profileLoginPrompt": {
+    "description": "Profile screen login prompt message"
+  },
+
+  "profileLoginButton": "Go to Login",
+  "@profileLoginButton": {
+    "description": "Profile screen login button text"
+  },
+
+  "profileLoadError": "Failed to load profile information",
+  "@profileLoadError": {
+    "description": "Profile information load error message"
+  },
+
+  "accountSuffix": "{platform} account",
+  "@accountSuffix": {
+    "description": "Login platform account display",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Google"
+      }
+    }
   }
 }
