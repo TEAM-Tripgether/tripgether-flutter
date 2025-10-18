@@ -41,6 +41,10 @@ class SocialLoginButton extends StatelessWidget {
   /// 기본값: 48.h
   final double? height;
 
+  /// 로딩 상태 표시 여부
+  /// true일 때 CircularProgressIndicator를 표시하고 버튼을 비활성화합니다
+  final bool isLoading;
+
   const SocialLoginButton({
     super.key,
     required this.text,
@@ -50,6 +54,7 @@ class SocialLoginButton extends StatelessWidget {
     this.icon,
     this.borderColor,
     this.height,
+    this.isLoading = false,
   });
 
   @override
@@ -61,7 +66,8 @@ class SocialLoginButton extends StatelessWidget {
       width: double.infinity, // 전체 너비
       height: height ?? AppSizes.buttonHeight, // Theme의 버튼 높이 사용
       child: ElevatedButton(
-        onPressed: onPressed,
+        // 로딩 중일 때는 버튼 비활성화
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: textColor,
@@ -77,22 +83,32 @@ class SocialLoginButton extends StatelessWidget {
           // 탭 시 리플 효과 색상 (배경색 기반으로 자동 조정)
           splashFactory: InkRipple.splashFactory,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 아이콘이 있는 경우 표시
-            if (icon != null) ...[icon!, SizedBox(width: AppSpacing.sm)],
-            // 버튼 텍스트 (Theme의 textTheme 활용)
-            Text(
-              text,
-              style: textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.1,
-                color: textColor,
+        // 로딩 중일 때 CircularProgressIndicator 표시
+        child: isLoading
+            ? SizedBox(
+                width: AppSizes.iconMedium,
+                height: AppSizes.iconMedium,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(textColor),
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // 아이콘이 있는 경우 표시
+                  if (icon != null) ...[icon!, SizedBox(width: AppSpacing.sm)],
+                  // 버튼 텍스트 (Theme의 textTheme 활용)
+                  Text(
+                    text,
+                    style: textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.1,
+                      color: textColor,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

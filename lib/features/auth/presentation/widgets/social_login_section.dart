@@ -22,10 +22,14 @@ class SocialLoginSection extends StatelessWidget {
   /// 이메일 가입 버튼 탭 콜백
   final VoidCallback onEmailSignup;
 
+  /// 구글 로그인 로딩 상태
+  final bool isGoogleLoading;
+
   const SocialLoginSection({
     super.key,
     required this.onGoogleLogin,
     required this.onEmailSignup,
+    this.isGoogleLoading = false,
   });
 
   @override
@@ -45,6 +49,7 @@ class SocialLoginSection extends StatelessWidget {
           textColor: colorScheme.onSurface,
           borderColor: AppColors.outline, // 회색 테두리
           onPressed: onGoogleLogin,
+          isLoading: isGoogleLoading,
           // 구글 아이콘 - 'G' 텍스트로 임시 대체 (향후 실제 로고로 교체)
           icon: Container(
             width: AppSizes.iconMedium,
@@ -58,7 +63,7 @@ class SocialLoginSection extends StatelessWidget {
                 'G',
                 style: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF4285F4), // 구글 브랜드 색상 유지
+                  color: AppColorPalette.googleButton, // 구글 브랜드 색상
                 ),
               ),
             ),

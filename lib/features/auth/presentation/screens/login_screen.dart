@@ -18,8 +18,16 @@ import '../widgets/social_login_section.dart';
 /// - 상단: app_logo_black (Tripgether + 태그라인 포함)
 /// - 중단: 이메일/비밀번호 입력 폼
 /// - 하단: 소셜 로그인 버튼들 (카카오, 네이버, 이메일 가입)
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  /// 구글 로그인 로딩 상태
+  bool _isGoogleLoading = false;
 
   /// 이메일/비밀번호 로그인 핸들러
   Future<void> _handleEmailLogin(
@@ -56,8 +64,11 @@ class LoginScreen extends ConsumerWidget {
   }
 
   /// 구글 로그인 핸들러
-  Future<void> _handleGoogleLogin(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleGoogleLogin(BuildContext context) async {
     debugPrint('[LoginScreen] 🔘 구글 로그인 버튼 클릭');
+
+    // 로딩 시작
+    setState(() => _isGoogleLoading = true);
 
     // LoginProvider를 통한 구글 로그인
     final success = await ref
@@ -65,6 +76,11 @@ class LoginScreen extends ConsumerWidget {
         .loginWithGoogle();
 
     debugPrint('[LoginScreen] 구글 로그인 결과: ${success ? "성공 ✅" : "실패 ❌"}');
+
+    // 로딩 종료
+    if (mounted) {
+      setState(() => _isGoogleLoading = false);
+    }
 
     // 로그인 성공 시 홈으로 이동
     if (success && context.mounted) {
@@ -110,7 +126,7 @@ class LoginScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -149,8 +165,9 @@ class LoginScreen extends ConsumerWidget {
               /// 소셜 로그인 섹션
               /// "10초만에 빠른가입" 배지 + 구글/이메일 가입 버튼
               SocialLoginSection(
-                onGoogleLogin: () => _handleGoogleLogin(context, ref),
+                onGoogleLogin: () => _handleGoogleLogin(context),
                 onEmailSignup: () => _handleEmailSignup(context),
+                isGoogleLoading: _isGoogleLoading,
               ),
 
               SizedBox(height: AppSpacing.xl),
