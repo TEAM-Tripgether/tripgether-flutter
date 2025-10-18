@@ -64,7 +64,7 @@ final refreshTokenProvider = AutoDisposeFutureProvider<String?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RefreshTokenRef = AutoDisposeFutureProviderRef<String?>;
-String _$userNotifierHash() => r'7eddd3f19005f958535e3427b5e2d64f4311378c';
+String _$userNotifierHash() => r'6e0f19de441a088e7938c9ff42816eb9234fe752';
 
 /// 사용자 정보 상태 관리 Provider
 ///
@@ -87,7 +87,7 @@ String _$userNotifierHash() => r'7eddd3f19005f958535e3427b5e2d64f4311378c';
 /// Copied from [UserNotifier].
 @ProviderFor(UserNotifier)
 final userNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<UserNotifier, User?>.internal(
+    AsyncNotifierProvider<UserNotifier, User?>.internal(
       UserNotifier.new,
       name: r'userNotifierProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -97,6 +97,6 @@ final userNotifierProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$UserNotifier = AutoDisposeAsyncNotifier<User?>;
+typedef _$UserNotifier = AsyncNotifier<User?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

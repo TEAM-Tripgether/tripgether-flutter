@@ -24,7 +24,7 @@ part 'user_provider.g.dart';
 /// - `AsyncValue.data(null)`: 로그인하지 않은 상태
 /// - `AsyncValue.loading()`: 로딩 중
 /// - `AsyncValue.error()`: 에러 발생
-@riverpod
+@Riverpod(keepAlive: true)
 class UserNotifier extends _$UserNotifier {
   /// Flutter Secure Storage 인스턴스
   ///
