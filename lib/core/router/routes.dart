@@ -16,6 +16,9 @@ class AppRoutes {
   static const String login = '/auth/login';
   static const String signup = '/auth/signup';
 
+  /// 온보딩 경로 (첫 로그인 시 정보 입력)
+  static const String onboarding = '/onboarding';
+
   /// 메인 쉘 라우트 (바텀 네비게이션이 있는 기본 레이아웃)
   static const String shell = '/shell';
 
@@ -82,7 +85,7 @@ class AppRoutes {
 
   /// 인증이 필요없는 공개 경로들
   /// route_guards.dart에서 사용
-  static Set<String> get publicRoutes => {splash, login, signup};
+  static Set<String> get publicRoutes => {splash, login, signup, onboarding};
 }
 
 /// 네비게이션 아이콘 파일 경로 관리 클래스

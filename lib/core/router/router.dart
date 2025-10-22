@@ -6,6 +6,7 @@ import 'route_guards.dart';
 import '../../shared/widgets/layout/bottom_navigation.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
 import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
@@ -67,6 +68,21 @@ class AppRouter {
         path: AppRoutes.login,
         pageBuilder: (context, state) =>
             NoTransitionPage(child: const LoginScreen()),
+      ),
+
+      /// 온보딩 화면 라우트
+      ///
+      /// 첫 로그인 시 사용자 정보를 입력받는 5단계 온보딩 플로우:
+      /// 1. 닉네임 입력 (2-10자)
+      /// 2. 생년월일 입력 (만 14세 이상)
+      /// 3. 성별 선택 (선택사항)
+      /// 4. 관심사 선택 (3-10개)
+      /// 5. 환영 화면
+      /// 인증이 필요없는 공개 화면입니다.
+      GoRoute(
+        path: AppRoutes.onboarding,
+        pageBuilder: (context, state) =>
+            NoTransitionPage(child: const OnboardingScreen()),
       ),
 
       /// ShellRoute: 바텀 네비게이션이 있는 메인 레이아웃

@@ -10,7 +10,7 @@ part 'auth_request.g.dart';
 ///
 /// **Freezed 자동 생성**:
 /// - `copyWith()`: 불변 객체 업데이트
-/// - `toJson()`: JSON 직렬화 (null 값 자동 제외)
+/// - `toJson()`: JSON 직렬화
 /// - `fromJson()`: JSON 역직렬화
 /// - `==`, `hashCode`: 동등성 비교
 /// - `toString()`: 디버그 출력
@@ -72,12 +72,8 @@ class AuthRequest with _$AuthRequest {
   /// POST /api/auth/reissue
   ///
   /// [refreshToken]: 발급받은 Refresh Token
-  factory AuthRequest.reissue({
-    required String refreshToken,
-  }) {
-    return AuthRequest(
-      refreshToken: refreshToken,
-    );
+  factory AuthRequest.reissue({required String refreshToken}) {
+    return AuthRequest(refreshToken: refreshToken);
   }
 
   /// 로그아웃 요청 생성 팩토리
@@ -85,12 +81,8 @@ class AuthRequest with _$AuthRequest {
   /// POST /api/auth/logout
   ///
   /// [refreshToken]: 로그아웃할 Refresh Token
-  factory AuthRequest.logout({
-    required String refreshToken,
-  }) {
-    return AuthRequest(
-      refreshToken: refreshToken,
-    );
+  factory AuthRequest.logout({required String refreshToken}) {
+    return AuthRequest(refreshToken: refreshToken);
   }
 
   /// JSON 역직렬화

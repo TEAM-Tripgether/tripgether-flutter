@@ -68,6 +68,11 @@ class MyPageScreen extends ConsumerWidget {
 
           AppSpacing.verticalSpaceXXL,
 
+          // 🧪 테스트 섹션: 온보딩 화면 이동 버튼
+          _buildTestSection(context),
+
+          AppSpacing.verticalSpaceXL,
+
           // 로그아웃 버튼 섹션
           _buildLogoutSection(context, ref),
 
@@ -198,6 +203,88 @@ class MyPageScreen extends ConsumerWidget {
       default:
         return locale.languageCode;
     }
+  }
+
+  /// 🧪 테스트 섹션: 온보딩 화면 테스트용 버튼
+  ///
+  /// **목적**: 개발/테스트 중 온보딩 화면으로 쉽게 이동할 수 있도록 함
+  /// **주의**: 프로덕션 배포 전에 제거 필요
+  Widget _buildTestSection(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: colorScheme.secondaryContainer.withValues(alpha: 0.3),
+        border: Border.all(
+          color: colorScheme.secondary.withValues(alpha: 0.5),
+          width: 1.w,
+        ),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 섹션 제목
+          Row(
+            children: [
+              Icon(
+                Icons.science_outlined,
+                size: 20.w,
+                color: colorScheme.secondary,
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                '🧪 테스트 모드',
+                style: textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.secondary,
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 12.h),
+
+          // 온보딩 화면 이동 버튼
+          ElevatedButton.icon(
+            onPressed: () {
+              context.push(AppRoutes.onboarding);
+            },
+            icon: Icon(Icons.assignment_outlined, size: 20.w),
+            label: Text(
+              '온보딩 화면 테스트',
+              style: textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorScheme.secondaryContainer,
+              foregroundColor: colorScheme.onSecondaryContainer,
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 8.h),
+
+          // 안내 문구
+          Text(
+            '※ 개발/테스트 전용 기능입니다',
+            style: textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontStyle: FontStyle.italic,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
   }
 
   /// 로그아웃 버튼 섹션

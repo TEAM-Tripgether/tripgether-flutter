@@ -308,10 +308,15 @@ class AuthApiService {
         ),
       );
 
+      // null 값이 포함되지 않도록 payload 정리
+      final payload = Map<String, dynamic>.from(request.toJson())
+        ..removeWhere((key, value) => value == null);
+      debugPrint('[AuthApiService - Real] 정제된 요청 데이터: $payload');
+
       // POST 요청 전송
       final response = await dio.post(
         '/api/auth/sign-in',
-        data: request.toJson(),
+        data: payload,
       );
 
       debugPrint('[AuthApiService - Real] ✅ 응답 상태: ${response.statusCode}');

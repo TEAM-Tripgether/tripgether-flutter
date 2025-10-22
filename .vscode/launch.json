@@ -28,10 +28,9 @@
       "type": "dart",
       "program": "lib/main.dart",
       "args": [
-        "--dart-define=API_BASE_URL=https://api.tripgether.com",
+        "--dart-define=API_BASE_URL=http://api.tripgether.suhsaechan.kr",
         "--dart-define=USE_MOCK_API=false"
-      ],
-      "flutterMode": "release"
+      ]
     }
   ]
 }
