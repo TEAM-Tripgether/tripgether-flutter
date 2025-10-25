@@ -499,4 +499,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingInterestsChangeHint =>
       'You can change your interests anytime in settings.';
+
+  @override
+  String reviewCount(int count) {
+    return '$count reviews';
+  }
 }

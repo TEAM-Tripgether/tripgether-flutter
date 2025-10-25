@@ -491,4 +491,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingInterestsChangeHint => '선택한 관심사는 언제든 설정에서 바꿀 수 있어요.';
+
+  @override
+  String reviewCount(int count) {
+    return '$count개 리뷰';
+  }
 }

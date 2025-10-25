@@ -299,7 +299,7 @@ class PlaceDetailScreen extends StatelessWidget {
                 ),
                 if (place.reviewCount != null)
                   Text(
-                    ' (${place.reviewCount}개 리뷰)',
+                    ' (${l10n.reviewCount(place.reviewCount!)})',
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),

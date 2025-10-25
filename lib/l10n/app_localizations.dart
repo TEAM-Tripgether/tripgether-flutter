@@ -991,6 +991,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'선택한 관심사는 언제든 설정에서 바꿀 수 있어요.'**
   String get onboardingInterestsChangeHint;
+
+  /// 리뷰 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 리뷰'**
+  String reviewCount(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -857,5 +857,16 @@
   "onboardingInterestsChangeHint": "선택한 관심사는 언제든 설정에서 바꿀 수 있어요.",
   "@onboardingInterestsChangeHint": {
     "description": "온보딩 관심사 변경 가능 안내"
+  },
+
+  "reviewCount": "{count}개 리뷰",
+  "@reviewCount": {
+    "description": "리뷰 개수 표시",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "42"
+      }
+    }
   }
 }

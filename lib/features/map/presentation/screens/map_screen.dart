@@ -5,7 +5,6 @@ import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../auth/providers/user_provider.dart';
 
 /// 지도 화면
 ///
@@ -16,10 +15,6 @@ class MapScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Provider 초기화를 위한 참조
-    // RouteGuard가 인증 상태를 확인할 때 Provider가 이미 초기화되어 있어야 함
-    ref.watch(userNotifierProvider);
-
     return Scaffold(
       // 지도 화면에 최적화된 커스텀 AppBar
       // 제목 없이 미니멀하게 구성하여 지도 공간을 극대화

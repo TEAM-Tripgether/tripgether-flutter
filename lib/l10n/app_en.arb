@@ -857,5 +857,16 @@
   "onboardingInterestsChangeHint": "You can change your interests anytime in settings.",
   "@onboardingInterestsChangeHint": {
     "description": "Onboarding interests change hint"
+  },
+
+  "reviewCount": "{count} reviews",
+  "@reviewCount": {
+    "description": "Review count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "42"
+      }
+    }
   }
 }
