@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';
@@ -318,8 +319,7 @@ class UserNotifier extends _$UserNotifier {
 /// }
 /// ```
 @riverpod
-// ignore: strict_top_level_inference
-Future<String?> accessToken(ref) async {
+Future<String?> accessToken(Ref ref) async {
   try {
     // UserNotifier의 storage 인스턴스 재사용 (메모리 효율)
     return await UserNotifier._storage.read(key: UserNotifier._accessTokenKey);
@@ -341,8 +341,7 @@ Future<String?> accessToken(ref) async {
 /// }
 /// ```
 @riverpod
-// ignore: strict_top_level_inference
-Future<String?> refreshToken(ref) async {
+Future<String?> refreshToken(Ref ref) async {
   try {
     // UserNotifier의 storage 인스턴스 재사용 (메모리 효율)
     return await UserNotifier._storage.read(key: UserNotifier._refreshTokenKey);

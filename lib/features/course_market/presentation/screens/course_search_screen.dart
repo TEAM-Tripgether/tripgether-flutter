@@ -6,7 +6,7 @@ import '../../../../shared/widgets/common/empty_state.dart';
 import '../../../../shared/widgets/common/chip_list.dart';
 import '../../../../shared/widgets/common/custom_list_tile.dart';
 import '../../data/models/course_model.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 

@@ -200,16 +200,29 @@ class LoginNotifier extends _$LoginNotifier {
     try {
       debugPrint('[LoginProvider] 🚪 로그아웃 시작');
 
-      // 1. Google 계정 로그아웃
-      await GoogleAuthService.signOut();
-      debugPrint('[LoginProvider] ✅ Google 계정 로그아웃 완료');
+      // 1. 백엔드 로그아웃 API 호출 (서버 측 토큰 무효화)
+      try {
+        // Refresh Token을 가져와서 백엔드에 전달
+        final refreshToken = await ref.read(refreshTokenProvider.future);
+        if (refreshToken != null) {
+          final authService = AuthApiService();
+          await authService.logout(
+            AuthRequest.logout(refreshToken: refreshToken),
+          );
+        }
+      } catch (e) {
+        // 백엔드 로그아웃 실패해도 로컬 정리는 진행
+        debugPrint('[LoginProvider] ⚠️ 백엔드 로그아웃 실패 (계속 진행): $e');
+      }
 
-      // 2. UserNotifier에서 사용자 정보 + 토큰 삭제
+      // 2. Google 계정 로그아웃
+      await GoogleAuthService.signOut();
+
+      // 3. UserNotifier에서 사용자 정보 + 토큰 삭제
       // (Secure Storage의 user_info, access_token, refresh_token 모두 삭제됨)
       await ref.read(userNotifierProvider.notifier).clearUser();
-      debugPrint('[LoginProvider] ✅ 사용자 정보 및 토큰 삭제 완료');
 
-      debugPrint('[LoginProvider] ✅ 로그아웃 완료');
+      debugPrint('[LoginProvider] ✅ 로그아웃 완료 (백엔드 무효화 + Google 로그아웃 + 로컬 토큰 삭제)');
     } catch (e) {
       debugPrint('[LoginProvider] ❌ 로그아웃 실패: $e');
       rethrow; // 에러를 호출자에게 전파
@@ -219,17 +232,21 @@ class LoginNotifier extends _$LoginNotifier {
 
 /// 자동 로그인 상태 Provider
 ///
-/// 사용자가 "자동로그인" 체크박스를 선택했는지 여부를 관리합니다.
-/// SharedPreferences에 저장되어 앱 재시작 시에도 유지됩니다.
+/// ⚠️ **현재 미사용 기능** - 로그인 화면에서 사용하지 않음
+/// 자동 로그인 기능이 필요하면 구현, 불필요하면 삭제 권장
+///
+/// **구현 계획 (필요 시)**:
+/// 1. SharedPreferences 패키지 추가
+/// 2. 아래 주석 해제하고 로그인 화면에 체크박스 추가
+/// 3. 앱 시작 시 토큰 유효성 검사 후 자동 로그인 처리
 @riverpod
 class RememberMeNotifier extends _$RememberMeNotifier {
   @override
   bool build() {
-    // TODO: SharedPreferences에서 자동로그인 설정 불러오기
+    // 임시: 기본값 false (자동 로그인 미구현)
+    // 구현 시 SharedPreferences에서 불러오기:
     // final prefs = await SharedPreferences.getInstance();
     // return prefs.getBool('remember_me') ?? false;
-
-    // 임시: 기본값 false
     return false;
   }
 
@@ -238,7 +255,7 @@ class RememberMeNotifier extends _$RememberMeNotifier {
   /// [value] true: 자동로그인 활성화, false: 비활성화
   Future<void> setRememberMe(bool value) async {
     try {
-      // TODO: SharedPreferences에 저장
+      // 구현 시 SharedPreferences에 저장:
       // final prefs = await SharedPreferences.getInstance();
       // await prefs.setBool('remember_me', value);
 

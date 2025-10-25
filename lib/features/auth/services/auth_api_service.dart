@@ -45,7 +45,7 @@ class AuthApiService {
   /// **우선순위**:
   /// 1. launch.json의 --dart-define
   /// 2. .env 파일의 API_BASE_URL
-  /// 3. 기본값 http://api.tripgether.suhsaechan.kr
+  /// 3. 기본값 https://api.tripgether.suhsaechan.kr
   static String get _baseUrl {
     // 1순위: dart-define
     const dartDefine = String.fromEnvironment('API_BASE_URL');
@@ -60,7 +60,7 @@ class AuthApiService {
     }
 
     // 3순위: 기본값
-    return 'http://api.tripgether.suhsaechan.kr';
+    return 'https://api.tripgether.suhsaechan.kr';
   }
 
   /// API 요청 타임아웃 (밀리초)

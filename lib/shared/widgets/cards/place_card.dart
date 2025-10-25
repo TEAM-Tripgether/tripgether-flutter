@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../features/home/data/models/place_model.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -98,9 +99,7 @@ class PlaceGridCard extends StatelessWidget {
                 SizedBox(height: AppSpacing.sm.h),
                 Text(
                   '이미지 없음',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 12.sp,
+                  style: AppTextStyles.caption.copyWith(
                     color: Colors.grey[500],
                   ),
                 ),

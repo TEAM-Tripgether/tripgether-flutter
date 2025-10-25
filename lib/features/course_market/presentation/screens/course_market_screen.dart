@@ -9,7 +9,8 @@ import '../../../../shared/widgets/inputs/search_bar.dart';
 import '../../../../shared/widgets/cards/course_card.dart';
 import '../../data/models/course_model.dart';
 import '../../../../core/router/routes.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/providers/user_provider.dart';
 import '../../../../shared/mixins/refreshable_tab_mixin.dart';
@@ -147,7 +148,10 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
         // snap: true - 완전히 나타나거나 사라지도록 스냅
         // pinned: false - 스크롤 시 완전히 사라짐
         SliverAppBar(
-          title: const Text('코스마켓'),
+          title: Text(
+            l10n.courseMarket, // 다국어 지원 (한국어: "코스마켓", 영어: "Course Market")
+            style: AppTextStyles.titleLarge, // AppBar 제목용 스타일
+          ),
           floating: true, // 스크롤 다운 시 즉시 나타남
           snap: true, // 스냅 효과 (완전히 나타나거나 사라짐)
           pinned: false, // 스크롤 시 완전히 사라짐
@@ -310,12 +314,7 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
               ),
               child: Text(
                 l10n.addPlace,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.onSurface,
-                ),
+                style: AppTextStyles.labelLarge,
               ),
             ),
             SizedBox(width: 12.w),
@@ -356,12 +355,7 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
               ),
               child: Text(
                 l10n.createCourse,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.onSurface,
-                ),
+                style: AppTextStyles.labelLarge,
               ),
             ),
             SizedBox(width: 12.w),

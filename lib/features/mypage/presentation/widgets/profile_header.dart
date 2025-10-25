@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:tripgether/core/constants/app_colors.dart';
+import 'package:tripgether/core/theme/app_colors.dart';
 import 'package:tripgether/core/router/routes.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';

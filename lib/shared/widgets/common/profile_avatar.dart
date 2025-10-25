@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:tripgether/core/constants/app_colors.dart';
+import 'package:tripgether/core/theme/app_colors.dart';
 
 /// 프로필 아바타 크기 Enum
 ///
