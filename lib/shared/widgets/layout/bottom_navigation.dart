@@ -17,10 +17,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
   /// 탭 선택 시 호출되는 콜백 함수
   final ValueChanged<int> onTap;
 
+  /// 탭 재선택(재클릭) 시 호출되는 콜백 함수
+  ///
+  /// 현재 활성화된 탭을 다시 클릭했을 때 실행됩니다.
+  /// 주로 스크롤을 최상단으로 올리거나 새로고침하는 용도로 사용됩니다.
+  final ValueChanged<int>? onTabReselected;
+
   const CustomBottomNavigationBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.onTabReselected,
   });
 
   @override
@@ -67,7 +74,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
     final bool isSelected = currentIndex == index;
 
     return GestureDetector(
-      onTap: () => onTap(index),
+      onTap: () {
+        // 현재 선택된 탭을 다시 클릭한 경우
+        if (currentIndex == index) {
+          onTabReselected?.call(index);
+        } else {
+          // 다른 탭을 선택한 경우
+          onTap(index);
+        }
+      },
       // 탭 영역을 확장하여 터치하기 쉽게 만듦
       behavior: HitTestBehavior.translucent,
       child: SizedBox(

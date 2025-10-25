@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,17 +7,22 @@ import 'package:go_router/go_router.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
 import '../../../../shared/widgets/inputs/search_bar.dart';
 import '../../../../shared/widgets/cards/course_card.dart';
-import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../data/models/course_model.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/providers/user_provider.dart';
+import '../../../../shared/mixins/refreshable_tab_mixin.dart';
 
 /// 코스마켓 메인 화면
 ///
 /// 실시간 인기 코스와 내 주변 코스를 표시하며
 /// 검색 기능과 코스/장소 추가 기능을 제공
+///
+/// **기능:**
+/// - 탭 재클릭 시 최상단 스크롤 + 새로고침
+/// - Pull-to-Refresh 지원 (CupertinoSliverRefreshControl)
+/// - 새로고침 진행 상태 시각화 (LinearProgressIndicator)
 class CourseMarketScreen extends ConsumerStatefulWidget {
   const CourseMarketScreen({super.key});
 
@@ -24,7 +30,8 @@ class CourseMarketScreen extends ConsumerStatefulWidget {
   ConsumerState<CourseMarketScreen> createState() => _CourseMarketScreenState();
 }
 
-class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen> {
+class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
+    with AutomaticKeepAliveClientMixin, RefreshableTabMixin {
   /// Expandable FAB 컨트롤러
   final _fabKey = GlobalKey<ExpandableFabState>();
 
@@ -39,25 +46,82 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen> {
   /// 좋아요한 코스 ID 목록 (임시 상태)
   final Set<String> _likedCourseIds = {};
 
+  /// 프로그래밍 방식(탭 재클릭) 새로고침 진행 중 상태
+  ///
+  /// 탭을 재클릭하여 프로그래밍 방식으로 새로고침이 시작되면 true,
+  /// 새로고침이 완료되면 false로 설정됩니다.
+  /// 이 값에 따라 AppBar 하단에 LinearProgressIndicator를 표시합니다.
+  bool _isProgrammaticRefreshing = false;
+
+  // ============================================================================
+  // RefreshableTabMixin 필수 구현
+  // ============================================================================
+
+  /// 현재 탭 인덱스 (코스마켓 = 1)
+  ///
+  /// 홈(0), 코스마켓(1), 지도(2), 일정(3), 마이페이지(4)
+  @override
+  int get tabIndex => 1;
+
+  /// 탭 전환 시 위젯 상태 유지 여부
+  ///
+  /// true로 설정하면 다른 탭으로 이동했다가 돌아와도
+  /// 스크롤 위치와 데이터가 유지됩니다.
+  @override
+  bool get wantKeepAlive => true;
+
+  /// 데이터 새로고침 로직
+  ///
+  /// 탭 재클릭 또는 Pull-to-Refresh 시 호출됩니다.
+  /// 실제 API 호출 또는 Provider 새로고침을 구현합니다.
+  @override
+  Future<void> onRefreshData() async {
+    // TODO: 실제 API 연동 시 구현
+    // 예시:
+    // await ref.refresh(popularCoursesProvider.future);
+    // await ref.refresh(nearbyCoursesProvider.future);
+
+    // 현재는 더미 데이터를 사용하므로 1초 대기 (새로고침 시뮬레이션)
+    await Future.delayed(const Duration(seconds: 1));
+
+    // UI 업데이트 (더미 데이터 재로드)
+    if (mounted) {
+      setState(() {
+        // 데이터 재로드 로직 (현재는 더미 데이터이므로 실제 변경 없음)
+      });
+    }
+  }
+
+  /// 프로그래밍 방식(탭 재클릭) 새로고침 상태 변경 콜백
+  ///
+  /// RefreshableTabMixin에서 탭 재클릭으로 새로고침을 시작하거나
+  /// 완료할 때 호출됩니다.
+  ///
+  /// [isRefreshing] true: 새로고침 시작, false: 새로고침 완료
+  @override
+  void onRefreshStateChanged(bool isRefreshing) {
+    if (mounted) {
+      setState(() {
+        _isProgrammaticRefreshing = isRefreshing;
+      });
+    }
+  }
+
+  // ============================================================================
+  // Build Methods
+  // ============================================================================
+
   @override
   Widget build(BuildContext context) {
+    super.build(context); // AutomaticKeepAliveClientMixin 필수 호출
     // Provider 초기화를 위한 참조
     // RouteGuard가 인증 상태를 확인할 때 Provider가 이미 초기화되어 있어야 함
     ref.watch(userNotifierProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      // CommonAppBar 사용으로 일관된 디자인 시스템 적용
-      appBar: CommonAppBar.forHome(
-        onMenuPressed: () {
-          // 메뉴 열기
-          debugPrint('메뉴 열기');
-        },
-        onNotificationPressed: () {
-          // 알림 화면으로 이동
-          debugPrint('알림 화면으로 이동');
-        },
-      ),
+      // CustomScrollView + CupertinoSliverRefreshControl로 iOS 스타일 Pull-to-Refresh 구현
+      // AppBar도 SliverAppBar로 변경하여 CustomScrollView에 통합
       body: _buildBody(),
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: _buildExpandableFab(),
@@ -69,7 +133,53 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen> {
     final l10n = AppLocalizations.of(context);
 
     return CustomScrollView(
+      controller: scrollController, // RefreshableTabMixin에서 제공
       slivers: [
+        // CupertinoSliverRefreshControl: iOS 스타일 Pull-to-Refresh
+        // 콘텐츠를 실제로 밀어내며 공간을 생성하는 효과
+        CupertinoSliverRefreshControl(
+          onRefresh:
+              onRefresh, // 탭 재클릭 시 또는 Pull-to-Refresh 시 데이터 새로고침 (최소 실행 시간 보장)
+        ),
+
+        // SliverAppBar: 스크롤과 함께 움직이는 AppBar
+        // floating: true - 아래로 스크롤 시 즉시 나타남
+        // snap: true - 완전히 나타나거나 사라지도록 스냅
+        // pinned: false - 스크롤 시 완전히 사라짐
+        SliverAppBar(
+          title: const Text('코스마켓'),
+          floating: true, // 스크롤 다운 시 즉시 나타남
+          snap: true, // 스냅 효과 (완전히 나타나거나 사라짐)
+          pinned: false, // 스크롤 시 완전히 사라짐
+          leading: IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              debugPrint('코스마켓 화면 메뉴 버튼 클릭');
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications_outlined),
+              onPressed: () {
+                debugPrint('코스마켓 화면 알림 버튼 클릭');
+              },
+            ),
+          ],
+          // 프로그래밍 방식(탭 재클릭) 새로고침 시 진행 표시
+          // iOS/Android 공통으로 AppBar 하단에 얇은 진행 바 표시
+          bottom: _isProgrammaticRefreshing
+              ? PreferredSize(
+                  preferredSize: const Size.fromHeight(2.0),
+                  child: LinearProgressIndicator(
+                    backgroundColor: Colors.transparent,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                )
+              : null,
+        ),
+
         // 검색창 (Hero 애니메이션 적용)
         SliverToBoxAdapter(
           child: Padding(

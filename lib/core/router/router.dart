@@ -31,8 +31,18 @@ class AppRouter {
   /// 루트 네비게이터 키
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
-  /// 쉘 네비게이터 키 (바텀 네비게이션용)
-  static final _shellNavigatorKey = GlobalKey<NavigatorState>();
+  /// 각 탭 브랜치별 네비게이터 키 (독립적인 네비게이션 스택 관리)
+  static final _homeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'home');
+  static final _courseMarketNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'courseMarket');
+  static final _mapNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'map');
+  static final _scheduleNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'schedule');
+  static final _myPageNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'myPage');
+
+  /// 탭 재클릭 시 실행될 콜백 저장소
+  ///
+  /// key: 탭 인덱스 (0: 홈, 1: 코스마켓, 2: 지도, 3: 일정, 4: 마이페이지)
+  /// value: 탭 재클릭 시 실행될 콜백 함수
+  static final Map<int, VoidCallback?> _tabRefreshCallbacks = {};
 
   /// GoRouter 인스턴스
   /// 앱 전체에서 사용되는 라우터 설정
@@ -85,34 +95,37 @@ class AppRouter {
             NoTransitionPage(child: const OnboardingScreen()),
       ),
 
-      /// ShellRoute: 바텀 네비게이션이 있는 메인 레이아웃
+      /// StatefulShellRoute: 상태를 유지하는 바텀 네비게이션 레이아웃
       ///
-      /// 모든 메인 탭들이 이 ShellRoute 내부에서 관리되며,
-      /// 바텀 네비게이션 바는 항상 화면 하단에 유지됩니다.
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) {
-          // 현재 경로를 기반으로 탭 인덱스 계산
-          final currentIndex = _calculateTabIndex(state.uri.path);
-
+      /// IndexedStack을 사용하여 각 탭의 상태를 독립적으로 유지합니다.
+      /// 탭 전환 시에도 이전 탭의 스크롤 위치와 데이터가 그대로 유지됩니다.
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
           return Scaffold(
-            // 각 탭의 화면 내용
-            body: child,
+            // StatefulNavigationShell이 각 탭을 IndexedStack으로 관리
+            body: navigationShell,
             // 커스텀 바텀 네비게이션 바
             bottomNavigationBar: CustomBottomNavigationBar(
-              currentIndex: currentIndex,
-              onTap: (index) => _onBottomNavTap(context, index),
+              currentIndex: navigationShell.currentIndex,
+              onTap: (index) => navigationShell.goBranch(
+                index,
+                initialLocation: index == navigationShell.currentIndex,
+              ),
+              onTabReselected: (index) => _onTabReselected(index),
             ),
           );
         },
-        routes: [
-          /// 홈 탭 (인덱스: 0)
+        branches: [
+          /// 홈 탭 브랜치 (인덱스: 0)
           /// 최근 저장된 장소와 추천 코스를 표시하는 메인 화면
-          GoRoute(
-            path: AppRoutes.home,
-            pageBuilder: (context, state) =>
-                NoTransitionPage(child: const HomeScreen()),
+          StatefulShellBranch(
+            navigatorKey: _homeNavigatorKey,
             routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                pageBuilder: (context, state) =>
+                    NoTransitionPage(child: const HomeScreen()),
+                routes: [
               // SNS 콘텐츠 목록 화면
               GoRoute(
                 path: 'sns-contents',
@@ -266,132 +279,158 @@ class AppRouter {
                 ],
               ),
             ],
-          ),
+          ), // GoRoute(AppRoutes.home) 닫기
+            ], // StatefulShellBranch.routes 닫기
+          ), // StatefulShellBranch(홈) 닫기
 
-          /// 코스마켓 탭 (인덱스: 1)
+          /// 코스마켓 탭 브랜치 (인덱스: 1)
           /// 여행 코스 리스트와 상세 정보를 제공하는 마켓플레이스
-          GoRoute(
-            path: AppRoutes.courseMarket,
-            pageBuilder: (context, state) =>
-                NoTransitionPage(child: const CourseMarketScreen()),
+          StatefulShellBranch(
+            navigatorKey: _courseMarketNavigatorKey,
             routes: [
-              // 코스 검색 화면
               GoRoute(
-                path: 'search',
-                pageBuilder: (context, state) {
-                  // Fade 애니메이션으로 부드러운 전환
-                  return CustomTransitionPage(
-                    key: state.pageKey,
-                    child: const CourseSearchScreen(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                          // Fade 애니메이션 (0.0 → 1.0)
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                  );
-                },
-              ),
-              // 코스 상세 화면 (ShellRoute 내부의 서브 라우트)
-              GoRoute(
-                path: 'detail/:courseId',
-                builder: (context, state) {
-                  final courseId = state.pathParameters['courseId']!;
-                  return CourseDetailScreen(courseId: courseId);
-                },
+                path: AppRoutes.courseMarket,
+                pageBuilder: (context, state) =>
+                    NoTransitionPage(child: const CourseMarketScreen()),
+                routes: [
+                  // 코스 검색 화면
+                  GoRoute(
+                    path: 'search',
+                    pageBuilder: (context, state) {
+                      // Fade 애니메이션으로 부드러운 전환
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const CourseSearchScreen(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              // Fade 애니메이션 (0.0 → 1.0)
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                      );
+                    },
+                  ),
+                  // 코스 상세 화면 (ShellRoute 내부의 서브 라우트)
+                  GoRoute(
+                    path: 'detail/:courseId',
+                    builder: (context, state) {
+                      final courseId = state.pathParameters['courseId']!;
+                      return CourseDetailScreen(courseId: courseId);
+                    },
+                  ),
+                ],
               ),
             ],
-          ),
+          ), // StatefulShellBranch(코스마켓) 닫기
 
-          /// 지도 탭 (인덱스: 2)
+          /// 지도 탭 브랜치 (인덱스: 2)
           /// 저장된 장소들을 지도에서 시각화하여 표시
-          GoRoute(
-            path: AppRoutes.map,
-            pageBuilder: (context, state) =>
-                NoTransitionPage(child: const MapScreen()),
+          StatefulShellBranch(
+            navigatorKey: _mapNavigatorKey,
             routes: [
-              // 장소 상세 화면
               GoRoute(
-                path: 'place/:placeId',
-                builder: (context, state) {
-                  final placeId = state.pathParameters['placeId']!;
-                  final place = _findPlaceById(placeId);
-                  return PlaceDetailScreen(place: place);
-                },
+                path: AppRoutes.map,
+                pageBuilder: (context, state) =>
+                    NoTransitionPage(child: const MapScreen()),
+                routes: [
+                  // 장소 상세 화면
+                  GoRoute(
+                    path: 'place/:placeId',
+                    builder: (context, state) {
+                      final placeId = state.pathParameters['placeId']!;
+                      final place = _findPlaceById(placeId);
+                      return PlaceDetailScreen(place: place);
+                    },
+                  ),
+                ],
               ),
             ],
-          ),
+          ), // StatefulShellBranch(지도) 닫기
 
-          /// 일정 탭 (인덱스: 3)
+          /// 일정 탭 브랜치 (인덱스: 3)
           /// 여행 일정 관리 및 달력 기반 일정링
-          GoRoute(
-            path: AppRoutes.schedule,
-            pageBuilder: (context, state) =>
-                NoTransitionPage(child: const ScheduleScreen()),
+          StatefulShellBranch(
+            navigatorKey: _scheduleNavigatorKey,
             routes: [
-              // 일정 상세 화면
               GoRoute(
-                path: 'detail/:scheduleId',
-                builder: (context, state) {
-                  final scheduleId = state.pathParameters['scheduleId']!;
-                  return ScheduleDetailScreen(scheduleId: scheduleId);
-                },
+                path: AppRoutes.schedule,
+                pageBuilder: (context, state) =>
+                    NoTransitionPage(child: const ScheduleScreen()),
+                routes: [
+                  // 일정 상세 화면
+                  GoRoute(
+                    path: 'detail/:scheduleId',
+                    builder: (context, state) {
+                      final scheduleId = state.pathParameters['scheduleId']!;
+                      return ScheduleDetailScreen(scheduleId: scheduleId);
+                    },
+                  ),
+                ],
               ),
             ],
-          ),
+          ), // StatefulShellBranch(일정) 닫기
 
-          /// 마이페이지 탭 (인덱스: 4)
+          /// 마이페이지 탭 브랜치 (인덱스: 4)
           /// 사용자 프로필, 내 코스, 설정 등 개인 정보 관리
-          GoRoute(
-            path: AppRoutes.myPage,
-            pageBuilder: (context, state) =>
-                NoTransitionPage(child: const MyPageScreen()),
+          StatefulShellBranch(
+            navigatorKey: _myPageNavigatorKey,
             routes: [
-              // 프로필 편집 화면
               GoRoute(
-                path: 'profile-edit',
-                builder: (context, state) => const ProfileEditScreen(),
-              ),
-              // 설정 화면
-              GoRoute(
-                path: 'settings',
-                builder: (context, state) => const SettingsScreen(),
-              ),
-              // 내 코스 목록 화면
-              GoRoute(
-                path: 'my-courses',
-                builder: (context, state) => const MyCoursesScreen(),
+                path: AppRoutes.myPage,
+                pageBuilder: (context, state) =>
+                    NoTransitionPage(child: const MyPageScreen()),
+                routes: [
+                  // 프로필 편집 화면
+                  GoRoute(
+                    path: 'profile-edit',
+                    builder: (context, state) => const ProfileEditScreen(),
+                  ),
+                  // 설정 화면
+                  GoRoute(
+                    path: 'settings',
+                    builder: (context, state) => const SettingsScreen(),
+                  ),
+                  // 내 코스 목록 화면
+                  GoRoute(
+                    path: 'my-courses',
+                    builder: (context, state) => const MyCoursesScreen(),
+                  ),
+                ],
               ),
             ],
-          ),
+          ), // StatefulShellBranch(마이페이지) 닫기
         ],
       ),
     ],
   );
 
-  /// 현재 경로를 기반으로 바텀 네비게이션 탭 인덱스 계산
+  /// 탭 재클릭 시 호출되는 메서드
   ///
-  /// [location] 현재 라우트 경로
-  ///
-  /// Returns: 탭 인덱스 (0-4)
-  static int _calculateTabIndex(String location) {
-    if (location.startsWith(AppRoutes.home)) return 0;
-    if (location.startsWith(AppRoutes.courseMarket)) return 1;
-    if (location.startsWith(AppRoutes.map)) return 2;
-    if (location.startsWith(AppRoutes.schedule)) return 3;
-    if (location.startsWith(AppRoutes.myPage)) return 4;
-    return 0; // 기본값으로 홈 탭 반환
+  /// [index] 재선택된 탭의 인덱스
+  static void _onTabReselected(int index) {
+    // 해당 탭에 등록된 콜백이 있으면 실행
+    _tabRefreshCallbacks[index]?.call();
   }
 
-  /// 바텀 네비게이션 탭 선택 시 호출되는 메서드
+  /// 탭 새로고침 콜백 등록
   ///
-  /// [context] BuildContext
-  /// [index] 선택된 탭의 인덱스 (0: 홈, 1: 코스마켓, 2: 지도, 3: 일정, 4: 마이페이지)
-  static void _onBottomNavTap(BuildContext context, int index) {
-    final String route = AppRoutes.bottomNavRoutes[index];
-    context.go(route);
+  /// 각 탭 화면의 initState에서 호출하여 탭 재클릭 콜백을 등록합니다.
+  ///
+  /// [index] 탭 인덱스
+  /// [callback] 탭 재클릭 시 실행할 콜백 함수
+  static void registerTabRefreshCallback(int index, VoidCallback callback) {
+    _tabRefreshCallbacks[index] = callback;
+  }
+
+  /// 탭 새로고침 콜백 해제
+  ///
+  /// 각 탭 화면의 dispose에서 호출하여 콜백을 정리합니다.
+  ///
+  /// [index] 탭 인덱스
+  static void unregisterTabRefreshCallback(int index) {
+    _tabRefreshCallbacks.remove(index);
   }
 
   /// ID로 SNS 콘텐츠 찾기 헬퍼 함수
