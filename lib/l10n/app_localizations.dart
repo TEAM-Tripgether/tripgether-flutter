@@ -997,6 +997,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'{count}개 리뷰'**
   String reviewCount(int count);
+
+  /// 지도 화면 내 위치 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'내 위치로 이동'**
+  String get mapMyLocationTooltip;
+
+  /// 지도 화면 플레이스홀더 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'지도 기능이 곧 추가될 예정입니다'**
+  String get mapPlaceholder;
 }
 
 class _AppLocalizationsDelegate

@@ -5,6 +5,7 @@ import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// 지도 화면
 ///
@@ -15,6 +16,8 @@ class MapScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       // 지도 화면에 최적화된 커스텀 AppBar
       // 제목 없이 미니멀하게 구성하여 지도 공간을 극대화
@@ -42,7 +45,7 @@ class MapScreen extends ConsumerWidget {
               debugPrint("임시 디버그 메시지");
               // TODO: 현재 위치로 지도 중심 이동
             },
-            tooltip: "임시 툴팁",
+            tooltip: l10n.mapMyLocationTooltip,
           ),
           SizedBox(width: 8.w),
         ],
@@ -59,7 +62,7 @@ class MapScreen extends ConsumerWidget {
             ),
             AppSpacing.verticalSpaceSM,
             Text(
-              "임시 플레이스홀더 텍스트",
+              l10n.mapPlaceholder,
               style: AppTextStyles.bodyMedium.copyWith(color: Colors.grey[500]),
             ),
           ],

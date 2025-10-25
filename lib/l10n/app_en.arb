@@ -868,5 +868,15 @@
         "example": "42"
       }
     }
+  },
+
+  "mapMyLocationTooltip": "Go to my location",
+  "@mapMyLocationTooltip": {
+    "description": "Map screen my location button tooltip"
+  },
+
+  "mapPlaceholder": "Map feature coming soon",
+  "@mapPlaceholder": {
+    "description": "Map screen placeholder message"
   }
 }

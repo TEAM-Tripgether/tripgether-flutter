@@ -504,4 +504,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String reviewCount(int count) {
     return '$count reviews';
   }
+
+  @override
+  String get mapMyLocationTooltip => 'Go to my location';
+
+  @override
+  String get mapPlaceholder => 'Map feature coming soon';
 }

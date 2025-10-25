@@ -496,4 +496,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String reviewCount(int count) {
     return '$count개 리뷰';
   }
+
+  @override
+  String get mapMyLocationTooltip => '내 위치로 이동';
+
+  @override
+  String get mapPlaceholder => '지도 기능이 곧 추가될 예정입니다';
 }

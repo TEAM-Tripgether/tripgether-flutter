@@ -868,5 +868,15 @@
         "example": "42"
       }
     }
+  },
+
+  "mapMyLocationTooltip": "내 위치로 이동",
+  "@mapMyLocationTooltip": {
+    "description": "지도 화면 내 위치 버튼 툴팁"
+  },
+
+  "mapPlaceholder": "지도 기능이 곧 추가될 예정입니다",
+  "@mapPlaceholder": {
+    "description": "지도 화면 플레이스홀더 메시지"
   }
 }

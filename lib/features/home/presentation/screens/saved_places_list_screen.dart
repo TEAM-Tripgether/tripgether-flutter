@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -105,6 +106,9 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
 
     // 실제로는 API 호출하여 데이터 가져오기
     await Future.delayed(const Duration(seconds: 1));
+
+    // 비동기 작업 후 위젯이 dispose된 경우 setState 호출 방지
+    if (!mounted) return;
 
     // 현재 장소 개수를 기반으로 고유한 ID를 가진 더미 데이터 생성
     final currentCount = _allPlaces.length;
@@ -290,7 +294,10 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
             place: place,
             onTap: () {
               // 상세 화면으로 이동 (nested routing)
-              context.go('/home/saved-places/${place.id}', extra: place);
+              context.go(
+                AppRoutes.placeDetail.replaceFirst(':placeId', place.id),
+                extra: place,
+              );
             },
           );
         },

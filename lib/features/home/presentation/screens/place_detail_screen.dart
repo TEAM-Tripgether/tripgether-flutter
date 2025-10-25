@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -114,20 +115,15 @@ class PlaceDetailScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 300.h,
                 fit: BoxFit.cover,
-                placeholder: (context, url) {
-                  final theme = Theme.of(context);
-                  return Container(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          theme.primaryColor,
-                        ),
-                      ),
-                    ),
-                  );
-                },
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    width: double.infinity,
+                    height: 300.h,
+                    color: Colors.white,
+                  ),
+                ),
                 errorWidget: (context, url, error) {
                   final colorScheme = Theme.of(context).colorScheme;
                   return Container(
@@ -149,20 +145,15 @@ class PlaceDetailScreen extends StatelessWidget {
             width: double.infinity,
             height: 300.h,
             fit: BoxFit.cover,
-            placeholder: (context, url) {
-              final theme = Theme.of(context);
-              return Container(
-                color: theme.colorScheme.surfaceContainerHighest,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      theme.primaryColor,
-                    ),
-                  ),
-                ),
-              );
-            },
+            placeholder: (context, url) => Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                width: double.infinity,
+                height: 300.h,
+                color: Colors.white,
+              ),
+            ),
             errorWidget: (context, url, error) {
               final colorScheme = Theme.of(context).colorScheme;
               return Container(
