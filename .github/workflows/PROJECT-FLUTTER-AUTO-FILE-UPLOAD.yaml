@@ -48,7 +48,7 @@ on:
   pull_request_target:
     types: [closed]  # PR이 닫혔을 때 (merge 포함)
     branches:
-      - deploy    # deploy 브랜치로의 PR
+      - main    # deploy 브랜치로의 PR
   workflow_dispatch:  # 수동 실행 허용
 
 # ===================================================================
