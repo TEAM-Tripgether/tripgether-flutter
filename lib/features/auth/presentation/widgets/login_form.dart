@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 
@@ -92,7 +93,6 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
@@ -177,8 +177,7 @@ class _LoginFormState extends State<LoginForm> {
                   SizedBox(width: AppSpacing.xs),
                   Text(
                     l10n.autoLogin,
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w400,
+                    style: AppTextStyles.bodyMedium.copyWith(
                       color: colorScheme.onSurface,
                     ),
                   ),
@@ -193,7 +192,7 @@ class _LoginFormState extends State<LoginForm> {
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                     child: Text(
                       '|',
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: AppTextStyles.bodyMedium.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),

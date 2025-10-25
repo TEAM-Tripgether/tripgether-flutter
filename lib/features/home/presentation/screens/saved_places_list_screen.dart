@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/cards/place_card.dart';
@@ -246,15 +247,13 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
 
   /// 장소 그리드 빌드
   Widget _buildPlaceGrid(AppLocalizations l10n) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     if (_filteredPlaces.isEmpty && !_isLoading) {
       return Center(
         child: Text(
           l10n.noData,
-          style: textTheme.bodyLarge?.copyWith(
+          style: AppTextStyles.bodyLarge.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
         ),

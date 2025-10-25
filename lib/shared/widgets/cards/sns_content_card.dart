@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../features/home/data/models/sns_content_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../common/platform_icon.dart';
@@ -25,9 +26,6 @@ class SnsContentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Theme의 textTheme을 가져와서 일관된 스타일 적용
-    final textTheme = Theme.of(context).textTheme;
-
     return GestureDetector(
       onTap: onTap ?? () => debugPrint('SNS 콘텐츠 클릭: ${content.contentUrl}'),
       child: Container(
@@ -91,8 +89,7 @@ class SnsContentCard extends StatelessWidget {
                     SizedBox(height: AppSpacing.xs.h),
                     Text(
                       content.title,
-                      style: textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
+                      style: AppTextStyles.titleSmall.copyWith(
                         color: Colors.white,
                         height: 1.3,
                         shadows: [
@@ -171,7 +168,6 @@ class SnsContentHorizontalList extends StatelessWidget {
   /// 섹션 헤더 위젯 빌드
   Widget _buildSectionHeader(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final primaryColor = Theme.of(context).primaryColor;
 
     return Padding(
@@ -181,7 +177,7 @@ class SnsContentHorizontalList extends StatelessWidget {
         children: [
           Text(
             title!,
-            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            style: AppTextStyles.titleLarge,
           ),
           if (onSeeMoreTap != null)
             GestureDetector(
@@ -190,8 +186,7 @@ class SnsContentHorizontalList extends StatelessWidget {
                 children: [
                   Text(
                     l10n.seeMore,
-                    style: textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
+                    style: AppTextStyles.labelMedium.copyWith(
                       color: primaryColor,
                     ),
                   ),

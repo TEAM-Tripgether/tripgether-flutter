@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 /// 관심사 선택 칩 위젯
 ///
@@ -27,8 +28,6 @@ class InterestChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -47,10 +46,9 @@ class InterestChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: textTheme.labelLarge?.copyWith(
+          style: AppTextStyles.labelLarge.copyWith(
             // 선택 시: 흰색 텍스트, 미선택 시: 기본 텍스트 색상
             color: isSelected ? AppColors.onPrimary : AppColors.textPrimary,
-            fontWeight: FontWeight.w500,
           ),
         ),
       ),

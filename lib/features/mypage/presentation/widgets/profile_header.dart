@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tripgether/core/theme/app_colors.dart';
+import 'package:tripgether/core/theme/app_text_styles.dart';
 import 'package:tripgether/core/router/routes.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';
@@ -67,7 +68,6 @@ class ProfileHeader extends ConsumerWidget {
   /// - 닉네임 (titleLarge, 굵은 폰트)
   /// - 이메일 (bodyMedium, 보조 색상)
   Widget _buildProfile(BuildContext context, User user) {
-    final textTheme = Theme.of(context).textTheme;
 
     return Card(
       margin: AppSpacing.cardPadding,
@@ -89,7 +89,7 @@ class ProfileHeader extends ConsumerWidget {
             // 닉네임 (titleLarge: 20px, 세미볼드)
             Text(
               user.nickname,
-              style: textTheme.titleLarge?.copyWith(
+              style: AppTextStyles.titleLarge.copyWith(
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
               ),
@@ -100,7 +100,7 @@ class ProfileHeader extends ConsumerWidget {
             // 이메일 (bodyMedium: 14px, 레귤러)
             Text(
               user.email,
-              style: textTheme.bodyMedium?.copyWith(
+              style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),
@@ -120,7 +120,6 @@ class ProfileHeader extends ConsumerWidget {
   ///
   /// Google, Kakao 등의 로그인 플랫폼을 표시 (AppColorPalette 활용)
   Widget _buildLoginPlatformBadge(BuildContext context, String platform) {
-    final textTheme = Theme.of(context).textTheme;
     final l10n = AppLocalizations.of(context);
 
     // 플랫폼별 색상 (AppColorPalette 사용)
@@ -158,7 +157,7 @@ class ProfileHeader extends ConsumerWidget {
           AppSpacing.horizontalSpaceXS,
           Text(
             l10n.accountSuffix(platform),
-            style: textTheme.labelMedium?.copyWith(
+            style: AppTextStyles.labelMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: badgeColor,
             ),
@@ -175,7 +174,6 @@ class ProfileHeader extends ConsumerWidget {
   /// - "로그인이 필요합니다" 메시지
   /// - "로그인하러 가기" 버튼
   Widget _buildNotLoggedIn(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final l10n = AppLocalizations.of(context);
 
     return Card(
@@ -206,7 +204,7 @@ class ProfileHeader extends ConsumerWidget {
             // 안내 메시지
             Text(
               l10n.profileLoginRequired,
-              style: textTheme.titleMedium?.copyWith(
+              style: AppTextStyles.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
@@ -216,7 +214,7 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               l10n.profileLoginPrompt,
-              style: textTheme.bodyMedium?.copyWith(
+              style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,
@@ -239,7 +237,7 @@ class ProfileHeader extends ConsumerWidget {
               ),
               child: Text(
                 l10n.profileLoginButton,
-                style: textTheme.labelLarge?.copyWith(
+                style: AppTextStyles.labelLarge.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -314,7 +312,6 @@ class ProfileHeader extends ConsumerWidget {
   /// - 에러 아이콘
   /// - 에러 메시지
   Widget _buildError(BuildContext context, Object error) {
-    final textTheme = Theme.of(context).textTheme;
     final l10n = AppLocalizations.of(context);
 
     return Card(
@@ -331,7 +328,7 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               l10n.profileLoadError,
-              style: textTheme.titleMedium?.copyWith(
+              style: AppTextStyles.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
@@ -341,7 +338,7 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               error.toString(),
-              style: textTheme.bodySmall?.copyWith(
+              style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,

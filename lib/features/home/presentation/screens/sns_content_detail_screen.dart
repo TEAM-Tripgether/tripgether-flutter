@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/platform_icon.dart';
 import '../../data/models/sns_content_model.dart';
@@ -223,7 +224,6 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
     AppLocalizations l10n,
   ) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Row(
@@ -236,7 +236,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
         // 채널명
         Text(
           content.creatorName,
-          style: textTheme.bodyLarge?.copyWith(
+          style: AppTextStyles.bodyLarge.copyWith(
             fontWeight: FontWeight.w600,
             color: colorScheme.onSurface,
           ),
@@ -257,7 +257,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
               AppSpacing.horizontalSpaceXS,
               Text(
                 l10n.goToOriginalPost,
-                style: textTheme.labelMedium?.copyWith(
+                style: AppTextStyles.labelMedium.copyWith(
                   fontWeight: FontWeight.w500,
                   color: theme.primaryColor,
                 ),
@@ -280,13 +280,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
   /// 제목
   Widget _buildTitle(BuildContext context, SnsContent content) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Text(
       content.title,
-      style: textTheme.headlineSmall?.copyWith(
+      style: AppTextStyles.headlineSmall.copyWith(
         fontWeight: FontWeight.w700,
         color: colorScheme.onSurface,
         height: 1.4,
@@ -296,9 +294,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
   /// 카테고리 태그
   Widget _buildCategoryTag(BuildContext context, AppLocalizations l10n) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       children: [
@@ -310,7 +306,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
         SizedBox(width: 4.w),
         Text(
           l10n.aiContentSummary,
-          style: textTheme.labelMedium?.copyWith(
+          style: AppTextStyles.labelMedium.copyWith(
             fontWeight: FontWeight.w500,
             color: colorScheme.onSurfaceVariant,
           ),
@@ -321,13 +317,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
   /// 설명 영역 (긴 텍스트)
   Widget _buildDescription(BuildContext context, AppLocalizations l10n) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Text(
       _getDummyDescription(),
-      style: textTheme.bodyMedium?.copyWith(
+      style: AppTextStyles.bodyMedium.copyWith(
         color: colorScheme.onSurfaceVariant,
         height: 1.7,
       ),
@@ -337,7 +331,6 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
   /// 관련 장소 카드 섹션
   Widget _buildRelatedPlaceSection(BuildContext context) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     // 더미 장소 이미지 URL 목록 (실제로는 API에서 가져와야 함)
@@ -371,7 +364,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
           // 섹션 제목
           Text(
             '토리토스시 토요히라점',
-            style: textTheme.titleMedium?.copyWith(
+            style: AppTextStyles.titleMedium.copyWith(
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
             ),
@@ -382,7 +375,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
           // 위치 정보
           Text(
             '홋카이도 · 스시',
-            style: textTheme.bodySmall?.copyWith(
+            style: AppTextStyles.bodySmall.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
@@ -392,7 +385,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
           // 주소
           Text(
             '일본 〒062-0904 Hokkaido, Sapporo, Toyohira Ward, Toyohira 4 Jo, 6 Chome-1-10',
-            style: textTheme.bodySmall?.copyWith(
+            style: AppTextStyles.bodySmall.copyWith(
               color: colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
@@ -459,12 +452,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
         if (context.mounted) {
-          final textTheme = Theme.of(context).textTheme;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(context).cannotOpenLink,
-                style: textTheme.bodyMedium,
+                style: AppTextStyles.bodyMedium,
               ),
               behavior: SnackBarBehavior.floating,
             ),
@@ -474,12 +466,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
     } catch (e) {
       debugPrint('링크 열기 실패: $e');
       if (context.mounted) {
-        final textTheme = Theme.of(context).textTheme;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context).linkOpenError,
-              style: textTheme.bodyMedium,
+              style: AppTextStyles.bodyMedium,
             ),
             behavior: SnackBarBehavior.floating,
           ),

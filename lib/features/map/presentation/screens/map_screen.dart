@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/providers/user_provider.dart';
 
 /// 지도 화면
@@ -59,16 +60,12 @@ class MapScreen extends ConsumerWidget {
             AppSpacing.verticalSpaceLG,
             Text(
               AppStrings.of(context).navMap,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(color: Colors.grey[700]),
+              style: AppTextStyles.headlineSmall.copyWith(color: Colors.grey[700]),
             ),
             AppSpacing.verticalSpaceSM,
             Text(
               "임시 플레이스홀더 텍스트",
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
+              style: AppTextStyles.bodyMedium.copyWith(color: Colors.grey[500]),
             ),
           ],
         ),

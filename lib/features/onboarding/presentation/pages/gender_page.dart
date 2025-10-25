@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../widgets/gender_selection_card.dart';
 
@@ -31,8 +32,6 @@ class _GenderPageState extends State<GenderPage> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Padding(
       padding: AppSpacing.symmetric(horizontal: 24),
       child: Column(
@@ -44,7 +43,7 @@ class _GenderPageState extends State<GenderPage> {
           // 제목
           Text(
             '성별을 선택해주세요. (선택)',
-            style: textTheme.headlineMedium?.copyWith(
+            style: AppTextStyles.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
@@ -82,7 +81,7 @@ class _GenderPageState extends State<GenderPage> {
           // 설명
           Text(
             '여행 추천 개인화에 활용돼요.',
-            style: textTheme.bodySmall?.copyWith(
+            style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,

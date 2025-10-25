@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// 섹션 헤더 위젯
@@ -58,22 +59,18 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
 
     // 기본 제목 스타일
     final effectiveTitleStyle =
         titleStyle ??
-        textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
+        AppTextStyles.titleLarge.copyWith(
           color: AppColors.onSurface,
         );
 
     // 기본 더보기 버튼 스타일
     final effectiveSeeMoreStyle =
         seeMoreStyle ??
-        textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.w500,
+        AppTextStyles.labelMedium.copyWith(
           color: AppColors.primary,
         );
 
@@ -101,7 +98,7 @@ class SectionHeader extends StatelessWidget {
             _buildSeeMoreButton(
               context,
               seeMoreText ?? l10n.more,
-              effectiveSeeMoreStyle!,
+              effectiveSeeMoreStyle,
             ),
         ],
       ),

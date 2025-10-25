@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// PRD.md 구조에 따른 공유 바텀 네비게이션 바 위젯
 ///
@@ -144,12 +145,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
   /// [isSelected] 선택 여부 (텍스트 스타일 결정)
   Widget _buildLabel(BuildContext context, int index, bool isSelected) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Text(
       AppRoutes.getTabLabels(context)[index],
-      style: textTheme.labelSmall?.copyWith(
+      style: AppTextStyles.labelSmall.copyWith(
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         color: isSelected
             ? theme

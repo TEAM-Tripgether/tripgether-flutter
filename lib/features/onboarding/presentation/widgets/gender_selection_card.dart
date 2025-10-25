@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 /// 성별 선택 카드 위젯
 ///
@@ -27,8 +28,6 @@ class GenderSelectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -50,7 +49,7 @@ class GenderSelectionCard extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            style: textTheme.titleMedium?.copyWith(
+            style: AppTextStyles.titleMedium.copyWith(
               // 선택 시: 보라색 텍스트, 미선택 시: 기본 텍스트 색상
               color: isSelected ? AppColors.primary : AppColors.textPrimary,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
