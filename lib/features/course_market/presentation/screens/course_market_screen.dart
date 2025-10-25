@@ -173,7 +173,7 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
           // iOS/Android 공통으로 AppBar 하단에 얇은 진행 바 표시
           bottom: _isProgrammaticRefreshing
               ? PreferredSize(
-                  preferredSize: const Size.fromHeight(2.0),
+                  preferredSize: Size.fromHeight(2.h),
                   child: LinearProgressIndicator(
                     backgroundColor: Colors.transparent,
                     valueColor: AlwaysStoppedAnimation<Color>(

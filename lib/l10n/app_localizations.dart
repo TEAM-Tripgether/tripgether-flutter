@@ -961,6 +961,36 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'Tripgether 시작하기'**
   String get startTripgether;
+
+  /// 온보딩 생년월일 입력 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'생년월일을 입력해주세요'**
+  String get onboardingBirthdatePrompt;
+
+  /// 온보딩 생년월일 사용 목적 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 유저에게는 보이지 않아요.\\n연령별 콘텐츠 설정 및 추천에만 사용돼요.'**
+  String get onboardingBirthdateDescription;
+
+  /// 온보딩 생년월일 연령 제한 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'※ 만 14세 이상만 사용 가능합니다'**
+  String get onboardingBirthdateAgeLimit;
+
+  /// 온보딩 관심사 선택 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'관심사를 선택해주세요'**
+  String get onboardingInterestsPrompt;
+
+  /// 온보딩 관심사 변경 가능 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'선택한 관심사는 언제든 설정에서 바꿀 수 있어요.'**
+  String get onboardingInterestsChangeHint;
 }
 
 class _AppLocalizationsDelegate

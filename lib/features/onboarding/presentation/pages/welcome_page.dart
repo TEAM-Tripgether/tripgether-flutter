@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
@@ -16,7 +17,6 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       width: double.infinity,
@@ -41,7 +41,7 @@ class WelcomePage extends StatelessWidget {
               // 환영 메시지
               Text(
                 l10n.onboardingWelcomeTitle,
-                style: textTheme.displayMedium?.copyWith(
+                style: AppTextStyles.headlineLarge.copyWith(
                   fontWeight: FontWeight.w700,
                   color: AppColors.onPrimary,
                 ),
@@ -52,7 +52,7 @@ class WelcomePage extends StatelessWidget {
 
               Text(
                 l10n.onboardingWelcomeMessage,
-                style: textTheme.titleLarge?.copyWith(
+                style: AppTextStyles.titleLarge.copyWith(
                   color: AppColors.onPrimary.withValues(alpha: 0.9),
                 ),
                 textAlign: TextAlign.center,

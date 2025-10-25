@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/inputs/onboarding_text_field.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// 생년월일 입력 페이지 (페이지 2/5)
 ///
@@ -37,6 +39,9 @@ class _BirthdatePageState extends State<BirthdatePage> {
   );
   final List<FocusNode> _focusNodes = List.generate(8, (_) => FocusNode());
 
+  /// KeyboardListener용 FocusNode (8개 필드 각각에 하나씩)
+  final List<FocusNode> _keyboardFocusNodes = List.generate(8, (_) => FocusNode());
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +57,9 @@ class _BirthdatePageState extends State<BirthdatePage> {
       controller.dispose();
     }
     for (final node in _focusNodes) {
+      node.dispose();
+    }
+    for (final node in _keyboardFocusNodes) {
       node.dispose();
     }
     super.dispose();
@@ -126,10 +134,8 @@ class _BirthdatePageState extends State<BirthdatePage> {
   ///
   /// [index] TextField의 인덱스 (0~7)
   Widget _buildDateInputField(int index) {
-    final textTheme = Theme.of(context).textTheme;
-
     return KeyboardListener(
-      focusNode: FocusNode(),
+      focusNode: _keyboardFocusNodes[index], // ✅ 재사용 가능한 FocusNode 사용
       onKeyEvent: (event) {
         // Backspace 키 감지
         if (event is KeyDownEvent &&
@@ -151,7 +157,7 @@ class _BirthdatePageState extends State<BirthdatePage> {
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         maxLength: 1,
-        style: textTheme.headlineMedium?.copyWith(
+        style: AppTextStyles.headlineMedium.copyWith(
           fontWeight: FontWeight.w400,
           color: AppColors.textPrimary,
         ),
@@ -198,7 +204,7 @@ class _BirthdatePageState extends State<BirthdatePage> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
     final isValid = _isValidDate();
 
     return Padding(
@@ -215,8 +221,8 @@ class _BirthdatePageState extends State<BirthdatePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '생년월일을 입력해주세요',
-                style: textTheme.headlineMedium?.copyWith(
+                l10n.onboardingBirthdatePrompt,
+                style: AppTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
@@ -224,7 +230,7 @@ class _BirthdatePageState extends State<BirthdatePage> {
               AppSpacing.horizontalSpace(4),
               Text(
                 '*',
-                style: textTheme.headlineMedium?.copyWith(
+                style: AppTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.error,
                 ),
@@ -252,7 +258,7 @@ class _BirthdatePageState extends State<BirthdatePage> {
               AppSpacing.horizontalSpaceSM,
               Text(
                 '/',
-                style: textTheme.headlineSmall?.copyWith(
+                style: AppTextStyles.headlineSmall.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -267,7 +273,7 @@ class _BirthdatePageState extends State<BirthdatePage> {
               AppSpacing.horizontalSpaceSM,
               Text(
                 '/',
-                style: textTheme.headlineSmall?.copyWith(
+                style: AppTextStyles.headlineSmall.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -287,16 +293,16 @@ class _BirthdatePageState extends State<BirthdatePage> {
           Column(
             children: [
               Text(
-                '다른 유저에게는 보이지 않아요.\n연령별 콘텐츠 설정 및 추천에만 사용돼요.',
-                style: textTheme.bodySmall?.copyWith(
+                l10n.onboardingBirthdateDescription,
+                style: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),
               AppSpacing.verticalSpaceSM,
               Text(
-                '※ 만 14세 이상만 사용 가능합니다',
-                style: textTheme.bodySmall?.copyWith(color: AppColors.error),
+                l10n.onboardingBirthdateAgeLimit,
+                style: AppTextStyles.bodySmall.copyWith(color: AppColors.error),
                 textAlign: TextAlign.center,
               ),
             ],

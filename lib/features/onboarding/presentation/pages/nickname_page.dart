@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/inputs/onboarding_text_field.dart';
 
@@ -48,7 +49,6 @@ class _NicknamePageState extends State<NicknamePage> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final isValid =
         _controller.text.length >= 2 && _controller.text.length <= 10;
 
@@ -67,7 +67,7 @@ class _NicknamePageState extends State<NicknamePage> {
             children: [
               Text(
                 '이름을 설정해주세요',
-                style: textTheme.headlineMedium?.copyWith(
+                style: AppTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
@@ -75,7 +75,7 @@ class _NicknamePageState extends State<NicknamePage> {
               AppSpacing.horizontalSpace(4),
               Text(
                 '*',
-                style: textTheme.headlineMedium?.copyWith(
+                style: AppTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.error,
                 ),
@@ -92,7 +92,7 @@ class _NicknamePageState extends State<NicknamePage> {
             hintText: '닉네임을 입력하세요',
             maxLength: 10,
             textAlign: TextAlign.center,
-            style: textTheme.bodyLarge,
+            style: AppTextStyles.bodyLarge,
           ),
 
           // 입력-설명 간격 (좁게)
@@ -101,7 +101,7 @@ class _NicknamePageState extends State<NicknamePage> {
           // 설명 (입력 필드 바로 아래)
           Text(
             '다른 유저에게 보이는 이름이에요.\n비속어/광고 문구는 제한돼요.',
-            style: textTheme.bodySmall?.copyWith(
+            style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,

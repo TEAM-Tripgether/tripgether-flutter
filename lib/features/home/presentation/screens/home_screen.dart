@@ -18,6 +18,7 @@ import '../../../debug/share_extension_log_screen.dart';
 import '../../data/models/sns_content_model.dart';
 import '../../data/models/place_model.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/providers/user_provider.dart';
 
 /// 홈 화면 위젯
@@ -214,7 +215,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return InfoContainer(
@@ -255,7 +255,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           if (_currentSharedData!.hasTextData) ...[
             Text(
               '텍스트 (${_currentSharedData!.sharedTexts.length}개):',
-              style: textTheme.bodyMedium?.copyWith(
+              style: AppTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -268,7 +268,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 ),
                 child: Text(
                   '• ${text.length > 50 ? '${text.substring(0, 50)}...' : text}',
-                  style: textTheme.bodyMedium?.copyWith(
+                  style: AppTextStyles.bodyMedium.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
@@ -281,7 +281,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           if (_currentSharedData!.hasMediaData) ...[
             Text(
               '미디어 파일 (${_currentSharedData!.sharedFiles.length}개):',
-              style: textTheme.bodyMedium?.copyWith(
+              style: AppTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -315,7 +315,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   /// 파일 타입 표시용 칩 위젯
   Widget _buildFileTypeChip(IconData icon, String label) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Container(
@@ -335,7 +334,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           SizedBox(width: AppSpacing.xs),
           Text(
             label,
-            style: textTheme.labelMedium?.copyWith(color: colorScheme.primary),
+            style: AppTextStyles.labelMedium.copyWith(color: colorScheme.primary),
           ),
         ],
       ),
@@ -348,7 +347,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
@@ -463,7 +461,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   child: Center(
                     child: Text(
                       l10n.noSnsContentYet,
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: AppTextStyles.bodyMedium.copyWith(
                         fontWeight: FontWeight.w400,
                         color: colorScheme.onSurfaceVariant,
                       ),

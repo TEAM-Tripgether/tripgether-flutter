@@ -832,5 +832,30 @@
   "startTripgether": "Start Tripgether",
   "@startTripgether": {
     "description": "Start Tripgether button text"
+  },
+
+  "onboardingBirthdatePrompt": "Please enter your birthdate",
+  "@onboardingBirthdatePrompt": {
+    "description": "Onboarding birthdate input prompt"
+  },
+
+  "onboardingBirthdateDescription": "It won't be visible to other users.\\nIt's only used for age-appropriate content settings and recommendations.",
+  "@onboardingBirthdateDescription": {
+    "description": "Onboarding birthdate usage description"
+  },
+
+  "onboardingBirthdateAgeLimit": "※ Only for ages 14 and above",
+  "@onboardingBirthdateAgeLimit": {
+    "description": "Onboarding birthdate age limit notice"
+  },
+
+  "onboardingInterestsPrompt": "Please select your interests",
+  "@onboardingInterestsPrompt": {
+    "description": "Onboarding interests selection prompt"
+  },
+
+  "onboardingInterestsChangeHint": "You can change your interests anytime in settings.",
+  "@onboardingInterestsChangeHint": {
+    "description": "Onboarding interests change hint"
   }
 }

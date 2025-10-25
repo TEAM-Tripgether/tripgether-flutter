@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 /// 소셜 로그인 버튼 위젯
 ///
@@ -59,8 +60,6 @@ class SocialLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Theme의 textTheme을 가져와서 일관된 텍스트 스타일 적용
-    final textTheme = Theme.of(context).textTheme;
 
     return SizedBox(
       width: double.infinity, // 전체 너비
@@ -98,10 +97,10 @@ class SocialLoginButton extends StatelessWidget {
                 children: [
                   // 아이콘이 있는 경우 표시
                   if (icon != null) ...[icon!, SizedBox(width: AppSpacing.sm)],
-                  // 버튼 텍스트 (Theme의 textTheme 활용)
+                  // 버튼 텍스트 (AppTextStyles 활용)
                   Text(
                     text,
-                    style: textTheme.labelLarge?.copyWith(
+                    style: AppTextStyles.labelLarge.copyWith(
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.1,
                       color: textColor,

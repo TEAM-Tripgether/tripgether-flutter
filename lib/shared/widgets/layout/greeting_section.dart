@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../inputs/search_bar.dart';
 
@@ -36,7 +37,6 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       // 전체 너비 명시적으로 지정
@@ -62,7 +62,7 @@ class HomeHeader extends StatelessWidget {
           // 인사말 (국제화 적용)
           Text(
             greeting ?? l10n.greeting(nickname),
-            style: textTheme.headlineSmall?.copyWith(
+            style: AppTextStyles.headlineSmall.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.onPrimary, // 그라데이션 배경에 맞춰 흰색
             ),
@@ -72,7 +72,7 @@ class HomeHeader extends StatelessWidget {
           // 부제목 (국제화 적용)
           Text(
             greetingSubtitle ?? l10n.greetingSubtitle,
-            style: textTheme.bodySmall?.copyWith(
+            style: AppTextStyles.bodySmall.copyWith(
               fontWeight: FontWeight.w400,
               color: AppColors.onPrimary.withValues(alpha: 0.9), // 약간 투명
             ),

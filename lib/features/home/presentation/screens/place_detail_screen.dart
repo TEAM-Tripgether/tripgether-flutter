@@ -195,8 +195,8 @@ class PlaceDetailScreen extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
@@ -331,8 +331,8 @@ class PlaceDetailScreen extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
@@ -381,8 +381,8 @@ class PlaceDetailScreen extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
@@ -468,8 +468,8 @@ class PlaceDetailScreen extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
@@ -543,8 +543,8 @@ class PlaceDetailScreen extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            blurRadius: 10.r,
+            offset: Offset(0, -2.h),
           ),
         ],
       ),

@@ -73,32 +73,34 @@ class CustomBottomNavigationBar extends StatelessWidget {
     // 현재 탭이 선택되어 있는지 확인
     final bool isSelected = currentIndex == index;
 
-    return GestureDetector(
-      onTap: () {
-        // 현재 선택된 탭을 다시 클릭한 경우
-        if (currentIndex == index) {
-          onTabReselected?.call(index);
-        } else {
-          // 다른 탭을 선택한 경우
-          onTap(index);
-        }
-      },
-      // 탭 영역을 확장하여 터치하기 쉽게 만듦
-      behavior: HitTestBehavior.translucent,
-      child: SizedBox(
-        width: AppSizes.fabSize, // 각 탭의 최소 너비 보장
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // SVG 아이콘 표시
-            _buildIcon(context, index, isSelected),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          // 현재 선택된 탭을 다시 클릭한 경우
+          if (currentIndex == index) {
+            onTabReselected?.call(index);
+          } else {
+            // 다른 탭을 선택한 경우
+            onTap(index);
+          }
+        },
+        borderRadius: BorderRadius.circular(16.r),
+        child: SizedBox(
+          width: AppSizes.fabSize, // 각 탭의 최소 너비 보장
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // SVG 아이콘 표시
+              _buildIcon(context, index, isSelected),
 
-            SizedBox(height: AppSpacing.xs.h),
+              SizedBox(height: AppSpacing.xs.h),
 
-            // 탭 라벨 텍스트
-            _buildLabel(context, index, isSelected),
-          ],
+              // 탭 라벨 텍스트
+              _buildLabel(context, index, isSelected),
+            ],
+          ),
         ),
       ),
     );

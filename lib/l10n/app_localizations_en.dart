@@ -482,4 +482,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startTripgether => 'Start Tripgether';
+
+  @override
+  String get onboardingBirthdatePrompt => 'Please enter your birthdate';
+
+  @override
+  String get onboardingBirthdateDescription =>
+      'It won\'t be visible to other users.\\nIt\'s only used for age-appropriate content settings and recommendations.';
+
+  @override
+  String get onboardingBirthdateAgeLimit => '※ Only for ages 14 and above';
+
+  @override
+  String get onboardingInterestsPrompt => 'Please select your interests';
+
+  @override
+  String get onboardingInterestsChangeHint =>
+      'You can change your interests anytime in settings.';
 }

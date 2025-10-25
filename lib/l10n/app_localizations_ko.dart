@@ -475,4 +475,20 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get startTripgether => 'Tripgether 시작하기';
+
+  @override
+  String get onboardingBirthdatePrompt => '생년월일을 입력해주세요';
+
+  @override
+  String get onboardingBirthdateDescription =>
+      '다른 유저에게는 보이지 않아요.\\n연령별 콘텐츠 설정 및 추천에만 사용돼요.';
+
+  @override
+  String get onboardingBirthdateAgeLimit => '※ 만 14세 이상만 사용 가능합니다';
+
+  @override
+  String get onboardingInterestsPrompt => '관심사를 선택해주세요';
+
+  @override
+  String get onboardingInterestsChangeHint => '선택한 관심사는 언제든 설정에서 바꿀 수 있어요.';
 }

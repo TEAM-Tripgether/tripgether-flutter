@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// 온보딩 전용 텍스트 입력 필드
 ///
@@ -79,15 +80,8 @@ class OnboardingTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     // 기본 텍스트 스타일 (사용자 지정이 없으면)
-    final defaultStyle =
-        style ??
-        textTheme.bodyLarge?.copyWith(
-          color: AppColors.textPrimary,
-          fontWeight: FontWeight.w400,
-        );
+    final defaultStyle = style ?? AppTextStyles.bodyLarge;
 
     Widget textField = TextField(
       controller: controller,
@@ -103,7 +97,7 @@ class OnboardingTextField extends StatelessWidget {
       onSubmitted: onSubmitted != null ? (_) => onSubmitted!() : null,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: textTheme.bodyLarge?.copyWith(
+        hintStyle: AppTextStyles.bodyLarge.copyWith(
           color: AppColors.textSecondary.withValues(alpha: 0.5),
         ),
         counterText: '', // 글자 수 카운터 숨김

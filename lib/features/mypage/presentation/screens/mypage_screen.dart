@@ -7,6 +7,7 @@ import 'package:tripgether/core/constants/app_strings.dart';
 import 'package:tripgether/core/providers/locale_provider.dart';
 import 'package:tripgether/core/router/routes.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
+import 'package:tripgether/core/theme/app_text_styles.dart';
 import 'package:tripgether/l10n/app_localizations.dart';
 import 'package:tripgether/features/mypage/presentation/widgets/profile_header.dart';
 import 'package:tripgether/features/auth/providers/login_provider.dart';
@@ -90,7 +91,6 @@ class MyPageScreen extends ConsumerWidget {
     AppLocalizations l10n,
     Locale? currentLocale,
   ) {
-    final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
@@ -101,7 +101,7 @@ class MyPageScreen extends ConsumerWidget {
           padding: AppSpacing.only(left: 16, top: 24, right: 16, bottom: 12),
           child: Text(
             l10n.languageSelection,
-            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w700),
           ),
         ),
 
@@ -110,7 +110,7 @@ class MyPageScreen extends ConsumerWidget {
           padding: AppSpacing.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             '${l10n.currentLanguage}: ${_getLanguageName(l10n, currentLocale)}',
-            style: textTheme.bodyMedium?.copyWith(
+            style: AppTextStyles.bodyMedium.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
@@ -154,7 +154,6 @@ class MyPageScreen extends ConsumerWidget {
     Locale? locale,
     bool isSelected,
   ) {
-    final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final primaryColor = Theme.of(context).primaryColor;
 
@@ -162,7 +161,7 @@ class MyPageScreen extends ConsumerWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       title: Text(
         languageName,
-        style: textTheme.bodyLarge?.copyWith(
+        style: AppTextStyles.bodyLarge.copyWith(
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           color: isSelected ? primaryColor : colorScheme.onSurface,
         ),
@@ -180,7 +179,7 @@ class MyPageScreen extends ConsumerWidget {
             SnackBar(
               content: Text(
                 '${l10n.language}: $languageName',
-                style: textTheme.bodyMedium,
+                style: AppTextStyles.bodyMedium,
               ),
               duration: const Duration(seconds: 2),
             ),
@@ -210,7 +209,6 @@ class MyPageScreen extends ConsumerWidget {
   /// **목적**: 개발/테스트 중 온보딩 화면으로 쉽게 이동할 수 있도록 함
   /// **주의**: 프로덕션 배포 전에 제거 필요
   Widget _buildTestSection(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -238,7 +236,7 @@ class MyPageScreen extends ConsumerWidget {
               SizedBox(width: 8.w),
               Text(
                 '🧪 테스트 모드',
-                style: textTheme.titleSmall?.copyWith(
+                style: AppTextStyles.titleSmall.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.secondary,
                 ),
@@ -256,7 +254,7 @@ class MyPageScreen extends ConsumerWidget {
             icon: Icon(Icons.assignment_outlined, size: 20.w),
             label: Text(
               '온보딩 화면 테스트',
-              style: textTheme.bodyMedium?.copyWith(
+              style: AppTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -276,7 +274,7 @@ class MyPageScreen extends ConsumerWidget {
           // 안내 문구
           Text(
             '※ 개발/테스트 전용 기능입니다',
-            style: textTheme.bodySmall?.copyWith(
+            style: AppTextStyles.bodySmall.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontStyle: FontStyle.italic,
             ),
@@ -310,7 +308,6 @@ class MyPageScreen extends ConsumerWidget {
         }
 
         // 로그인된 상태: 로그아웃 버튼 표시
-        final textTheme = Theme.of(context).textTheme;
         final colorScheme = Theme.of(context).colorScheme;
 
         return Container(
@@ -333,7 +330,7 @@ class MyPageScreen extends ConsumerWidget {
                 icon: Icon(Icons.logout, size: 20.w, color: colorScheme.error),
                 label: Text(
                   AppLocalizations.of(context).logout,
-                  style: textTheme.bodyLarge?.copyWith(
+                  style: AppTextStyles.bodyLarge.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colorScheme.error,
                   ),
@@ -355,7 +352,7 @@ class MyPageScreen extends ConsumerWidget {
               // 안내 문구
               Text(
                 AppLocalizations.of(context).logoutHint,
-                style: textTheme.bodySmall?.copyWith(
+                style: AppTextStyles.bodySmall.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
@@ -375,7 +372,6 @@ class MyPageScreen extends ConsumerWidget {
   /// 3. 로그인 화면으로 이동
   Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
     // 로그아웃 확인 다이얼로그
@@ -384,16 +380,16 @@ class MyPageScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: Text(
           l10n.logoutConfirmTitle,
-          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w700),
         ),
-        content: Text(l10n.logoutConfirmMessage, style: textTheme.bodyMedium),
+        content: Text(l10n.logoutConfirmMessage, style: AppTextStyles.bodyMedium),
         actions: [
           // 취소 버튼
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
               l10n.btnCancel,
-              style: textTheme.labelLarge?.copyWith(
+              style: AppTextStyles.labelLarge.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -405,7 +401,7 @@ class MyPageScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               l10n.logout,
-              style: textTheme.labelLarge?.copyWith(
+              style: AppTextStyles.labelLarge.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.error,
               ),
@@ -427,7 +423,6 @@ class MyPageScreen extends ConsumerWidget {
       if (!context.mounted) return;
 
       final l10nAfter = AppLocalizations.of(context);
-      final textThemeAfter = Theme.of(context).textTheme;
 
       // 성공 스낵바 표시
       ScaffoldMessenger.of(context).showSnackBar(
@@ -435,7 +430,7 @@ class MyPageScreen extends ConsumerWidget {
           content: Text(
             l10nAfter.logoutSuccess,
             textAlign: TextAlign.center,
-            style: textThemeAfter.bodyMedium?.copyWith(
+            style: AppTextStyles.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
@@ -452,7 +447,6 @@ class MyPageScreen extends ConsumerWidget {
       if (!context.mounted) return;
 
       final l10nError = AppLocalizations.of(context);
-      final textThemeError = Theme.of(context).textTheme;
       final colorSchemeError = Theme.of(context).colorScheme;
 
       // 에러 발생 시 스낵바 표시
@@ -460,7 +454,7 @@ class MyPageScreen extends ConsumerWidget {
         SnackBar(
           content: Text(
             l10nError.logoutFailed(e.toString()),
-            style: textThemeError.bodyMedium?.copyWith(
+            style: AppTextStyles.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),

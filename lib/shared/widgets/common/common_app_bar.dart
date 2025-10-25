@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -241,7 +242,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// PreferredSizeWidget 인터페이스 구현
   /// AppBar의 기본 높이를 반환 (ScreenUtil 적용)
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight.h);
 
   /// 홈 화면용 AppBar 생성
   /// 기본 설정으로 "Tripgether" 제목과 햄버거 메뉴, 알림 아이콘을 표시

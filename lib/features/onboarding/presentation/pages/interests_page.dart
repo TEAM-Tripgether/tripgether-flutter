@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../constants/interest_categories.dart';
 import '../widgets/interest_chip.dart';
 
@@ -56,7 +58,7 @@ class _InterestsPageState extends State<InterestsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
     final selectedCount = _selectedInterests.length;
     final isValid = selectedCount >= 3 && selectedCount <= 10;
 
@@ -74,8 +76,8 @@ class _InterestsPageState extends State<InterestsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '관심사를 선택해주세요',
-                style: textTheme.headlineMedium?.copyWith(
+                l10n.onboardingInterestsPrompt,
+                style: AppTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
@@ -83,7 +85,7 @@ class _InterestsPageState extends State<InterestsPage> {
               AppSpacing.horizontalSpace(4),
               Text(
                 '*',
-                style: textTheme.headlineMedium?.copyWith(
+                style: AppTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.error,
                 ),
@@ -96,7 +98,7 @@ class _InterestsPageState extends State<InterestsPage> {
           // 선택 개수 표시
           Text(
             '$selectedCount개 선택',
-            style: textTheme.titleMedium?.copyWith(
+            style: AppTextStyles.titleMedium.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w600,
             ),
@@ -134,7 +136,7 @@ class _InterestsPageState extends State<InterestsPage> {
                               children: [
                                 Text(
                                   category.name,
-                                  style: textTheme.titleSmall,
+                                  style: AppTextStyles.titleSmall,
                                 ),
                                 Icon(
                                   isExpanded
@@ -175,8 +177,8 @@ class _InterestsPageState extends State<InterestsPage> {
 
                   // 설명
                   Text(
-                    '선택한 관심사는 언제든 설정에서 바꿀 수 있어요.',
-                    style: textTheme.bodySmall?.copyWith(
+                    l10n.onboardingInterestsChangeHint,
+                    style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.textSecondary,
                     ),
                   ),
