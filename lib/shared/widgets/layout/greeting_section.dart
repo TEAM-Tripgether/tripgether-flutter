@@ -74,7 +74,7 @@ class HomeHeader extends StatelessWidget {
             greetingSubtitle ?? l10n.greetingSubtitle,
             style: textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w400,
-              color: AppColors.onPrimary.withOpacity(0.9), // 약간 투명
+              color: AppColors.onPrimary.withValues(alpha: 0.9), // 약간 투명
             ),
           ),
 

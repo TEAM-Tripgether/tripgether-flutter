@@ -196,7 +196,7 @@ class ErrorInfoContainer extends StatelessWidget {
       title: title,
       titleIcon: Icons.error_outline,
       backgroundColor: colorScheme.errorContainer,
-      borderColor: colorScheme.error.withOpacity(0.3),
+      borderColor: colorScheme.error.withValues(alpha: 0.3),
       titleColor: colorScheme.onErrorContainer,
       iconColor: colorScheme.error,
       actions: actions,

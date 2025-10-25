@@ -53,7 +53,7 @@ class WelcomePage extends StatelessWidget {
               Text(
                 l10n.onboardingWelcomeMessage,
                 style: textTheme.titleLarge?.copyWith(
-                  color: AppColors.onPrimary.withOpacity(0.9),
+                  color: AppColors.onPrimary.withValues(alpha: 0.9),
                 ),
                 textAlign: TextAlign.center,
               ),

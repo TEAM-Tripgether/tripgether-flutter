@@ -190,14 +190,14 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
                 Positioned.fill(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: colorScheme.scrim.withOpacity(0.3),
+                      color: colorScheme.scrim.withValues(alpha: 0.3),
                     ),
                     child: Center(
                       child: Container(
                         width: 80.w,
                         height: 80.w,
                         decoration: BoxDecoration(
-                          color: colorScheme.surface.withOpacity(0.9),
+                          color: colorScheme.surface.withValues(alpha: 0.9),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -358,7 +358,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.08),
+            color: colorScheme.shadow.withValues(alpha: 0.08),
             offset: Offset(0, 2.h),
             blurRadius: 12.r,
             spreadRadius: 0,

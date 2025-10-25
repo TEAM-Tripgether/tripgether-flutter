@@ -217,9 +217,9 @@ class MyPageScreen extends ConsumerWidget {
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: colorScheme.secondaryContainer.withOpacity(0.3),
+        color: colorScheme.secondaryContainer.withValues(alpha: 0.3),
         border: Border.all(
-          color: colorScheme.secondary.withOpacity(0.5),
+          color: colorScheme.secondary.withValues(alpha: 0.5),
           width: 1.w,
         ),
         borderRadius: BorderRadius.circular(12.r),
@@ -341,7 +341,7 @@ class MyPageScreen extends ConsumerWidget {
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 14.h),
                   side: BorderSide(
-                    color: colorScheme.error.withOpacity(0.5),
+                    color: colorScheme.error.withValues(alpha: 0.5),
                     width: 1.5.w,
                   ),
                   shape: RoundedRectangleBorder(

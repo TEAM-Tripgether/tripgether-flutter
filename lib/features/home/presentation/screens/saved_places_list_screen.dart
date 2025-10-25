@@ -58,7 +58,7 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
       _FilterConfig(
         category: null,
         label: AppLocalizations.of(context).filterAll,
-        selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+        selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
       ),
       // 카테고리별 필터 (PlaceCategory enum 기반 자동 생성)
       ...PlaceCategory.values.map(
@@ -66,7 +66,7 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
           category: category,
           label: category.displayName,
           emoji: category.emoji,
-          selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+          selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         ),
       ),
     ];
