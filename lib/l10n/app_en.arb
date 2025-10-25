@@ -792,5 +792,30 @@
         "example": "Google"
       }
     }
+  },
+
+  "permissionCreateScheduleRequired": "You need to sign in to create a schedule.",
+  "@permissionCreateScheduleRequired": {
+    "description": "Schedule creation permission error message"
+  },
+
+  "permissionPurchaseCourseRequired": "You need to sign in to purchase a course.",
+  "@permissionPurchaseCourseRequired": {
+    "description": "Course purchase permission error message"
+  },
+
+  "permissionEditProfileRequired": "You need to sign in to edit your profile.",
+  "@permissionEditProfileRequired": {
+    "description": "Profile edit permission error message"
+  },
+
+  "permissionAccessMapRequired": "Location permission is required to use the map.",
+  "@permissionAccessMapRequired": {
+    "description": "Map access permission error message"
+  },
+
+  "permissionGeneralRequired": "Appropriate permission is required to use this feature.",
+  "@permissionGeneralRequired": {
+    "description": "General permission error message"
   }
 }

@@ -451,4 +451,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String accountSuffix(String platform) {
     return '$platform 계정';
   }
+
+  @override
+  String get permissionCreateScheduleRequired => '일정을 생성하려면 로그인이 필요합니다.';
+
+  @override
+  String get permissionPurchaseCourseRequired => '코스를 구매하려면 로그인이 필요합니다.';
+
+  @override
+  String get permissionEditProfileRequired => '프로필을 편집하려면 로그인이 필요합니다.';
+
+  @override
+  String get permissionAccessMapRequired => '지도를 사용하려면 위치 권한이 필요합니다.';
+
+  @override
+  String get permissionGeneralRequired => '이 기능을 사용하려면 적절한 권한이 필요합니다.';
 }

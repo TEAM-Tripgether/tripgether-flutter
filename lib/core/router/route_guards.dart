@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import 'routes.dart';
 import '../../features/auth/providers/user_provider.dart';
+import '../../features/auth/data/models/user_model.dart';
+import '../../l10n/app_localizations.dart';
 
 /// 라우트 가드 클래스
 ///
@@ -124,23 +126,68 @@ class RouteGuard {
 
   /// 권한이 없을 때 표시할 에러 메시지
   ///
+  /// [context] BuildContext - 다국어 지원을 위해 필요
   /// [permission] 권한 타입
   ///
-  /// Returns: 에러 메시지
-  static String getPermissionErrorMessage(PermissionType permission) {
+  /// Returns: 에러 메시지 (다국어 지원)
+  static String getPermissionErrorMessage(
+    BuildContext context,
+    PermissionType permission,
+  ) {
+    final l10n = AppLocalizations.of(context);
+
     switch (permission) {
       case PermissionType.createSchedule:
-        return '일정을 생성하려면 로그인이 필요합니다.';
+        return l10n.permissionCreateScheduleRequired;
       case PermissionType.purchaseCourse:
-        return '코스를 구매하려면 로그인이 필요합니다.';
+        return l10n.permissionPurchaseCourseRequired;
       case PermissionType.editProfile:
-        return '프로필을 편집하려면 로그인이 필요합니다.';
+        return l10n.permissionEditProfileRequired;
       case PermissionType.accessMap:
-        return '지도를 사용하려면 위치 권한이 필요합니다.';
+        return l10n.permissionAccessMapRequired;
       // ignore: unreachable_switch_default
       default:
-        return '이 기능을 사용하려면 적절한 권한이 필요합니다.';
+        return l10n.permissionGeneralRequired;
     }
+  }
+}
+
+/// GoRouter의 refreshListenable을 위한 ChangeNotifier
+///
+/// UserNotifier의 상태 변화를 감지하여 GoRouter에게 알려,
+/// 인증 상태가 변경될 때 redirect 로직을 재실행하도록 합니다.
+///
+/// **문제 해결**:
+/// - UserNotifier.build()는 async 함수로 Secure Storage에서 사용자 정보를 로드
+/// - GoRouter의 redirect는 즉시 실행되어 loading 상태에서 null 반환
+/// - 이로 인해 로그인된 사용자도 로그인 화면으로 리다이렉트되는 문제 발생
+///
+/// **해결 방법**:
+/// - refreshListenable을 통해 UserNotifier 상태 변화 감지
+/// - loading → data 전환 시 redirect 재실행하여 올바른 화면으로 이동
+class GoRouterRefreshNotifier extends ChangeNotifier {
+  /// Riverpod ProviderContainer 참조
+  final ProviderContainer _container;
+
+  /// 생성자
+  ///
+  /// [container] ProviderContainer - UserNotifier 감시용
+  GoRouterRefreshNotifier(this._container) {
+    // UserNotifier 상태 변화 감지
+    _container.listen<AsyncValue<User?>>(
+      userNotifierProvider,
+      (previous, next) {
+        // 상태가 변경되면 GoRouter에게 알림
+        notifyListeners();
+      },
+      fireImmediately: false, // 초기화 시점에는 알리지 않음
+    );
+  }
+
+  @override
+  void dispose() {
+    // ProviderContainer는 외부에서 관리하므로 dispose하지 않음
+    super.dispose();
   }
 }
 

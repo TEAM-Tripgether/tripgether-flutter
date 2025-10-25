@@ -452,4 +452,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String accountSuffix(String platform) {
     return '$platform account';
   }
+
+  @override
+  String get permissionCreateScheduleRequired =>
+      'You need to sign in to create a schedule.';
+
+  @override
+  String get permissionPurchaseCourseRequired =>
+      'You need to sign in to purchase a course.';
+
+  @override
+  String get permissionEditProfileRequired =>
+      'You need to sign in to edit your profile.';
+
+  @override
+  String get permissionAccessMapRequired =>
+      'Location permission is required to use the map.';
+
+  @override
+  String get permissionGeneralRequired =>
+      'Appropriate permission is required to use this feature.';
 }

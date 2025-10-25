@@ -913,6 +913,36 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'{platform} 계정'**
   String accountSuffix(String platform);
+
+  /// 일정 생성 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'일정을 생성하려면 로그인이 필요합니다.'**
+  String get permissionCreateScheduleRequired;
+
+  /// 코스 구매 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'코스를 구매하려면 로그인이 필요합니다.'**
+  String get permissionPurchaseCourseRequired;
+
+  /// 프로필 편집 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필을 편집하려면 로그인이 필요합니다.'**
+  String get permissionEditProfileRequired;
+
+  /// 지도 접근 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'지도를 사용하려면 위치 권한이 필요합니다.'**
+  String get permissionAccessMapRequired;
+
+  /// 일반 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기능을 사용하려면 적절한 권한이 필요합니다.'**
+  String get permissionGeneralRequired;
 }
 
 class _AppLocalizationsDelegate
