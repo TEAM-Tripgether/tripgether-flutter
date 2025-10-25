@@ -39,9 +39,7 @@ class GenderSelectionCard extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           // 선택 시: 연한 보라색 배경, 미선택 시: 흰색 배경
-          color: isSelected
-              ? AppColors.primaryContainer
-              : AppColors.surface,
+          color: isSelected ? AppColors.primaryContainer : AppColors.surface,
           // 선택 시: 두꺼운 보라색 테두리, 미선택 시: 얇은 회색 테두리
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.outline,
@@ -54,9 +52,7 @@ class GenderSelectionCard extends StatelessWidget {
             label,
             style: textTheme.titleMedium?.copyWith(
               // 선택 시: 보라색 텍스트, 미선택 시: 기본 텍스트 색상
-              color: isSelected
-                  ? AppColors.primary
-                  : AppColors.textPrimary,
+              color: isSelected ? AppColors.primary : AppColors.textPrimary,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             ),
           ),

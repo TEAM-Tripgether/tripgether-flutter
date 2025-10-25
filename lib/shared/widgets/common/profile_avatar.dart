@@ -101,12 +101,7 @@ class ProfileAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         // 테두리 설정
-        border: showBorder
-            ? Border.all(
-                color: Colors.white,
-                width: 2.w,
-              )
-            : null,
+        border: showBorder ? Border.all(color: Colors.white, width: 2.w) : null,
         // 그림자 효과 (테두리 있을 때만)
         boxShadow: showBorder
             ? [
@@ -118,17 +113,12 @@ class ProfileAvatar extends StatelessWidget {
               ]
             : null,
       ),
-      child: ClipOval(
-        child: _buildContent(),
-      ),
+      child: ClipOval(child: _buildContent()),
     );
 
     // 탭 이벤트가 있으면 GestureDetector로 감싸기
     if (onTap != null) {
-      return GestureDetector(
-        onTap: onTap,
-        child: widget,
-      );
+      return GestureDetector(onTap: onTap, child: widget);
     }
 
     return widget;
@@ -255,16 +245,9 @@ class ProfileAvatarWithBadge extends StatelessWidget {
             decoration: BoxDecoration(
               color: badgeColor,
               shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white,
-                width: 2.w,
-              ),
+              border: Border.all(color: Colors.white, width: 2.w),
             ),
-            child: Icon(
-              badgeIcon,
-              size: size.value * 0.2,
-              color: Colors.white,
-            ),
+            child: Icon(badgeIcon, size: size.value * 0.2, color: Colors.white),
           ),
         ),
       ],
@@ -310,11 +293,7 @@ class ProfileAvatarWithEdit extends StatelessWidget {
     return Stack(
       children: [
         // 프로필 아바타
-        ProfileAvatar(
-          imageUrl: imageUrl,
-          size: size,
-          showBorder: true,
-        ),
+        ProfileAvatar(imageUrl: imageUrl, size: size, showBorder: true),
 
         // 편집 버튼 (우측 하단)
         Positioned(
@@ -328,10 +307,7 @@ class ProfileAvatarWithEdit extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 2.w,
-                ),
+                border: Border.all(color: Colors.white, width: 2.w),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.2),

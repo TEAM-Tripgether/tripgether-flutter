@@ -32,9 +32,7 @@ class UserNotifier extends _$UserNotifier {
   /// - Android: EncryptedSharedPreferences
   /// - iOS: Keychain
   static const _storage = FlutterSecureStorage(
-    aOptions: AndroidOptions(
-      encryptedSharedPreferences: true,
-    ),
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
   /// 사용자 정보 저장 키
@@ -320,6 +318,7 @@ class UserNotifier extends _$UserNotifier {
 /// }
 /// ```
 @riverpod
+// ignore: strict_top_level_inference
 Future<String?> accessToken(ref) async {
   try {
     // UserNotifier의 storage 인스턴스 재사용 (메모리 효율)
@@ -342,6 +341,7 @@ Future<String?> accessToken(ref) async {
 /// }
 /// ```
 @riverpod
+// ignore: strict_top_level_inference
 Future<String?> refreshToken(ref) async {
   try {
     // UserNotifier의 storage 인스턴스 재사용 (메모리 효율)

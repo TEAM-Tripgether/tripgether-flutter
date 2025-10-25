@@ -117,9 +117,7 @@ class GoogleAuthService {
         debugPrint(
           '[GoogleAuthService] 👤 Display Name: ${account!.displayName}',
         );
-        debugPrint(
-          '[GoogleAuthService] 🖼️ Photo URL: ${account!.photoUrl}',
-        );
+        debugPrint('[GoogleAuthService] 🖼️ Photo URL: ${account!.photoUrl}');
         debugPrint(
           '[GoogleAuthService] 🔑 ID Token: ${auth.idToken?.substring(0, 20)}...',
         );

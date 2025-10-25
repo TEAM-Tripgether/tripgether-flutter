@@ -131,8 +131,12 @@ class LoginNotifier extends _$LoginNotifier {
       );
 
       debugPrint('[LoginProvider] ✅ JWT 토큰 발급 완료');
-      debugPrint('  🔑 Access Token: ${authResponse.accessToken.substring(0, 30)}...');
-      debugPrint('  🔄 Refresh Token: ${authResponse.refreshToken.substring(0, 30)}...');
+      debugPrint(
+        '  🔑 Access Token: ${authResponse.accessToken.substring(0, 30)}...',
+      );
+      debugPrint(
+        '  🔄 Refresh Token: ${authResponse.refreshToken.substring(0, 30)}...',
+      );
       debugPrint('  🆕 최초 로그인: ${authResponse.isFirstLogin}');
 
       // 4. User 객체 생성 (Google 정보 기반)
@@ -150,7 +154,9 @@ class LoginNotifier extends _$LoginNotifier {
       // 5. UserNotifier에 사용자 정보 + 토큰 저장
       debugPrint('[LoginProvider] 💾 Secure Storage에 정보 저장 중...');
 
-      await ref.read(userNotifierProvider.notifier).setUser(
+      await ref
+          .read(userNotifierProvider.notifier)
+          .setUser(
             user: user,
             accessToken: authResponse.accessToken,
             refreshToken: authResponse.refreshToken,

@@ -75,9 +75,9 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
             const Text('Share Extension 로그'),
             Text(
               '최신 5개만 자동 유지 (현재: $_logCount개)',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -108,10 +108,10 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                 child: Text(
                   _logContent,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontFamily: 'monospace', // 디버그 로그용 고정폭 폰트
-                        color: AppColors.success,
-                        height: 1.5,
-                      ),
+                    fontFamily: 'monospace', // 디버그 로그용 고정폭 폰트
+                    color: AppColors.success,
+                    height: 1.5,
+                  ),
                 ),
               ),
             ),

@@ -154,8 +154,9 @@ class _InterestsPageState extends State<InterestsPage> {
                             spacing: 8,
                             runSpacing: 8,
                             children: category.items.map((item) {
-                              final isSelected =
-                                  _selectedInterests.contains(item);
+                              final isSelected = _selectedInterests.contains(
+                                item,
+                              );
                               return InterestChip(
                                 label: item,
                                 isSelected: isSelected,

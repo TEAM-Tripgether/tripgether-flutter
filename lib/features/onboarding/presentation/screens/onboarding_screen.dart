@@ -8,7 +8,6 @@ import '../pages/interests_page.dart';
 import '../pages/welcome_page.dart';
 import '../widgets/onboarding_page_indicator.dart';
 
-
 /// 온보딩 메인 화면
 ///
 /// 5개의 페이지를 PageView로 관리하며, 단계별로 사용자 정보를 입력받습니다.
@@ -90,10 +89,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   padding: EdgeInsets.zero,
                 ),
           // 중앙: 페이지 인디케이터
-          title: OnboardingPageIndicator(
-            controller: _pageController,
-            count: 5,
-          ),
+          title: OnboardingPageIndicator(controller: _pageController, count: 5),
           centerTitle: true,
         ),
       ),
@@ -107,28 +103,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         },
         children: [
           // 페이지 1: 닉네임 설정
-          NicknamePage(
-            onNext: _goToNextPage,
-            pageController: _pageController,
-          ),
+          NicknamePage(onNext: _goToNextPage, pageController: _pageController),
 
           // 페이지 2: 생년월일 입력
-          BirthdatePage(
-            onNext: _goToNextPage,
-            pageController: _pageController,
-          ),
+          BirthdatePage(onNext: _goToNextPage, pageController: _pageController),
 
           // 페이지 3: 성별 선택
-          GenderPage(
-            onNext: _goToNextPage,
-            pageController: _pageController,
-          ),
+          GenderPage(onNext: _goToNextPage, pageController: _pageController),
 
           // 페이지 4: 관심사 선택
-          InterestsPage(
-            onNext: _goToNextPage,
-            pageController: _pageController,
-          ),
+          InterestsPage(onNext: _goToNextPage, pageController: _pageController),
 
           // 페이지 5: 완료 화면
           const WelcomePage(),

@@ -42,10 +42,7 @@ class InterestChip extends StatelessWidget {
           // 선택 시: 테두리 없음, 미선택 시: 회색 테두리
           border: isSelected
               ? null
-              : Border.all(
-                  color: AppColors.outline,
-                  width: 1.w,
-                ),
+              : Border.all(color: AppColors.outline, width: 1.w),
           borderRadius: BorderRadius.circular(20.r),
         ),
         child: Text(

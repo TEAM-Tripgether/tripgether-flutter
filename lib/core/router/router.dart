@@ -32,11 +32,19 @@ class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
   /// 각 탭 브랜치별 네비게이터 키 (독립적인 네비게이션 스택 관리)
-  static final _homeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'home');
-  static final _courseMarketNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'courseMarket');
+  static final _homeNavigatorKey = GlobalKey<NavigatorState>(
+    debugLabel: 'home',
+  );
+  static final _courseMarketNavigatorKey = GlobalKey<NavigatorState>(
+    debugLabel: 'courseMarket',
+  );
   static final _mapNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'map');
-  static final _scheduleNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'schedule');
-  static final _myPageNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'myPage');
+  static final _scheduleNavigatorKey = GlobalKey<NavigatorState>(
+    debugLabel: 'schedule',
+  );
+  static final _myPageNavigatorKey = GlobalKey<NavigatorState>(
+    debugLabel: 'myPage',
+  );
 
   /// 탭 재클릭 시 실행될 콜백 저장소
   ///
@@ -126,163 +134,179 @@ class AppRouter {
                 pageBuilder: (context, state) =>
                     NoTransitionPage(child: const HomeScreen()),
                 routes: [
-              // SNS 콘텐츠 목록 화면
-              GoRoute(
-                path: 'sns-contents',
-                builder: (context, state) => const SnsContentsListScreen(),
-                routes: [
-                  // SNS 콘텐츠 상세 화면
+                  // SNS 콘텐츠 목록 화면
                   GoRoute(
-                    path: 'detail/:contentId',
-                    pageBuilder: (context, state) {
-                      final contentId = state.pathParameters['contentId']!;
-                      final extraData = state.extra;
+                    path: 'sns-contents',
+                    builder: (context, state) => const SnsContentsListScreen(),
+                    routes: [
+                      // SNS 콘텐츠 상세 화면
+                      GoRoute(
+                        path: 'detail/:contentId',
+                        pageBuilder: (context, state) {
+                          final contentId = state.pathParameters['contentId']!;
+                          final extraData = state.extra;
 
-                      Widget detailScreen;
+                          Widget detailScreen;
 
-                      // extra가 Map<String, dynamic> 형태로 전달되었는지 확인
-                      if (extraData is Map<String, dynamic>) {
-                        final contents =
-                            extraData['contents'] as List<SnsContent>?;
-                        final initialIndex = extraData['initialIndex'] as int?;
+                          // extra가 Map<String, dynamic> 형태로 전달되었는지 확인
+                          if (extraData is Map<String, dynamic>) {
+                            final contents =
+                                extraData['contents'] as List<SnsContent>?;
+                            final initialIndex =
+                                extraData['initialIndex'] as int?;
 
-                        // 리스트와 인덱스가 모두 전달된 경우
-                        if (contents != null && initialIndex != null) {
-                          detailScreen = SnsContentDetailScreen(
-                            contents: contents,
-                            initialIndex: initialIndex,
-                          );
-                        } else {
-                          // Fallback
-                          final dummyContent = _findContentById(contentId);
-                          detailScreen = SnsContentDetailScreen(
-                            contents: [dummyContent],
-                            initialIndex: 0,
-                          );
-                        }
-                      } else {
-                        // Fallback: 더미 데이터로 단일 콘텐츠 표시
-                        // (직접 URL 접근 시나리오)
-                        final dummyContent = _findContentById(contentId);
-                        detailScreen = SnsContentDetailScreen(
-                          contents: [dummyContent],
-                          initialIndex: 0,
-                        );
-                      }
-
-                      // 커스텀 페이지 전환 애니메이션 적용
-                      // Hero 애니메이션과 함께 Fade + Slide 효과 추가
-                      return CustomTransitionPage(
-                        key: state.pageKey,
-                        child: detailScreen,
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                              // Fade 애니메이션 (0.0 → 1.0)
-                              final fadeAnimation =
-                                  Tween<double>(begin: 0.0, end: 1.0).animate(
-                                    CurvedAnimation(
-                                      parent: animation,
-                                      curve: Curves.easeOut,
-                                    ),
-                                  );
-
-                              // Slide 애니메이션 (아래 → 위)
-                              final slideAnimation =
-                                  Tween<Offset>(
-                                    begin: const Offset(
-                                      0.0,
-                                      0.1,
-                                    ), // 아래에서 살짝 올라오는 효과
-                                    end: Offset.zero,
-                                  ).animate(
-                                    CurvedAnimation(
-                                      parent: animation,
-                                      curve: Curves.easeOutCubic,
-                                    ),
-                                  );
-
-                              // Fade와 Slide 애니메이션 결합
-                              return FadeTransition(
-                                opacity: fadeAnimation,
-                                child: SlideTransition(
-                                  position: slideAnimation,
-                                  child: child,
-                                ),
+                            // 리스트와 인덱스가 모두 전달된 경우
+                            if (contents != null && initialIndex != null) {
+                              detailScreen = SnsContentDetailScreen(
+                                contents: contents,
+                                initialIndex: initialIndex,
                               );
-                            },
-                      );
-                    },
+                            } else {
+                              // Fallback
+                              final dummyContent = _findContentById(contentId);
+                              detailScreen = SnsContentDetailScreen(
+                                contents: [dummyContent],
+                                initialIndex: 0,
+                              );
+                            }
+                          } else {
+                            // Fallback: 더미 데이터로 단일 콘텐츠 표시
+                            // (직접 URL 접근 시나리오)
+                            final dummyContent = _findContentById(contentId);
+                            detailScreen = SnsContentDetailScreen(
+                              contents: [dummyContent],
+                              initialIndex: 0,
+                            );
+                          }
+
+                          // 커스텀 페이지 전환 애니메이션 적용
+                          // Hero 애니메이션과 함께 Fade + Slide 효과 추가
+                          return CustomTransitionPage(
+                            key: state.pageKey,
+                            child: detailScreen,
+                            transitionsBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  // Fade 애니메이션 (0.0 → 1.0)
+                                  final fadeAnimation =
+                                      Tween<double>(
+                                        begin: 0.0,
+                                        end: 1.0,
+                                      ).animate(
+                                        CurvedAnimation(
+                                          parent: animation,
+                                          curve: Curves.easeOut,
+                                        ),
+                                      );
+
+                                  // Slide 애니메이션 (아래 → 위)
+                                  final slideAnimation =
+                                      Tween<Offset>(
+                                        begin: const Offset(
+                                          0.0,
+                                          0.1,
+                                        ), // 아래에서 살짝 올라오는 효과
+                                        end: Offset.zero,
+                                      ).animate(
+                                        CurvedAnimation(
+                                          parent: animation,
+                                          curve: Curves.easeOutCubic,
+                                        ),
+                                      );
+
+                                  // Fade와 Slide 애니메이션 결합
+                                  return FadeTransition(
+                                    opacity: fadeAnimation,
+                                    child: SlideTransition(
+                                      position: slideAnimation,
+                                      child: child,
+                                    ),
+                                  );
+                                },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  // 저장한 장소 목록 화면
+                  GoRoute(
+                    path: 'saved-places',
+                    builder: (context, state) => const SavedPlacesListScreen(),
+                    routes: [
+                      // 장소 상세 화면 (nested route)
+                      GoRoute(
+                        path: ':placeId',
+                        pageBuilder: (context, state) {
+                          final placeId = state.pathParameters['placeId']!;
+                          final extraData = state.extra;
+
+                          SavedPlace place;
+
+                          // extra로 전달된 장소 데이터 사용
+                          if (extraData is SavedPlace) {
+                            place = extraData;
+                          } else {
+                            // Fallback: 더미 데이터에서 찾기
+                            place = _findPlaceById(placeId);
+                          }
+
+                          // 커스텀 페이지 전환 애니메이션 적용
+                          // Hero 애니메이션과 함께 Fade + Slide 효과
+                          return CustomTransitionPage(
+                            key: state.pageKey,
+                            child: PlaceDetailScreen(place: place),
+                            transitionsBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  // Fade 애니메이션
+                                  final fadeAnimation =
+                                      Tween<double>(
+                                        begin: 0.0,
+                                        end: 1.0,
+                                      ).animate(
+                                        CurvedAnimation(
+                                          parent: animation,
+                                          curve: Curves.easeOut,
+                                        ),
+                                      );
+
+                                  // Slide 애니메이션 (아래 → 위)
+                                  final slideAnimation =
+                                      Tween<Offset>(
+                                        begin: const Offset(0.0, 0.1),
+                                        end: Offset.zero,
+                                      ).animate(
+                                        CurvedAnimation(
+                                          parent: animation,
+                                          curve: Curves.easeOutCubic,
+                                        ),
+                                      );
+
+                                  return FadeTransition(
+                                    opacity: fadeAnimation,
+                                    child: SlideTransition(
+                                      position: slideAnimation,
+                                      child: child,
+                                    ),
+                                  );
+                                },
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
-              ),
-              // 저장한 장소 목록 화면
-              GoRoute(
-                path: 'saved-places',
-                builder: (context, state) => const SavedPlacesListScreen(),
-                routes: [
-                  // 장소 상세 화면 (nested route)
-                  GoRoute(
-                    path: ':placeId',
-                    pageBuilder: (context, state) {
-                      final placeId = state.pathParameters['placeId']!;
-                      final extraData = state.extra;
-
-                      SavedPlace place;
-
-                      // extra로 전달된 장소 데이터 사용
-                      if (extraData is SavedPlace) {
-                        place = extraData;
-                      } else {
-                        // Fallback: 더미 데이터에서 찾기
-                        place = _findPlaceById(placeId);
-                      }
-
-                      // 커스텀 페이지 전환 애니메이션 적용
-                      // Hero 애니메이션과 함께 Fade + Slide 효과
-                      return CustomTransitionPage(
-                        key: state.pageKey,
-                        child: PlaceDetailScreen(place: place),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                              // Fade 애니메이션
-                              final fadeAnimation =
-                                  Tween<double>(begin: 0.0, end: 1.0).animate(
-                                    CurvedAnimation(
-                                      parent: animation,
-                                      curve: Curves.easeOut,
-                                    ),
-                                  );
-
-                              // Slide 애니메이션 (아래 → 위)
-                              final slideAnimation =
-                                  Tween<Offset>(
-                                    begin: const Offset(0.0, 0.1),
-                                    end: Offset.zero,
-                                  ).animate(
-                                    CurvedAnimation(
-                                      parent: animation,
-                                      curve: Curves.easeOutCubic,
-                                    ),
-                                  );
-
-                              return FadeTransition(
-                                opacity: fadeAnimation,
-                                child: SlideTransition(
-                                  position: slideAnimation,
-                                  child: child,
-                                ),
-                              );
-                            },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ), // GoRoute(AppRoutes.home) 닫기
+              ), // GoRoute(AppRoutes.home) 닫기
             ], // StatefulShellBranch.routes 닫기
           ), // StatefulShellBranch(홈) 닫기
-
           /// 코스마켓 탭 브랜치 (인덱스: 1)
           /// 여행 코스 리스트와 상세 정보를 제공하는 마켓플레이스
           StatefulShellBranch(
@@ -324,7 +348,6 @@ class AppRouter {
               ),
             ],
           ), // StatefulShellBranch(코스마켓) 닫기
-
           /// 지도 탭 브랜치 (인덱스: 2)
           /// 저장된 장소들을 지도에서 시각화하여 표시
           StatefulShellBranch(
@@ -348,7 +371,6 @@ class AppRouter {
               ),
             ],
           ), // StatefulShellBranch(지도) 닫기
-
           /// 일정 탭 브랜치 (인덱스: 3)
           /// 여행 일정 관리 및 달력 기반 일정링
           StatefulShellBranch(
@@ -371,7 +393,6 @@ class AppRouter {
               ),
             ],
           ), // StatefulShellBranch(일정) 닫기
-
           /// 마이페이지 탭 브랜치 (인덱스: 4)
           /// 사용자 프로필, 내 코스, 설정 등 개인 정보 관리
           StatefulShellBranch(
