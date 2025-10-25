@@ -43,7 +43,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         // 상단에만 그림자 효과 추가
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.1),
+            color: colorScheme.shadow.withOpacity(0.1),
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, -2),

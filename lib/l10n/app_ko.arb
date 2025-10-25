@@ -817,5 +817,20 @@
   "permissionGeneralRequired": "이 기능을 사용하려면 적절한 권한이 필요합니다.",
   "@permissionGeneralRequired": {
     "description": "일반 권한 부족 에러 메시지"
+  },
+
+  "onboardingWelcomeTitle": "준비 완료!",
+  "@onboardingWelcomeTitle": {
+    "description": "온보딩 환영 화면 제목"
+  },
+
+  "onboardingWelcomeMessage": "이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️",
+  "@onboardingWelcomeMessage": {
+    "description": "온보딩 환영 화면 메시지"
+  },
+
+  "startTripgether": "Tripgether 시작하기",
+  "@startTripgether": {
+    "description": "Tripgether 시작하기 버튼 텍스트"
   }
 }

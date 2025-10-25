@@ -313,7 +313,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
-                            color: AppColors.onPrimary.withValues(alpha: 0.8),
+                            color: AppColors.onPrimary.withOpacity(0.8),
                             letterSpacing: 0.5,
                           ),
                         ),

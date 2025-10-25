@@ -943,6 +943,24 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'이 기능을 사용하려면 적절한 권한이 필요합니다.'**
   String get permissionGeneralRequired;
+
+  /// 온보딩 환영 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'준비 완료!'**
+  String get onboardingWelcomeTitle;
+
+  /// 온보딩 환영 화면 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️'**
+  String get onboardingWelcomeMessage;
+
+  /// Tripgether 시작하기 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'Tripgether 시작하기'**
+  String get startTripgether;
 }
 
 class _AppLocalizationsDelegate

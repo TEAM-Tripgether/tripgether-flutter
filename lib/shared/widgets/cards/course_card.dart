@@ -53,7 +53,7 @@ class CourseCard extends StatelessWidget {
           borderRadius: AppRadius.allXLarge,
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadow.withValues(alpha: 0.08),
+              color: AppColors.shadow.withOpacity(0.08),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -120,7 +120,7 @@ class CourseCard extends StatelessWidget {
               vertical: AppSpacing.xs.h,
             ),
             decoration: BoxDecoration(
-              color: AppColors.neutral10.withValues(alpha: 0.6),
+              color: AppColors.neutral10.withOpacity(0.6),
               borderRadius: AppRadius.allLarge,
             ),
             child: Row(
@@ -154,7 +154,7 @@ class CourseCard extends StatelessWidget {
               width: AppSizes.iconLarge,
               height: AppSizes.iconLarge,
               decoration: BoxDecoration(
-                color: AppColors.surface.withValues(alpha: 0.9),
+                color: AppColors.surface.withOpacity(0.9),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -355,7 +355,7 @@ class CourseCard extends StatelessWidget {
             Icon(
               Icons.favorite,
               size: AppSizes.iconSmall,
-              color: AppColors.error.withValues(alpha: 0.7),
+              color: AppColors.error.withOpacity(0.7),
             ),
             SizedBox(width: AppSpacing.xs.w / 2),
             Text(

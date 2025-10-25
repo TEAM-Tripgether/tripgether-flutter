@@ -4,6 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// 온보딩 완료 화면 (페이지 5/5)
 ///
@@ -14,6 +15,7 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
@@ -38,7 +40,7 @@ class WelcomePage extends StatelessWidget {
 
               // 환영 메시지
               Text(
-                '준비 완료!',
+                l10n.onboardingWelcomeTitle,
                 style: textTheme.displayMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: AppColors.onPrimary,
@@ -49,10 +51,9 @@ class WelcomePage extends StatelessWidget {
               AppSpacing.verticalSpaceLG,
 
               Text(
-                '이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️',
+                l10n.onboardingWelcomeMessage,
                 style: textTheme.titleLarge?.copyWith(
-                  color: AppColors.onPrimary.withValues(alpha: 0.9),
-                  fontWeight: FontWeight.w500,
+                  color: AppColors.onPrimary.withOpacity(0.9),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -61,7 +62,7 @@ class WelcomePage extends StatelessWidget {
 
               // 시작하기 버튼 (흰색 배경 + 보라색 텍스트)
               PrimaryButton(
-                text: 'Tripgether 시작하기',
+                text: l10n.startTripgether,
                 onPressed: () => context.go(AppRoutes.home),
                 isFullWidth: true,
               ),

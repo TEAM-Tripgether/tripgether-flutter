@@ -81,9 +81,9 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.onPrimary,
           disabledBackgroundColor: AppColors.buttonDisabled,
-          disabledForegroundColor: AppColors.onPrimary.withValues(alpha: 0.38),
+          disabledForegroundColor: AppColors.onPrimary.withOpacity(0.38),
           elevation: AppElevation.medium,
-          shadowColor: AppColors.shadow.withValues(alpha: 0.15),
+          shadowColor: AppColors.shadow.withOpacity(0.15),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.allLarge),
           minimumSize: Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
           // labelLarge (14px, w600)를 기반으로 살짝 조정
@@ -99,7 +99,7 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.onPrimary,
           disabledBackgroundColor: AppColors.buttonDisabled,
-          disabledForegroundColor: AppColors.onPrimary.withValues(alpha: 0.38),
+          disabledForegroundColor: AppColors.onPrimary.withOpacity(0.38),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.allLarge),
           minimumSize: Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
           textStyle: textTheme.labelLarge?.copyWith(
@@ -183,7 +183,7 @@ class AppTheme {
         disabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.allLarge,
           borderSide: BorderSide(
-            color: AppColors.outline.withValues(alpha: 0.38),
+            color: AppColors.outline.withOpacity(0.38),
             width: AppSizes.borderThin,
           ),
         ),
@@ -359,7 +359,7 @@ class AppTheme {
         }),
         checkColor: WidgetStateProperty.all(AppColors.onPrimary),
         overlayColor: WidgetStateProperty.all(
-          AppColors.primary.withValues(alpha: 0.1),
+          AppColors.primary.withOpacity(0.1),
         ),
         shape: RoundedRectangleBorder(borderRadius: AppRadius.allSmall),
       ),
@@ -373,7 +373,7 @@ class AppTheme {
           return AppColors.outline;
         }),
         overlayColor: WidgetStateProperty.all(
-          AppColors.primary.withValues(alpha: 0.1),
+          AppColors.primary.withOpacity(0.1),
         ),
       ),
 
@@ -392,7 +392,7 @@ class AppTheme {
           return AppColors.surfaceVariant;
         }),
         overlayColor: WidgetStateProperty.all(
-          AppColors.primary.withValues(alpha: 0.1),
+          AppColors.primary.withOpacity(0.1),
         ),
       ),
 
@@ -401,7 +401,7 @@ class AppTheme {
         activeTrackColor: AppColors.primary,
         inactiveTrackColor: AppColors.surfaceVariant,
         thumbColor: AppColors.primary,
-        overlayColor: AppColors.primary.withValues(alpha: 0.1),
+        overlayColor: AppColors.primary.withOpacity(0.1),
         valueIndicatorColor: AppColors.primary,
         // labelMedium (12px, w600)를 w500로 조정
         valueIndicatorTextStyle: textTheme.labelMedium?.copyWith(

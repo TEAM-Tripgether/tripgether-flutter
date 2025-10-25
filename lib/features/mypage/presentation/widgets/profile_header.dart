@@ -144,10 +144,10 @@ class ProfileHeader extends ConsumerWidget {
     return Container(
       padding: AppSpacing.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: badgeColor.withValues(alpha: 0.1),
+        color: badgeColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: badgeColor.withValues(alpha: 0.3),
+          color: badgeColor.withOpacity(0.3),
           width: 1.w,
         ),
       ),

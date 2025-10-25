@@ -817,5 +817,20 @@
   "permissionGeneralRequired": "Appropriate permission is required to use this feature.",
   "@permissionGeneralRequired": {
     "description": "General permission error message"
+  },
+
+  "onboardingWelcomeTitle": "Ready to go!",
+  "@onboardingWelcomeTitle": {
+    "description": "Onboarding welcome screen title"
+  },
+
+  "onboardingWelcomeMessage": "Start planning your special trip\nwith Tripgether ✈️",
+  "@onboardingWelcomeMessage": {
+    "description": "Onboarding welcome screen message"
+  },
+
+  "startTripgether": "Start Tripgether",
+  "@startTripgether": {
+    "description": "Start Tripgether button text"
   }
 }

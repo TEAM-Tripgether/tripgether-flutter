@@ -72,7 +72,7 @@ class SnsContentCard extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Colors.black.withValues(alpha: 0.7),
+                      Colors.black.withOpacity(0.7),
                     ],
                     stops: [0.5, 1.0],
                   ),
@@ -99,7 +99,7 @@ class SnsContentCard extends StatelessWidget {
                           Shadow(
                             offset: const Offset(0, 1),
                             blurRadius: 3.0,
-                            color: Colors.black.withValues(alpha: 0.5),
+                            color: Colors.black.withOpacity(0.5),
                           ),
                         ],
                       ),

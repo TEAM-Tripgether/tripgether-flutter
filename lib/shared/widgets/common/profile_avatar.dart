@@ -106,7 +106,7 @@ class ProfileAvatar extends StatelessWidget {
         boxShadow: showBorder
             ? [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
+                  color: Colors.black.withOpacity(0.1),
                   blurRadius: 8.r,
                   offset: Offset(0, 2.h),
                 ),
@@ -310,7 +310,7 @@ class ProfileAvatarWithEdit extends StatelessWidget {
                 border: Border.all(color: Colors.white, width: 2.w),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
+                    color: Colors.black.withOpacity(0.2),
                     blurRadius: 4.r,
                     offset: Offset(0, 2.h),
                   ),

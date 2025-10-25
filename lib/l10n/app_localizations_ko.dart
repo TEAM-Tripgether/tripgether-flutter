@@ -466,4 +466,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get permissionGeneralRequired => '이 기능을 사용하려면 적절한 권한이 필요합니다.';
+
+  @override
+  String get onboardingWelcomeTitle => '준비 완료!';
+
+  @override
+  String get onboardingWelcomeMessage => '이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️';
+
+  @override
+  String get startTripgether => 'Tripgether 시작하기';
 }

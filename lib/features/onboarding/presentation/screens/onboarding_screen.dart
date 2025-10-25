@@ -60,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface,
       // AppBar: 뒤로가기 버튼 + 페이지 인디케이터
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.h),

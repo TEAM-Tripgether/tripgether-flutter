@@ -60,26 +60,26 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
     _FilterConfig(
       source: null, // null = 전체 보기
       label: AppLocalizations.of(context).filterAll,
-      selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+      selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
       showIcon: false,
     ),
     _FilterConfig(
       source: SnsSource.youtube,
       label: AppLocalizations.of(context).filterYoutube,
-      selectedColor: Colors.red.withValues(alpha: 0.2),
+      selectedColor: Colors.red.withOpacity(0.2),
       showIcon: true,
     ),
     _FilterConfig(
       source: SnsSource.instagram,
       label: AppLocalizations.of(context).filterInstagram,
-      selectedColor: Colors.purple.withValues(alpha: 0.2),
+      selectedColor: Colors.purple.withOpacity(0.2),
       showIcon: true,
     ),
     // 새로운 플랫폼 추가 예시:
     // _FilterConfig(
     //   source: SnsSource.tiktok,
     //   label: AppLocalizations.of(context).filterTiktok,
-    //   selectedColor: Colors.black.withValues(alpha: 0.2),
+    //   selectedColor: Colors.black.withOpacity(0.2),
     //   showIcon: true,
     // ),
   ];

@@ -472,4 +472,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get permissionGeneralRequired =>
       'Appropriate permission is required to use this feature.';
+
+  @override
+  String get onboardingWelcomeTitle => 'Ready to go!';
+
+  @override
+  String get onboardingWelcomeMessage =>
+      'Start planning your special trip\nwith Tripgether ✈️';
+
+  @override
+  String get startTripgether => 'Start Tripgether';
 }
