@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/providers/user_provider.dart';
 
 /// 일정 관리 화면
@@ -20,11 +20,14 @@ class ScheduleScreen extends ConsumerWidget {
     // RouteGuard가 인증 상태를 확인할 때 Provider가 이미 초기화되어 있어야 함
     ref.watch(userNotifierProvider);
 
+    // 다국어 지원을 위한 AppLocalizations 인스턴스
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       // 일정 관리에 최적화된 AppBar
       // 캘린더 뷰와 일정 추가 기능을 강조하여 구성
       appBar: CommonAppBar(
-        title: AppStrings.of(context).navSchedule,
+        title: l10n.navSchedule,
         showMenuButton: true, // 메뉴를 통한 다른 화면 접근 유지
         showNotificationIcon: true, // 일정 알림 확인을 위해 알림 아이콘 유지
         onMenuPressed: () {
@@ -67,7 +70,7 @@ class ScheduleScreen extends ConsumerWidget {
                 debugPrint('일정 추가 버튼 클릭');
                 // TODO: 새 일정 추가 화면으로 이동 또는 모달 표시
               },
-              tooltip: AppStrings.of(context).addSchedule,
+              tooltip: l10n.addSchedule,
             ),
           ),
           // 알림 아이콘은 showNotificationIcon으로 처리됨
@@ -85,7 +88,7 @@ class ScheduleScreen extends ConsumerWidget {
             ),
             AppSpacing.verticalSpaceLG,
             Text(
-              AppStrings.of(context).navSchedule,
+              l10n.navSchedule,
               style: AppTextStyles.headlineSmall.copyWith(color: Colors.grey[700]),
             ),
             AppSpacing.verticalSpaceSM,

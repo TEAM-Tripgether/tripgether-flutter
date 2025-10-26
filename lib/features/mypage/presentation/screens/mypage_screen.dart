@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
-import 'package:tripgether/core/constants/app_strings.dart';
 import 'package:tripgether/core/providers/locale_provider.dart';
 import 'package:tripgether/core/router/routes.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
@@ -28,7 +27,7 @@ class MyPageScreen extends ConsumerWidget {
       // 마이페이지에 최적화된 AppBar
       // 개인 계정 관리 중심으로 설정 기능을 강조
       appBar: CommonAppBar(
-        title: AppStrings.of(context).navMyPage,
+        title: l10n.navMyPage,
         showMenuButton: false, // 마이페이지에서는 메뉴 버튼 제거 (개인 공간)
         showNotificationIcon: true, // 개인 알림 확인을 위해 알림 아이콘 유지
         onNotificationPressed: () {
@@ -50,7 +49,7 @@ class MyPageScreen extends ConsumerWidget {
                 debugPrint('마이페이지 설정 버튼 클릭');
                 // TODO: 설정 화면으로 이동
               },
-              tooltip: AppStrings.of(context).settings,
+              tooltip: l10n.settings,
             ),
           ),
           // 알림 아이콘은 showNotificationIcon으로 처리됨
