@@ -481,7 +481,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingBirthdateDescription =>
-      '다른 유저에게는 보이지 않아요.\\n연령별 콘텐츠 설정 및 추천에만 사용돼요.';
+      '다른 유저에게는 보이지 않아요.\n연령별 콘텐츠 설정 및 추천에만 사용돼요.';
 
   @override
   String get onboardingBirthdateAgeLimit => '※ 만 14세 이상만 사용 가능합니다';

@@ -971,7 +971,7 @@ abstract class AppLocalizations {
   /// 온보딩 생년월일 사용 목적 설명
   ///
   /// In ko, this message translates to:
-  /// **'다른 유저에게는 보이지 않아요.\\n연령별 콘텐츠 설정 및 추천에만 사용돼요.'**
+  /// **'다른 유저에게는 보이지 않아요.\n연령별 콘텐츠 설정 및 추천에만 사용돼요.'**
   String get onboardingBirthdateDescription;
 
   /// 온보딩 생년월일 연령 제한 안내
