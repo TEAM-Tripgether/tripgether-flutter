@@ -278,7 +278,7 @@ class PlaceDetailScreen extends StatelessWidget {
                               ? Icons.star_half
                               : Icons.star_border),
                     size: 20.w,
-                    color: Colors.amber,
+                    color: AppColorPalette.ratingStarFilled,
                   ),
                 ),
                 AppSpacing.horizontalSpaceSM,
@@ -333,7 +333,7 @@ class PlaceDetailScreen extends StatelessWidget {
               Icon(Icons.info_outline, size: 20.w, color: theme.primaryColor),
               AppSpacing.horizontalSpaceSM,
               Text(
-                '장소 정보',
+                l10n.placeInfo,
                 style: AppTextStyles.titleMedium.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
@@ -382,7 +382,7 @@ class PlaceDetailScreen extends StatelessWidget {
               Icon(Icons.access_time, size: 20.w, color: theme.primaryColor),
               AppSpacing.horizontalSpaceSM,
               Text(
-                '영업 정보',
+                l10n.businessInfo,
                 style: AppTextStyles.titleMedium.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
@@ -468,7 +468,7 @@ class PlaceDetailScreen extends StatelessWidget {
               Icon(Icons.location_on, size: 20.w, color: theme.primaryColor),
               AppSpacing.horizontalSpaceSM,
               Text(
-                '위치',
+                l10n.location,
                 style: AppTextStyles.titleMedium.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
@@ -538,7 +538,7 @@ class PlaceDetailScreen extends StatelessWidget {
       child: ButtonGroup(
         children: [
           PrimaryButton(
-            text: '지도에서 보기',
+            text: l10n.viewOnMap,
             icon: Icons.map,
             onPressed: () {
               // TODO: 지도 탭으로 이동
@@ -547,7 +547,7 @@ class PlaceDetailScreen extends StatelessWidget {
             isFullWidth: false, // ButtonGroup이 Expanded 처리
           ),
           SecondaryButton(
-            text: '길찾기',
+            text: l10n.getDirections,
             icon: Icons.directions,
             onPressed: () {
               // TODO: 길찾기 (구글맵/애플맵)

@@ -878,5 +878,30 @@
   "mapPlaceholder": "Map feature coming soon",
   "@mapPlaceholder": {
     "description": "Map screen placeholder message"
+  },
+
+  "placeInfo": "Place Info",
+  "@placeInfo": {
+    "description": "Place info section title on place detail screen"
+  },
+
+  "businessInfo": "Business Info",
+  "@businessInfo": {
+    "description": "Business info section title on place detail screen"
+  },
+
+  "location": "Location",
+  "@location": {
+    "description": "Location section title on place detail screen"
+  },
+
+  "viewOnMap": "View on Map",
+  "@viewOnMap": {
+    "description": "View on map button at bottom of place detail screen"
+  },
+
+  "getDirections": "Get Directions",
+  "@getDirections": {
+    "description": "Get directions button at bottom of place detail screen"
   }
 }

@@ -878,5 +878,30 @@
   "mapPlaceholder": "지도 기능이 곧 추가될 예정입니다",
   "@mapPlaceholder": {
     "description": "지도 화면 플레이스홀더 메시지"
+  },
+
+  "placeInfo": "장소 정보",
+  "@placeInfo": {
+    "description": "장소 상세 화면의 장소 정보 섹션 제목"
+  },
+
+  "businessInfo": "영업 정보",
+  "@businessInfo": {
+    "description": "장소 상세 화면의 영업 정보 섹션 제목"
+  },
+
+  "location": "위치",
+  "@location": {
+    "description": "장소 상세 화면의 위치 섹션 제목"
+  },
+
+  "viewOnMap": "지도에서 보기",
+  "@viewOnMap": {
+    "description": "장소 상세 화면 하단의 지도에서 보기 버튼"
+  },
+
+  "getDirections": "길찾기",
+  "@getDirections": {
+    "description": "장소 상세 화면 하단의 길찾기 버튼"
   }
 }

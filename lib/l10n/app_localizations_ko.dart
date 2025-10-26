@@ -502,4 +502,19 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get mapPlaceholder => '지도 기능이 곧 추가될 예정입니다';
+
+  @override
+  String get placeInfo => '장소 정보';
+
+  @override
+  String get businessInfo => '영업 정보';
+
+  @override
+  String get location => '위치';
+
+  @override
+  String get viewOnMap => '지도에서 보기';
+
+  @override
+  String get getDirections => '길찾기';
 }

@@ -1009,6 +1009,36 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'지도 기능이 곧 추가될 예정입니다'**
   String get mapPlaceholder;
+
+  /// 장소 상세 화면의 장소 정보 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'장소 정보'**
+  String get placeInfo;
+
+  /// 장소 상세 화면의 영업 정보 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'영업 정보'**
+  String get businessInfo;
+
+  /// 장소 상세 화면의 위치 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'위치'**
+  String get location;
+
+  /// 장소 상세 화면 하단의 지도에서 보기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'지도에서 보기'**
+  String get viewOnMap;
+
+  /// 장소 상세 화면 하단의 길찾기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'길찾기'**
+  String get getDirections;
 }
 
 class _AppLocalizationsDelegate

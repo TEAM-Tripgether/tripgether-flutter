@@ -510,4 +510,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapPlaceholder => 'Map feature coming soon';
+
+  @override
+  String get placeInfo => 'Place Info';
+
+  @override
+  String get businessInfo => 'Business Info';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get viewOnMap => 'View on Map';
+
+  @override
+  String get getDirections => 'Get Directions';
 }
