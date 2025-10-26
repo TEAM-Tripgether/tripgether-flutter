@@ -40,7 +40,10 @@ class _BirthdatePageState extends State<BirthdatePage> {
   final List<FocusNode> _focusNodes = List.generate(8, (_) => FocusNode());
 
   /// KeyboardListener용 FocusNode (8개 필드 각각에 하나씩)
-  final List<FocusNode> _keyboardFocusNodes = List.generate(8, (_) => FocusNode());
+  final List<FocusNode> _keyboardFocusNodes = List.generate(
+    8,
+    (_) => FocusNode(),
+  );
 
   @override
   void initState() {

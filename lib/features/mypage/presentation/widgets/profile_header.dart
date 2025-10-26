@@ -68,7 +68,6 @@ class ProfileHeader extends ConsumerWidget {
   /// - 닉네임 (titleLarge, 굵은 폰트)
   /// - 이메일 (bodyMedium, 보조 색상)
   Widget _buildProfile(BuildContext context, User user) {
-
     return Card(
       margin: AppSpacing.cardPadding,
       color: Colors.transparent,

@@ -175,10 +175,7 @@ class SnsContentHorizontalList extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title!,
-            style: AppTextStyles.titleLarge,
-          ),
+          Text(title!, style: AppTextStyles.titleLarge),
           if (onSeeMoreTap != null)
             GestureDetector(
               onTap: onSeeMoreTap,

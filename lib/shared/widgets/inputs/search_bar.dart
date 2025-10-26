@@ -120,9 +120,7 @@ class _TripSearchBarState extends State<TripSearchBar> {
         onTap: widget.onTap,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
-        style: AppTextStyles.bodyMedium.copyWith(
-          color: colorScheme.onSurface,
-        ),
+        style: AppTextStyles.bodyMedium.copyWith(color: colorScheme.onSurface),
         decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: AppTextStyles.bodyMedium.copyWith(

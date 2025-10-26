@@ -89,7 +89,9 @@ class ScheduleScreen extends ConsumerWidget {
             AppSpacing.verticalSpaceLG,
             Text(
               l10n.navSchedule,
-              style: AppTextStyles.headlineSmall.copyWith(color: Colors.grey[700]),
+              style: AppTextStyles.headlineSmall.copyWith(
+                color: Colors.grey[700],
+              ),
             ),
             AppSpacing.verticalSpaceSM,
             Text(

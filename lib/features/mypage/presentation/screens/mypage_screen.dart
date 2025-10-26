@@ -100,7 +100,9 @@ class MyPageScreen extends ConsumerWidget {
           padding: AppSpacing.only(left: 16, top: 24, right: 16, bottom: 12),
           child: Text(
             l10n.languageSelection,
-            style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w700),
+            style: AppTextStyles.titleMedium.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
 
@@ -379,9 +381,14 @@ class MyPageScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: Text(
           l10n.logoutConfirmTitle,
-          style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w700),
+          style: AppTextStyles.titleMedium.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
-        content: Text(l10n.logoutConfirmMessage, style: AppTextStyles.bodyMedium),
+        content: Text(
+          l10n.logoutConfirmMessage,
+          style: AppTextStyles.bodyMedium,
+        ),
         actions: [
           // 취소 버튼
           TextButton(

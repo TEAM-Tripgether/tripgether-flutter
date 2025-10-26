@@ -144,9 +144,7 @@ class PlaceGridCard extends StatelessWidget {
             children: [
               Text(
                 place.category.displayName,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: primaryColor,
-                ),
+                style: AppTextStyles.bodySmall.copyWith(color: primaryColor),
               ),
               SizedBox(width: AppSpacing.xs),
               Icon(
@@ -157,7 +155,9 @@ class PlaceGridCard extends StatelessWidget {
               AppSpacing.horizontalSpaceXS,
               Text(
                 place.distanceText,
-                style: AppTextStyles.bodySmall.copyWith(color: Colors.grey[600]),
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: Colors.grey[600],
+                ),
               ),
             ],
           ),
@@ -283,18 +283,14 @@ class PlaceCard extends StatelessWidget {
           // 카테고리 및 업종
           Text(
             place.category.displayName,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: primaryColor,
-            ),
+            style: AppTextStyles.bodyMedium.copyWith(color: primaryColor),
           ),
           SizedBox(height: AppSpacing.xs.h),
 
           // 주소
           Text(
             place.address,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: Colors.grey[600],
-            ),
+            style: AppTextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -344,9 +340,7 @@ class PlaceCard extends StatelessWidget {
             AppSpacing.horizontalSpaceXS,
             Text(
               place.distanceText,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: Colors.grey[600],
-              ),
+              style: AppTextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
             ),
 
             // 방문 여부 표시
@@ -536,10 +530,7 @@ class PlaceListSection extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title!,
-            style: AppTextStyles.titleLarge,
-          ),
+          Text(title!, style: AppTextStyles.titleLarge),
           if (onSeeMoreTap != null)
             GestureDetector(
               onTap: onSeeMoreTap,
@@ -582,9 +573,7 @@ class PlaceListSection extends StatelessWidget {
         child: Center(
           child: Text(
             l10n.seeMorePlaces,
-            style: AppTextStyles.titleSmall.copyWith(
-              color: primaryColor,
-            ),
+            style: AppTextStyles.titleSmall.copyWith(color: primaryColor),
           ),
         ),
       ),

@@ -60,7 +60,6 @@ class SocialLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       width: double.infinity, // 전체 너비
       height: height ?? AppSizes.buttonHeight, // Theme의 버튼 높이 사용

@@ -68,9 +68,7 @@ class EmptyState extends StatelessWidget {
     // 기본 제목 스타일
     final effectiveTitleStyle =
         titleStyle ??
-        AppTextStyles.titleMedium.copyWith(
-          color: AppColors.neutral50,
-        );
+        AppTextStyles.titleMedium.copyWith(color: AppColors.neutral50);
 
     // 기본 메시지 스타일
     final effectiveMessageStyle =

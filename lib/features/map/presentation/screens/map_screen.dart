@@ -58,12 +58,16 @@ class MapScreen extends ConsumerWidget {
             AppSpacing.verticalSpaceLG,
             Text(
               l10n.navMap,
-              style: AppTextStyles.headlineSmall.copyWith(color: AppColors.neutral70),
+              style: AppTextStyles.headlineSmall.copyWith(
+                color: AppColors.neutral70,
+              ),
             ),
             AppSpacing.verticalSpaceSM,
             Text(
               l10n.mapPlaceholder,
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.neutral50),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.neutral50,
+              ),
             ),
           ],
         ),

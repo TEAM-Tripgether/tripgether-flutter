@@ -334,7 +334,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           SizedBox(width: AppSpacing.xs),
           Text(
             label,
-            style: AppTextStyles.labelMedium.copyWith(color: colorScheme.primary),
+            style: AppTextStyles.labelMedium.copyWith(
+              color: colorScheme.primary,
+            ),
           ),
         ],
       ),

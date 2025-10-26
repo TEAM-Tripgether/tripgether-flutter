@@ -17,127 +17,127 @@ class AppTextStyles {
 
   /// Headline Styles (제목용)
   static TextStyle get headlineLarge => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 32,
-        fontWeight: FontWeight.w600,
-        height: 1.25,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 32,
+    fontWeight: FontWeight.w600,
+    height: 1.25,
+    color: AppColors.onSurface,
+  );
 
   static TextStyle get headlineMedium => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 28,
-        fontWeight: FontWeight.w500,
-        height: 1.29,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 28,
+    fontWeight: FontWeight.w500,
+    height: 1.29,
+    color: AppColors.onSurface,
+  );
 
   static TextStyle get headlineSmall => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 24,
-        fontWeight: FontWeight.w700,
-        height: 1.33,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    height: 1.33,
+    color: AppColors.onSurface,
+  );
 
   /// Title Styles (섹션 제목용)
   static TextStyle get titleLarge => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        height: 1.27,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    height: 1.27,
+    color: AppColors.onSurface,
+  );
 
   static TextStyle get titleMedium => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        height: 1.50,
-        letterSpacing: 0.15,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 1.50,
+    letterSpacing: 0.15,
+    color: AppColors.onSurface,
+  );
 
   static TextStyle get titleSmall => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        height: 1.43,
-        letterSpacing: 0.1,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 1.43,
+    letterSpacing: 0.1,
+    color: AppColors.onSurface,
+  );
 
   /// Body Styles (본문용)
   static TextStyle get bodyLarge => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        height: 1.50,
-        letterSpacing: 0.15,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    height: 1.50,
+    letterSpacing: 0.15,
+    color: AppColors.onSurface,
+  );
 
   static TextStyle get bodyMedium => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        height: 1.43,
-        letterSpacing: 0.25,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 1.43,
+    letterSpacing: 0.25,
+    color: AppColors.onSurface,
+  );
 
   static TextStyle get bodySmall => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        height: 1.33,
-        letterSpacing: 0.4,
-        color: AppColors.onSurfaceVariant,
-      );
+    fontFamily: fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    height: 1.33,
+    letterSpacing: 0.4,
+    color: AppColors.onSurfaceVariant,
+  );
 
   /// Label Styles (라벨 및 버튼용)
   static TextStyle get labelLarge => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        height: 1.43,
-        letterSpacing: 0.1,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 1.43,
+    letterSpacing: 0.1,
+    color: AppColors.onSurface,
+  );
 
   static TextStyle get labelMedium => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        height: 1.33,
-        letterSpacing: 0.5,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    height: 1.33,
+    letterSpacing: 0.5,
+    color: AppColors.onSurface,
+  );
 
   static TextStyle get labelSmall => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-        height: 1.45,
-        letterSpacing: 0.5,
-        color: AppColors.onSurface,
-      );
+    fontFamily: fontFamily,
+    fontSize: 11,
+    fontWeight: FontWeight.w600,
+    height: 1.45,
+    letterSpacing: 0.5,
+    color: AppColors.onSurface,
+  );
 
   /// Custom Styles (프로젝트 특화)
   static TextStyle get buttonText => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 0.1,
-      );
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.1,
+  );
 
   static TextStyle get caption => const TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        color: AppColors.textSecondary,
-        height: 1.33,
-      );
+    fontFamily: fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: AppColors.textSecondary,
+    height: 1.33,
+  );
 
   // ==================== Material 3 TextTheme (기존 유지) ====================
 

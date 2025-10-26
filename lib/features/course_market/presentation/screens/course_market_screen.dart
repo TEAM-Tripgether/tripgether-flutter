@@ -312,10 +312,7 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
                   ),
                 ],
               ),
-              child: Text(
-                l10n.addPlace,
-                style: AppTextStyles.labelLarge,
-              ),
+              child: Text(l10n.addPlace, style: AppTextStyles.labelLarge),
             ),
             SizedBox(width: 12.w),
             // FAB 버튼
@@ -353,10 +350,7 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
                   ),
                 ],
               ),
-              child: Text(
-                l10n.createCourse,
-                style: AppTextStyles.labelLarge,
-              ),
+              child: Text(l10n.createCourse, style: AppTextStyles.labelLarge),
             ),
             SizedBox(width: 12.w),
             // FAB 버튼

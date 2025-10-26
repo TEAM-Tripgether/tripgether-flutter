@@ -222,7 +222,9 @@ class LoginNotifier extends _$LoginNotifier {
       // (Secure Storage의 user_info, access_token, refresh_token 모두 삭제됨)
       await ref.read(userNotifierProvider.notifier).clearUser();
 
-      debugPrint('[LoginProvider] ✅ 로그아웃 완료 (백엔드 무효화 + Google 로그아웃 + 로컬 토큰 삭제)');
+      debugPrint(
+        '[LoginProvider] ✅ 로그아웃 완료 (백엔드 무효화 + Google 로그아웃 + 로컬 토큰 삭제)',
+      );
     } catch (e) {
       debugPrint('[LoginProvider] ❌ 로그아웃 실패: $e');
       rethrow; // 에러를 호출자에게 전파
