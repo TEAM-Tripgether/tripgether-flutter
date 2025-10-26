@@ -108,7 +108,7 @@ class AppColors {
   static const Color inputFocusedBorderColor = primary; // 포커스된 입력 필드 테두리
   static const Color inputErrorBorderColor = error; // 에러 상태의 입력 필드 테두리
   static const Color inputTextColor = textPrimary; // 333333 - 입력 텍스트 색상
-  static const Color inputHintColor = Color(0xFF9E9E9E); // 힌트 텍스트 색상
+  static const Color inputHintColor = textDisabled; // 힌트 텍스트 (비활성화 텍스트와 동일)
 
   /// Chip Colors (칩 색상)
   /// 선택 가능한 칩 요소들의 색상
