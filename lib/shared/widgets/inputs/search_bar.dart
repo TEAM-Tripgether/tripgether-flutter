@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// 홈 화면 검색창 위젯
@@ -100,7 +101,6 @@ class _TripSearchBarState extends State<TripSearchBar> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Container(
@@ -120,13 +120,10 @@ class _TripSearchBarState extends State<TripSearchBar> {
         onTap: widget.onTap,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
-        style: textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-          color: colorScheme.onSurface,
-        ),
+        style: AppTextStyles.bodyMedium.copyWith(color: colorScheme.onSurface),
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: textTheme.bodyMedium?.copyWith(
+          hintStyle: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.w400,
             color: colorScheme.onSurfaceVariant,
           ),

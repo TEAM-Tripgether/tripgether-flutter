@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// 칩 리스트 위젯
 ///
@@ -66,14 +67,10 @@ class ChipList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
     // 기본 텍스트 스타일
     final effectiveTextStyle =
         textStyle ??
-        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500) ??
-        const TextStyle(fontWeight: FontWeight.w500);
+        AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w500);
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -198,14 +195,10 @@ class SelectableChipList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
     // 기본 텍스트 스타일
     final effectiveTextStyle =
         textStyle ??
-        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500) ??
-        const TextStyle(fontWeight: FontWeight.w500);
+        AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w500);
 
     return Padding(
       padding: EdgeInsets.symmetric(

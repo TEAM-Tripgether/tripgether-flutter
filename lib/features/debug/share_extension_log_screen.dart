@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../core/theme/app_colors.dart';
 
 /// Share Extension 로그 확인 화면
 ///
@@ -74,11 +75,9 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
             const Text('Share Extension 로그'),
             Text(
               '최신 5개만 자동 유지 (현재: $_logCount개)',
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.grey[600],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -108,10 +107,9 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                 ),
                 child: Text(
                   _logContent,
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 12.sp,
-                    color: Colors.greenAccent,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontFamily: 'monospace', // 디버그 로그용 고정폭 폰트
+                    color: AppColors.success,
                     height: 1.5,
                   ),
                 ),

@@ -847,6 +847,198 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'이메일로 가입하기'**
   String get signUpWithEmail;
+
+  /// 로그아웃 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃'**
+  String get logout;
+
+  /// 로그아웃 확인 다이얼로그 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃'**
+  String get logoutConfirmTitle;
+
+  /// 로그아웃 확인 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'정말 로그아웃하시겠습니까?'**
+  String get logoutConfirmMessage;
+
+  /// 로그아웃 안내 문구
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃하시면 다시 로그인해야 합니다'**
+  String get logoutHint;
+
+  /// 로그아웃 성공 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃되었습니다'**
+  String get logoutSuccess;
+
+  /// 로그아웃 실패 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃 실패: {error}'**
+  String logoutFailed(String error);
+
+  /// 프로필 화면 로그인 필요 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인이 필요합니다'**
+  String get profileLoginRequired;
+
+  /// 프로필 화면 로그인 안내 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인하시면 더 많은 기능을 이용할 수 있습니다'**
+  String get profileLoginPrompt;
+
+  /// 프로필 화면 로그인 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인하러 가기'**
+  String get profileLoginButton;
+
+  /// 프로필 정보 로드 실패 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 정보를 불러올 수 없습니다'**
+  String get profileLoadError;
+
+  /// 로그인 플랫폼 계정 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{platform} 계정'**
+  String accountSuffix(String platform);
+
+  /// 일정 생성 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'일정을 생성하려면 로그인이 필요합니다.'**
+  String get permissionCreateScheduleRequired;
+
+  /// 코스 구매 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'코스를 구매하려면 로그인이 필요합니다.'**
+  String get permissionPurchaseCourseRequired;
+
+  /// 프로필 편집 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필을 편집하려면 로그인이 필요합니다.'**
+  String get permissionEditProfileRequired;
+
+  /// 지도 접근 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'지도를 사용하려면 위치 권한이 필요합니다.'**
+  String get permissionAccessMapRequired;
+
+  /// 일반 권한 부족 에러 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기능을 사용하려면 적절한 권한이 필요합니다.'**
+  String get permissionGeneralRequired;
+
+  /// 온보딩 환영 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'준비 완료!'**
+  String get onboardingWelcomeTitle;
+
+  /// 온보딩 환영 화면 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️'**
+  String get onboardingWelcomeMessage;
+
+  /// Tripgether 시작하기 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'Tripgether 시작하기'**
+  String get startTripgether;
+
+  /// 온보딩 생년월일 입력 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'생년월일을 입력해주세요'**
+  String get onboardingBirthdatePrompt;
+
+  /// 온보딩 생년월일 사용 목적 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 유저에게는 보이지 않아요.\n연령별 콘텐츠 설정 및 추천에만 사용돼요.'**
+  String get onboardingBirthdateDescription;
+
+  /// 온보딩 생년월일 연령 제한 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'※ 만 14세 이상만 사용 가능합니다'**
+  String get onboardingBirthdateAgeLimit;
+
+  /// 온보딩 관심사 선택 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'관심사를 선택해주세요'**
+  String get onboardingInterestsPrompt;
+
+  /// 온보딩 관심사 변경 가능 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'선택한 관심사는 언제든 설정에서 바꿀 수 있어요.'**
+  String get onboardingInterestsChangeHint;
+
+  /// 리뷰 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 리뷰'**
+  String reviewCount(int count);
+
+  /// 지도 화면 내 위치 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'내 위치로 이동'**
+  String get mapMyLocationTooltip;
+
+  /// 지도 화면 플레이스홀더 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'지도 기능이 곧 추가될 예정입니다'**
+  String get mapPlaceholder;
+
+  /// 장소 상세 화면의 장소 정보 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'장소 정보'**
+  String get placeInfo;
+
+  /// 장소 상세 화면의 영업 정보 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'영업 정보'**
+  String get businessInfo;
+
+  /// 장소 상세 화면의 위치 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'위치'**
+  String get location;
+
+  /// 장소 상세 화면 하단의 지도에서 보기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'지도에서 보기'**
+  String get viewOnMap;
+
+  /// 장소 상세 화면 하단의 길찾기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'길찾기'**
+  String get getDirections;
 }
 
 class _AppLocalizationsDelegate

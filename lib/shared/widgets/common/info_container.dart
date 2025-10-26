@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// 정보 표시용 컨테이너 위젯
 ///
@@ -58,7 +59,6 @@ class InfoContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     // 기본 색상 설정 (Theme의 primary 색상 활용)
@@ -93,8 +93,7 @@ class InfoContainer extends StatelessWidget {
                 ],
                 Text(
                   title!,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+                  style: AppTextStyles.titleMedium.copyWith(
                     color: titleColor ?? defaultTitleColor,
                   ),
                 ),

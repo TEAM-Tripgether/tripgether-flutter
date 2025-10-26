@@ -414,4 +414,107 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get signUpWithEmail => '이메일로 가입하기';
+
+  @override
+  String get logout => '로그아웃';
+
+  @override
+  String get logoutConfirmTitle => '로그아웃';
+
+  @override
+  String get logoutConfirmMessage => '정말 로그아웃하시겠습니까?';
+
+  @override
+  String get logoutHint => '로그아웃하시면 다시 로그인해야 합니다';
+
+  @override
+  String get logoutSuccess => '로그아웃되었습니다';
+
+  @override
+  String logoutFailed(String error) {
+    return '로그아웃 실패: $error';
+  }
+
+  @override
+  String get profileLoginRequired => '로그인이 필요합니다';
+
+  @override
+  String get profileLoginPrompt => '로그인하시면 더 많은 기능을 이용할 수 있습니다';
+
+  @override
+  String get profileLoginButton => '로그인하러 가기';
+
+  @override
+  String get profileLoadError => '프로필 정보를 불러올 수 없습니다';
+
+  @override
+  String accountSuffix(String platform) {
+    return '$platform 계정';
+  }
+
+  @override
+  String get permissionCreateScheduleRequired => '일정을 생성하려면 로그인이 필요합니다.';
+
+  @override
+  String get permissionPurchaseCourseRequired => '코스를 구매하려면 로그인이 필요합니다.';
+
+  @override
+  String get permissionEditProfileRequired => '프로필을 편집하려면 로그인이 필요합니다.';
+
+  @override
+  String get permissionAccessMapRequired => '지도를 사용하려면 위치 권한이 필요합니다.';
+
+  @override
+  String get permissionGeneralRequired => '이 기능을 사용하려면 적절한 권한이 필요합니다.';
+
+  @override
+  String get onboardingWelcomeTitle => '준비 완료!';
+
+  @override
+  String get onboardingWelcomeMessage => '이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️';
+
+  @override
+  String get startTripgether => 'Tripgether 시작하기';
+
+  @override
+  String get onboardingBirthdatePrompt => '생년월일을 입력해주세요';
+
+  @override
+  String get onboardingBirthdateDescription =>
+      '다른 유저에게는 보이지 않아요.\n연령별 콘텐츠 설정 및 추천에만 사용돼요.';
+
+  @override
+  String get onboardingBirthdateAgeLimit => '※ 만 14세 이상만 사용 가능합니다';
+
+  @override
+  String get onboardingInterestsPrompt => '관심사를 선택해주세요';
+
+  @override
+  String get onboardingInterestsChangeHint => '선택한 관심사는 언제든 설정에서 바꿀 수 있어요.';
+
+  @override
+  String reviewCount(int count) {
+    return '$count개 리뷰';
+  }
+
+  @override
+  String get mapMyLocationTooltip => '내 위치로 이동';
+
+  @override
+  String get mapPlaceholder => '지도 기능이 곧 추가될 예정입니다';
+
+  @override
+  String get placeInfo => '장소 정보';
+
+  @override
+  String get businessInfo => '영업 정보';
+
+  @override
+  String get location => '위치';
+
+  @override
+  String get viewOnMap => '지도에서 보기';
+
+  @override
+  String get getDirections => '길찾기';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../features/home/data/models/place_model.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -98,9 +99,7 @@ class PlaceGridCard extends StatelessWidget {
                 SizedBox(height: AppSpacing.sm.h),
                 Text(
                   '이미지 없음',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontSize: 12.sp,
+                  style: AppTextStyles.caption.copyWith(
                     color: Colors.grey[500],
                   ),
                 ),
@@ -114,7 +113,6 @@ class PlaceGridCard extends StatelessWidget {
 
   /// 장소 정보 영역 (이름, 카테고리, 평점)
   Widget _buildPlaceInfo(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final primaryColor = Theme.of(context).primaryColor;
 
     return Container(
@@ -127,14 +125,12 @@ class PlaceGridCard extends StatelessWidget {
           // 카테고리와 이름
           Row(
             children: [
-              Text(place.category.emoji, style: textTheme.titleSmall),
+              Text(place.category.emoji, style: AppTextStyles.titleSmall),
               SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: Text(
                   place.name,
-                  style: textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppTextStyles.titleSmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -148,10 +144,7 @@ class PlaceGridCard extends StatelessWidget {
             children: [
               Text(
                 place.category.displayName,
-                style: textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: primaryColor,
-                ),
+                style: AppTextStyles.bodySmall.copyWith(color: primaryColor),
               ),
               SizedBox(width: AppSpacing.xs),
               Icon(
@@ -162,7 +155,9 @@ class PlaceGridCard extends StatelessWidget {
               AppSpacing.horizontalSpaceXS,
               Text(
                 place.distanceText,
-                style: textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: Colors.grey[600],
+                ),
               ),
             ],
           ),
@@ -176,14 +171,12 @@ class PlaceGridCard extends StatelessWidget {
                 AppSpacing.horizontalSpaceXS,
                 Text(
                   place.rating!.toStringAsFixed(1),
-                  style: textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: AppTextStyles.bodySmall,
                 ),
                 if (place.reviewCount != null)
                   Text(
                     ' (${place.reviewCount})',
-                    style: textTheme.labelSmall?.copyWith(
+                    style: AppTextStyles.labelSmall.copyWith(
                       color: Colors.grey[600],
                     ),
                   ),
@@ -260,7 +253,6 @@ class PlaceCard extends StatelessWidget {
 
   /// 장소 정보 영역 빌드
   Widget _buildPlaceInfo(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final primaryColor = Theme.of(context).primaryColor;
 
     return Padding(
@@ -273,15 +265,13 @@ class PlaceCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // 카테고리 이모지
-              Text(place.category.emoji, style: textTheme.titleMedium),
+              Text(place.category.emoji, style: AppTextStyles.titleMedium),
               SizedBox(width: AppSpacing.xs),
               // 장소명
               Expanded(
                 child: Text(
                   place.name,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppTextStyles.titleMedium,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -293,20 +283,14 @@ class PlaceCard extends StatelessWidget {
           // 카테고리 및 업종
           Text(
             place.category.displayName,
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: primaryColor,
-            ),
+            style: AppTextStyles.bodyMedium.copyWith(color: primaryColor),
           ),
           SizedBox(height: AppSpacing.xs.h),
 
           // 주소
           Text(
             place.address,
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w400,
-              color: Colors.grey[600],
-            ),
+            style: AppTextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -325,7 +309,6 @@ class PlaceCard extends StatelessWidget {
     return Builder(
       builder: (context) {
         final l10n = AppLocalizations.of(context);
-        final textTheme = Theme.of(context).textTheme;
 
         return Row(
           children: [
@@ -335,15 +318,12 @@ class PlaceCard extends StatelessWidget {
               AppSpacing.horizontalSpaceXS,
               Text(
                 place.rating!.toStringAsFixed(1),
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
+                style: AppTextStyles.bodyMedium,
               ),
               if (place.reviewCount != null) ...[
                 Text(
                   ' (${place.reviewCount})',
-                  style: textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w400,
+                  style: AppTextStyles.bodyMedium.copyWith(
                     color: Colors.grey[600],
                   ),
                 ),
@@ -360,10 +340,7 @@ class PlaceCard extends StatelessWidget {
             AppSpacing.horizontalSpaceXS,
             Text(
               place.distanceText,
-              style: textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w400,
-                color: Colors.grey[600],
-              ),
+              style: AppTextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
             ),
 
             // 방문 여부 표시
@@ -381,8 +358,7 @@ class PlaceCard extends StatelessWidget {
                 ),
                 child: Text(
                   l10n.placeVisited,
-                  style: textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
+                  style: AppTextStyles.labelSmall.copyWith(
                     color: Colors.green[700],
                   ),
                 ),
@@ -509,8 +485,7 @@ class PlaceListSection extends StatelessWidget {
             child: Center(
               child: Text(
                 l10n.noSavedPlacesYet,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w400,
+                style: AppTextStyles.bodyMedium.copyWith(
                   color: Colors.grey[600],
                 ),
               ),
@@ -546,7 +521,6 @@ class PlaceListSection extends StatelessWidget {
   /// 섹션 헤더 위젯 빌드
   Widget _buildSectionHeader(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final primaryColor = Theme.of(context).primaryColor;
 
     return Padding(
@@ -556,10 +530,7 @@ class PlaceListSection extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title!,
-            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-          ),
+          Text(title!, style: AppTextStyles.titleLarge),
           if (onSeeMoreTap != null)
             GestureDetector(
               onTap: onSeeMoreTap,
@@ -567,8 +538,7 @@ class PlaceListSection extends StatelessWidget {
                 children: [
                   Text(
                     l10n.seeMore,
-                    style: textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
+                    style: AppTextStyles.labelMedium.copyWith(
                       color: primaryColor,
                     ),
                   ),
@@ -589,7 +559,6 @@ class PlaceListSection extends StatelessWidget {
   /// 더보기 버튼 위젯 빌드
   Widget _buildSeeMoreButton(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final primaryColor = Theme.of(context).primaryColor;
 
     return GestureDetector(
@@ -604,10 +573,7 @@ class PlaceListSection extends StatelessWidget {
         child: Center(
           child: Text(
             l10n.seeMorePlaces,
-            style: textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: primaryColor,
-            ),
+            style: AppTextStyles.titleSmall.copyWith(color: primaryColor),
           ),
         ),
       ),

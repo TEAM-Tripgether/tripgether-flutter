@@ -725,5 +725,183 @@
   "signUpWithEmail": "Sign up with Email",
   "@signUpWithEmail": {
     "description": "Email sign up button"
+  },
+
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button"
+  },
+
+  "logoutConfirmTitle": "Logout",
+  "@logoutConfirmTitle": {
+    "description": "Logout confirmation dialog title"
+  },
+
+  "logoutConfirmMessage": "Are you sure you want to logout?",
+  "@logoutConfirmMessage": {
+    "description": "Logout confirmation message"
+  },
+
+  "logoutHint": "You will need to login again after logging out",
+  "@logoutHint": {
+    "description": "Logout hint message"
+  },
+
+  "logoutSuccess": "Logged out successfully",
+  "@logoutSuccess": {
+    "description": "Logout success message"
+  },
+
+  "logoutFailed": "Logout failed: {error}",
+  "@logoutFailed": {
+    "description": "Logout failure message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+
+  "profileLoginRequired": "Login required",
+  "@profileLoginRequired": {
+    "description": "Profile screen login required message"
+  },
+
+  "profileLoginPrompt": "Login to access more features",
+  "@profileLoginPrompt": {
+    "description": "Profile screen login prompt message"
+  },
+
+  "profileLoginButton": "Go to Login",
+  "@profileLoginButton": {
+    "description": "Profile screen login button text"
+  },
+
+  "profileLoadError": "Failed to load profile information",
+  "@profileLoadError": {
+    "description": "Profile information load error message"
+  },
+
+  "accountSuffix": "{platform} account",
+  "@accountSuffix": {
+    "description": "Login platform account display",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Google"
+      }
+    }
+  },
+
+  "permissionCreateScheduleRequired": "You need to sign in to create a schedule.",
+  "@permissionCreateScheduleRequired": {
+    "description": "Schedule creation permission error message"
+  },
+
+  "permissionPurchaseCourseRequired": "You need to sign in to purchase a course.",
+  "@permissionPurchaseCourseRequired": {
+    "description": "Course purchase permission error message"
+  },
+
+  "permissionEditProfileRequired": "You need to sign in to edit your profile.",
+  "@permissionEditProfileRequired": {
+    "description": "Profile edit permission error message"
+  },
+
+  "permissionAccessMapRequired": "Location permission is required to use the map.",
+  "@permissionAccessMapRequired": {
+    "description": "Map access permission error message"
+  },
+
+  "permissionGeneralRequired": "Appropriate permission is required to use this feature.",
+  "@permissionGeneralRequired": {
+    "description": "General permission error message"
+  },
+
+  "onboardingWelcomeTitle": "Ready to go!",
+  "@onboardingWelcomeTitle": {
+    "description": "Onboarding welcome screen title"
+  },
+
+  "onboardingWelcomeMessage": "Start planning your special trip\nwith Tripgether ✈️",
+  "@onboardingWelcomeMessage": {
+    "description": "Onboarding welcome screen message"
+  },
+
+  "startTripgether": "Start Tripgether",
+  "@startTripgether": {
+    "description": "Start Tripgether button text"
+  },
+
+  "onboardingBirthdatePrompt": "Please enter your birthdate",
+  "@onboardingBirthdatePrompt": {
+    "description": "Onboarding birthdate input prompt"
+  },
+
+  "onboardingBirthdateDescription": "It won't be visible to other users.\nIt's only used for age-appropriate content settings and recommendations.",
+  "@onboardingBirthdateDescription": {
+    "description": "Onboarding birthdate usage description"
+  },
+
+  "onboardingBirthdateAgeLimit": "※ Only for ages 14 and above",
+  "@onboardingBirthdateAgeLimit": {
+    "description": "Onboarding birthdate age limit notice"
+  },
+
+  "onboardingInterestsPrompt": "Please select your interests",
+  "@onboardingInterestsPrompt": {
+    "description": "Onboarding interests selection prompt"
+  },
+
+  "onboardingInterestsChangeHint": "You can change your interests anytime in settings.",
+  "@onboardingInterestsChangeHint": {
+    "description": "Onboarding interests change hint"
+  },
+
+  "reviewCount": "{count} reviews",
+  "@reviewCount": {
+    "description": "Review count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
+
+  "mapMyLocationTooltip": "Go to my location",
+  "@mapMyLocationTooltip": {
+    "description": "Map screen my location button tooltip"
+  },
+
+  "mapPlaceholder": "Map feature coming soon",
+  "@mapPlaceholder": {
+    "description": "Map screen placeholder message"
+  },
+
+  "placeInfo": "Place Info",
+  "@placeInfo": {
+    "description": "Place info section title on place detail screen"
+  },
+
+  "businessInfo": "Business Info",
+  "@businessInfo": {
+    "description": "Business info section title on place detail screen"
+  },
+
+  "location": "Location",
+  "@location": {
+    "description": "Location section title on place detail screen"
+  },
+
+  "viewOnMap": "View on Map",
+  "@viewOnMap": {
+    "description": "View on map button at bottom of place detail screen"
+  },
+
+  "getDirections": "Get Directions",
+  "@getDirections": {
+    "description": "Get directions button at bottom of place detail screen"
   }
 }

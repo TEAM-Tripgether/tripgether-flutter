@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// 빈 상태 표시 위젯
 ///
@@ -64,21 +65,15 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
     // 기본 제목 스타일
     final effectiveTitleStyle =
         titleStyle ??
-        textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: AppColors.neutral50,
-        );
+        AppTextStyles.titleMedium.copyWith(color: AppColors.neutral50);
 
     // 기본 메시지 스타일
     final effectiveMessageStyle =
         messageStyle ??
-        textTheme.bodyMedium?.copyWith(
+        AppTextStyles.bodyMedium.copyWith(
           fontWeight: FontWeight.w400,
           color: AppColors.neutral60,
         );

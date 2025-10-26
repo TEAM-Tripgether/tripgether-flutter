@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/cards/place_card.dart';
@@ -104,6 +106,9 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
 
     // 실제로는 API 호출하여 데이터 가져오기
     await Future.delayed(const Duration(seconds: 1));
+
+    // 비동기 작업 후 위젯이 dispose된 경우 setState 호출 방지
+    if (!mounted) return;
 
     // 현재 장소 개수를 기반으로 고유한 ID를 가진 더미 데이터 생성
     final currentCount = _allPlaces.length;
@@ -246,15 +251,13 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
 
   /// 장소 그리드 빌드
   Widget _buildPlaceGrid(AppLocalizations l10n) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     if (_filteredPlaces.isEmpty && !_isLoading) {
       return Center(
         child: Text(
           l10n.noData,
-          style: textTheme.bodyLarge?.copyWith(
+          style: AppTextStyles.bodyLarge.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
         ),
@@ -291,7 +294,10 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
             place: place,
             onTap: () {
               // 상세 화면으로 이동 (nested routing)
-              context.go('/home/saved-places/${place.id}', extra: place);
+              context.go(
+                AppRoutes.placeDetail.replaceFirst(':placeId', place.id),
+                extra: place,
+              );
             },
           );
         },

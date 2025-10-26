@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// 커스텀 리스트 타일 위젯
 ///
@@ -67,21 +68,15 @@ class CustomListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
     // 기본 제목 스타일
     final effectiveTitleStyle =
         titleStyle ??
-        textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-          color: AppColors.onSurface,
-        );
+        AppTextStyles.bodyMedium.copyWith(color: AppColors.onSurface);
 
     // 기본 부제목 스타일
     final effectiveSubtitleStyle =
         subtitleStyle ??
-        textTheme.bodySmall?.copyWith(
+        AppTextStyles.bodySmall.copyWith(
           fontWeight: FontWeight.w400,
           color: AppColors.neutral60,
         );
