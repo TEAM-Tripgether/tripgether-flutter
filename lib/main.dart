@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
 
 import 'core/router/router.dart';
 import 'core/theme/app_theme.dart';
@@ -24,16 +25,32 @@ void main() async {
   // 공유 서비스 초기화 (앱 시작 시 Share Extension 데이터 확인)
   await SharingService.instance.initialize();
 
-  runApp(const ProviderScope(child: MyApp()));
+  // ProviderContainer 생성 (GoRouter refreshListenable을 위해 필요)
+  final container = ProviderContainer();
+
+  // GoRouter 생성 (UserNotifier 상태 변화 감지 활성화)
+  final router = AppRouter.createRouter(container);
+
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: MyApp(router: router),
+    ),
+  );
 }
 
-/// 앱의 루트 위젯 - PRD.md 구조에 따른 메인 앱 설정œ
+/// 앱의 루트 위젯 - PRD.md 구조에 따른 메인 앱 설정
 ///
 /// ScreenUtil 초기화와 GoRouter를 사용한 라우팅 시스템을 적용합니다.
 /// 기존의 복잡한 공유 서비스 로직은 홈 화면으로 이동되었습니다.
 /// 언어 설정은 LocaleNotifier provider를 통해 관리됩니다.
+///
+/// [router] GoRouter 인스턴스 (UserNotifier 상태 감지를 위한 refreshListenable 포함)
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+  /// GoRouter 인스턴스
+  final GoRouter router;
+
+  const MyApp({super.key, required this.router});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,8 +87,8 @@ class MyApp extends ConsumerWidget {
           // 사용자가 선택한 언어 설정 적용
           locale: currentLocale,
 
-          // GoRouter 설정 적용
-          routerConfig: AppRouter.router,
+          // GoRouter 설정 적용 (refreshListenable 포함)
+          routerConfig: router,
 
           // 디버그 배너 숨김
           debugShowCheckedModeBanner: false,

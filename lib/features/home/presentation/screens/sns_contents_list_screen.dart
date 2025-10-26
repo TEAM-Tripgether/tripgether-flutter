@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/platform_icon.dart';
@@ -216,7 +218,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
   Widget _buildFilterChips(AppLocalizations l10n) {
     return Container(
       height: 50.h,
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: AppSpacing.symmetric(horizontal: 16),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _filterConfigs.length,
@@ -234,14 +236,14 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
     final isSelected = _selectedFilter == config.source;
 
     return Padding(
-      padding: EdgeInsets.only(right: 8.w),
+      padding: AppSpacing.only(right: 8),
       child: FilterChip(
         label: config.showIcon && config.source != null
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   PlatformIcon(source: config.source!, size: 16.w),
-                  SizedBox(width: 4.w),
+                  AppSpacing.horizontalSpaceXS,
                   Text(config.label),
                 ],
               )
@@ -256,14 +258,13 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
   /// 콘텐츠 그리드 빌드
   Widget _buildContentGrid(AppLocalizations l10n) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     if (_filteredContents.isEmpty && !_isLoading) {
       return Center(
         child: Text(
           l10n.noData,
-          style: textTheme.bodyLarge?.copyWith(
+          style: AppTextStyles.bodyLarge.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
         ),
@@ -281,7 +282,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
       },
       child: GridView.builder(
         controller: _scrollController,
-        padding: EdgeInsets.all(16.w),
+        padding: AppSpacing.cardPadding,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 10.w,
@@ -298,10 +299,10 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
             if (!_hasMore) {
               return Center(
                 child: Padding(
-                  padding: EdgeInsets.all(16.h),
+                  padding: AppSpacing.cardPadding,
                   child: Text(
                     l10n.noMoreContent,
-                    style: textTheme.bodyMedium?.copyWith(
+                    style: AppTextStyles.bodyMedium.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
@@ -318,7 +319,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
             tag: 'sns_content_${content.id}',
             child: SnsContentCard(
               content: content,
-              margin: EdgeInsets.zero,
+              margin: EdgeInsets.zero, // EdgeInsets.zero는 유지
               isGridLayout: true,
               onTap: () {
                 final detailPath = AppRoutes.snsContentDetail.replaceFirst(

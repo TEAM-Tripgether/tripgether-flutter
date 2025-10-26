@@ -108,7 +108,7 @@ class AppColors {
   static const Color inputFocusedBorderColor = primary; // 포커스된 입력 필드 테두리
   static const Color inputErrorBorderColor = error; // 에러 상태의 입력 필드 테두리
   static const Color inputTextColor = textPrimary; // 333333 - 입력 텍스트 색상
-  static const Color inputHintColor = Color(0xFF9E9E9E); // 힌트 텍스트 색상
+  static const Color inputHintColor = textDisabled; // 힌트 텍스트 (비활성화 텍스트와 동일)
 
   /// Chip Colors (칩 색상)
   /// 선택 가능한 칩 요소들의 색상
@@ -132,6 +132,12 @@ class AppColors {
   /// 요소들을 구분하는 선의 색상
   static const Color divider = Color(0xFFE0E0E0);
   static const Color dividerLight = Color(0xFFF5F5F5);
+
+  /// Shimmer Colors (스켈레톤 로딩 색상)
+  /// Shimmer 효과의 기본 색상과 하이라이트 색상
+  static const Color shimmerBase = neutral95; // E2E2E6 - 기본 배경 (grey[300] 대체)
+  static const Color shimmerHighlight =
+      neutral99; // FFFBFE - 하이라이트 (grey[100] 대체)
 
   /// Gradient Colors (그라데이션 색상)
   /// 홈 화면 헤더 그라데이션용 중간 색상

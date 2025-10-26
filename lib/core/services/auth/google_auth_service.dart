@@ -117,6 +117,7 @@ class GoogleAuthService {
         debugPrint(
           '[GoogleAuthService] 👤 Display Name: ${account!.displayName}',
         );
+        debugPrint('[GoogleAuthService] 🖼️ Photo URL: ${account!.photoUrl}');
         debugPrint(
           '[GoogleAuthService] 🔑 ID Token: ${auth.idToken?.substring(0, 20)}...',
         );
@@ -134,10 +135,13 @@ class GoogleAuthService {
 
   /// Google 로그아웃을 수행합니다
   ///
-  /// 로그인 상태를 완전히 초기화하고 Google 계정 연결을 해제합니다.
+  /// 로그인 상태를 초기화합니다.
+  /// iOS에서 disconnect()는 HTTP 400 에러를 발생시킬 수 있으므로 signOut()을 사용합니다.
   static Future<void> signOut() async {
     try {
-      await GoogleSignIn.instance.disconnect();
+      // iOS에서 disconnect()는 NSConcreteMutableData 직렬화 오류를 발생시킬 수 있음
+      // signOut()이 더 안정적이므로 이를 사용
+      await GoogleSignIn.instance.signOut();
       debugPrint('[GoogleAuthService] ✅ Google 로그아웃 성공');
     } catch (error) {
       debugPrint('[GoogleAuthService] 🚨 Google 로그아웃 오류: $error');

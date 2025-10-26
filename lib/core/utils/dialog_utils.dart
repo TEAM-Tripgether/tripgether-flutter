@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/app_strings.dart';
+import '../../l10n/app_localizations.dart';
 
 /// 다이얼로그 관련 유틸리티 함수들
 ///
@@ -22,6 +22,7 @@ class DialogUtils {
     String? confirmText,
     VoidCallback? onConfirm,
   }) {
+    final l10n = AppLocalizations.of(context);
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -30,7 +31,7 @@ class DialogUtils {
         actions: [
           TextButton(
             onPressed: onConfirm ?? () => Navigator.of(context).pop(),
-            child: Text(confirmText ?? AppStrings.of(context).btnConfirm),
+            child: Text(confirmText ?? l10n.btnConfirm),
           ),
         ],
       ),
@@ -57,6 +58,7 @@ class DialogUtils {
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
   }) {
+    final l10n = AppLocalizations.of(context);
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -68,14 +70,14 @@ class DialogUtils {
               Navigator.of(context).pop(false);
               onCancel?.call();
             },
-            child: Text(cancelText ?? AppStrings.of(context).btnCancel),
+            child: Text(cancelText ?? l10n.btnCancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(true);
               onConfirm?.call();
             },
-            child: Text(confirmText ?? AppStrings.of(context).btnConfirm),
+            child: Text(confirmText ?? l10n.btnConfirm),
           ),
         ],
       ),
@@ -96,6 +98,7 @@ class DialogUtils {
     String? confirmText,
     VoidCallback? onConfirm,
   }) {
+    final l10n = AppLocalizations.of(context);
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -104,7 +107,7 @@ class DialogUtils {
         actions: [
           TextButton(
             onPressed: onConfirm ?? () => Navigator.of(context).pop(),
-            child: Text(confirmText ?? AppStrings.of(context).btnConfirm),
+            child: Text(confirmText ?? l10n.btnConfirm),
           ),
         ],
       ),
@@ -125,6 +128,7 @@ class DialogUtils {
     String? confirmText,
     VoidCallback? onConfirm,
   }) {
+    final l10n = AppLocalizations.of(context);
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -133,7 +137,7 @@ class DialogUtils {
         actions: [
           TextButton(
             onPressed: onConfirm ?? () => Navigator.of(context).pop(),
-            child: Text(confirmText ?? AppStrings.of(context).btnConfirm),
+            child: Text(confirmText ?? l10n.btnConfirm),
           ),
         ],
       ),

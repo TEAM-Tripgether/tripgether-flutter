@@ -3,8 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../features/course_market/data/models/course_model.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../layout/section_header.dart';
 
@@ -76,8 +77,6 @@ class CourseCard extends StatelessWidget {
 
   /// 썸네일 이미지 영역 빌드
   Widget _buildThumbnail(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Stack(
       children: [
         // 썸네일 이미지
@@ -89,8 +88,8 @@ class CourseCard extends StatelessWidget {
             height: 160.h,
             fit: BoxFit.cover,
             placeholder: (context, url) => Shimmer.fromColors(
-              baseColor: AppColors.neutral90,
-              highlightColor: AppColors.neutral99,
+              baseColor: AppColors.shimmerBase,
+              highlightColor: AppColors.shimmerHighlight,
               child: Container(
                 width: double.infinity,
                 height: 160.h,
@@ -126,12 +125,11 @@ class CourseCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(course.category.emoji, style: textTheme.labelSmall),
+                Text(course.category.emoji, style: AppTextStyles.labelSmall),
                 SizedBox(width: AppSpacing.xs),
                 Text(
                   course.category.displayName,
-                  style: textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
+                  style: AppTextStyles.labelSmall.copyWith(
                     color: AppColors.onPrimary,
                   ),
                 ),
@@ -182,7 +180,7 @@ class CourseCard extends StatelessWidget {
               ),
               child: Text(
                 course.priceText,
-                style: textTheme.labelSmall?.copyWith(
+                style: AppTextStyles.labelSmall.copyWith(
                   fontWeight: FontWeight.w700,
                   color: AppColors.onPrimary,
                 ),
@@ -195,8 +193,6 @@ class CourseCard extends StatelessWidget {
 
   /// 코스 정보 영역 빌드
   Widget _buildCourseInfo(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Padding(
       padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
@@ -205,7 +201,7 @@ class CourseCard extends StatelessWidget {
           // 코스 제목
           Text(
             course.title,
-            style: textTheme.titleMedium?.copyWith(
+            style: AppTextStyles.titleMedium.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.onSurface,
               height: 1.3,
@@ -218,8 +214,7 @@ class CourseCard extends StatelessWidget {
           // 코스 설명
           Text(
             course.description,
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w400,
+            style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.neutral60,
               height: 1.3,
             ),
@@ -245,7 +240,6 @@ class CourseCard extends StatelessWidget {
     return Builder(
       builder: (context) {
         final l10n = AppLocalizations.of(context);
-        final textTheme = Theme.of(context).textTheme;
 
         return Row(
           children: [
@@ -258,8 +252,7 @@ class CourseCard extends StatelessWidget {
             AppSpacing.horizontalSpaceXS,
             Text(
               l10n.placesCount(course.placeCount),
-              style: textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w500,
+              style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.neutral60,
               ),
             ),
@@ -274,8 +267,7 @@ class CourseCard extends StatelessWidget {
             AppSpacing.horizontalSpaceXS,
             Text(
               course.durationText,
-              style: textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w500,
+              style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.neutral60,
               ),
             ),
@@ -291,8 +283,7 @@ class CourseCard extends StatelessWidget {
               AppSpacing.horizontalSpaceXS,
               Text(
                 course.distanceText,
-                style: textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.w500,
+                style: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.neutral60,
                 ),
               ),
@@ -307,8 +298,6 @@ class CourseCard extends StatelessWidget {
   Widget _buildAuthorInfo() {
     return Builder(
       builder: (context) {
-        final textTheme = Theme.of(context).textTheme;
-
         return Row(
           children: [
             // 작성자 프로필 이미지
@@ -342,8 +331,7 @@ class CourseCard extends StatelessWidget {
             Expanded(
               child: Text(
                 course.authorName,
-                style: textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.w500,
+                style: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.neutral50,
                 ),
                 maxLines: 1,
@@ -360,7 +348,7 @@ class CourseCard extends StatelessWidget {
             SizedBox(width: AppSpacing.xs.w / 2),
             Text(
               '${course.likeCount}',
-              style: textTheme.bodySmall?.copyWith(
+              style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppColors.neutral50,
               ),
@@ -384,8 +372,8 @@ class CourseCardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: AppColors.neutral90,
-      highlightColor: AppColors.neutral99,
+      baseColor: AppColors.shimmerBase,
+      highlightColor: AppColors.shimmerHighlight,
       child: Container(
         width: width ?? 280.w,
         margin: EdgeInsets.only(right: AppSpacing.md),

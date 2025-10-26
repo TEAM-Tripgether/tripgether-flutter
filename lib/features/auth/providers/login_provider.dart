@@ -1,6 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter/foundation.dart';
-import '../../../core/services/auth/google_auth_service.dart';
+import 'package:tripgether/core/services/auth/google_auth_service.dart';
+import 'package:tripgether/features/auth/data/models/user_model.dart';
+import 'package:tripgether/features/auth/data/models/auth_request.dart';
+import 'package:tripgether/features/auth/services/auth_api_service.dart';
+import 'package:tripgether/features/auth/providers/user_provider.dart';
 
 part 'login_provider.g.dart';
 
@@ -15,19 +19,11 @@ class LoginNotifier extends _$LoginNotifier {
     // 초기 상태: 아무것도 하지 않음
   }
 
-  /// 안전한 상태 업데이트 헬퍼 메서드
+  /// ⚠️ 주의: LoginNotifier는 상태 관리를 하지 않습니다.
   ///
-  /// StateError를 방지하기 위해 try-catch로 감싸서 상태 업데이트를 시도합니다.
-  /// Provider가 이미 dispose된 경우 상태 업데이트를 조용히 무시합니다.
-  void _safeUpdateState(AsyncValue<void> newState) {
-    try {
-      state = newState;
-    } catch (e) {
-      // Provider가 이미 dispose된 경우 StateError 발생 가능
-      // 이 경우 조용히 무시 (로그인 화면에서 벗어난 경우)
-      debugPrint('[LoginProvider] ⚠️ 상태 업데이트 실패 (Provider dispose됨): $e');
-    }
-  }
+  /// - 실제 사용자 상태는 UserNotifier가 관리
+  /// - LoginNotifier는 로그인/로그아웃 액션만 제공하는 헬퍼 클래스
+  /// - 따라서 state 업데이트가 필요 없음 (AsyncNotifier 사용 불필요)
 
   /// 이메일/비밀번호 로그인
   ///
@@ -45,8 +41,7 @@ class LoginNotifier extends _$LoginNotifier {
     debugPrint('  🔑 Password: ${"*" * password.length}');
 
     try {
-      // ✅ 로딩 상태 시작
-      _safeUpdateState(const AsyncValue.loading());
+      // 로딩 상태는 UserNotifier가 관리하므로 여기서는 불필요
 
       // TODO: 실제 로그인 API 호출
       // final response = await ref.read(authServiceProvider).login(
@@ -70,14 +65,12 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('  👤 사용자: $email');
       debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // ✅ 성공 상태로 업데이트
-      _safeUpdateState(const AsyncValue.data(null));
+      // 성공 상태는 UserNotifier가 관리
       return true;
-    } catch (e, stack) {
+    } catch (e) {
       debugPrint('[LoginProvider] ❌ 이메일 로그인 실패: $e');
 
-      // ✅ 에러 상태로 업데이트
-      _safeUpdateState(AsyncValue.error(e, stack));
+      // 에러는 호출자에게 false 반환으로 전달
       return false;
     }
   }
@@ -94,8 +87,7 @@ class LoginNotifier extends _$LoginNotifier {
     debugPrint('[LoginProvider] 🔄 구글 로그인 시작...');
 
     try {
-      // ✅ 로딩 상태 시작
-      _safeUpdateState(const AsyncValue.loading());
+      // 로딩 상태는 UserNotifier가 관리하므로 여기서는 불필요
 
       // 1. GoogleAuthService를 통해 구글 로그인 실행
       final googleUser = await GoogleAuthService.signIn();
@@ -103,8 +95,7 @@ class LoginNotifier extends _$LoginNotifier {
       // 사용자가 로그인을 취소한 경우
       if (googleUser == null) {
         debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨');
-        // 취소는 에러가 아니므로 data 상태로 설정
-        _safeUpdateState(const AsyncValue.data(null));
+        // 취소는 false 반환
         return false;
       }
 
@@ -126,56 +117,73 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       debugPrint('');
 
-      // TODO: 3. 백엔드 API에 구글 토큰 전송하여 JWT 발급받기
-      // POST /auth/google/login
-      // Body:
-      // {
-      //   "idToken": googleAuth.idToken,        // ⭐ 필수: 백엔드에서 검증
-      //   "email": googleUser.email,             // 필수
-      //   "displayName": googleUser.displayName, // 선택
-      //   "photoUrl": googleUser.photoUrl,       // 선택
-      //   "googleId": googleUser.id              // 선택
-      // }
-      //
-      // final response = await ref.read(authServiceProvider).loginWithGoogle(
-      //   idToken: googleAuth.idToken!,
-      //   email: googleUser.email,
-      //   displayName: googleUser.displayName,
-      //   photoUrl: googleUser.photoUrl,
-      //   googleId: googleUser.id,
-      // );
-      //
-      // TODO: 4. 발급받은 JWT 토큰을 안전하게 저장
-      // await ref.read(secureStorageProvider).write(
-      //   key: 'access_token',
-      //   value: response.accessToken,
-      // );
-      //
-      // TODO: 5. 사용자 정보를 앱 상태에 저장
-      // ref.read(userProvider.notifier).setUser(response.user);
+      // 3. AuthApiService로 백엔드 API 호출 (Mock/Real 자동 전환)
+      debugPrint('[LoginProvider] 🔐 백엔드 API 호출 시작 (토큰 발급)');
+
+      final authService = AuthApiService();
+      final authResponse = await authService.signIn(
+        AuthRequest.signIn(
+          socialPlatform: 'GOOGLE',
+          email: googleUser.email,
+          nickname: googleUser.displayName ?? 'Unknown',
+          profileUrl: googleUser.photoUrl,
+        ),
+      );
+
+      debugPrint('[LoginProvider] ✅ JWT 토큰 발급 완료');
+      debugPrint(
+        '  🔑 Access Token: ${authResponse.accessToken.substring(0, 30)}...',
+      );
+      debugPrint(
+        '  🔄 Refresh Token: ${authResponse.refreshToken.substring(0, 30)}...',
+      );
+      debugPrint('  🆕 최초 로그인: ${authResponse.isFirstLogin}');
+
+      // 4. User 객체 생성 (Google 정보 기반)
+      final user = User.fromGoogleSignIn(
+        email: googleUser.email,
+        displayName: googleUser.displayName ?? 'Unknown',
+        photoUrl: googleUser.photoUrl,
+      );
+
+      debugPrint('[LoginProvider] 👤 User 객체 생성 완료');
+      debugPrint('  📧 Email: ${user.email}');
+      debugPrint('  👤 Nickname: ${user.nickname}');
+      debugPrint('  🖼️ Profile: ${user.profileImageUrl ?? "없음"}');
+
+      // 5. UserNotifier에 사용자 정보 + 토큰 저장
+      debugPrint('[LoginProvider] 💾 Secure Storage에 정보 저장 중...');
+
+      await ref
+          .read(userNotifierProvider.notifier)
+          .setUser(
+            user: user,
+            accessToken: authResponse.accessToken,
+            refreshToken: authResponse.refreshToken,
+          );
+
+      debugPrint('[LoginProvider] ✅ 사용자 정보 저장 완료 (Secure Storage)');
+      debugPrint('  📁 저장 항목: User, Access Token, Refresh Token');
 
       debugPrint('[LoginProvider] ✅ 구글 로그인 성공!');
       debugPrint('  👤 사용자: ${googleUser.email}');
       debugPrint('  🏠 홈 화면으로 이동 예정');
 
-      // ✅ 성공 상태로 업데이트
-      _safeUpdateState(const AsyncValue.data(null));
+      // 성공 상태는 UserNotifier가 관리
       return true;
-    } catch (e, stack) {
+    } catch (e) {
       // 취소 예외 감지: 사용자가 로그인을 취소한 경우
       final errorString = e.toString();
       if (errorString.contains('canceled') ||
           errorString.contains('cancelled') ||
           errorString.contains('GoogleSignInExceptionCode.canceled')) {
         debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨 (예외 경로)');
-        // 취소는 에러가 아니므로 data 상태로 설정
-        _safeUpdateState(const AsyncValue.data(null));
+        // 취소는 false 반환
         return false;
       }
 
-      // 실제 에러: AsyncValue.error로 상태 업데이트
+      // 실제 에러: false 반환
       debugPrint('[LoginProvider] ❌ 구글 로그인 실패: $e');
-      _safeUpdateState(AsyncValue.error(e, stack));
       return false;
     }
   }
@@ -183,38 +191,64 @@ class LoginNotifier extends _$LoginNotifier {
   /// 로그아웃
   ///
   /// 저장된 토큰을 삭제하고 사용자 정보를 초기화합니다.
+  ///
+  /// **동작**:
+  /// 1. Google 계정 로그아웃
+  /// 2. UserNotifier에서 사용자 정보 + 토큰 삭제
+  /// 3. Secure Storage 완전 정리
   Future<void> logout() async {
     try {
-      // TODO: 토큰 삭제
-      // await ref.read(secureStorageProvider).delete(key: 'access_token');
-      //
-      // TODO: 사용자 정보 초기화
-      // ref.read(userProvider.notifier).clearUser();
+      debugPrint('[LoginProvider] 🚪 로그아웃 시작');
 
-      debugPrint('[LoginProvider] ✅ 로그아웃 완료');
+      // 1. 백엔드 로그아웃 API 호출 (서버 측 토큰 무효화)
+      try {
+        // Refresh Token을 가져와서 백엔드에 전달
+        final refreshToken = await ref.read(refreshTokenProvider.future);
+        if (refreshToken != null) {
+          final authService = AuthApiService();
+          await authService.logout(
+            AuthRequest.logout(refreshToken: refreshToken),
+          );
+        }
+      } catch (e) {
+        // 백엔드 로그아웃 실패해도 로컬 정리는 진행
+        debugPrint('[LoginProvider] ⚠️ 백엔드 로그아웃 실패 (계속 진행): $e');
+      }
 
-      // 상태 초기화
-      state = const AsyncValue.data(null);
-    } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
+      // 2. Google 계정 로그아웃
+      await GoogleAuthService.signOut();
+
+      // 3. UserNotifier에서 사용자 정보 + 토큰 삭제
+      // (Secure Storage의 user_info, access_token, refresh_token 모두 삭제됨)
+      await ref.read(userNotifierProvider.notifier).clearUser();
+
+      debugPrint(
+        '[LoginProvider] ✅ 로그아웃 완료 (백엔드 무효화 + Google 로그아웃 + 로컬 토큰 삭제)',
+      );
+    } catch (e) {
       debugPrint('[LoginProvider] ❌ 로그아웃 실패: $e');
+      rethrow; // 에러를 호출자에게 전파
     }
   }
 }
 
 /// 자동 로그인 상태 Provider
 ///
-/// 사용자가 "자동로그인" 체크박스를 선택했는지 여부를 관리합니다.
-/// SharedPreferences에 저장되어 앱 재시작 시에도 유지됩니다.
+/// ⚠️ **현재 미사용 기능** - 로그인 화면에서 사용하지 않음
+/// 자동 로그인 기능이 필요하면 구현, 불필요하면 삭제 권장
+///
+/// **구현 계획 (필요 시)**:
+/// 1. SharedPreferences 패키지 추가
+/// 2. 아래 주석 해제하고 로그인 화면에 체크박스 추가
+/// 3. 앱 시작 시 토큰 유효성 검사 후 자동 로그인 처리
 @riverpod
 class RememberMeNotifier extends _$RememberMeNotifier {
   @override
   bool build() {
-    // TODO: SharedPreferences에서 자동로그인 설정 불러오기
+    // 임시: 기본값 false (자동 로그인 미구현)
+    // 구현 시 SharedPreferences에서 불러오기:
     // final prefs = await SharedPreferences.getInstance();
     // return prefs.getBool('remember_me') ?? false;
-
-    // 임시: 기본값 false
     return false;
   }
 
@@ -223,7 +257,7 @@ class RememberMeNotifier extends _$RememberMeNotifier {
   /// [value] true: 자동로그인 활성화, false: 비활성화
   Future<void> setRememberMe(bool value) async {
     try {
-      // TODO: SharedPreferences에 저장
+      // 구현 시 SharedPreferences에 저장:
       // final prefs = await SharedPreferences.getInstance();
       // await prefs.setBool('remember_me', value);
 

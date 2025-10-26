@@ -6,7 +6,8 @@ import '../../../../shared/widgets/common/empty_state.dart';
 import '../../../../shared/widgets/common/chip_list.dart';
 import '../../../../shared/widgets/common/custom_list_tile.dart';
 import '../../data/models/course_model.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// 코스 검색 화면
@@ -189,12 +190,12 @@ class _CourseSearchScreenState extends State<CourseSearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 24.h),
+          AppSpacing.verticalSpaceXXL,
 
           // 최근 검색어
           if (_recentSearches.isNotEmpty) ...[
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: AppSpacing.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -226,14 +227,14 @@ class _CourseSearchScreenState extends State<CourseSearchScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 12.h),
+            AppSpacing.verticalSpaceMD,
             ..._recentSearches.map((query) => _buildRecentSearchItem(query)),
-            SizedBox(height: 24.h),
+            AppSpacing.verticalSpaceXXL,
           ],
 
           // 추천 검색어
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: AppSpacing.symmetric(horizontal: 16),
             child: Text(
               l10n.recommendedSearches,
               style: TextStyle(
@@ -246,7 +247,7 @@ class _CourseSearchScreenState extends State<CourseSearchScreen> {
           ),
           SizedBox(height: 12.h),
           _buildRecommendedSearches(),
-          SizedBox(height: 24.h),
+          AppSpacing.verticalSpaceXXL,
         ],
       ),
     );
@@ -288,7 +289,7 @@ class _CourseSearchScreenState extends State<CourseSearchScreen> {
         // 검색 결과 헤더
         SliverToBoxAdapter(
           child: Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: AppSpacing.cardPadding,
             child: Text(
               l10n.searchResults(_searchResults.length),
               style: TextStyle(
@@ -306,7 +307,7 @@ class _CourseSearchScreenState extends State<CourseSearchScreen> {
           delegate: SliverChildBuilderDelegate((context, index) {
             final course = _searchResults[index];
             return Padding(
-              padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 16.h),
+              padding: AppSpacing.only(left: 16, right: 16, bottom: 16),
               child: CourseCard(
                 course: course,
                 width: double.infinity, // 전체 너비 사용
@@ -330,7 +331,7 @@ class _CourseSearchScreenState extends State<CourseSearchScreen> {
         ),
 
         // 하단 여백
-        SliverToBoxAdapter(child: SizedBox(height: 24.h)),
+        SliverToBoxAdapter(child: AppSpacing.verticalSpaceXXL),
       ],
     );
   }

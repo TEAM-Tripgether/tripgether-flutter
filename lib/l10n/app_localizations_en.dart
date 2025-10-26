@@ -415,4 +415,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signUpWithEmail => 'Sign up with Email';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get logoutConfirmTitle => 'Logout';
+
+  @override
+  String get logoutConfirmMessage => 'Are you sure you want to logout?';
+
+  @override
+  String get logoutHint => 'You will need to login again after logging out';
+
+  @override
+  String get logoutSuccess => 'Logged out successfully';
+
+  @override
+  String logoutFailed(String error) {
+    return 'Logout failed: $error';
+  }
+
+  @override
+  String get profileLoginRequired => 'Login required';
+
+  @override
+  String get profileLoginPrompt => 'Login to access more features';
+
+  @override
+  String get profileLoginButton => 'Go to Login';
+
+  @override
+  String get profileLoadError => 'Failed to load profile information';
+
+  @override
+  String accountSuffix(String platform) {
+    return '$platform account';
+  }
+
+  @override
+  String get permissionCreateScheduleRequired =>
+      'You need to sign in to create a schedule.';
+
+  @override
+  String get permissionPurchaseCourseRequired =>
+      'You need to sign in to purchase a course.';
+
+  @override
+  String get permissionEditProfileRequired =>
+      'You need to sign in to edit your profile.';
+
+  @override
+  String get permissionAccessMapRequired =>
+      'Location permission is required to use the map.';
+
+  @override
+  String get permissionGeneralRequired =>
+      'Appropriate permission is required to use this feature.';
+
+  @override
+  String get onboardingWelcomeTitle => 'Ready to go!';
+
+  @override
+  String get onboardingWelcomeMessage =>
+      'Start planning your special trip\nwith Tripgether ✈️';
+
+  @override
+  String get startTripgether => 'Start Tripgether';
+
+  @override
+  String get onboardingBirthdatePrompt => 'Please enter your birthdate';
+
+  @override
+  String get onboardingBirthdateDescription =>
+      'It won\'t be visible to other users.\nIt\'s only used for age-appropriate content settings and recommendations.';
+
+  @override
+  String get onboardingBirthdateAgeLimit => '※ Only for ages 14 and above';
+
+  @override
+  String get onboardingInterestsPrompt => 'Please select your interests';
+
+  @override
+  String get onboardingInterestsChangeHint =>
+      'You can change your interests anytime in settings.';
+
+  @override
+  String reviewCount(int count) {
+    return '$count reviews';
+  }
+
+  @override
+  String get mapMyLocationTooltip => 'Go to my location';
+
+  @override
+  String get mapPlaceholder => 'Map feature coming soon';
+
+  @override
+  String get placeInfo => 'Place Info';
+
+  @override
+  String get businessInfo => 'Business Info';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get viewOnMap => 'View on Map';
+
+  @override
+  String get getDirections => 'Get Directions';
 }

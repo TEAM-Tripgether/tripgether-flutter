@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
-import '../../../../core/constants/app_strings.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// 지도 화면
 ///
 /// 여행지 위치 정보를 지도로 확인할 수 있는 화면입니다.
 /// 전체 화면을 지도가 차지하므로 미니멀한 AppBar를 사용합니다.
-class MapScreen extends StatelessWidget {
+class MapScreen extends ConsumerWidget {
   const MapScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       // 지도 화면에 최적화된 커스텀 AppBar
       // 제목 없이 미니멀하게 구성하여 지도 공간을 극대화
       appBar: CommonAppBar(
         title: '', // 제목 없음으로 지도 공간 극대화
-        backgroundColor: Colors.white.withValues(
+        backgroundColor: AppColors.surface.withValues(
           alpha: 0.95,
         ), // 반투명 배경으로 지도 일부가 보이도록
         elevation: 0, // 그림자 없음
@@ -33,13 +39,13 @@ class MapScreen extends StatelessWidget {
             icon: Icon(
               Icons.my_location_outlined,
               size: 24.w,
-              color: Colors.grey[700],
+              color: AppColors.neutral70,
             ),
             onPressed: () {
               debugPrint("임시 디버그 메시지");
               // TODO: 현재 위치로 지도 중심 이동
             },
-            tooltip: "임시 툴팁",
+            tooltip: l10n.mapMyLocationTooltip,
           ),
           SizedBox(width: 8.w),
         ],
@@ -48,20 +54,20 @@ class MapScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.map_outlined, size: 64.w, color: Colors.grey[400]),
-            SizedBox(height: 16.h),
+            Icon(Icons.map_outlined, size: 64.w, color: AppColors.neutral60),
+            AppSpacing.verticalSpaceLG,
             Text(
-              AppStrings.of(context).navMap,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(color: Colors.grey[700]),
+              l10n.navMap,
+              style: AppTextStyles.headlineSmall.copyWith(
+                color: AppColors.neutral70,
+              ),
             ),
-            SizedBox(height: 8.h),
+            AppSpacing.verticalSpaceSM,
             Text(
-              "임시 플레이스홀더 텍스트",
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
+              l10n.mapPlaceholder,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.neutral50,
+              ),
             ),
           ],
         ),

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// PRD.md 구조에 따른 공유 바텀 네비게이션 바 위젯
 ///
@@ -17,10 +18,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
   /// 탭 선택 시 호출되는 콜백 함수
   final ValueChanged<int> onTap;
 
+  /// 탭 재선택(재클릭) 시 호출되는 콜백 함수
+  ///
+  /// 현재 활성화된 탭을 다시 클릭했을 때 실행됩니다.
+  /// 주로 스크롤을 최상단으로 올리거나 새로고침하는 용도로 사용됩니다.
+  final ValueChanged<int>? onTabReselected;
+
   const CustomBottomNavigationBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.onTabReselected,
   });
 
   @override
@@ -66,24 +74,34 @@ class CustomBottomNavigationBar extends StatelessWidget {
     // 현재 탭이 선택되어 있는지 확인
     final bool isSelected = currentIndex == index;
 
-    return GestureDetector(
-      onTap: () => onTap(index),
-      // 탭 영역을 확장하여 터치하기 쉽게 만듦
-      behavior: HitTestBehavior.translucent,
-      child: SizedBox(
-        width: AppSizes.fabSize, // 각 탭의 최소 너비 보장
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // SVG 아이콘 표시
-            _buildIcon(context, index, isSelected),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          // 현재 선택된 탭을 다시 클릭한 경우
+          if (currentIndex == index) {
+            onTabReselected?.call(index);
+          } else {
+            // 다른 탭을 선택한 경우
+            onTap(index);
+          }
+        },
+        borderRadius: BorderRadius.circular(16.r),
+        child: SizedBox(
+          width: AppSizes.fabSize, // 각 탭의 최소 너비 보장
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // SVG 아이콘 표시
+              _buildIcon(context, index, isSelected),
 
-            SizedBox(height: AppSpacing.xs.h),
+              SizedBox(height: AppSpacing.xs.h),
 
-            // 탭 라벨 텍스트
-            _buildLabel(context, index, isSelected),
-          ],
+              // 탭 라벨 텍스트
+              _buildLabel(context, index, isSelected),
+            ],
+          ),
         ),
       ),
     );
@@ -127,12 +145,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
   /// [isSelected] 선택 여부 (텍스트 스타일 결정)
   Widget _buildLabel(BuildContext context, int index, bool isSelected) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Text(
       AppRoutes.getTabLabels(context)[index],
-      style: textTheme.labelSmall?.copyWith(
+      style: AppTextStyles.labelSmall.copyWith(
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         color: isSelected
             ? theme

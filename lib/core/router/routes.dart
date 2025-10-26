@@ -16,6 +16,9 @@ class AppRoutes {
   static const String login = '/auth/login';
   static const String signup = '/auth/signup';
 
+  /// 온보딩 경로 (첫 로그인 시 정보 입력)
+  static const String onboarding = '/onboarding';
+
   /// 메인 쉘 라우트 (바텀 네비게이션이 있는 기본 레이아웃)
   static const String shell = '/shell';
 
@@ -32,10 +35,16 @@ class AppRoutes {
   static const String snsContentDetail = '/home/sns-contents/detail/:contentId';
   static const String savedPlacesList = '/home/saved-places';
 
-  /// 상세 화면 경로들
-  static const String courseDetail = '/course-detail/:courseId';
-  static const String placeDetail = '/place-detail/:placeId';
-  static const String scheduleDetail = '/schedule-detail/:scheduleId';
+  /// 코스마켓 탭 하위 경로들
+  static const String courseMarketSearch = '/course-market/search';
+
+  /// 상세 화면 경로들 (router.dart의 실제 경로와 일치)
+  static const String courseDetail = '/course-market/detail/:courseId';
+
+  /// 장소 상세 화면 경로 (중첩 라우트)
+  /// /home/saved-places/:placeId 패턴으로 접근
+  static const String placeDetail = '/home/saved-places/:placeId';
+  static const String scheduleDetail = '/schedule/detail/:scheduleId';
   static const String profileEdit = '/profile-edit';
   static const String settings = '/settings';
 
@@ -77,7 +86,7 @@ class AppRoutes {
 
   /// 인증이 필요없는 공개 경로들
   /// route_guards.dart에서 사용
-  static Set<String> get publicRoutes => {splash, login, signup};
+  static Set<String> get publicRoutes => {splash, login, signup, onboarding};
 }
 
 /// 네비게이션 아이콘 파일 경로 관리 클래스

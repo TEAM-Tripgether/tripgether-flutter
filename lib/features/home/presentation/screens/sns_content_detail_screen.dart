@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/platform_icon.dart';
 import '../../data/models/sns_content_model.dart';
@@ -67,7 +69,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
             },
             tooltip: l10n.share,
           ),
-          SizedBox(width: 8.w),
+          AppSpacing.horizontalSpaceSM,
         ],
       ),
       // PageView를 사용한 가로 스와이프 네비게이션
@@ -93,42 +95,42 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 16.h),
+          AppSpacing.verticalSpaceLG,
           // 썸네일 이미지 또는 동영상 영역 (쇼츠 형식 - 세로로 긴 형태)
           _buildMediaSection(context, content),
 
-          SizedBox(height: 16.h),
+          AppSpacing.verticalSpaceLG,
 
           // 콘텐츠 정보 영역
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: AppSpacing.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 채널 정보 및 바로가기
                 _buildChannelInfo(context, content, l10n),
 
-                SizedBox(height: 16.h),
+                AppSpacing.verticalSpaceLG,
 
                 // 제목
                 _buildTitle(context, content),
 
-                SizedBox(height: 12.h),
+                AppSpacing.verticalSpaceMD,
 
                 // 카테고리 태그
                 _buildCategoryTag(context, l10n),
 
-                SizedBox(height: 16.h),
+                AppSpacing.verticalSpaceLG,
 
                 // 설명 영역
                 _buildDescription(context, l10n),
 
-                SizedBox(height: 24.h),
+                AppSpacing.verticalSpaceXXL,
 
                 // 관련 장소 카드 섹션
                 _buildRelatedPlaceSection(context),
 
-                SizedBox(height: 32.h),
+                AppSpacing.verticalSpaceXXXL,
               ],
             ),
           ),
@@ -222,7 +224,6 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
     AppLocalizations l10n,
   ) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Row(
@@ -230,12 +231,12 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
         // 플랫폼 아이콘
         _buildPlatformIcon(content),
 
-        SizedBox(width: 8.w),
+        AppSpacing.horizontalSpaceSM,
 
         // 채널명
         Text(
           content.creatorName,
-          style: textTheme.bodyLarge?.copyWith(
+          style: AppTextStyles.bodyLarge.copyWith(
             fontWeight: FontWeight.w600,
             color: colorScheme.onSurface,
           ),
@@ -253,10 +254,10 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
                 size: 16.w,
                 color: Theme.of(context).primaryColor,
               ),
-              SizedBox(width: 4.w),
+              AppSpacing.horizontalSpaceXS,
               Text(
                 l10n.goToOriginalPost,
-                style: textTheme.labelMedium?.copyWith(
+                style: AppTextStyles.labelMedium.copyWith(
                   fontWeight: FontWeight.w500,
                   color: theme.primaryColor,
                 ),
@@ -279,13 +280,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
   /// 제목
   Widget _buildTitle(BuildContext context, SnsContent content) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Text(
       content.title,
-      style: textTheme.headlineSmall?.copyWith(
+      style: AppTextStyles.headlineSmall.copyWith(
         fontWeight: FontWeight.w700,
         color: colorScheme.onSurface,
         height: 1.4,
@@ -295,9 +294,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
   /// 카테고리 태그
   Widget _buildCategoryTag(BuildContext context, AppLocalizations l10n) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       children: [
@@ -309,7 +306,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
         SizedBox(width: 4.w),
         Text(
           l10n.aiContentSummary,
-          style: textTheme.labelMedium?.copyWith(
+          style: AppTextStyles.labelMedium.copyWith(
             fontWeight: FontWeight.w500,
             color: colorScheme.onSurfaceVariant,
           ),
@@ -320,13 +317,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
   /// 설명 영역 (긴 텍스트)
   Widget _buildDescription(BuildContext context, AppLocalizations l10n) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Text(
       _getDummyDescription(),
-      style: textTheme.bodyMedium?.copyWith(
+      style: AppTextStyles.bodyMedium.copyWith(
         color: colorScheme.onSurfaceVariant,
         height: 1.7,
       ),
@@ -336,7 +331,6 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
   /// 관련 장소 카드 섹션
   Widget _buildRelatedPlaceSection(BuildContext context) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     // 더미 장소 이미지 URL 목록 (실제로는 API에서 가져와야 함)
@@ -351,7 +345,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
     return Container(
       // 쉐도우가 있는 카드 컨테이너
-      padding: EdgeInsets.all(16.w),
+      padding: AppSpacing.cardPadding,
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
@@ -370,34 +364,34 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
           // 섹션 제목
           Text(
             '토리토스시 토요히라점',
-            style: textTheme.titleMedium?.copyWith(
+            style: AppTextStyles.titleMedium.copyWith(
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
             ),
           ),
 
-          SizedBox(height: 4.h),
+          AppSpacing.verticalSpaceXS,
 
           // 위치 정보
           Text(
             '홋카이도 · 스시',
-            style: textTheme.bodySmall?.copyWith(
+            style: AppTextStyles.bodySmall.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
 
-          SizedBox(height: 12.h),
+          AppSpacing.verticalSpaceMD,
 
           // 주소
           Text(
             '일본 〒062-0904 Hokkaido, Sapporo, Toyohira Ward, Toyohira 4 Jo, 6 Chome-1-10',
-            style: textTheme.bodySmall?.copyWith(
+            style: AppTextStyles.bodySmall.copyWith(
               color: colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
           ),
 
-          SizedBox(height: 16.h),
+          AppSpacing.verticalSpaceLG,
 
           // 이미지 갤러리 (가로 스크롤) - 실제 이미지 사용
           SizedBox(
@@ -408,7 +402,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
               itemBuilder: (context, index) {
                 return Container(
                   width: 100.w,
-                  margin: EdgeInsets.only(right: 8.w),
+                  margin: AppSpacing.only(right: 8),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.r),
                     child: CachedNetworkImage(
@@ -458,12 +452,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
         if (context.mounted) {
-          final textTheme = Theme.of(context).textTheme;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
                 AppLocalizations.of(context).cannotOpenLink,
-                style: textTheme.bodyMedium,
+                style: AppTextStyles.bodyMedium,
               ),
               behavior: SnackBarBehavior.floating,
             ),
@@ -473,12 +466,11 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
     } catch (e) {
       debugPrint('링크 열기 실패: $e');
       if (context.mounted) {
-        final textTheme = Theme.of(context).textTheme;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               AppLocalizations.of(context).linkOpenError,
-              style: textTheme.bodyMedium,
+              style: AppTextStyles.bodyMedium,
             ),
             behavior: SnackBarBehavior.floating,
           ),

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
+import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../data/models/place_model.dart';
 
 /// 장소 상세 화면
@@ -51,7 +56,7 @@ class PlaceDetailScreen extends StatelessWidget {
             },
             tooltip: l10n.share,
           ),
-          SizedBox(width: 8.w),
+          AppSpacing.horizontalSpaceSM,
         ],
       ),
       body: SingleChildScrollView(
@@ -61,28 +66,28 @@ class PlaceDetailScreen extends StatelessWidget {
             // Hero 이미지 갤러리
             _buildHeroImageGallery(),
 
-            SizedBox(height: 16.h),
+            AppSpacing.verticalSpaceLG,
 
             // 기본 정보 카드
             _buildBasicInfoCard(context, l10n),
 
-            SizedBox(height: 12.h),
+            AppSpacing.verticalSpaceMD,
 
             // 상세 정보 카드
             _buildDetailInfoCard(context, l10n),
 
-            SizedBox(height: 12.h),
+            AppSpacing.verticalSpaceMD,
 
             // 영업 정보 카드
             if (place.businessHours != null || place.phoneNumber != null)
               _buildBusinessInfoCard(context, l10n),
 
-            SizedBox(height: 12.h),
+            AppSpacing.verticalSpaceMD,
 
             // 위치 정보 카드
             _buildLocationCard(context, l10n),
 
-            SizedBox(height: 32.h),
+            AppSpacing.verticalSpaceXXXL,
           ],
         ),
       ),
@@ -111,20 +116,15 @@ class PlaceDetailScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 300.h,
                 fit: BoxFit.cover,
-                placeholder: (context, url) {
-                  final theme = Theme.of(context);
-                  return Container(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          theme.primaryColor,
-                        ),
-                      ),
-                    ),
-                  );
-                },
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: AppColors.shimmerBase,
+                  highlightColor: AppColors.shimmerHighlight,
+                  child: Container(
+                    width: double.infinity,
+                    height: 300.h,
+                    color: Colors.white,
+                  ),
+                ),
                 errorWidget: (context, url, error) {
                   final colorScheme = Theme.of(context).colorScheme;
                   return Container(
@@ -146,20 +146,15 @@ class PlaceDetailScreen extends StatelessWidget {
             width: double.infinity,
             height: 300.h,
             fit: BoxFit.cover,
-            placeholder: (context, url) {
-              final theme = Theme.of(context);
-              return Container(
-                color: theme.colorScheme.surfaceContainerHighest,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      theme.primaryColor,
-                    ),
-                  ),
-                ),
-              );
-            },
+            placeholder: (context, url) => Shimmer.fromColors(
+              baseColor: AppColors.shimmerBase,
+              highlightColor: AppColors.shimmerHighlight,
+              child: Container(
+                width: double.infinity,
+                height: 300.h,
+                color: Colors.white,
+              ),
+            ),
             errorWidget: (context, url, error) {
               final colorScheme = Theme.of(context).colorScheme;
               return Container(
@@ -180,21 +175,20 @@ class PlaceDetailScreen extends StatelessWidget {
   /// 기본 정보 카드 (이름, 카테고리, 평점)
   Widget _buildBasicInfoCard(BuildContext context, AppLocalizations l10n) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      padding: EdgeInsets.all(20.w),
+      margin: AppSpacing.symmetric(horizontal: 16),
+      padding: AppSpacing.all(20),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
@@ -205,7 +199,7 @@ class PlaceDetailScreen extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                padding: AppSpacing.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: theme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
@@ -213,22 +207,21 @@ class PlaceDetailScreen extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(place.category.emoji, style: textTheme.labelLarge),
-                    SizedBox(width: 4.w),
+                    Text(place.category.emoji, style: AppTextStyles.labelLarge),
+                    AppSpacing.horizontalSpaceXS,
                     Text(
                       place.category.displayName,
-                      style: textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
+                      style: AppTextStyles.labelLarge.copyWith(
                         color: theme.primaryColor,
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(width: 8.w),
+              AppSpacing.horizontalSpaceSM,
               if (place.isVisited)
                 Container(
-                  padding: EdgeInsets.symmetric(
+                  padding: AppSpacing.symmetric(
                     horizontal: 10.w,
                     vertical: 6.h,
                   ),
@@ -245,11 +238,10 @@ class PlaceDetailScreen extends StatelessWidget {
                         size: 14.w,
                         color: Colors.green[700],
                       ),
-                      SizedBox(width: 4.w),
+                      AppSpacing.horizontalSpaceXS,
                       Text(
                         l10n.placeVisited,
-                        style: textTheme.labelSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
+                        style: AppTextStyles.labelSmall.copyWith(
                           color: Colors.green[700], // 의미론적 녹색 유지
                         ),
                       ),
@@ -259,19 +251,19 @@ class PlaceDetailScreen extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 16.h),
+          AppSpacing.verticalSpaceLG,
 
           // 장소명
           Text(
             place.name,
-            style: textTheme.headlineMedium?.copyWith(
+            style: AppTextStyles.headlineMedium.copyWith(
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
               height: 1.3,
             ),
           ),
 
-          SizedBox(height: 12.h),
+          AppSpacing.verticalSpaceMD,
 
           // 평점 및 리뷰
           if (place.rating != null)
@@ -286,21 +278,21 @@ class PlaceDetailScreen extends StatelessWidget {
                               ? Icons.star_half
                               : Icons.star_border),
                     size: 20.w,
-                    color: Colors.amber,
+                    color: AppColorPalette.ratingStarFilled,
                   ),
                 ),
-                SizedBox(width: 8.w),
+                AppSpacing.horizontalSpaceSM,
                 Text(
                   place.rating!.toStringAsFixed(1),
-                  style: textTheme.titleMedium?.copyWith(
+                  style: AppTextStyles.titleMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     color: colorScheme.onSurface,
                   ),
                 ),
                 if (place.reviewCount != null)
                   Text(
-                    ' (${place.reviewCount}개 리뷰)',
-                    style: textTheme.bodyMedium?.copyWith(
+                    ' (${l10n.reviewCount(place.reviewCount!)})',
+                    style: AppTextStyles.bodyMedium.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
@@ -316,21 +308,20 @@ class PlaceDetailScreen extends StatelessWidget {
     if (place.description == null) return SizedBox.shrink();
 
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      padding: EdgeInsets.all(20.w),
+      margin: AppSpacing.symmetric(horizontal: 16),
+      padding: AppSpacing.all(20),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
@@ -340,20 +331,20 @@ class PlaceDetailScreen extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.info_outline, size: 20.w, color: theme.primaryColor),
-              SizedBox(width: 8.w),
+              AppSpacing.horizontalSpaceSM,
               Text(
-                '장소 정보',
-                style: textTheme.titleMedium?.copyWith(
+                l10n.placeInfo,
+                style: AppTextStyles.titleMedium.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          AppSpacing.verticalSpaceMD,
           Text(
             place.description!,
-            style: textTheme.bodyMedium?.copyWith(
+            style: AppTextStyles.bodyMedium.copyWith(
               color: colorScheme.onSurfaceVariant,
               height: 1.6,
             ),
@@ -366,21 +357,20 @@ class PlaceDetailScreen extends StatelessWidget {
   /// 영업 정보 카드
   Widget _buildBusinessInfoCard(BuildContext context, AppLocalizations l10n) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      padding: EdgeInsets.all(20.w),
+      margin: AppSpacing.symmetric(horizontal: 16),
+      padding: AppSpacing.all(20),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
@@ -390,17 +380,17 @@ class PlaceDetailScreen extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.access_time, size: 20.w, color: theme.primaryColor),
-              SizedBox(width: 8.w),
+              AppSpacing.horizontalSpaceSM,
               Text(
-                '영업 정보',
-                style: textTheme.titleMedium?.copyWith(
+                l10n.businessInfo,
+                style: AppTextStyles.titleMedium.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          AppSpacing.verticalSpaceLG,
 
           // 영업시간
           if (place.businessHours != null) ...[
@@ -411,16 +401,16 @@ class PlaceDetailScreen extends StatelessWidget {
                   size: 18.w,
                   color: colorScheme.onSurfaceVariant,
                 ),
-                SizedBox(width: 12.w),
+                AppSpacing.horizontalSpaceMD,
                 Text(
                   place.businessHours!,
-                  style: textTheme.bodyMedium?.copyWith(
+                  style: AppTextStyles.bodyMedium.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
             ),
-            if (place.phoneNumber != null) SizedBox(height: 12.h),
+            if (place.phoneNumber != null) AppSpacing.verticalSpaceMD,
           ],
 
           // 전화번호
@@ -434,10 +424,10 @@ class PlaceDetailScreen extends StatelessWidget {
                     size: 18.w,
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  SizedBox(width: 12.w),
+                  AppSpacing.horizontalSpaceMD,
                   Text(
                     place.phoneNumber!,
-                    style: textTheme.bodyMedium?.copyWith(
+                    style: AppTextStyles.bodyMedium.copyWith(
                       color: theme.primaryColor,
                       decoration: TextDecoration.underline,
                     ),
@@ -453,21 +443,20 @@ class PlaceDetailScreen extends StatelessWidget {
   /// 위치 정보 카드
   Widget _buildLocationCard(BuildContext context, AppLocalizations l10n) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      padding: EdgeInsets.all(20.w),
+      margin: AppSpacing.symmetric(horizontal: 16),
+      padding: AppSpacing.all(20),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 10.r,
+            offset: Offset(0, 2.h),
           ),
         ],
       ),
@@ -477,34 +466,34 @@ class PlaceDetailScreen extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.location_on, size: 20.w, color: theme.primaryColor),
-              SizedBox(width: 8.w),
+              AppSpacing.horizontalSpaceSM,
               Text(
-                '위치',
-                style: textTheme.titleMedium?.copyWith(
+                l10n.location,
+                style: AppTextStyles.titleMedium.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          AppSpacing.verticalSpaceMD,
           Text(
             place.address,
-            style: textTheme.bodyMedium?.copyWith(
+            style: AppTextStyles.bodyMedium.copyWith(
               color: colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
           ),
           if (place.detailAddress != null) ...[
-            SizedBox(height: 4.h),
+            AppSpacing.verticalSpaceXS,
             Text(
               place.detailAddress!,
-              style: textTheme.bodySmall?.copyWith(
+              style: AppTextStyles.bodySmall.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
           ],
-          SizedBox(height: 12.h),
+          AppSpacing.verticalSpaceMD,
           Row(
             children: [
               Icon(
@@ -512,10 +501,10 @@ class PlaceDetailScreen extends StatelessWidget {
                 size: 16.w,
                 color: colorScheme.onSurfaceVariant,
               ),
-              SizedBox(width: 6.w),
+              SizedBox(width: 6.w), // 6.w는 AppSpacing 표준값이 아니므로 유지
               Text(
                 place.distanceText,
-                style: textTheme.bodySmall?.copyWith(
+                style: AppTextStyles.bodySmall.copyWith(
                   fontWeight: FontWeight.w500,
                   color: colorScheme.onSurfaceVariant,
                 ),
@@ -528,73 +517,43 @@ class PlaceDetailScreen extends StatelessWidget {
   }
 
   /// 하단 액션 버튼
+  ///
+  /// PrimaryButton과 SecondaryButton 컴포넌트를 사용하여
+  /// 일관된 스타일과 간결한 코드 구조를 유지합니다.
   Widget _buildBottomActions(BuildContext context, AppLocalizations l10n) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: AppSpacing.cardPadding,
       decoration: BoxDecoration(
         color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            blurRadius: 10.r,
+            offset: Offset(0, -2.h),
           ),
         ],
       ),
-      child: Row(
+      child: ButtonGroup(
         children: [
-          // 지도에서 보기 버튼
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: () {
-                // TODO: 지도 탭으로 이동
-                debugPrint('지도에서 보기 클릭');
-              },
-              icon: Icon(Icons.map, size: 20.w),
-              label: Text(
-                '지도에서 보기',
-                style: textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.primaryColor,
-                foregroundColor: colorScheme.onPrimary,
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-            ),
+          PrimaryButton(
+            text: l10n.viewOnMap,
+            icon: Icons.map,
+            onPressed: () {
+              // TODO: 지도 탭으로 이동
+              debugPrint('지도에서 보기 클릭');
+            },
+            isFullWidth: false, // ButtonGroup이 Expanded 처리
           ),
-          SizedBox(width: 12.w),
-          // 길찾기 버튼
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () {
-                // TODO: 길찾기 (구글맵/애플맵)
-                debugPrint('길찾기 클릭');
-              },
-              icon: Icon(Icons.directions, size: 20.w),
-              label: Text(
-                '길찾기',
-                style: textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: theme.primaryColor,
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                side: BorderSide(color: theme.primaryColor, width: 1.5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-            ),
+          SecondaryButton(
+            text: l10n.getDirections,
+            icon: Icons.directions,
+            onPressed: () {
+              // TODO: 길찾기 (구글맵/애플맵)
+              debugPrint('길찾기 클릭');
+            },
+            isFullWidth: false, // ButtonGroup이 Expanded 처리
           ),
         ],
       ),

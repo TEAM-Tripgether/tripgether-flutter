@@ -45,11 +45,10 @@ name: PROJECT-FLUTTER-AUTO-FILE-UPLOAD
 # 트리거 설정
 # ===================================================================
 on:
-  pull_request_target:
-    types: [closed]  # PR이 닫혔을 때 (merge 포함)
+  push:
     branches:
-      - deploy    # deploy 브랜치로의 PR
-  workflow_dispatch:  # 수동 실행 허용
+      - main
+  workflow_dispatch:
 
 # ===================================================================
 # 환경 변수 설정

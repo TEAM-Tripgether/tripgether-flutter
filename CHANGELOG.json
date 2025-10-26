@@ -1,11 +1,43 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-14T16:31:17Z",
-    "currentVersion": "1.0.24",
+    "lastUpdated": "2025-10-26T15:47:26Z",
+    "currentVersion": "1.0.27",
     "projectType": "flutter",
-    "totalReleases": 12
+    "totalReleases": 13
   },
   "releases": [
+    {
+      "version": "1.0.27",
+      "project_type": "flutter",
+      "date": "2025-10-26",
+      "pr_number": 30,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n새로운 기능\n\n신규 온보딩 플로우 추가 (닉네임, 생년월일, 성별, 관심사 선택)\n프로필 헤더 및 로그아웃 기능 추가\n탭별 독립적 새로고침 기능 개선\nGoogle 로그인 및 토큰 관리 강화\n\n\n\n스타일\n\n테마 기반 색상 및 텍스트 스타일 통일\nUI 간격 및 레이아웃 최적화\n\n\n\n기타\n\n버전 1.0.24 → 1.0.27 업데이트\n다국어 지원 확대",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "신규 온보딩 플로우 추가 (닉네임, 생년월일, 성별, 관심사 선택)",
+            "프로필 헤더 및 로그아웃 기능 추가",
+            "탭별 독립적 새로고침 기능 개선",
+            "Google 로그인 및 토큰 관리 강화"
+          ]
+        },
+        "스타일": {
+          "title": "스타일",
+          "items": [
+            "테마 기반 색상 및 텍스트 스타일 통일",
+            "UI 간격 및 레이아웃 최적화"
+          ]
+        },
+        "기타": {
+          "title": "기타",
+          "items": [
+            "버전 1.0.24 → 1.0.27 업데이트",
+            "다국어 지원 확대"
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.24",
       "project_type": "flutter",

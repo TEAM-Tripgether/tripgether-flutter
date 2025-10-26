@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../shared/widgets/common/common_app_bar.dart';
-import '../../../demo/button_examples.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/providers/locale_provider.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
+import 'package:tripgether/core/providers/locale_provider.dart';
+import 'package:tripgether/core/router/routes.dart';
+import 'package:tripgether/core/theme/app_spacing.dart';
+import 'package:tripgether/core/theme/app_text_styles.dart';
+import 'package:tripgether/l10n/app_localizations.dart';
+import 'package:tripgether/features/mypage/presentation/widgets/profile_header.dart';
+import 'package:tripgether/features/auth/providers/login_provider.dart';
+import 'package:tripgether/features/auth/providers/user_provider.dart';
 
 /// 마이페이지 화면
 ///
@@ -22,7 +27,7 @@ class MyPageScreen extends ConsumerWidget {
       // 마이페이지에 최적화된 AppBar
       // 개인 계정 관리 중심으로 설정 기능을 강조
       appBar: CommonAppBar(
-        title: AppStrings.of(context).navMyPage,
+        title: l10n.navMyPage,
         showMenuButton: false, // 마이페이지에서는 메뉴 버튼 제거 (개인 공간)
         showNotificationIcon: true, // 개인 알림 확인을 위해 알림 아이콘 유지
         onNotificationPressed: () {
@@ -38,97 +43,41 @@ class MyPageScreen extends ConsumerWidget {
               icon: Icon(
                 Icons.settings_outlined,
                 size: 24.w,
-                color: Colors.grey[700],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               onPressed: () {
                 debugPrint('마이페이지 설정 버튼 클릭');
                 // TODO: 설정 화면으로 이동
               },
-              tooltip: AppStrings.of(context).settings,
+              tooltip: l10n.settings,
             ),
           ),
           // 알림 아이콘은 showNotificationIcon으로 처리됨
-          SizedBox(width: 8.w), // Material Design 가이드라인에 따른 오른쪽 마진
+          AppSpacing.horizontalSpaceSM, // Material Design 가이드라인에 따른 오른쪽 마진
         ],
       ),
       body: ListView(
         children: [
-          // 🎨 임시: 버튼 예제 화면으로 가기 (개발용)
-          _buildDebugSection(context),
+          // ✅ 프로필 헤더 (최상단)
+          const ProfileHeader(),
+
+          AppSpacing.verticalSpaceLG,
 
           // 언어 선택 섹션
           _buildLanguageSection(context, ref, l10n, currentLocale),
-        ],
-      ),
-    );
-  }
 
-  /// 🎨 개발용 디버그 섹션 (임시)
-  Widget _buildDebugSection(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(16.w),
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.1),
-        border: Border.all(color: Colors.orange, width: 2),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.bug_report, color: Colors.orange, size: 20.w),
-              SizedBox(width: 8.w),
-              Text(
-                '🎨 개발자 도구 (임시)',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.orange[900],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ButtonExamplesScreen(),
-                  ),
-                );
-              },
-              icon: Icon(Icons.palette, size: 20.w),
-              label: Text(
-                '버튼 컴포넌트 예제 보기',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-              ),
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            '💡 이 섹션은 임시 개발용입니다. 삭제 예정',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 12.sp,
-              color: Colors.grey[600],
-              fontStyle: FontStyle.italic,
-            ),
-          ),
+          AppSpacing.verticalSpaceXXL,
+
+          // 🧪 테스트 섹션: 온보딩 화면 이동 버튼
+          _buildTestSection(context),
+
+          AppSpacing.verticalSpaceXL,
+
+          // 로그아웃 버튼 섹션
+          _buildLogoutSection(context, ref),
+
+          // 하단 여백
+          AppSpacing.verticalSpaceHuge,
         ],
       ),
     );
@@ -141,33 +90,29 @@ class MyPageScreen extends ConsumerWidget {
     AppLocalizations l10n,
     Locale? currentLocale,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 섹션 헤더
         Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 12.h),
+          padding: AppSpacing.only(left: 16, top: 24, right: 16, bottom: 12),
           child: Text(
             l10n.languageSelection,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 18.sp,
+            style: AppTextStyles.titleMedium.copyWith(
               fontWeight: FontWeight.w700,
-              color: Colors.black87,
             ),
           ),
         ),
 
         // 현재 언어 표시
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: AppSpacing.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             '${l10n.currentLanguage}: ${_getLanguageName(l10n, currentLocale)}',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey[600],
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -210,23 +155,20 @@ class MyPageScreen extends ConsumerWidget {
     Locale? locale,
     bool isSelected,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final primaryColor = Theme.of(context).primaryColor;
+
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       title: Text(
         languageName,
-        style: TextStyle(
-          fontFamily: 'Pretendard',
-          fontSize: 16.sp,
+        style: AppTextStyles.bodyLarge.copyWith(
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          color: isSelected ? Theme.of(context).primaryColor : Colors.black87,
+          color: isSelected ? primaryColor : colorScheme.onSurface,
         ),
       ),
       trailing: isSelected
-          ? Icon(
-              Icons.check_circle,
-              color: Theme.of(context).primaryColor,
-              size: 24.w,
-            )
+          ? Icon(Icons.check_circle, color: primaryColor, size: 24.w)
           : null,
       onTap: () async {
         // 언어 변경
@@ -238,7 +180,7 @@ class MyPageScreen extends ConsumerWidget {
             SnackBar(
               content: Text(
                 '${l10n.language}: $languageName',
-                style: TextStyle(fontFamily: 'Pretendard', fontSize: 14.sp),
+                style: AppTextStyles.bodyMedium,
               ),
               duration: const Duration(seconds: 2),
             ),
@@ -260,6 +202,273 @@ class MyPageScreen extends ConsumerWidget {
         return l10n.english;
       default:
         return locale.languageCode;
+    }
+  }
+
+  /// 🧪 테스트 섹션: 온보딩 화면 테스트용 버튼
+  ///
+  /// **목적**: 개발/테스트 중 온보딩 화면으로 쉽게 이동할 수 있도록 함
+  /// **주의**: 프로덕션 배포 전에 제거 필요
+  Widget _buildTestSection(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: colorScheme.secondaryContainer.withValues(alpha: 0.3),
+        border: Border.all(
+          color: colorScheme.secondary.withValues(alpha: 0.5),
+          width: 1.w,
+        ),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 섹션 제목
+          Row(
+            children: [
+              Icon(
+                Icons.science_outlined,
+                size: 20.w,
+                color: colorScheme.secondary,
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                '🧪 테스트 모드',
+                style: AppTextStyles.titleSmall.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.secondary,
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 12.h),
+
+          // 온보딩 화면 이동 버튼
+          ElevatedButton.icon(
+            onPressed: () {
+              context.push(AppRoutes.onboarding);
+            },
+            icon: Icon(Icons.assignment_outlined, size: 20.w),
+            label: Text(
+              '온보딩 화면 테스트',
+              style: AppTextStyles.bodyMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorScheme.secondaryContainer,
+              foregroundColor: colorScheme.onSecondaryContainer,
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 8.h),
+
+          // 안내 문구
+          Text(
+            '※ 개발/테스트 전용 기능입니다',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontStyle: FontStyle.italic,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 로그아웃 버튼 섹션
+  ///
+  /// **기능**:
+  /// - 로그인 상태일 때만 표시
+  /// - 로그아웃 버튼 클릭 시:
+  ///   1. LoginProvider.logout() 호출
+  ///   2. UserNotifier 상태 초기화
+  ///   3. Secure Storage 정리
+  ///   4. 로그인 화면으로 이동
+  Widget _buildLogoutSection(BuildContext context, WidgetRef ref) {
+    // 로그인 상태 확인
+    final userAsync = ref.watch(userNotifierProvider);
+
+    // 로그인하지 않은 상태면 버튼 숨김
+    return userAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (error, _) => const SizedBox.shrink(),
+      data: (user) {
+        if (user == null) {
+          return const SizedBox.shrink();
+        }
+
+        // 로그인된 상태: 로그아웃 버튼 표시
+        final colorScheme = Theme.of(context).colorScheme;
+
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 구분선
+              Divider(
+                height: 1.h,
+                thickness: 1.w,
+                color: colorScheme.outlineVariant,
+              ),
+
+              AppSpacing.verticalSpaceXXL,
+
+              // 로그아웃 버튼
+              OutlinedButton.icon(
+                onPressed: () => _handleLogout(context, ref),
+                icon: Icon(Icons.logout, size: 20.w, color: colorScheme.error),
+                label: Text(
+                  AppLocalizations.of(context).logout,
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.error,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                  side: BorderSide(
+                    color: colorScheme.error.withValues(alpha: 0.5),
+                    width: 1.5.w,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 8.h),
+
+              // 안내 문구
+              Text(
+                AppLocalizations.of(context).logoutHint,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// 로그아웃 처리
+  ///
+  /// **동작**:
+  /// 1. 사용자에게 확인 다이얼로그 표시
+  /// 2. 확인 시 LoginProvider.logout() 호출
+  /// 3. 로그인 화면으로 이동
+  Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    // 로그아웃 확인 다이얼로그
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          l10n.logoutConfirmTitle,
+          style: AppTextStyles.titleMedium.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: Text(
+          l10n.logoutConfirmMessage,
+          style: AppTextStyles.bodyMedium,
+        ),
+        actions: [
+          // 취소 버튼
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              l10n.btnCancel,
+              style: AppTextStyles.labelLarge.copyWith(
+                fontWeight: FontWeight.w600,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+
+          // 로그아웃 버튼
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              l10n.logout,
+              style: AppTextStyles.labelLarge.copyWith(
+                fontWeight: FontWeight.w600,
+                color: colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // 사용자가 취소를 선택한 경우
+    if (confirmed != true || !context.mounted) {
+      return;
+    }
+
+    try {
+      // 로그아웃 실행
+      await ref.read(loginNotifierProvider.notifier).logout();
+
+      if (!context.mounted) return;
+
+      final l10nAfter = AppLocalizations.of(context);
+
+      // 성공 스낵바 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10nAfter.logoutSuccess,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      // 로그인 화면으로 이동
+      context.go(AppRoutes.login);
+    } catch (e) {
+      if (!context.mounted) return;
+
+      final l10nError = AppLocalizations.of(context);
+      final colorSchemeError = Theme.of(context).colorScheme;
+
+      // 에러 발생 시 스낵바 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10nError.logoutFailed(e.toString()),
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          backgroundColor: colorSchemeError.error,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 }
