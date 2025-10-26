@@ -148,8 +148,8 @@ class ProfileAvatar extends StatelessWidget {
   /// 이미지 로딩 중에 표시되는 스켈레톤 효과
   Widget _buildShimmerPlaceholder() {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: AppColors.shimmerBase,
+      highlightColor: AppColors.shimmerHighlight,
       child: Container(
         width: size.value.w,
         height: size.value.h,

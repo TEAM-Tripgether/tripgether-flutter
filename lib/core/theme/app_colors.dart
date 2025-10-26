@@ -133,6 +133,11 @@ class AppColors {
   static const Color divider = Color(0xFFE0E0E0);
   static const Color dividerLight = Color(0xFFF5F5F5);
 
+  /// Shimmer Colors (스켈레톤 로딩 색상)
+  /// Shimmer 효과의 기본 색상과 하이라이트 색상
+  static const Color shimmerBase = neutral95; // E2E2E6 - 기본 배경 (grey[300] 대체)
+  static const Color shimmerHighlight = neutral99; // FFFBFE - 하이라이트 (grey[100] 대체)
+
   /// Gradient Colors (그라데이션 색상)
   /// 홈 화면 헤더 그라데이션용 중간 색상
   static const Color gradientMid = Color(0xB28975C1); // 8975C1B2 (70% opacity)

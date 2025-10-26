@@ -88,8 +88,8 @@ class CourseCard extends StatelessWidget {
             height: 160.h,
             fit: BoxFit.cover,
             placeholder: (context, url) => Shimmer.fromColors(
-              baseColor: AppColors.neutral90,
-              highlightColor: AppColors.neutral99,
+              baseColor: AppColors.shimmerBase,
+              highlightColor: AppColors.shimmerHighlight,
               child: Container(
                 width: double.infinity,
                 height: 160.h,
@@ -372,8 +372,8 @@ class CourseCardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: AppColors.neutral90,
-      highlightColor: AppColors.neutral99,
+      baseColor: AppColors.shimmerBase,
+      highlightColor: AppColors.shimmerHighlight,
       child: Container(
         width: width ?? 280.w,
         margin: EdgeInsets.only(right: AppSpacing.md),

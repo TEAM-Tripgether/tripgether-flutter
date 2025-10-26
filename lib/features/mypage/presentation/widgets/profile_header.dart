@@ -262,8 +262,8 @@ class ProfileHeader extends ConsumerWidget {
       child: Padding(
         padding: AppSpacing.cardPadding,
         child: Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
+          baseColor: AppColors.shimmerBase,
+          highlightColor: AppColors.shimmerHighlight,
           child: Column(
             children: [
               // 프로필 사진 스켈레톤 (xLarge: 120dp와 동일)
