@@ -46,6 +46,10 @@ class SocialLoginButton extends StatelessWidget {
   /// true일 때 CircularProgressIndicator를 표시하고 버튼을 비활성화합니다
   final bool isLoading;
 
+  /// 커스텀 버튼 스타일 (선택 사항)
+  /// 제공되면 기본 스타일을 오버라이드합니다
+  final ButtonStyle? customStyle;
+
   const SocialLoginButton({
     super.key,
     required this.text,
@@ -56,7 +60,26 @@ class SocialLoginButton extends StatelessWidget {
     this.borderColor,
     this.height,
     this.isLoading = false,
+    this.customStyle,
   });
+
+  /// 기본 버튼 스타일 생성
+  /// backgroundColor, textColor, borderColor 파라미터를 사용하여 기본 스타일 구성
+  ButtonStyle _buildBaseStyle() {
+    return ElevatedButton.styleFrom(
+      backgroundColor: backgroundColor,
+      foregroundColor: textColor,
+      elevation: AppElevation.none,
+      shadowColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: AppRadius.allLarge,
+        side: borderColor != null
+            ? BorderSide(color: borderColor!, width: AppSizes.borderMedium)
+            : BorderSide.none,
+      ),
+      splashFactory: InkRipple.splashFactory,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,21 +89,8 @@ class SocialLoginButton extends StatelessWidget {
       child: ElevatedButton(
         // 로딩 중일 때는 버튼 비활성화
         onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor,
-          foregroundColor: textColor,
-          elevation: AppElevation.none, // Theme의 elevation 사용
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.allLarge, // Theme의 border radius 사용
-            // 테두리가 지정된 경우에만 표시
-            side: borderColor != null
-                ? BorderSide(color: borderColor!, width: AppSizes.borderMedium)
-                : BorderSide.none,
-          ),
-          // 탭 시 리플 효과 색상 (배경색 기반으로 자동 조정)
-          splashFactory: InkRipple.splashFactory,
-        ),
+        // 기본 스타일과 커스텀 스타일 병합 (null이 아닌 속성만 오버라이드)
+        style: _buildBaseStyle().merge(customStyle),
         // 로딩 중일 때 CircularProgressIndicator 표시
         child: isLoading
             ? SizedBox(
