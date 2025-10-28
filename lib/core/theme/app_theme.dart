@@ -78,7 +78,7 @@ class AppTheme {
       /// 버튼 테마들
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.gradientMiddle, // #5325CB - 로그인 버튼 색상
           foregroundColor: AppColors.onPrimary,
           disabledBackgroundColor: AppColors.buttonDisabled,
           disabledForegroundColor: AppColors.onPrimary.withValues(alpha: 0.38),
@@ -111,7 +111,8 @@ class AppTheme {
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.primary,
+          foregroundColor:
+              AppColors.outline, // #BBBBBB - 밝은 회색 (어두운 배경에서 가독성 확보)
           disabledForegroundColor: AppColors.textDisabled,
           shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
           minimumSize: Size(

@@ -51,20 +51,18 @@ class SocialLoginSection extends StatelessWidget {
           onPressed: onGoogleLogin,
           isLoading: isGoogleLoading,
           // 구글 아이콘 - 'G' 텍스트로 임시 대체 (향후 실제 로고로 교체)
-          icon: Container(
-            width: AppSizes.iconMedium,
-            height: AppSizes.iconMedium.h,
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: AppRadius.circular(2),
+          icon: Text(
+            'G',
+            style: AppTextStyles.titleMedium.copyWith(
+              fontWeight: FontWeight.w700,
+              color: AppColorPalette.googleButton, // 구글 브랜드 색상
             ),
-            child: Center(
-              child: Text(
-                'G',
-                style: AppTextStyles.titleMedium.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: AppColorPalette.googleButton, // 구글 브랜드 색상
-                ),
+          ),
+          // 로그인 화면 전용 둥근 모서리 스타일 (변경할 속성만 지정)
+          customStyle: ButtonStyle(
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100.r),
               ),
             ),
           ),
@@ -79,6 +77,14 @@ class SocialLoginSection extends StatelessWidget {
           backgroundColor: colorScheme.surface,
           textColor: colorScheme.onSurfaceVariant,
           onPressed: onEmailSignup,
+          // 로그인 화면 전용 둥근 모서리 스타일 (변경할 속성만 지정)
+          customStyle: ButtonStyle(
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100.r),
+              ),
+            ),
+          ),
         ),
 
         SizedBox(height: AppSpacing.xxl),
