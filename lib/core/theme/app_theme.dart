@@ -111,7 +111,8 @@ class AppTheme {
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.outline, // #BBBBBB - 밝은 회색 (어두운 배경에서 가독성 확보)
+          foregroundColor:
+              AppColors.outline, // #BBBBBB - 밝은 회색 (어두운 배경에서 가독성 확보)
           disabledForegroundColor: AppColors.textDisabled,
           shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
           minimumSize: Size(
