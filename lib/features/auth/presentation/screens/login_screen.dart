@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../providers/login_provider.dart';
 import '../widgets/login_form.dart';
@@ -127,51 +128,60 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Scaffold(
-      backgroundColor: colorScheme.surface,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: AppSpacing.huge),
+      body: Container(
+        /// 대각선 그라데이션 배경 (왼쪽 상단 → 오른쪽 하단)
+        /// #1B0062 → #5325CB → #B599FF
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: AppColorPalette.diagonalGradient,
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: AppSpacing.huge),
 
-              /// 앱 로고
-              /// app_logo_black.png에 이미 "Tripgether" 텍스트와
-              /// "More than tours. Real local moments." 태그라인이 포함되어 있음
-              Image.asset(
-                'assets/app_logo_black.png',
-                width: 240.w,
-                height: 240.h,
-                fit: BoxFit.contain,
-              ),
+                /// 앱 로고
+                /// app_logo_black.png에 이미 "Tripgether" 텍스트와
+                /// "More than tours. Real local moments." 태그라인이 포함되어 있음
+                Image.asset(
+                  'assets/app_logo_white.png',
+                  width: 240.w,
+                  height: 240.h,
+                  fit: BoxFit.contain,
+                ),
 
-              /// 로그인 입력 폼
-              /// 이메일, 비밀번호 입력 + 자동로그인 + 아이디/비밀번호 찾기
-              LoginForm(
-                onLogin: (email, password) {
-                  _handleEmailLogin(context, ref, email, password);
-                },
-                onFindId: () => _handleFindId(context),
-                onFindPassword: () => _handleFindPassword(context),
-              ),
+                /// 로그인 입력 폼
+                /// 이메일, 비밀번호 입력 + 자동로그인 + 아이디/비밀번호 찾기
+                LoginForm(
+                  onLogin: (email, password) {
+                    _handleEmailLogin(context, ref, email, password);
+                  },
+                  onFindId: () => _handleFindId(context),
+                  onFindPassword: () => _handleFindPassword(context),
+                ),
 
-              SizedBox(height: AppSpacing.huge),
+                SizedBox(height: AppSpacing.huge),
 
-              /// 소셜 로그인 섹션
-              /// "10초만에 빠른가입" 배지 + 구글/이메일 가입 버튼
-              SocialLoginSection(
-                onGoogleLogin: () => _handleGoogleLogin(context),
-                onEmailSignup: () => _handleEmailSignup(context),
-                isGoogleLoading: _isGoogleLoading,
-              ),
+                /// 소셜 로그인 섹션
+                /// "10초만에 빠른가입" 배지 + 구글/이메일 가입 버튼
+                SocialLoginSection(
+                  onGoogleLogin: () => _handleGoogleLogin(context),
+                  onEmailSignup: () => _handleEmailSignup(context),
+                  isGoogleLoading: _isGoogleLoading,
+                ),
 
-              SizedBox(height: AppSpacing.xl),
-            ],
+                SizedBox(height: AppSpacing.xl),
+              ],
+            ),
           ),
         ),
       ),

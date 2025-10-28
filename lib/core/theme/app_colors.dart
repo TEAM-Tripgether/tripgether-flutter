@@ -50,7 +50,7 @@ class AppColors {
 
   /// Outline Colors (테두리 색상) - 사용자 지정
   /// 입력창, 버튼 등의 테두리에 사용
-  static const Color outline = Color(0xFFDBDBDB); // DBDBDB - 입력창 outline
+  static const Color outline = Color(0xFFBBBBBB); // BBBBBB - 입력창 outline
   static const Color outlineVariant = Color(0xFFCAC4D0); // 변형 테두리
 
   /// Text Colors (텍스트 색상) - 사용자 지정
@@ -104,7 +104,7 @@ class AppColors {
   /// Input Field Colors (입력 필드 색상)
   /// 텍스트 입력 필드와 관련된 색상들
   static const Color inputFillColor = Color(0xFFF8F8F8); // 입력 필드 배경
-  static const Color inputBorderColor = outline; // DBDBDB - 입력창 테두리
+  static const Color inputBorderColor = outline; // BBBBBB - 입력창 테두리
   static const Color inputFocusedBorderColor = primary; // 포커스된 입력 필드 테두리
   static const Color inputErrorBorderColor = error; // 에러 상태의 입력 필드 테두리
   static const Color inputTextColor = textPrimary; // 333333 - 입력 텍스트 색상
@@ -146,8 +146,12 @@ class AppColors {
   /// Diagonal Gradient Colors (대각선 그라데이션 색상)
   /// 왼쪽 상단 → 오른쪽 하단 방향의 그라데이션에 사용
   /// 로그인 화면 및 향후 다른 화면으로 확장 가능
-  static const Color gradientStart = Color(0xFF1B0062); // #1B0062 - 진한 남보라 (시작점)
-  static const Color gradientMiddle = Color(0xFF5325CB); // #5325CB - 선명한 보라 (중간점)
+  static const Color gradientStart = Color(
+    0xFF1B0062,
+  ); // #1B0062 - 진한 남보라 (시작점)
+  static const Color gradientMiddle = Color(
+    0xFF5325CB,
+  ); // #5325CB - 선명한 보라 (중간점)
   static const Color gradientEnd = Color(0xFFB599FF); // #B599FF - 밝은 연보라 (끝점)
 
   /// Extension method for Color opacity
