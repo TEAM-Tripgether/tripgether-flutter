@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -15,6 +16,12 @@ import 'l10n/app_localizations.dart';
 void main() async {
   // Flutter 바인딩 초기화
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 화면 방향을 세로 모드(정방향)로 고정
+  // 앱 전체에서 가로 모드를 비활성화하여 일관된 UX 제공
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // 정방향 세로 모드만 허용
+  ]);
 
   // 환경 변수 로드 (.env 파일)
   await dotenv.load(fileName: ".env");
