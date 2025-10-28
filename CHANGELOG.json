@@ -1,11 +1,52 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-26T15:47:26Z",
-    "currentVersion": "1.0.27",
+    "lastUpdated": "2025-10-28T16:06:33Z",
+    "currentVersion": "1.0.29",
     "projectType": "flutter",
-    "totalReleases": 13
+    "totalReleases": 14
   },
   "releases": [
+    {
+      "version": "1.0.29",
+      "project_type": "flutter",
+      "date": "2025-10-28",
+      "pr_number": 34,
+      "raw_summary": "Summary by CodeRabbit\n\n\nNew Features\n\n앱 전체 세로(포트레이트) 모드 고정 적용(iOS/Android).\n\n\n\nStyle\n\n로그인 화면 리디자인: 대각 그라디언트 배경, 화이트 로고, 언더라인 입력필드, 라운드형 버튼으로 일관성 강화.\n구글/이메일 액션 버튼 아이콘·모서리 스타일 정교화.\n버튼/텍스트 색상 조정으로 대비와 가독성 향상.\n\n\n\nBehavior\n\n로그인 플로우에서 ‘아이디 찾기’ 항목 제거, ‘비밀번호 찾기’만 제공.\n\n\n\nDocumentation\n\nREADME 배지 버전 갱신.\n\n\n\nChores\n\n앱 버전/코드(version_code) 증가.",
+      "parsed_changes": {
+        "new_features": {
+          "title": "New Features",
+          "items": [
+            "앱 전체 세로(포트레이트) 모드 고정 적용(iOS/Android)."
+          ]
+        },
+        "style": {
+          "title": "Style",
+          "items": [
+            "로그인 화면 리디자인: 대각 그라디언트 배경, 화이트 로고, 언더라인 입력필드, 라운드형 버튼으로 일관성 강화.",
+            "구글/이메일 액션 버튼 아이콘·모서리 스타일 정교화.",
+            "버튼/텍스트 색상 조정으로 대비와 가독성 향상."
+          ]
+        },
+        "behavior": {
+          "title": "Behavior",
+          "items": [
+            "로그인 플로우에서 ‘아이디 찾기’ 항목 제거, ‘비밀번호 찾기’만 제공."
+          ]
+        },
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "README 배지 버전 갱신."
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "앱 버전/코드(version_code) 증가."
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.27",
       "project_type": "flutter",
