@@ -47,6 +47,10 @@ class PrimaryButton extends StatelessWidget {
   /// 로딩 상태 표시 여부
   final bool isLoading;
 
+  /// 커스텀 버튼 스타일 (선택 사항)
+  /// 제공되면 Theme 스타일을 오버라이드합니다
+  final ButtonStyle? style;
+
   const PrimaryButton({
     super.key,
     required this.text,
@@ -55,7 +59,14 @@ class PrimaryButton extends StatelessWidget {
     this.isFullWidth = true,
     this.height,
     this.isLoading = false,
+    this.style,
   });
+
+  /// 기본 버튼 스타일 생성
+  /// Theme의 elevatedButtonTheme을 기반으로 기본 스타일 구성
+  ButtonStyle _buildBaseStyle(BuildContext context) {
+    return ElevatedButton.styleFrom();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +77,8 @@ class PrimaryButton extends StatelessWidget {
       height: height ?? AppSizes.buttonHeight,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
-        // Theme의 elevatedButtonTheme 스타일이 자동 적용됨
+        // 기본 스타일과 커스텀 스타일 병합 (null이 아닌 속성만 오버라이드)
+        style: _buildBaseStyle(context).merge(style),
         child: isLoading
             ? SizedBox(
                 width: AppSizes.iconMedium,
@@ -124,6 +136,10 @@ class SecondaryButton extends StatelessWidget {
   /// 로딩 상태 표시 여부
   final bool isLoading;
 
+  /// 커스텀 버튼 스타일 (선택 사항)
+  /// 제공되면 Theme 스타일을 오버라이드합니다
+  final ButtonStyle? style;
+
   const SecondaryButton({
     super.key,
     required this.text,
@@ -132,7 +148,14 @@ class SecondaryButton extends StatelessWidget {
     this.isFullWidth = true,
     this.height,
     this.isLoading = false,
+    this.style,
   });
+
+  /// 기본 버튼 스타일 생성
+  /// Theme의 outlinedButtonTheme을 기반으로 기본 스타일 구성
+  ButtonStyle _buildBaseStyle(BuildContext context) {
+    return OutlinedButton.styleFrom();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +166,8 @@ class SecondaryButton extends StatelessWidget {
       height: height ?? AppSizes.buttonHeight,
       child: OutlinedButton(
         onPressed: isLoading ? null : onPressed,
-        // Theme의 outlinedButtonTheme 스타일이 자동 적용됨
+        // 기본 스타일과 커스텀 스타일 병합 (null이 아닌 속성만 오버라이드)
+        style: _buildBaseStyle(context).merge(style),
         child: isLoading
             ? SizedBox(
                 width: AppSizes.iconMedium,
@@ -200,6 +224,10 @@ class TertiaryButton extends StatelessWidget {
   /// 버튼 높이 (기본값: AppSizes.textButtonHeight)
   final double? height;
 
+  /// 커스텀 버튼 스타일 (선택 사항)
+  /// 제공되면 Theme 스타일을 오버라이드합니다
+  final ButtonStyle? style;
+
   const TertiaryButton({
     super.key,
     required this.text,
@@ -207,7 +235,14 @@ class TertiaryButton extends StatelessWidget {
     this.icon,
     this.isFullWidth = false,
     this.height,
+    this.style,
   });
+
+  /// 기본 버튼 스타일 생성
+  /// Theme의 textButtonTheme을 기반으로 기본 스타일 구성
+  ButtonStyle _buildBaseStyle(BuildContext context) {
+    return TextButton.styleFrom();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +251,8 @@ class TertiaryButton extends StatelessWidget {
       height: height ?? AppSizes.textButtonHeight,
       child: TextButton(
         onPressed: onPressed,
-        // Theme의 textButtonTheme 스타일이 자동 적용됨
+        // 기본 스타일과 커스텀 스타일 병합 (null이 아닌 속성만 오버라이드)
+        style: _buildBaseStyle(context).merge(style),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,

@@ -257,6 +257,14 @@ class _LoginFormState extends State<LoginForm> {
               TertiaryButton(
                 text: l10n.findPassword,
                 onPressed: widget.onFindPassword,
+                // 로그인 화면 전용 둥근 모서리 스타일 (변경할 속성만 지정)
+                style: ButtonStyle(
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.r),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -268,6 +276,14 @@ class _LoginFormState extends State<LoginForm> {
             text: l10n.login,
             onPressed: _handleLogin,
             isFullWidth: true,
+            // 로그인 화면 전용 둥근 모서리 스타일 (변경할 속성만 지정)
+            style: ButtonStyle(
+              shape: WidgetStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100.r),
+                ),
+              ),
+            ),
           ),
         ],
       ),
