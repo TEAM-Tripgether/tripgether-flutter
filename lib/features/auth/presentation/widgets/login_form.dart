@@ -92,8 +92,6 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
     return Form(
@@ -101,45 +99,80 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 이메일 입력 필드
+          /// 이메일 입력 필드 (언더라인 스타일)
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next, // 다음 필드로 이동
             validator: (value) => _validateEmail(value, context),
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: AppColors.onPrimary, // 흰색 텍스트
+            ),
             decoration: InputDecoration(
               labelText: l10n.emailLabel,
               hintText: l10n.emailHint,
-              prefixIcon: Icon(
-                Icons.email_outlined,
-                color: AppColors.textSecondary,
-                size: AppSizes.iconMedium,
+              filled: false, // 박스 배경 제거 (중요!)
+              labelStyle: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.outline, // 밝은 회색 라벨
+              ),
+              hintStyle: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.outline, // 밝은 회색 힌트
+              ),
+              // 하단 라인만 표시 (박스 제거)
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.outline),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.outline),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.onPrimary, // 포커스 시 흰색
+                  width: AppSizes.borderMedium,
+                ),
+              ),
+              errorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.errorContainer),
+              ),
+              focusedErrorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.errorContainer,
+                  width: AppSizes.borderMedium,
+                ),
+              ),
+              errorStyle: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.errorContainer, // 연한 핑크 에러 메시지
               ),
             ),
           ),
 
           SizedBox(height: AppSpacing.md),
 
-          /// 비밀번호 입력 필드
+          /// 비밀번호 입력 필드 (언더라인 스타일)
           TextFormField(
             controller: _passwordController,
             obscureText: _obscurePassword, // 비밀번호 마스킹
             textInputAction: TextInputAction.done, // 완료 버튼
             onFieldSubmitted: (_) => _handleLogin(), // 엔터 시 로그인
             validator: (value) => _validatePassword(value, context),
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: AppColors.onPrimary, // 흰색 텍스트
+            ),
             decoration: InputDecoration(
               labelText: l10n.passwordLabel,
               hintText: l10n.passwordHint,
-              prefixIcon: Icon(
-                Icons.lock_outlined,
-                color: AppColors.textSecondary,
-                size: AppSizes.iconMedium,
+              filled: false, // 박스 배경 제거 (중요!)
+              labelStyle: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.outline, // 밝은 회색 라벨
               ),
-              // 비밀번호 보기/숨기기 토글 버튼
+              hintStyle: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.outline, // 밝은 회색 힌트
+              ),
+              // 비밀번호 보기/숨기기 토글 버튼 (suffixIcon만 유지)
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.textSecondary,
+                  color: AppColors.outline, // 밝은 회색 아이콘
                   size: AppSizes.iconMedium,
                 ),
                 onPressed: () {
@@ -148,16 +181,41 @@ class _LoginFormState extends State<LoginForm> {
                   });
                 },
               ),
+              // 하단 라인만 표시 (박스 제거)
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.outline),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.outline),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.onPrimary, // 포커스 시 흰색
+                  width: AppSizes.borderMedium,
+                ),
+              ),
+              errorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.errorContainer),
+              ),
+              focusedErrorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.errorContainer,
+                  width: AppSizes.borderMedium,
+                ),
+              ),
+              errorStyle: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.errorContainer, // 연한 핑크 에러 메시지
+              ),
             ),
           ),
 
           SizedBox(height: AppSpacing.sm),
 
-          /// 자동로그인 & 아이디/비밀번호 찾기 Row
+          /// 자동로그인 & 비밀번호 찾기 Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // 자동로그인 체크박스
+              // 왼쪽: 자동로그인 체크박스
               Row(
                 children: [
                   SizedBox(
@@ -170,7 +228,18 @@ class _LoginFormState extends State<LoginForm> {
                           _rememberMe = value ?? false;
                         });
                       },
-                      activeColor: AppColors.primary,
+                      // 체크박스 색상: 흰색 테두리, 선택 시 흰색 배경
+                      checkColor: AppColors.gradientMiddle, // 체크마크 색상
+                      fillColor: WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return AppColors.onPrimary; // 선택 시 흰색
+                        }
+                        return Colors.transparent; // 미선택 시 투명
+                      }),
+                      side: BorderSide(
+                        color: AppColors.outline, // 밝은 회색 테두리
+                        width: AppSizes.borderThin,
+                      ),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
@@ -178,30 +247,16 @@ class _LoginFormState extends State<LoginForm> {
                   Text(
                     l10n.autoLogin,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: colorScheme.onSurface,
+                      color: AppColors.outline, // 밝은 회색 텍스트
                     ),
                   ),
                 ],
               ),
 
-              // 아이디 | 비밀번호 찾기 (공용 TertiaryButton 사용)
-              Row(
-                children: [
-                  TertiaryButton(text: l10n.findId, onPressed: widget.onFindId),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-                    child: Text(
-                      '|',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  TertiaryButton(
-                    text: l10n.findPassword,
-                    onPressed: widget.onFindPassword,
-                  ),
-                ],
+              // 오른쪽: 비밀번호 찾기만 (아이디 찾기 제거)
+              TertiaryButton(
+                text: l10n.findPassword,
+                onPressed: widget.onFindPassword,
               ),
             ],
           ),

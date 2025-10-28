@@ -114,12 +114,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  /// 아이디 찾기 핸들러
-  void _handleFindId(BuildContext context) {
-    // TODO: 아이디 찾기 화면으로 이동
-    debugPrint('[Login] 아이디 찾기 이동');
-  }
-
   /// 비밀번호 찾기 핸들러
   void _handleFindPassword(BuildContext context) {
     // TODO: 비밀번호 찾기 화면으로 이동
@@ -165,7 +159,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   onLogin: (email, password) {
                     _handleEmailLogin(context, ref, email, password);
                   },
-                  onFindId: () => _handleFindId(context),
                   onFindPassword: () => _handleFindPassword(context),
                 ),
 
