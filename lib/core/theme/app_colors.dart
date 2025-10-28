@@ -143,6 +143,13 @@ class AppColors {
   /// 홈 화면 헤더 그라데이션용 중간 색상
   static const Color gradientMid = Color(0xB28975C1); // 8975C1B2 (70% opacity)
 
+  /// Diagonal Gradient Colors (대각선 그라데이션 색상)
+  /// 왼쪽 상단 → 오른쪽 하단 방향의 그라데이션에 사용
+  /// 로그인 화면 및 향후 다른 화면으로 확장 가능
+  static const Color gradientStart = Color(0xFF1B0062); // #1B0062 - 진한 남보라 (시작점)
+  static const Color gradientMiddle = Color(0xFF5325CB); // #5325CB - 선명한 보라 (중간점)
+  static const Color gradientEnd = Color(0xFFB599FF); // #B599FF - 밝은 연보라 (끝점)
+
   /// Extension method for Color opacity
   /// 색상의 투명도를 쉽게 조절할 수 있는 확장 메서드
   static Color withOpacity(Color color, double opacity) {
@@ -211,6 +218,14 @@ extension AppColorPalette on AppColors {
     AppColors.primary, // #664BAE (0%)
     AppColors.gradientMid, // #8975C1B2 (70%)
     Color(0xFFFFFFFF), // #FFFFFF (100%)
+  ];
+
+  /// 대각선 그라데이션 (왼쪽 상단 → 오른쪽 하단: #1B0062 → #5325CB → #B599FF)
+  /// 로그인 화면 및 향후 다른 화면으로 확장 가능
+  static const List<Color> diagonalGradient = [
+    AppColors.gradientStart, // #1B0062 - 진한 남보라 (시작점)
+    AppColors.gradientMiddle, // #5325CB - 선명한 보라 (중간점)
+    AppColors.gradientEnd, // #B599FF - 밝은 연보라 (끝점)
   ];
 
   /// 소셜 로그인 버튼 색상
