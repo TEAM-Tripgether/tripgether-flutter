@@ -112,6 +112,11 @@ class _LoginFormState extends State<LoginForm> {
               labelText: l10n.emailLabel,
               hintText: l10n.emailHint,
               filled: false, // 박스 배경 제거 (중요!)
+              // 텍스트와 underline 간격 조정
+              contentPadding: EdgeInsets.only(
+                bottom: AppSpacing.sm,
+                left: AppSpacing.sm,
+              ),
               labelStyle: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.outline, // 밝은 회색 라벨
               ),
@@ -162,6 +167,11 @@ class _LoginFormState extends State<LoginForm> {
               labelText: l10n.passwordLabel,
               hintText: l10n.passwordHint,
               filled: false, // 박스 배경 제거 (중요!)
+              // 텍스트와 underline 간격 조정
+              contentPadding: EdgeInsets.only(
+                bottom: AppSpacing.sm,
+                left: AppSpacing.sm,
+              ),
               labelStyle: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.outline, // 밝은 회색 라벨
               ),
