@@ -130,10 +130,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter, // 수직 그라데이션 시작 (정확히 위)
-            end: Alignment.bottomCenter, // 수직 그라데이션 끝 (정확히 아래)
+            begin: Alignment.topLeft, // 좌측 상단에서 시작
+            end: Alignment.bottomRight, // 우측 하단으로 종료
             colors: AppColorPalette.diagonalGradient,
-            stops: const [0.0, 0.25, 0.7], // 25:45:30 비율
+            stops: const [0.0, 0.37, 0.92], // 37:55:8 비율
           ),
         ),
         child: SafeArea(
@@ -144,9 +144,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 SizedBox(height: AppSpacing.huge),
 
-                /// 앱 로고
-                /// app_logo_black.png에 이미 "Tripgether" 텍스트와
-                /// "More than tours. Real local moments." 태그라인이 포함되어 있음
                 Image.asset(
                   'assets/app_logo_white.png',
                   width: 240.w,
