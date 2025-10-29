@@ -330,6 +330,9 @@ class AppSizes {
   /// Bottom Sheet 핸들 높이: 4
   static double get bottomSheetHandleHeight => 4.h;
 
+  /// Progress Indicator 높이: 2
+  static double get progressIndicatorHeight => 2.h;
+
   // ==================== Component Widths ====================
 
   /// 버튼 최소 너비: 88
