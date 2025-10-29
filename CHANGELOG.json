@@ -1,11 +1,39 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-28T16:06:33Z",
-    "currentVersion": "1.0.29",
+    "lastUpdated": "2025-10-29T03:15:58Z",
+    "currentVersion": "1.0.30",
     "projectType": "flutter",
-    "totalReleases": 14
+    "totalReleases": 15
   },
   "releases": [
+    {
+      "version": "1.0.30",
+      "project_type": "flutter",
+      "date": "2025-10-29",
+      "pr_number": 36,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n스타일\n\n로그인 화면 그래디언트 배경 개선\n\n\n\nChores\n\n버전 1.0.30으로 업데이트\n빌드 코드 증가\n\n\n\nDocumentation\n\nREADME 버전 배지 최신화",
+      "parsed_changes": {
+        "스타일": {
+          "title": "스타일",
+          "items": [
+            "로그인 화면 그래디언트 배경 개선"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전 1.0.30으로 업데이트",
+            "빌드 코드 증가"
+          ]
+        },
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "README 버전 배지 최신화"
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.29",
       "project_type": "flutter",
