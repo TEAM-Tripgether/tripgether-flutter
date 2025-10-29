@@ -130,9 +130,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter, // 수직 그라데이션 시작 (정확히 위)
+            end: Alignment.bottomCenter, // 수직 그라데이션 끝 (정확히 아래)
             colors: AppColorPalette.diagonalGradient,
+            stops: const [0.0, 0.25, 0.7], // 25:45:30 비율
           ),
         ),
         child: SafeArea(
