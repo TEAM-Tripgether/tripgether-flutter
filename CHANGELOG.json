@@ -1,11 +1,32 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-29T03:15:58Z",
-    "currentVersion": "1.0.30",
+    "lastUpdated": "2025-10-29T10:39:31Z",
+    "currentVersion": "1.0.31",
     "projectType": "flutter",
-    "totalReleases": 15
+    "totalReleases": 16
   },
   "releases": [
+    {
+      "version": "1.0.31",
+      "project_type": "flutter",
+      "date": "2025-10-29",
+      "pr_number": 40,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n새로운 기능\n\n화면 방향 지원 확대 - 세로 모드 외에도 가로 모드 지원 추가\n\n\n\nChores\n\n버전을 v1.0.31로 업데이트",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "화면 방향 지원 확대 - 세로 모드 외에도 가로 모드 지원 추가"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전을 v1.0.31로 업데이트"
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.30",
       "project_type": "flutter",
