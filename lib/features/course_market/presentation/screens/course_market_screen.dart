@@ -1,19 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tripgether/core/router/routes.dart';
+import 'package:tripgether/core/theme/app_colors.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
-import '../../../../shared/widgets/inputs/search_bar.dart';
-import '../../../../shared/widgets/cards/course_card.dart';
-import '../../data/models/course_model.dart';
-import '../../../../core/router/routes.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_styles.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../auth/providers/user_provider.dart';
-import '../../../../shared/mixins/refreshable_tab_mixin.dart';
+import 'package:tripgether/core/theme/app_text_styles.dart';
+import 'package:tripgether/features/auth/providers/user_provider.dart';
+import 'package:tripgether/l10n/app_localizations.dart';
+import 'package:tripgether/shared/mixins/refreshable_tab_mixin.dart';
+import 'package:tripgether/shared/widgets/inputs/search_bar.dart';
+import 'package:tripgether/shared/widgets/layout/gradient_background.dart';
 
 /// 코스마켓 메인 화면
 ///
@@ -33,20 +30,6 @@ class CourseMarketScreen extends ConsumerStatefulWidget {
 
 class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
     with AutomaticKeepAliveClientMixin, RefreshableTabMixin {
-  /// Expandable FAB 컨트롤러
-  final _fabKey = GlobalKey<ExpandableFabState>();
-
-  /// 인기 코스 더미 데이터
-  final List<Course> _popularCourses = CourseDummyData.getPopularCourses();
-
-  /// 내 주변 코스 더미 데이터
-  final List<Course> _nearbyCourses = CourseDummyData.getNearbyCoursesById(
-    placeId: 'current_location',
-  );
-
-  /// 좋아요한 코스 ID 목록 (임시 상태)
-  final Set<String> _likedCourseIds = {};
-
   /// 프로그래밍 방식(탭 재클릭) 새로고침 진행 중 상태
   ///
   /// 탭을 재클릭하여 프로그래밍 방식으로 새로고침이 시작되면 true,
@@ -85,12 +68,8 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
     // 현재는 더미 데이터를 사용하므로 1초 대기 (새로고침 시뮬레이션)
     await Future.delayed(const Duration(seconds: 1));
 
-    // UI 업데이트 (더미 데이터 재로드)
-    if (mounted) {
-      setState(() {
-        // 데이터 재로드 로직 (현재는 더미 데이터이므로 실제 변경 없음)
-      });
-    }
+    // 참고: API 연동 전까지는 상태 변경이 없으므로 setState 호출 불필요
+    // Provider 새로고침 시 자동으로 UI가 업데이트됩니다.
   }
 
   /// 프로그래밍 방식(탭 재클릭) 새로고침 상태 변경 콜백
@@ -124,8 +103,6 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
       // CustomScrollView + CupertinoSliverRefreshControl로 iOS 스타일 Pull-to-Refresh 구현
       // AppBar도 SliverAppBar로 변경하여 CustomScrollView에 통합
       body: _buildBody(),
-      floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: _buildExpandableFab(),
     );
   }
 
@@ -143,18 +120,18 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
               onRefresh, // 탭 재클릭 시 또는 Pull-to-Refresh 시 데이터 새로고침 (최소 실행 시간 보장)
         ),
 
-        // SliverAppBar: 스크롤과 함께 움직이는 AppBar
-        // floating: true - 아래로 스크롤 시 즉시 나타남
-        // snap: true - 완전히 나타나거나 사라지도록 스냅
-        // pinned: false - 스크롤 시 완전히 사라짐
+        // SliverAppBar: 화면 최상단에 고정된 AppBar
+        // pinned: true - 스크롤해도 항상 화면 최상단에 고정
+        // floating: false - 스크롤 동작 비활성화
+        // snap: false - 스냅 효과 비활성화
         SliverAppBar(
           title: Text(
             l10n.courseMarket, // 다국어 지원 (한국어: "코스마켓", 영어: "Course Market")
             style: AppTextStyles.titleLarge, // AppBar 제목용 스타일
           ),
-          floating: true, // 스크롤 다운 시 즉시 나타남
-          snap: true, // 스냅 효과 (완전히 나타나거나 사라짐)
-          pinned: false, // 스크롤 시 완전히 사라짐
+          pinned: true, // 스크롤해도 항상 고정
+          floating: false, // 스크롤 동작 비활성화
+          snap: false, // 스냅 효과 비활성화
           leading: IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () {
@@ -173,21 +150,25 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
           // iOS/Android 공통으로 AppBar 하단에 얇은 진행 바 표시
           bottom: _isProgrammaticRefreshing
               ? PreferredSize(
-                  preferredSize: Size.fromHeight(2.h),
+                  preferredSize: Size.fromHeight(
+                    AppSizes.progressIndicatorHeight,
+                  ),
                   child: LinearProgressIndicator(
                     backgroundColor: Colors.transparent,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).colorScheme.primary,
+                      AppColors.primary,
                     ),
                   ),
                 )
               : null,
         ),
 
-        // 검색창 (Hero 애니메이션 적용)
+        // 그라데이션 배경 + 검색창 (Hero 애니메이션 적용)
         SliverToBoxAdapter(
-          child: Padding(
-            padding: AppSpacing.symmetric(horizontal: 16, vertical: 12),
+          child: GradientBackground(
+            // 코스마켓은 검색창만 있으므로 균등한 패딩 적용
+            // AppSpacing.lg는 이미 ScreenUtil(.w)이 적용되어 있음
+            padding: EdgeInsets.all(AppSpacing.lg),
             child: Hero(
               tag: 'course_search_bar', // Hero 애니메이션을 위한 고유 태그
               child: TripSearchBar(
@@ -202,174 +183,9 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
           ),
         ),
 
-        // 실시간 인기 코스 섹션
-        SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppSpacing.verticalSpaceSM,
-              CourseHorizontalList(
-                title: l10n.popularCourses,
-                courses: _popularCourses,
-                onSeeMoreTap: () {
-                  debugPrint('인기 코스 더보기');
-                },
-                onCourseTap: (course) {
-                  debugPrint('코스 상세: ${course.title}');
-                  // 코스 상세 화면으로 이동
-                },
-                onLikeTap: (course) {
-                  setState(() {
-                    if (_likedCourseIds.contains(course.id)) {
-                      _likedCourseIds.remove(course.id);
-                    } else {
-                      _likedCourseIds.add(course.id);
-                    }
-                  });
-                },
-                isLiked: (course) => _likedCourseIds.contains(course.id),
-              ),
-            ],
-          ),
-        ),
-
-        // 내 주변 코스 섹션
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
-              AppSpacing.verticalSpaceXXL,
-              CourseHorizontalList(
-                title: l10n.nearbyCoursesWithLocation('광진구 군자동'),
-                courses: _nearbyCourses,
-                onSeeMoreTap: () {
-                  debugPrint('내 주변 코스 더보기');
-                },
-                onCourseTap: (course) {
-                  debugPrint('코스 상세: ${course.title}');
-                  // 코스 상세 화면으로 이동
-                },
-                onLikeTap: (course) {
-                  setState(() {
-                    if (_likedCourseIds.contains(course.id)) {
-                      _likedCourseIds.remove(course.id);
-                    } else {
-                      _likedCourseIds.add(course.id);
-                    }
-                  });
-                },
-                isLiked: (course) => _likedCourseIds.contains(course.id),
-              ),
-              AppSpacing.verticalSpaceXXL,
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Expandable FAB 빌드
-  Widget _buildExpandableFab() {
-    final l10n = AppLocalizations.of(context);
-
-    return ExpandableFab(
-      key: _fabKey,
-      type: ExpandableFabType.up,
-      distance: 70.w,
-      childrenAnimation: ExpandableFabAnimation.none,
-      overlayStyle: ExpandableFabOverlayStyle(
-        blur: 5,
-        color: AppColors.scrim.withValues(alpha: 0.5),
-      ),
-      openButtonBuilder: RotateFloatingActionButtonBuilder(
-        child: Icon(Icons.add, size: 28.w),
-        fabSize: ExpandableFabSize.regular,
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
-        shape: const CircleBorder(),
-      ),
-      closeButtonBuilder: DefaultFloatingActionButtonBuilder(
-        child: Icon(Icons.close, size: 28.w),
-        fabSize: ExpandableFabSize.regular,
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
-        shape: const CircleBorder(),
-      ),
-      children: [
-        // 장소 추가 버튼
-        Row(
-          children: [
-            // 레이블
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(8.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.shadow.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Text(l10n.addPlace, style: AppTextStyles.labelLarge),
-            ),
-            SizedBox(width: 12.w),
-            // FAB 버튼
-            FloatingActionButton.small(
-              heroTag: 'add_place',
-              backgroundColor: AppColors.surface,
-              foregroundColor: AppColors.primary,
-              onPressed: () {
-                final state = _fabKey.currentState;
-                if (state != null) {
-                  state.toggle();
-                }
-                debugPrint('장소 추가 화면으로 이동');
-                // 장소 추가 화면으로 이동
-              },
-              child: Icon(Icons.place, size: 24.w),
-            ),
-          ],
-        ),
-
-        // 코스 생성 버튼
-        Row(
-          children: [
-            // 레이블
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(8.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.shadow.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Text(l10n.createCourse, style: AppTextStyles.labelLarge),
-            ),
-            SizedBox(width: 12.w),
-            // FAB 버튼
-            FloatingActionButton.small(
-              heroTag: 'create_course',
-              backgroundColor: AppColors.surface,
-              foregroundColor: AppColors.primary,
-              onPressed: () {
-                final state = _fabKey.currentState;
-                if (state != null) {
-                  state.toggle();
-                }
-                debugPrint('코스 생성 화면으로 이동');
-                // 코스 생성 화면으로 이동
-              },
-              child: Icon(Icons.map, size: 24.w),
-            ),
-          ],
-        ),
+        // TODO: 새로운 디자인으로 콘텐츠 영역 구현 예정
+        // 현재는 빈 공간으로 유지 (디자인 작업 완료 후 실제 콘텐츠로 교체)
+        const SliverFillRemaining(child: SizedBox.shrink()),
       ],
     );
   }
