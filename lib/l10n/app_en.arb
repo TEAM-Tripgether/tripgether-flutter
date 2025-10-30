@@ -903,5 +903,15 @@
   "getDirections": "Get Directions",
   "@getDirections": {
     "description": "Get directions button at bottom of place detail screen"
+  },
+
+  "comingSoon": "Coming Soon",
+  "@comingSoon": {
+    "description": "Feature under preparation message"
+  },
+
+  "noPopularCoursesYet": "No popular courses yet",
+  "@noPopularCoursesYet": {
+    "description": "Message when there are no popular courses"
   }
 }

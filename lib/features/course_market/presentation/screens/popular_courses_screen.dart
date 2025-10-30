@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tripgether/l10n/app_localizations.dart';
 import 'package:tripgether/core/theme/app_colors.dart';
 import 'package:tripgether/core/theme/app_text_styles.dart';
 
@@ -16,24 +17,22 @@ class PopularCoursesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('실시간 인기 코스'),
+        title: Text(l10n.popularCourses),
         titleTextStyle: AppTextStyles.titleLarge,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.construction,
-              size: 64,
-              color: AppColors.textSecondary,
-            ),
+            Icon(Icons.construction, size: 64, color: AppColors.textSecondary),
             const SizedBox(height: 16),
             Text(
-              '준비 중입니다',
+              l10n.comingSoon,
               style: AppTextStyles.bodyLarge.copyWith(
                 color: AppColors.textSecondary,
               ),

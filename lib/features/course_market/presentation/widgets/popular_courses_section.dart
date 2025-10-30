@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tripgether/l10n/app_localizations.dart';
+import 'package:tripgether/core/theme/app_colors.dart';
+import 'package:tripgether/core/theme/app_text_styles.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
 import 'package:tripgether/shared/widgets/layout/section_header.dart';
 import 'package:tripgether/shared/widgets/cards/popular_course_card.dart';
@@ -47,9 +50,6 @@ class PopularCoursesSection extends StatelessWidget {
   /// 표시할 인기 코스 리스트
   final List<PopularCourse> courses;
 
-  /// 섹션 제목 (기본값: "실시간 인기 코스")
-  final String title;
-
   /// 더보기 버튼 탭 콜백
   final VoidCallback? onSeeMoreTap;
 
@@ -65,7 +65,6 @@ class PopularCoursesSection extends StatelessWidget {
   const PopularCoursesSection({
     super.key,
     required this.courses,
-    this.title = '실시간 인기 코스',
     this.onSeeMoreTap,
     this.onCourseTap,
     this.isLoading = false,
@@ -74,29 +73,31 @@ class PopularCoursesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         // 섹션 헤더
         SectionHeaderWithSpacing(
-          title: title,
+          title: l10n.popularCourses,
           onSeeMoreTap: onSeeMoreTap,
         ),
 
         // 가로 스크롤 카드 리스트
         SizedBox(
           height: 264.h, // PopularCourseCard의 고정 높이
-          child: isLoading ? _buildLoadingList() : _buildCourseList(),
+          child: isLoading ? _buildLoadingList() : _buildCourseList(context),
         ),
       ],
     );
   }
 
   /// 코스 리스트 빌드
-  Widget _buildCourseList() {
+  Widget _buildCourseList(BuildContext context) {
     if (courses.isEmpty) {
-      return _buildEmptyState();
+      return _buildEmptyState(context);
     }
 
     return ListView.separated(
@@ -128,15 +129,16 @@ class PopularCoursesSection extends StatelessWidget {
   }
 
   /// 빈 상태 위젯
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: Text(
-          '아직 인기 코스가 없어요',
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: Colors.grey,
+          l10n.noPopularCoursesYet,
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
           ),
         ),
       ),

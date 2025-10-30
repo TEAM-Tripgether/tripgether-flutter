@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tripgether/l10n/app_localizations.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
 import 'package:tripgether/shared/widgets/layout/section_header.dart';
 import 'package:tripgether/shared/widgets/cards/nearby_course_card.dart';
@@ -32,9 +33,6 @@ class NearbySection extends StatelessWidget {
   /// 표시할 주변 코스 리스트
   final List<NearbyCourse> courses;
 
-  /// 섹션 제목 접두사 (기본값: "내 주변")
-  final String titlePrefix;
-
   /// 더보기 버튼 탭 콜백
   final VoidCallback? onSeeMoreTap;
 
@@ -51,7 +49,6 @@ class NearbySection extends StatelessWidget {
     super.key,
     required this.location,
     required this.courses,
-    this.titlePrefix = '내 주변',
     this.onSeeMoreTap,
     this.onCourseTap,
     this.isLoading = false,
@@ -60,7 +57,8 @@ class NearbySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sectionTitle = '$titlePrefix (현재 위치 : $location)';
+    final l10n = AppLocalizations.of(context);
+    final sectionTitle = l10n.nearbyCoursesWithLocation(location);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -903,5 +903,15 @@
   "getDirections": "길찾기",
   "@getDirections": {
     "description": "장소 상세 화면 하단의 길찾기 버튼"
+  },
+
+  "comingSoon": "준비 중입니다",
+  "@comingSoon": {
+    "description": "기능 준비 중 메시지"
+  },
+
+  "noPopularCoursesYet": "아직 인기 코스가 없어요",
+  "@noPopularCoursesYet": {
+    "description": "인기 코스가 없을 때 표시되는 메시지"
   }
 }
