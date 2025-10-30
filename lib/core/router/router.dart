@@ -17,6 +17,7 @@ import '../../features/home/data/models/sns_content_model.dart';
 import '../../features/home/data/models/place_model.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/course_market/presentation/screens/course_search_screen.dart';
+import '../../features/course_market/presentation/screens/popular_courses_screen.dart';
 import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/schedule/presentation/screens/schedule_screen.dart';
 import '../../features/mypage/presentation/screens/mypage_screen.dart';
@@ -335,6 +336,16 @@ class AppRouter {
                               child: child,
                             );
                           },
+                    );
+                  },
+                ),
+                // 실시간 인기 코스 더보기 화면
+                GoRoute(
+                  path: 'popular',
+                  pageBuilder: (context, state) {
+                    // 애니메이션 없이 즉시 전환
+                    return NoTransitionPage(
+                      child: const PopularCoursesScreen(),
                     );
                   },
                 ),

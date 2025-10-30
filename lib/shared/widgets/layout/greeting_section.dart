@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_text_styles.dart';
-import '../../../l10n/app_localizations.dart';
-import '../inputs/search_bar.dart';
+import 'package:tripgether/core/theme/app_colors.dart';
+import 'package:tripgether/core/theme/app_spacing.dart';
+import 'package:tripgether/core/theme/app_text_styles.dart';
+import 'package:tripgether/l10n/app_localizations.dart';
+import 'package:tripgether/shared/widgets/inputs/search_bar.dart';
+import 'package:tripgether/shared/widgets/layout/gradient_background.dart';
 
 /// 홈 화면 헤더 위젯 (인사말 + 검색창)
 ///
@@ -38,23 +39,13 @@ class HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Container(
-      // 전체 너비 명시적으로 지정
-      width: double.infinity,
-      // 그라데이션 배경 추가 (#664BAE → #8975C1B2 70% → #FFFFFF)
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: AppColorPalette.homeHeaderGradient,
-          stops: const [0.0, 0.7, 1.0], // 70% 지점에서 중간 색상
-        ),
-      ),
+    return GradientBackground(
+      // HomeHeader는 상단 패딩이 더 큼 (인사말 영역 확보)
       padding: EdgeInsets.only(
         left: AppSpacing.lg,
         right: AppSpacing.lg,
         top: AppSpacing.xxl.h,
-        bottom: AppSpacing.lg.h, // 검색창을 위한 하단 패딩 추가
+        bottom: AppSpacing.lg.h,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

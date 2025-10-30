@@ -1039,6 +1039,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'길찾기'**
   String get getDirections;
+
+  /// 기능 준비 중 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'준비 중입니다'**
+  String get comingSoon;
+
+  /// 인기 코스가 없을 때 표시되는 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 인기 코스가 없어요'**
+  String get noPopularCoursesYet;
 }
 
 class _AppLocalizationsDelegate
