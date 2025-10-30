@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tripgether/l10n/app_localizations.dart';
 import 'package:tripgether/core/theme/app_colors.dart';
 import 'package:tripgether/core/theme/app_text_styles.dart';
+import 'package:tripgether/core/theme/app_spacing.dart';
 
 /// 실시간 인기 코스 더보기 화면
 ///
@@ -29,8 +31,12 @@ class PopularCoursesScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.construction, size: 64, color: AppColors.textSecondary),
-            const SizedBox(height: 16),
+            Icon(
+              Icons.construction,
+              size: 64.r,
+              color: AppColors.textSecondary,
+            ),
+            AppSpacing.verticalSpaceLG,
             Text(
               l10n.comingSoon,
               style: AppTextStyles.bodyLarge.copyWith(
