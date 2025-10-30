@@ -1,11 +1,27 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-29T10:39:31Z",
-    "currentVersion": "1.0.31",
+    "lastUpdated": "2025-10-30T05:18:39Z",
+    "currentVersion": "1.0.32",
     "projectType": "flutter",
-    "totalReleases": 16
+    "totalReleases": 17
   },
   "releases": [
+    {
+      "version": "1.0.32",
+      "project_type": "flutter",
+      "date": "2025-10-30",
+      "pr_number": 44,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\nChores\n\n버전 1.0.32로 업데이트\n인증 시스템의 사용자 이름 필드 표준화",
+      "parsed_changes": {
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전 1.0.32로 업데이트",
+            "인증 시스템의 사용자 이름 필드 표준화"
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.31",
       "project_type": "flutter",
