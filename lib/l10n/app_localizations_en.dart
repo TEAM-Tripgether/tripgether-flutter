@@ -525,4 +525,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get getDirections => 'Get Directions';
+
+  @override
+  String get comingSoon => 'Coming Soon';
+
+  @override
+  String get noPopularCoursesYet => 'No popular courses yet';
 }

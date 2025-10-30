@@ -363,15 +363,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             onRefresh:
                 onRefresh, // 탭 재클릭 시 또는 Pull-to-Refresh 시 데이터 새로고침 (최소 실행 시간 보장)
           ),
-          // SliverAppBar: 스크롤과 함께 움직이는 AppBar
-          // floating: true - 아래로 스크롤 시 즉시 나타남
-          // snap: true - 완전히 나타나거나 사라지도록 스냅
-          // pinned: false - 스크롤 시 완전히 사라짐
+          // SliverAppBar: 화면 최상단에 고정된 AppBar
+          // pinned: true - 스크롤해도 항상 화면 최상단에 고정
+          // floating: false - 스크롤 동작 비활성화
+          // snap: false - 스냅 효과 비활성화
           SliverAppBar(
             title: const Text('Tripgether'),
-            floating: true, // 스크롤 다운 시 즉시 나타남
-            snap: true, // 스냅 효과 (완전히 나타나거나 사라짐)
-            pinned: false, // 스크롤 시 완전히 사라짐
+            pinned: true, // 스크롤해도 항상 고정
+            floating: false, // 스크롤 동작 비활성화
+            snap: false, // 스냅 효과 비활성화
             leading: IconButton(
               icon: const Icon(Icons.menu),
               onPressed: () {

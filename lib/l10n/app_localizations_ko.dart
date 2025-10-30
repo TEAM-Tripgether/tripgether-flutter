@@ -517,4 +517,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get getDirections => '길찾기';
+
+  @override
+  String get comingSoon => '준비 중입니다';
+
+  @override
+  String get noPopularCoursesYet => '아직 인기 코스가 없어요';
 }

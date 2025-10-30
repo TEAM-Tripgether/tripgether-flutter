@@ -1,11 +1,42 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-30T05:18:39Z",
-    "currentVersion": "1.0.32",
+    "lastUpdated": "2025-10-30T13:35:31Z",
+    "currentVersion": "1.1.1",
     "projectType": "flutter",
-    "totalReleases": 17
+    "totalReleases": 18
   },
   "releases": [
+    {
+      "version": "1.1.1",
+      "project_type": "flutter",
+      "date": "2025-10-30",
+      "pr_number": 47,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n새로운 기능\n\n코스 마켓에 인기 코스 섹션 추가\n근처 코스 섹션 추가로 위치 기반 탐색 강화\n코스 카드 새로운 UI 컴포넌트로 시각적 개선\n\n\n\n개선 사항\n\n앱 내비게이션 바 고정 표시로 접근성 향상\n그래디언트 배경 적용으로 디자인 통일성 강화\n다국어 지원 확장\n\n\n\nChores\n\n버전 1.1.1 업데이트",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "코스 마켓에 인기 코스 섹션 추가",
+            "근처 코스 섹션 추가로 위치 기반 탐색 강화",
+            "코스 카드 새로운 UI 컴포넌트로 시각적 개선"
+          ]
+        },
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "앱 내비게이션 바 고정 표시로 접근성 향상",
+            "그래디언트 배경 적용으로 디자인 통일성 강화",
+            "다국어 지원 확장"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전 1.1.1 업데이트"
+          ]
+        }
+      }
+    },
     {
       "version": "1.0.32",
       "project_type": "flutter",
