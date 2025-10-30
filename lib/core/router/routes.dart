@@ -37,6 +37,7 @@ class AppRoutes {
 
   /// 코스마켓 탭 하위 경로들
   static const String courseMarketSearch = '/course-market/search';
+  static const String popularCourses = '/course-market/popular';
 
   /// 상세 화면 경로들 (router.dart의 실제 경로와 일치)
   static const String courseDetail = '/course-market/detail/:courseId';

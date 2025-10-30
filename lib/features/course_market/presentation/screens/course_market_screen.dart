@@ -7,14 +7,17 @@ import 'package:tripgether/core/theme/app_colors.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
 import 'package:tripgether/core/theme/app_text_styles.dart';
 import 'package:tripgether/features/auth/providers/user_provider.dart';
+import 'package:tripgether/features/course_market/presentation/widgets/popular_courses_section.dart';
+import 'package:tripgether/features/course_market/presentation/widgets/nearby_section.dart';
 import 'package:tripgether/l10n/app_localizations.dart';
 import 'package:tripgether/shared/mixins/refreshable_tab_mixin.dart';
 import 'package:tripgether/shared/widgets/inputs/search_bar.dart';
 import 'package:tripgether/shared/widgets/layout/gradient_background.dart';
+import 'package:tripgether/shared/widgets/common/section_divider.dart';
 
 /// 코스마켓 메인 화면
 ///
-/// 실시간 인기 코스와 내 주변 코스를 표시하며
+/// 실시간 인기 코스를 표시하며
 /// 검색 기능과 코스/장소 추가 기능을 제공
 ///
 /// **기능:**
@@ -183,10 +186,142 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
           ),
         ),
 
-        // TODO: 새로운 디자인으로 콘텐츠 영역 구현 예정
-        // 현재는 빈 공간으로 유지 (디자인 작업 완료 후 실제 콘텐츠로 교체)
-        const SliverFillRemaining(child: SizedBox.shrink()),
+        // 콘텐츠 영역 (실시간 인기 코스 + 내 주변)
+        SliverList(
+          delegate: SliverChildListDelegate([
+            SizedBox(height: AppSpacing.md),
+
+            // 실시간 인기 코스 섹션
+            _buildPopularCoursesSection(),
+
+            // 섹션 구분선 (실시간 인기 코스 ↔ 내 주변)
+            SizedBox(height: AppSpacing.huge),
+            const SectionDivider.thick(),
+            SizedBox(height: AppSpacing.xl),
+
+            // 내 주변 섹션
+            _buildNearbySection(),
+
+            // 하단 여백 (스크롤 끝 시 여유 공간)
+            SizedBox(height: AppSpacing.xl),
+          ]),
+        ),
       ],
     );
+  }
+
+  /// 실시간 인기 코스 섹션 빌드
+  Widget _buildPopularCoursesSection() {
+    // TODO: 실제 API 연동 시 Provider로 교체
+    final popularCourses = _getDummyPopularCourses();
+
+    return PopularCoursesSection(
+      courses: popularCourses,
+      onSeeMoreTap: () {
+        // 실시간 인기 코스 더보기 페이지로 이동
+        context.push(AppRoutes.popularCourses);
+      },
+      onCourseTap: (course) {
+        debugPrint('인기 코스 선택: ${course.title}');
+      },
+    );
+  }
+
+  /// 내 주변 섹션 빌드
+  Widget _buildNearbySection() {
+    // TODO: 실제 위치 정보를 Provider에서 가져오기
+    const currentLocation = '광진구 군자동';
+
+    // TODO: 실제 API 연동 시 Provider로 교체
+    final nearbyCourses = _getDummyNearbyCourses();
+
+    return NearbySection(
+      location: currentLocation,
+      courses: nearbyCourses,
+      onSeeMoreTap: () {
+        debugPrint('내 주변 코스 더보기');
+      },
+      onCourseTap: (course) {
+        debugPrint('내 주변 코스 선택: ${course.title}');
+      },
+    );
+  }
+
+  /// 더미 인기 코스 데이터
+  List<PopularCourse> _getDummyPopularCourses() {
+    return [
+      const PopularCourse(
+        id: '1',
+        imageUrl: 'https://picsum.photos/seed/course1/400/600',
+        title: '익선동 골목 데이트 산책코스',
+        description: '비 오는 날이 설렘 추억 하나로 충분한',
+      ),
+      const PopularCourse(
+        id: '2',
+        imageUrl: 'https://picsum.photos/seed/course2/400/600',
+        title: '을지로 빈티지 바잉 코스',
+        description: '데님 편애자 아카이브 수집가의 추억',
+      ),
+      const PopularCourse(
+        id: '3',
+        imageUrl: 'https://picsum.photos/seed/course3/400/600',
+        title: '서촌 감성 카페 미술관 코스',
+        description: '소도시 같은 오래 머물고 싶은 동네',
+      ),
+    ];
+  }
+
+  /// 더미 내 주변 코스 데이터
+  List<NearbyCourse> _getDummyNearbyCourses() {
+    return [
+      const NearbyCourse(
+        id: '1',
+        imageUrl: 'https://picsum.photos/seed/nearby1/200/200',
+        title: '소담 한식당',
+        categories: ['식당', '한식'],
+      ),
+      const NearbyCourse(
+        id: '2',
+        imageUrl: 'https://picsum.photos/seed/nearby2/200/200',
+        title: '모던 감성 카페',
+        categories: ['카페', '디저트'],
+      ),
+      const NearbyCourse(
+        id: '3',
+        imageUrl: 'https://picsum.photos/seed/nearby3/200/200',
+        title: '아트 갤러리',
+        categories: ['전시', '문화'],
+      ),
+      const NearbyCourse(
+        id: '4',
+        imageUrl: 'https://picsum.photos/seed/nearby4/200/200',
+        title: '이탈리안 레스토랑',
+        categories: ['식당', '양식'],
+      ),
+      const NearbyCourse(
+        id: '5',
+        imageUrl: 'https://picsum.photos/seed/nearby5/200/200',
+        title: '북 카페',
+        categories: ['카페', '도서'],
+      ),
+      const NearbyCourse(
+        id: '6',
+        imageUrl: 'https://picsum.photos/seed/nearby6/200/200',
+        title: '브런치 맛집',
+        categories: ['식당', '브런치'],
+      ),
+      const NearbyCourse(
+        id: '7',
+        imageUrl: 'https://picsum.photos/seed/nearby7/200/200',
+        title: '플라워 카페',
+        categories: ['카페', '기타'],
+      ),
+      const NearbyCourse(
+        id: '8',
+        imageUrl: 'https://picsum.photos/seed/nearby8/200/200',
+        title: '매우매우매우매우 긴 제목을 가진 코스 이름 테스트용 매장',
+        categories: ['카페', '전통차', '테스트'],
+      ),
+    ];
   }
 }
