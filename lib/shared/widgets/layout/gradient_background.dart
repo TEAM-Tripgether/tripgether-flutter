@@ -36,11 +36,7 @@ class GradientBackground extends StatelessWidget {
   /// 특정 화면에서 다른 패딩이 필요한 경우 EdgeInsets를 전달하세요.
   final EdgeInsetsGeometry? padding;
 
-  const GradientBackground({
-    super.key,
-    required this.child,
-    this.padding,
-  });
+  const GradientBackground({super.key, required this.child, this.padding});
 
   @override
   Widget build(BuildContext context) {

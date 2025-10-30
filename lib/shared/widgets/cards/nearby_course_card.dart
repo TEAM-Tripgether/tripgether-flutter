@@ -40,11 +40,7 @@ class NearbyCourseCard extends StatelessWidget {
             // 이미지 (86×86, radius 12)
             ClipRRect(
               borderRadius: BorderRadius.circular(12.r),
-              child: SizedBox(
-                width: 86.w,
-                height: 86.h,
-                child: _buildImage(),
-              ),
+              child: SizedBox(width: 86.w, height: 86.h, child: _buildImage()),
             ),
 
             SizedBox(height: 4.h),
@@ -85,9 +81,7 @@ class NearbyCourseCard extends StatelessWidget {
       placeholder: (context, url) => Shimmer.fromColors(
         baseColor: AppColors.shimmerBase,
         highlightColor: AppColors.shimmerHighlight,
-        child: Container(
-          color: AppColors.surface,
-        ),
+        child: Container(color: AppColors.surface),
       ),
       errorWidget: (context, url, error) => Container(
         color: AppColors.surfaceVariant,
@@ -131,20 +125,12 @@ class NearbyCourseCardSkeleton extends StatelessWidget {
             SizedBox(height: 4.h),
 
             // 제목
-            Container(
-              width: 70.w,
-              height: 14.h,
-              color: AppColors.surface,
-            ),
+            Container(width: 70.w, height: 14.h, color: AppColors.surface),
 
             SizedBox(height: 4.h),
 
             // 카테고리
-            Container(
-              width: 50.w,
-              height: 12.h,
-              color: AppColors.surface,
-            ),
+            Container(width: 50.w, height: 12.h, color: AppColors.surface),
           ],
         ),
       ),
