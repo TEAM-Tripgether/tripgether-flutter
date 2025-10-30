@@ -32,10 +32,11 @@ mixin _$AuthRequest {
   /// 소셜 로그인 API 호출 시 필수
   String? get email => throw _privateConstructorUsedError;
 
-  /// 사용자 닉네임 (선택)
+  /// 사용자 이름 (선택)
   ///
   /// 소셜 로그인 API 호출 시 필수
-  String? get nickname => throw _privateConstructorUsedError;
+  /// 백엔드 DB의 'name' 컬럼과 매핑됨
+  String? get name => throw _privateConstructorUsedError;
 
   /// 프로필 이미지 URL (선택)
   ///
@@ -68,7 +69,7 @@ abstract class $AuthRequestCopyWith<$Res> {
   $Res call({
     String? socialPlatform,
     String? email,
-    String? nickname,
+    String? name,
     String? profileUrl,
     String? refreshToken,
   });
@@ -91,7 +92,7 @@ class _$AuthRequestCopyWithImpl<$Res, $Val extends AuthRequest>
   $Res call({
     Object? socialPlatform = freezed,
     Object? email = freezed,
-    Object? nickname = freezed,
+    Object? name = freezed,
     Object? profileUrl = freezed,
     Object? refreshToken = freezed,
   }) {
@@ -105,9 +106,9 @@ class _$AuthRequestCopyWithImpl<$Res, $Val extends AuthRequest>
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
                       as String?,
-            nickname: freezed == nickname
-                ? _value.nickname
-                : nickname // ignore: cast_nullable_to_non_nullable
+            name: freezed == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
                       as String?,
             profileUrl: freezed == profileUrl
                 ? _value.profileUrl
@@ -135,7 +136,7 @@ abstract class _$$AuthRequestImplCopyWith<$Res>
   $Res call({
     String? socialPlatform,
     String? email,
-    String? nickname,
+    String? name,
     String? profileUrl,
     String? refreshToken,
   });
@@ -157,7 +158,7 @@ class __$$AuthRequestImplCopyWithImpl<$Res>
   $Res call({
     Object? socialPlatform = freezed,
     Object? email = freezed,
-    Object? nickname = freezed,
+    Object? name = freezed,
     Object? profileUrl = freezed,
     Object? refreshToken = freezed,
   }) {
@@ -171,9 +172,9 @@ class __$$AuthRequestImplCopyWithImpl<$Res>
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
                   as String?,
-        nickname: freezed == nickname
-            ? _value.nickname
-            : nickname // ignore: cast_nullable_to_non_nullable
+        name: freezed == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
                   as String?,
         profileUrl: freezed == profileUrl
             ? _value.profileUrl
@@ -194,7 +195,7 @@ class _$AuthRequestImpl implements _AuthRequest {
   const _$AuthRequestImpl({
     this.socialPlatform,
     this.email,
-    this.nickname,
+    this.name,
     this.profileUrl,
     this.refreshToken,
   });
@@ -215,11 +216,12 @@ class _$AuthRequestImpl implements _AuthRequest {
   @override
   final String? email;
 
-  /// 사용자 닉네임 (선택)
+  /// 사용자 이름 (선택)
   ///
   /// 소셜 로그인 API 호출 시 필수
+  /// 백엔드 DB의 'name' 컬럼과 매핑됨
   @override
-  final String? nickname;
+  final String? name;
 
   /// 프로필 이미지 URL (선택)
   ///
@@ -236,7 +238,7 @@ class _$AuthRequestImpl implements _AuthRequest {
 
   @override
   String toString() {
-    return 'AuthRequest(socialPlatform: $socialPlatform, email: $email, nickname: $nickname, profileUrl: $profileUrl, refreshToken: $refreshToken)';
+    return 'AuthRequest(socialPlatform: $socialPlatform, email: $email, name: $name, profileUrl: $profileUrl, refreshToken: $refreshToken)';
   }
 
   @override
@@ -247,8 +249,7 @@ class _$AuthRequestImpl implements _AuthRequest {
             (identical(other.socialPlatform, socialPlatform) ||
                 other.socialPlatform == socialPlatform) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.nickname, nickname) ||
-                other.nickname == nickname) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.profileUrl, profileUrl) ||
                 other.profileUrl == profileUrl) &&
             (identical(other.refreshToken, refreshToken) ||
@@ -261,7 +262,7 @@ class _$AuthRequestImpl implements _AuthRequest {
     runtimeType,
     socialPlatform,
     email,
-    nickname,
+    name,
     profileUrl,
     refreshToken,
   );
@@ -284,7 +285,7 @@ abstract class _AuthRequest implements AuthRequest {
   const factory _AuthRequest({
     final String? socialPlatform,
     final String? email,
-    final String? nickname,
+    final String? name,
     final String? profileUrl,
     final String? refreshToken,
   }) = _$AuthRequestImpl;
@@ -305,11 +306,12 @@ abstract class _AuthRequest implements AuthRequest {
   @override
   String? get email;
 
-  /// 사용자 닉네임 (선택)
+  /// 사용자 이름 (선택)
   ///
   /// 소셜 로그인 API 호출 시 필수
+  /// 백엔드 DB의 'name' 컬럼과 매핑됨
   @override
-  String? get nickname;
+  String? get name;
 
   /// 프로필 이미지 URL (선택)
   ///
