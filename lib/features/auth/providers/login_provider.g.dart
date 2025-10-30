@@ -6,7 +6,7 @@ part of 'login_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$loginNotifierHash() => r'f02741eae35d9cc7748eadc4f9a8d4e0ebfc8f47';
+String _$loginNotifierHash() => r'325d6b0823d521a0547090ef5e68bf7b2878acab';
 
 /// 로그인 상태 관리 Provider
 ///
@@ -32,8 +32,13 @@ String _$rememberMeNotifierHash() =>
 
 /// 자동 로그인 상태 Provider
 ///
-/// 사용자가 "자동로그인" 체크박스를 선택했는지 여부를 관리합니다.
-/// SharedPreferences에 저장되어 앱 재시작 시에도 유지됩니다.
+/// ⚠️ **현재 미사용 기능** - 로그인 화면에서 사용하지 않음
+/// 자동 로그인 기능이 필요하면 구현, 불필요하면 삭제 권장
+///
+/// **구현 계획 (필요 시)**:
+/// 1. SharedPreferences 패키지 추가
+/// 2. 아래 주석 해제하고 로그인 화면에 체크박스 추가
+/// 3. 앱 시작 시 토큰 유효성 검사 후 자동 로그인 처리
 ///
 /// Copied from [RememberMeNotifier].
 @ProviderFor(RememberMeNotifier)

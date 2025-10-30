@@ -28,10 +28,11 @@ class AuthRequest with _$AuthRequest {
     /// 소셜 로그인 API 호출 시 필수
     String? email,
 
-    /// 사용자 닉네임 (선택)
+    /// 사용자 이름 (선택)
     ///
     /// 소셜 로그인 API 호출 시 필수
-    String? nickname,
+    /// 백엔드 DB의 'name' 컬럼과 매핑됨
+    String? name,
 
     /// 프로필 이미지 URL (선택)
     ///
@@ -51,18 +52,18 @@ class AuthRequest with _$AuthRequest {
   ///
   /// [socialPlatform]: "GOOGLE" 또는 "KAKAO"
   /// [email]: 사용자 이메일
-  /// [nickname]: 사용자 닉네임
+  /// [name]: 사용자 이름 (displayName)
   /// [profileUrl]: 프로필 이미지 URL (선택)
   factory AuthRequest.signIn({
     required String socialPlatform,
     required String email,
-    required String nickname,
+    required String name,
     String? profileUrl,
   }) {
     return AuthRequest(
       socialPlatform: socialPlatform,
       email: email,
-      nickname: nickname,
+      name: name,
       profileUrl: profileUrl,
     );
   }

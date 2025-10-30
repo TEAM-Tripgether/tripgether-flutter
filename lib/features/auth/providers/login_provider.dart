@@ -125,7 +125,7 @@ class LoginNotifier extends _$LoginNotifier {
         AuthRequest.signIn(
           socialPlatform: 'GOOGLE',
           email: googleUser.email,
-          nickname: googleUser.displayName ?? 'Unknown',
+          name: googleUser.displayName ?? 'Unknown',
           profileUrl: googleUser.photoUrl,
         ),
       );

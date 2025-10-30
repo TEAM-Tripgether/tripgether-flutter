@@ -6,7 +6,7 @@ part of 'user_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$accessTokenHash() => r'8040608299e769f921fffd62ceffbc0b62674a50';
+String _$accessTokenHash() => r'4273519c7d1790d1178aa1d68f56d1c226932c33';
 
 /// Access Token 읽기 Provider
 ///
@@ -35,7 +35,7 @@ final accessTokenProvider = AutoDisposeFutureProvider<String?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AccessTokenRef = AutoDisposeFutureProviderRef<String?>;
-String _$refreshTokenHash() => r'181d9979c80444161f641e456867b655d9078c8c';
+String _$refreshTokenHash() => r'f0d9a2d585eb3035384146c7e6e5a81e22b10848';
 
 /// Refresh Token 읽기 Provider
 ///
