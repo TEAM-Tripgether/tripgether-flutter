@@ -45,6 +45,11 @@ target 'Runner' do
 end
 
 post_install do |installer|
+  # ═══════════════════════════════════════════════════════════
+  # .env 파일에서 환경 변수 로드 (빌드 시점)
+  # ═══════════════════════════════════════════════════════════
+  system("bash #{File.expand_path('scripts/setup_env.sh', __dir__)}")
+
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
 

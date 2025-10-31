@@ -1,11 +1,33 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-30T13:35:31Z",
-    "currentVersion": "1.1.1",
+    "lastUpdated": "2025-10-31T06:00:24Z",
+    "currentVersion": "1.1.2",
     "projectType": "flutter",
-    "totalReleases": 18
+    "totalReleases": 19
   },
   "releases": [
+    {
+      "version": "1.1.2",
+      "project_type": "flutter",
+      "date": "2025-10-31",
+      "pr_number": 50,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n새로운 기능\n\nGoogle Maps 기능이 추가되었습니다.\n\n\n\n기타\n\n버전이 1.1.2로 업데이트되었습니다.\n빌드 구성이 개선되었습니다.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "Google Maps 기능이 추가되었습니다."
+          ]
+        },
+        "기타": {
+          "title": "기타",
+          "items": [
+            "버전이 1.1.2로 업데이트되었습니다.",
+            "빌드 구성이 개선되었습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.1",
       "project_type": "flutter",
