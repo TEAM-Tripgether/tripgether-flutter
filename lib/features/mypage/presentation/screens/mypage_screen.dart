@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
 import 'package:tripgether/core/providers/locale_provider.dart';
 import 'package:tripgether/core/router/routes.dart';
+import 'package:tripgether/core/theme/app_colors.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
 import 'package:tripgether/core/theme/app_text_styles.dart';
 import 'package:tripgether/l10n/app_localizations.dart';
@@ -180,9 +181,15 @@ class MyPageScreen extends ConsumerWidget {
             SnackBar(
               content: Text(
                 '${l10n.language}: $languageName',
-                style: AppTextStyles.bodyMedium,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.primary,
+                ),
               ),
+              backgroundColor: AppColors.surface,
               duration: const Duration(seconds: 2),
+              behavior: SnackBarBehavior.floating,
             ),
           );
         }
