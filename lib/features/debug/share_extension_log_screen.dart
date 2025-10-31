@@ -54,8 +54,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
       }
 
       // ✅ 에러 메시지인 경우 카운트를 0으로 처리
-      final isErrorMessage =
-          result?.contains('로그 파일이 없거나 읽을 수 없습니다') ?? false;
+      final isErrorMessage = result?.contains('로그 파일이 없거나 읽을 수 없습니다') ?? false;
 
       setState(() {
         _logContent = result ?? '로그 파일이 없습니다';
