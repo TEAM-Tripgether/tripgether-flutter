@@ -1,3 +1,10 @@
+// ═══════════════════════════════════════════════════════════
+// .env 파일에서 환경 변수 로드 (빌드 시점)
+// ═══════════════════════════════════════════════════════════
+exec {
+    commandLine("bash", "${rootProject.projectDir}/scripts/setup_env.sh")
+}
+
 pluginManagement {
     val flutterSdkPath =
         run {

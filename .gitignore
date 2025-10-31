@@ -50,10 +50,16 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Android 환경 변수 설정 파일 (빌드 시 자동 생성됨 - Git에 업로드 금지)
+/android/local.properties
+
 # iOS/macOS build artifacts
 /ios/build/
 /macos/build/
 /macos/DerivedData/
+
+# iOS 환경 변수 설정 파일 (빌드 시 자동 생성됨 - Git에 업로드 금지)
+/ios/Flutter/GoogleEnv.xcconfig
 
 # Claude Code (프로젝트 설정 파일과 캐시)
 .claude/
