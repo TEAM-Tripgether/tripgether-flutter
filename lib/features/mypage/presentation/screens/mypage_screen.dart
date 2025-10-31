@@ -187,7 +187,7 @@ class MyPageScreen extends ConsumerWidget {
                   color: AppColors.primary,
                 ),
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.surface,
               duration: const Duration(seconds: 2),
               behavior: SnackBarBehavior.floating,
             ),
