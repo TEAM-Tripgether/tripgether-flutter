@@ -69,8 +69,8 @@
             <string>Editor</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <!-- iOS 클라이언트 ID를 역순으로 변환한 값 -->
-                <string>com.googleusercontent.apps.810846342989-bq9tq1261tgurg1tusq9q6ce29omddob</string>
+                <!-- iOS 클라이언트 ID를 역순으로 변환한 값 (빌드 시 .env에서 자동 주입) -->
+                <string>$(GOOGLE_URL_SCHEME)</string>
             </array>
         </dict>
     </array>

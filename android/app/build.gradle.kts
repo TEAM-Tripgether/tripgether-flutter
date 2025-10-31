@@ -9,6 +9,16 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// ═══════════════════════════════════════════════════════════
+// .env 파일에서 환경 변수 로드 (빌드 시점)
+// ═══════════════════════════════════════════════════════════
+// local.properties 파일에서 환경 변수 읽기 (setup_env.sh가 생성함)
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
 android {
     namespace = "com.tripgether.alom"
     compileSdk = flutter.compileSdkVersion
@@ -25,6 +35,11 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
+    // BuildConfig 생성 활성화 (환경 변수 접근을 위해 필요)
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.tripgether.alom"
@@ -34,6 +49,12 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // ═══════════════════════════════════════════════════════════
+        // 환경 변수를 BuildConfig에 주입 (컴파일 타임 상수)
+        // ═══════════════════════════════════════════════════════════
+        val googleWebClientId = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
     }
 	val keystorePropertiesFile = rootProject.file("key.properties")
     val keystoreProperties = Properties()
