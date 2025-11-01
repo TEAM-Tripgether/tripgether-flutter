@@ -717,9 +717,19 @@
     "description": "로그인 버튼"
   },
 
-  "signInWithGoogle": "Google로 시작하기",
+  "signInWithGoogle": "구글로 시작하기",
   "@signInWithGoogle": {
     "description": "구글 로그인 버튼"
+  },
+
+  "signInWithKakao": "카카오로 시작하기",
+  "@signInWithKakao": {
+    "description": "카카오 로그인 버튼"
+  },
+
+  "signInWithNaver": "네이버로 시작하기",
+  "@signInWithNaver": {
+    "description": "네이버 로그인 버튼"
   },
 
   "signUpWithEmail": "이메일로 가입하기",

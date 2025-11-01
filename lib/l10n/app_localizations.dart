@@ -839,8 +839,20 @@ abstract class AppLocalizations {
   /// 구글 로그인 버튼
   ///
   /// In ko, this message translates to:
-  /// **'Google로 시작하기'**
+  /// **'구글로 시작하기'**
   String get signInWithGoogle;
+
+  /// 카카오 로그인 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'카카오로 시작하기'**
+  String get signInWithKakao;
+
+  /// 네이버 로그인 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'네이버로 시작하기'**
+  String get signInWithNaver;
 
   /// 이메일 회원가입 버튼
   ///

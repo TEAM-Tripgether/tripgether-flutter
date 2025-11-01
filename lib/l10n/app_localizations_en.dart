@@ -414,6 +414,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInWithGoogle => 'Sign in with Google';
 
   @override
+  String get signInWithKakao => 'Sign in with Kakao';
+
+  @override
+  String get signInWithNaver => 'Sign in with Naver';
+
+  @override
   String get signUpWithEmail => 'Sign up with Email';
 
   @override

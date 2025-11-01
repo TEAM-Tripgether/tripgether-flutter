@@ -6,19 +6,23 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../providers/login_provider.dart';
-import '../widgets/login_form.dart';
+// import '../widgets/login_form.dart'; // 주석 처리: 이메일 로그인 임시 비활성화
 import '../widgets/social_login_section.dart';
 
 /// 로그인 화면
 ///
-/// 앱 로고, 이메일/비밀번호 입력 폼, 소셜 로그인 버튼들을 포함하는
-/// 메인 로그인 화면입니다.
+/// 앱 로고와 소셜 로그인 버튼들을 포함하는 메인 로그인 화면입니다.
 ///
-/// **디자인**:
+/// **디자인 변경 (2025-11-01)**:
+/// - 배경: 화이트 배경 (이전: 보라색 그라데이션)
+/// - 레이아웃: 중앙 정렬 (로고 + 소셜 로그인)
+/// - 이메일 로그인 폼: 임시 비활성화 (향후 재도입 가능)
+///
+/// **현재 구성**:
 /// - 상단: app_logo_black (Tripgether + 태그라인 포함)
-/// - 중단: 이메일/비밀번호 입력 폼
-/// - 하단: 소셜 로그인 버튼들 (카카오, 네이버, 이메일 가입)
+/// - 하단: 소셜 로그인 버튼들 (구글, 이메일 가입)
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -30,6 +34,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   /// 구글 로그인 로딩 상태
   bool _isGoogleLoading = false;
 
+  /// ============================================================
+  /// 📝 이메일 로그인 관련 메서드 - 임시 비활성화
+  /// 향후 이메일 로그인 재도입 시 주석 해제하여 사용
+  /// ============================================================
+  /*
   /// 이메일/비밀번호 로그인 핸들러
   Future<void> _handleEmailLogin(
     BuildContext context,
@@ -63,6 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
     }
   }
+  */
 
   /// 구글 로그인 핸들러
   Future<void> _handleGoogleLogin(BuildContext context) async {
@@ -102,7 +112,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  /// 이메일 회원가입 핸들러
+  /*
+  /// 이메일 회원가입 핸들러 (제거됨: 소셜 로그인만 사용)
   void _handleEmailSignup(BuildContext context) {
     // TODO: 회원가입 화면으로 이동
     debugPrint('[Login] 이메일 회원가입 이동');
@@ -113,66 +124,145 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
     );
   }
+  */
 
+  /*
   /// 비밀번호 찾기 핸들러
   void _handleFindPassword(BuildContext context) {
     // TODO: 비밀번호 찾기 화면으로 이동
     debugPrint('[Login] 비밀번호 찾기 이동');
   }
+  */
+  /// ============================================================
+
+  /// 빠른 회원가입 배지 위젯
+  /// SNS 로그인의 빠른 가입을 강조하는 시각적 요소
+  Widget _buildQuickSignupBadge() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg, // 16px
+        vertical: AppSpacing.sm, // 8px
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.surface, // 흰색 배경
+        borderRadius: BorderRadius.circular(AppRadius.circle), // pill 모양
+        border: Border.all(
+          color: AppColors.gradientStart, // #1B0062 진한 남보라 테두리
+          width: AppSizes.borderMedium, // 2px 테두리
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min, // 내용물 크기에 맞춤
+        children: [
+          // 번개 아이콘 (빠르게를 시각적으로 표현)
+          Icon(
+            Icons.flash_on,
+            color: AppColorPalette.kakaoButton, // 카카오 옐로우 (#FEE500)
+            size: AppSizes.iconSmall, // 16px
+          ),
+          SizedBox(width: AppSpacing.xs), // 4px
+          // 텍스트
+          Text(
+            '10초만에 빠르게 회원가입!',
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.gradientStart, // #1B0062 진한 남보라 텍스트
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        /// 대각선 그라데이션 배경 (왼쪽 상단 → 오른쪽 하단)
-        /// #1B0062 → #5325CB → #B599FF
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft, // 좌측 상단에서 시작
-            end: Alignment.bottomRight, // 우측 하단으로 종료
-            colors: AppColorPalette.diagonalGradient,
-            stops: const [0.0, 0.37, 0.92], // 37:55:8 비율
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: AppSpacing.huge),
+      /// 화이트 배경 (디자인 변경: 그라데이션 → 단색)
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              /// 상단 여백 (로고를 아래로 내리기 위한 유연한 공간)
+              AppSpacing.verticalSpace120,
 
-                Image.asset(
-                  'assets/app_logo_white.png',
-                  width: 240.w,
-                  height: 240.h,
-                  fit: BoxFit.contain,
+              /// 앱 로고 이미지
+              Image.asset(
+                'assets/app_logo_black.png',
+                width: 240.w,
+                height: 240.h,
+                fit: BoxFit.contain,
+              ),
+
+              /// 로고와 소셜 로그인 사이의 넓은 간격
+              AppSpacing.verticalSpace80,
+
+              /// ============================================================
+              /// 📝 LOGIN FORM (이메일/비밀번호 로그인) - 임시 비활성화
+              /// 향후 이메일 로그인 재도입 시 주석 해제하여 사용
+              /// ============================================================
+              /*
+              LoginForm(
+                onLogin: (email, password) {
+                  _handleEmailLogin(context, ref, email, password);
+                },
+                onFindPassword: () => _handleFindPassword(context),
+              ),
+
+              AppSpacing.verticalSpaceHuge,
+              */
+              /// ============================================================
+
+              /// SNS 계정 로그인 구분선
+              Padding(
+                padding: AppSpacing.symmetric(horizontal: 60), // divider 길이 축소
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.outline,
+                        thickness: AppSizes.dividerThin,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                      child: Text(
+                        'SNS 계정으로 로그인/회원가입',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.outline,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.outline,
+                        thickness: AppSizes.dividerThin,
+                      ),
+                    ),
+                  ],
                 ),
+              ),
 
-                /// 로그인 입력 폼
-                /// 이메일, 비밀번호 입력 + 자동로그인 + 아이디/비밀번호 찾기
-                LoginForm(
-                  onLogin: (email, password) {
-                    _handleEmailLogin(context, ref, email, password);
-                  },
-                  onFindPassword: () => _handleFindPassword(context),
-                ),
+              AppSpacing.verticalSpaceMD,
 
-                SizedBox(height: AppSpacing.huge),
+              /// 빠른 회원가입 배지
+              /// SNS 로그인의 간편함을 강조
+              Center(child: _buildQuickSignupBadge()),
 
-                /// 소셜 로그인 섹션
-                /// "10초만에 빠른가입" 배지 + 구글/이메일 가입 버튼
-                SocialLoginSection(
-                  onGoogleLogin: () => _handleGoogleLogin(context),
-                  onEmailSignup: () => _handleEmailSignup(context),
-                  isGoogleLoading: _isGoogleLoading,
-                ),
+              AppSpacing.verticalSpaceMD,
 
-                SizedBox(height: AppSpacing.xl),
-              ],
-            ),
+              /// 소셜 로그인 섹션
+              /// 구글, 카카오, 네이버 로그인 버튼 표시
+              SocialLoginSection(
+                onGoogleLogin: () => _handleGoogleLogin(context),
+                isGoogleLoading: _isGoogleLoading,
+              ),
+
+              /// 하단 여백
+              AppSpacing.verticalSpace60,
+            ],
           ),
         ),
       ),

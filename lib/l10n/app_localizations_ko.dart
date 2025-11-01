@@ -410,7 +410,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get login => '로그인';
 
   @override
-  String get signInWithGoogle => 'Google로 시작하기';
+  String get signInWithGoogle => '구글로 시작하기';
+
+  @override
+  String get signInWithKakao => '카카오로 시작하기';
+
+  @override
+  String get signInWithNaver => '네이버로 시작하기';
 
   @override
   String get signUpWithEmail => '이메일로 가입하기';

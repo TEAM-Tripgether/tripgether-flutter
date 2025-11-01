@@ -232,12 +232,12 @@ extension AppColorPalette on AppColors {
     AppColors.gradientEnd, // #B599FF - 밝은 연보라 (끝점)
   ];
 
-  /// 소셜 로그인 버튼 색상
-  static const Color googleButton = Color(0xFFDB4437);
-  static const Color facebookButton = Color(0xFF4267B2);
-  static const Color appleButton = Color(0xFF000000);
-  static const Color kakaoButton = Color(0xFFFFE812);
-  static const Color naverButton = Color(0xFF03C75A);
+  /// 소셜 로그인 버튼 색상 (각 플랫폼의 공식 브랜드 색상)
+  static const Color googleButton = Color(0xFFF1F1F1); // 구글 라이트 그레이
+  static const Color facebookButton = Color(0xFF4267B2); // 페이스북 블루
+  static const Color appleButton = Color(0xFF000000); // 애플 블랙
+  static const Color kakaoButton = Color(0xFFFEE500); // 카카오 옐로우
+  static const Color naverButton = Color(0xFF03C75A); // 네이버 그린
 
   /// 평점 및 리뷰 색상
   static const Color ratingStarFilled = Color(0xFFFFB300);

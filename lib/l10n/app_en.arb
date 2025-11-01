@@ -722,6 +722,16 @@
     "description": "Google sign in button"
   },
 
+  "signInWithKakao": "Sign in with Kakao",
+  "@signInWithKakao": {
+    "description": "Kakao sign in button"
+  },
+
+  "signInWithNaver": "Sign in with Naver",
+  "@signInWithNaver": {
+    "description": "Naver sign in button"
+  },
+
   "signUpWithEmail": "Sign up with Email",
   "@signUpWithEmail": {
     "description": "Email sign up button"

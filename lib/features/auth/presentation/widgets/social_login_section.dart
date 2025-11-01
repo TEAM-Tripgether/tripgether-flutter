@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/buttons/social_login_button.dart';
 
 /// 소셜 로그인 섹션 위젯
 ///
-/// 구글 로그인과 이메일 가입 버튼을 표시하는 위젯입니다.
+/// 구글, 카카오, 네이버 로그인 버튼을 표시하는 위젯입니다.
 ///
-/// **디자인**:
-/// - 구글: 흰색 배경 + 회색 테두리 + 'G' 아이콘
-/// - 이메일: 흰색 배경 + textSecondary 색상 테두리
+/// **디자인 (2025-11-01)**:
+/// - 구글: 밝은 회색 배경 + 어두운 텍스트 + 구글 SVG 로고
+/// - 카카오: 카카오 옐로우 배경 + 검정 텍스트 + 카카오 SVG 로고 (준비 중)
+/// - 네이버: 네이버 그린 배경 + 흰색 텍스트 + 네이버 SVG 로고 (준비 중)
 ///
-/// **확장성**: 버튼 추가/제거가 쉽도록 설계되어
-/// 향후 Apple 등의 로그인 추가가 간편합니다.
+/// **아이콘**: assets/platform_icons/*.svg 사용
+/// **버튼 간격**: AppSpacing.lg (16px)
 class SocialLoginSection extends StatelessWidget {
   /// 구글 로그인 버튼 탭 콜백
   final VoidCallback onGoogleLogin;
-
-  /// 이메일 가입 버튼 탭 콜백
-  final VoidCallback onEmailSignup;
 
   /// 구글 로그인 로딩 상태
   final bool isGoogleLoading;
@@ -29,66 +26,80 @@ class SocialLoginSection extends StatelessWidget {
   const SocialLoginSection({
     super.key,
     required this.onGoogleLogin,
-    required this.onEmailSignup,
     this.isGoogleLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
     return Column(
       children: [
         /// 구글 로그인 버튼
-        /// Surface 배경 + 회색 테두리 + 구글 로고
+        /// 밝은 회색 배경 + 어두운 텍스트 + 구글 로고
         SocialLoginButton(
           text: l10n.signInWithGoogle,
-          backgroundColor: colorScheme.surface,
-          textColor: colorScheme.onSurface,
-          borderColor: AppColors.outline, // 회색 테두리
+          backgroundColor: AppColorPalette.googleButton, // #F1F1F1
+          textColor: AppColors.neutral10, // 검정에 가까운 어두운 회색
           onPressed: onGoogleLogin,
           isLoading: isGoogleLoading,
-          // 구글 아이콘 - 'G' 텍스트로 임시 대체 (향후 실제 로고로 교체)
-          icon: Text(
-            'G',
-            style: AppTextStyles.titleMedium.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColorPalette.googleButton, // 구글 브랜드 색상
-            ),
-          ),
-          // 로그인 화면 전용 둥근 모서리 스타일 (변경할 속성만 지정)
-          customStyle: ButtonStyle(
-            shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100.r),
-              ),
-            ),
+          // 구글 SVG 아이콘 (AppSizes.iconMedium = 20px)
+          icon: SvgPicture.asset(
+            'assets/platform_icons/google.svg',
+            width: AppSizes.iconMedium,
+            height: AppSizes.iconMedium,
           ),
         ),
 
-        SizedBox(height: AppSpacing.sm),
+        /// 버튼 간 간격: 16px
+        SizedBox(height: AppSpacing.lg),
 
-        /// 이메일로 가입하기 버튼
-        /// Surface 배경 + onSurfaceVariant 색상 텍스트 (테두리 없음)
+        /// 카카오 로그인 버튼 (준비 중)
+        /// 카카오 옐로우 배경 + 검정 텍스트
         SocialLoginButton(
-          text: l10n.signUpWithEmail,
-          backgroundColor: colorScheme.surface,
-          textColor: colorScheme.onSurfaceVariant,
-          onPressed: onEmailSignup,
-          // 로그인 화면 전용 둥근 모서리 스타일 (변경할 속성만 지정)
-          customStyle: ButtonStyle(
-            shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100.r),
-              ),
-            ),
+          text: l10n.signInWithKakao,
+          backgroundColor: AppColorPalette.kakaoButton, // #FEE500
+          textColor: AppColors.neutral10, // 검정 텍스트
+          onPressed: () => _showComingSoon(context, l10n),
+          // 카카오 SVG 아이콘 (AppSizes.iconMedium = 20px)
+          icon: SvgPicture.asset(
+            'assets/platform_icons/kakao.svg',
+            width: AppSizes.iconMedium,
+            height: AppSizes.iconMedium,
           ),
         ),
 
-        SizedBox(height: AppSpacing.xxl),
+        /// 버튼 간 간격: 16px
+        SizedBox(height: AppSpacing.lg),
+
+        /// 네이버 로그인 버튼 (준비 중)
+        /// 네이버 그린 배경 + 흰색 텍스트
+        SocialLoginButton(
+          text: l10n.signInWithNaver,
+          backgroundColor: AppColorPalette.naverButton, // #03C75A
+          textColor: AppColors.onPrimary, // 흰색 텍스트
+          onPressed: () => _showComingSoon(context, l10n),
+          // 네이버 SVG 아이콘 (AppSizes.iconMedium = 20px)
+          icon: SvgPicture.asset(
+            'assets/platform_icons/naver.svg',
+            width: AppSizes.iconMedium,
+            height: AppSizes.iconMedium,
+          ),
+        ),
       ],
+    );
+  }
+
+  /// "준비 중입니다" 스낵바 표시
+  ///
+  /// 카카오, 네이버 로그인 버튼 클릭 시 호출됩니다.
+  void _showComingSoon(BuildContext context, AppLocalizations l10n) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.comingSoon),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 }
