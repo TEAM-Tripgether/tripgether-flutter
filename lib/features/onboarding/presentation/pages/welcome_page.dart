@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../auth/providers/user_provider.dart';
 
 /// 온보딩 완료 화면 (페이지 5/5)
 ///
 /// 환영 메시지와 함께 그라데이션 배경을 표시하며,
 /// "Tripgether 시작하기" 버튼으로 홈 화면으로 이동합니다.
-class WelcomePage extends StatelessWidget {
+/// Google 로그인으로 받은 닉네임을 동적으로 표시합니다.
+class WelcomePage extends ConsumerWidget {
   const WelcomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+
+    // UserNotifierProvider에서 사용자 정보 가져오기
+    final userAsync = ref.watch(userNotifierProvider);
+
+    // 사용자 닉네임 추출 (로딩 중이거나 없으면 기본값 "Kevin" 사용)
+    final nickname = userAsync.when(
+      data: (user) => user?.nickname ?? 'Kevin',
+      loading: () => 'Kevin',
+      error: (_, stack) => 'Kevin',
+    );
 
     return Container(
       width: double.infinity,
@@ -42,15 +54,11 @@ class WelcomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 상단 고정 여백 (아이콘 위치 조정)
-            const Spacer(),
+            // 상단 유연한 여백 (중앙 배치를 위한 균형)
+            const Spacer(flex: 2),
 
-            // 체크 아이콘
-            SvgPicture.asset(
-              'assets/icons/check.svg',
-              width: 66.w,
-              height: 66.h,
-            ),
+            // 체크 아이콘 (PNG)
+            Image.asset('assets/icons/check.png', width: 66.w, height: 66.h),
 
             AppSpacing.verticalSpaceHuge,
 
@@ -66,23 +74,24 @@ class WelcomePage extends StatelessWidget {
 
             AppSpacing.verticalSpaceMD,
 
-            // 설명 메시지
+            // 설명 메시지 (동적 닉네임 + 국제화 적용)
             Text(
-              '모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 Kevin님',
+              l10n.onboardingWelcomeDescription(nickname),
               style: AppTextStyles.titleMedium.copyWith(
                 color: AppColors.onPrimary.withValues(alpha: 0.9),
               ),
               textAlign: TextAlign.center,
             ),
 
-            const Spacer(),
+            // 하단 유연한 여백 (버튼을 하단에 배치)
+            const Spacer(flex: 3),
 
             // 버튼 영역 (SafeArea로 하단 안전 영역 보호)
             SafeArea(
               top: false, // 상단은 SafeArea 적용 안 함 (그라데이션이 상단까지 확장)
               child: Column(
                 children: [
-                  // SNS 장소추출 튜토리얼 버튼 (테두리 버튼)
+                  // SNS 장소추출 튜토리얼 버튼 (테두리 버튼, 국제화 적용)
                   OutlinedButton(
                     onPressed: () {
                       // TODO: 튜토리얼 화면으로 이동
@@ -98,7 +107,7 @@ class WelcomePage extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'SNS 장소추출 튜토리얼',
+                      l10n.snsPlaceExtractionTutorial,
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: AppColors.gradientMiddle, // #5325CB - 선명한 보라 텍스트
                         fontWeight: FontWeight.w600,

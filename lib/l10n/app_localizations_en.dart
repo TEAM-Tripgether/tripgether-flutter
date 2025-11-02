@@ -537,4 +537,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noPopularCoursesYet => 'No popular courses yet';
+
+  @override
+  String get onboardingNicknamePrompt => 'Please set your name';
+
+  @override
+  String get onboardingGenderPrompt => 'Select your gender. (Optional)';
+
+  @override
+  String get genderMale => 'Male';
+
+  @override
+  String get genderFemale => 'Female';
+
+  @override
+  String get genderOther => 'Other';
+
+  @override
+  String get genderSkip => 'Skip';
+
+  @override
+  String onboardingWelcomeDescription(String userName) {
+    return 'All set! 🎉\nLet\'s start your local journey, $userName';
+  }
+
+  @override
+  String get snsPlaceExtractionTutorial => 'SNS Place Extraction Tutorial';
+
+  @override
+  String get btnContinue => 'Continue';
+
+  @override
+  String get btnComplete => 'Complete';
 }

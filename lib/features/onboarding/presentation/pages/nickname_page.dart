@@ -4,6 +4,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/inputs/onboarding_text_field.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// 닉네임 설정 페이지 (페이지 1/5)
 ///
@@ -49,6 +50,7 @@ class _NicknamePageState extends State<NicknamePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isValid =
         _controller.text.length >= 2 && _controller.text.length <= 10;
 
@@ -60,13 +62,13 @@ class _NicknamePageState extends State<NicknamePage> {
           // 상단 여백 (위로 올림)
           AppSpacing.verticalSpaceHuge,
 
-          // 제목
+          // 제목 (국제화 적용)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '이름을 설정해주세요',
+                l10n.onboardingNicknamePrompt,
                 style: AppTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
@@ -110,9 +112,9 @@ class _NicknamePageState extends State<NicknamePage> {
           // 입력-버튼 간격
           const Spacer(),
 
-          // 계속하기 버튼
+          // 계속하기 버튼 (국제화 적용)
           PrimaryButton(
-            text: '계속하기',
+            text: l10n.btnContinue,
             onPressed: isValid ? _handleNext : null,
             isFullWidth: true,
             // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용

@@ -529,4 +529,36 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get noPopularCoursesYet => '아직 인기 코스가 없어요';
+
+  @override
+  String get onboardingNicknamePrompt => '이름을 설정해주세요';
+
+  @override
+  String get onboardingGenderPrompt => '성별을 선택해주세요. (선택)';
+
+  @override
+  String get genderMale => '남성';
+
+  @override
+  String get genderFemale => '여성';
+
+  @override
+  String get genderOther => '기타';
+
+  @override
+  String get genderSkip => '건너뛰기';
+
+  @override
+  String onboardingWelcomeDescription(String userName) {
+    return '모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 $userName님';
+  }
+
+  @override
+  String get snsPlaceExtractionTutorial => 'SNS 장소추출 튜토리얼';
+
+  @override
+  String get btnContinue => '계속하기';
+
+  @override
+  String get btnComplete => '완료하기';
 }

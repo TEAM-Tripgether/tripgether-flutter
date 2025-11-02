@@ -4,6 +4,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../widgets/gender_selection_card.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// 성별 선택 페이지 (페이지 3/5)
 ///
@@ -32,6 +33,8 @@ class _GenderPageState extends State<GenderPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Padding(
       padding: AppSpacing.symmetric(horizontal: 24),
       child: Column(
@@ -40,9 +43,9 @@ class _GenderPageState extends State<GenderPage> {
           // 상단 여백 (위로 올림)
           AppSpacing.verticalSpaceHuge,
 
-          // 제목
+          // 제목 (국제화 적용)
           Text(
-            '성별을 선택해주세요',
+            l10n.onboardingGenderPrompt,
             style: AppTextStyles.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
               color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
@@ -64,23 +67,23 @@ class _GenderPageState extends State<GenderPage> {
           // 선택 카드를 중앙에 배치하기 위한 여백
           const Spacer(),
 
-          // 성별 선택 카드들
+          // 성별 선택 카드들 (국제화 적용)
           Column(
             children: [
               GenderSelectionCard(
-                label: '남성',
+                label: l10n.genderMale,
                 isSelected: _selectedGender == 'male',
                 onTap: () => setState(() => _selectedGender = 'male'),
               ),
               AppSpacing.verticalSpaceMD,
               GenderSelectionCard(
-                label: '여성',
+                label: l10n.genderFemale,
                 isSelected: _selectedGender == 'female',
                 onTap: () => setState(() => _selectedGender = 'female'),
               ),
               AppSpacing.verticalSpaceMD,
               GenderSelectionCard(
-                label: '선택 안 함',
+                label: l10n.genderSkip,
                 isSelected: _selectedGender == 'notSelected',
                 onTap: () => setState(() => _selectedGender = 'notSelected'),
               ),
@@ -90,9 +93,9 @@ class _GenderPageState extends State<GenderPage> {
           // 선택-버튼 간격
           const Spacer(),
 
-          // 계속하기 버튼
+          // 계속하기 버튼 (국제화 적용)
           PrimaryButton(
-            text: '계속하기',
+            text: l10n.btnContinue,
             // 성별을 선택해야만 활성화 (null이 아닐 때만)
             onPressed: _selectedGender != null ? widget.onNext : null,
             isFullWidth: true,

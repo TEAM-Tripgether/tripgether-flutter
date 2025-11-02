@@ -1063,6 +1063,66 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'아직 인기 코스가 없어요'**
   String get noPopularCoursesYet;
+
+  /// 온보딩 닉네임 입력 안내 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'이름을 설정해주세요'**
+  String get onboardingNicknamePrompt;
+
+  /// 온보딩 성별 선택 안내 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'성별을 선택해주세요. (선택)'**
+  String get onboardingGenderPrompt;
+
+  /// 성별 선택 - 남성
+  ///
+  /// In ko, this message translates to:
+  /// **'남성'**
+  String get genderMale;
+
+  /// 성별 선택 - 여성
+  ///
+  /// In ko, this message translates to:
+  /// **'여성'**
+  String get genderFemale;
+
+  /// 성별 선택 - 기타
+  ///
+  /// In ko, this message translates to:
+  /// **'기타'**
+  String get genderOther;
+
+  /// 성별 선택 - 건너뛰기
+  ///
+  /// In ko, this message translates to:
+  /// **'건너뛰기'**
+  String get genderSkip;
+
+  /// 온보딩 환영 화면 설명 (닉네임 포함)
+  ///
+  /// In ko, this message translates to:
+  /// **'모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 {userName}님'**
+  String onboardingWelcomeDescription(String userName);
+
+  /// SNS 장소추출 튜토리얼 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'SNS 장소추출 튜토리얼'**
+  String get snsPlaceExtractionTutorial;
+
+  /// 계속하기 버튼 (온보딩 진행)
+  ///
+  /// In ko, this message translates to:
+  /// **'계속하기'**
+  String get btnContinue;
+
+  /// 완료하기 버튼 (온보딩 마지막 단계)
+  ///
+  /// In ko, this message translates to:
+  /// **'완료하기'**
+  String get btnComplete;
 }
 
 class _AppLocalizationsDelegate

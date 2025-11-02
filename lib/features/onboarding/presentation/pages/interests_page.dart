@@ -299,9 +299,9 @@ class _InterestsPageState extends State<InterestsPage> {
 
           AppSpacing.verticalSpaceMD,
 
-          // 완료하기 버튼
+          // 완료하기 버튼 (국제화 적용)
           PrimaryButton(
-            text: '완료하기',
+            text: l10n.btnComplete,
             onPressed: isValid ? widget.onNext : null,
             isFullWidth: true,
             // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용

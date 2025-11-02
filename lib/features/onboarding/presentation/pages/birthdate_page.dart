@@ -316,9 +316,9 @@ class _BirthdatePageState extends State<BirthdatePage> {
 
           AppSpacing.verticalSpaceMD,
 
-          // 계속하기 버튼
+          // 계속하기 버튼 (국제화 적용)
           PrimaryButton(
-            text: '계속하기',
+            text: l10n.btnContinue,
             onPressed: isValid ? _handleNext : null,
             isFullWidth: true,
             // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용

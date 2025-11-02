@@ -923,5 +923,61 @@
   "noPopularCoursesYet": "No popular courses yet",
   "@noPopularCoursesYet": {
     "description": "Message when there are no popular courses"
+  },
+
+  "onboardingNicknamePrompt": "Please set your name",
+  "@onboardingNicknamePrompt": {
+    "description": "Onboarding nickname input prompt title"
+  },
+
+  "onboardingGenderPrompt": "Select your gender. (Optional)",
+  "@onboardingGenderPrompt": {
+    "description": "Onboarding gender selection prompt title"
+  },
+
+  "genderMale": "Male",
+  "@genderMale": {
+    "description": "Gender selection - Male"
+  },
+
+  "genderFemale": "Female",
+  "@genderFemale": {
+    "description": "Gender selection - Female"
+  },
+
+  "genderOther": "Other",
+  "@genderOther": {
+    "description": "Gender selection - Other"
+  },
+
+  "genderSkip": "Skip",
+  "@genderSkip": {
+    "description": "Gender selection - Skip"
+  },
+
+  "onboardingWelcomeDescription": "All set! 🎉\nLet's start your local journey, {userName}",
+  "@onboardingWelcomeDescription": {
+    "description": "Onboarding welcome screen description (with nickname)",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "Kevin"
+      }
+    }
+  },
+
+  "snsPlaceExtractionTutorial": "SNS Place Extraction Tutorial",
+  "@snsPlaceExtractionTutorial": {
+    "description": "SNS place extraction tutorial button text"
+  },
+
+  "btnContinue": "Continue",
+  "@btnContinue": {
+    "description": "Continue button (onboarding progression)"
+  },
+
+  "btnComplete": "Complete",
+  "@btnComplete": {
+    "description": "Complete button (onboarding final step)"
   }
 }
