@@ -37,20 +37,32 @@ class _GenderPageState extends State<GenderPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 상단 공간
-          const Spacer(flex: 1),
+          // 상단 여백 (위로 올림)
+          AppSpacing.verticalSpaceHuge,
 
           // 제목
           Text(
-            '성별을 선택해주세요. (선택)',
+            '성별을 선택해주세요',
             style: AppTextStyles.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
             ),
           ),
 
-          // 제목-선택 간격
-          const Spacer(flex: 3),
+          // 제목-설명 간격
+          AppSpacing.verticalSpaceSM,
+
+          // 설명 (제목 바로 아래)
+          Text(
+            '맞춤 추천을 위해 사용돼요\n선택하지 않아도 괜찮아요',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.onboardingDescription, // #130537 - 진한 남보라
+            ),
+            textAlign: TextAlign.center,
+          ),
+
+          // 선택 카드를 중앙에 배치하기 위한 여백
+          const Spacer(),
 
           // 성별 선택 카드들
           Column(
@@ -75,30 +87,27 @@ class _GenderPageState extends State<GenderPage> {
             ],
           ),
 
-          // 선택-설명 간격 (좁게)
-          AppSpacing.verticalSpaceSM,
-
-          // 설명
-          Text(
-            '여행 추천 개인화에 활용돼요.',
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-
-          // 설명-버튼 간격 (입력 중앙 유지)
-          const Spacer(flex: 3),
+          // 선택-버튼 간격
+          const Spacer(),
 
           // 계속하기 버튼
           PrimaryButton(
             text: '계속하기',
-            onPressed: widget.onNext,
+            // 성별을 선택해야만 활성화 (null이 아닐 때만)
+            onPressed: _selectedGender != null ? widget.onNext : null,
             isFullWidth: true,
+            // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
+            style: ButtonStyle(
+              shape: WidgetStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.circle),
+                ),
+              ),
+            ),
           ),
 
-          // 하단 여백 (Flex로 제어)
-          const Spacer(flex: 2),
+          // 하단 여백 (버튼을 조금 위로)
+          AppSpacing.verticalSpace60,
         ],
       ),
     );

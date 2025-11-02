@@ -215,8 +215,8 @@ class _BirthdatePageState extends State<BirthdatePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 상단 공간
-          const Spacer(flex: 1),
+          // 상단 여백 (위로 올림)
+          AppSpacing.verticalSpaceHuge,
 
           // 제목
           Row(
@@ -227,7 +227,7 @@ class _BirthdatePageState extends State<BirthdatePage> {
                 l10n.onboardingBirthdatePrompt,
                 style: AppTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
                 ),
               ),
               AppSpacing.horizontalSpace(4),
@@ -241,8 +241,20 @@ class _BirthdatePageState extends State<BirthdatePage> {
             ],
           ),
 
-          // 제목-입력 간격
-          const Spacer(flex: 3),
+          // 제목-설명 간격
+          AppSpacing.verticalSpaceSM,
+
+          // 설명 (제목 바로 아래)
+          Text(
+            '다른 유저에게는 보이지 않아요\n연령별 콘텐츠 설정 및 추천에만 사용돼요',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.onboardingDescription, // #130537 - 진한 남보라
+            ),
+            textAlign: TextAlign.center,
+          ),
+
+          // 입력 필드를 중앙에 배치하기 위한 여백
+          const Spacer(),
 
           // YYYY / MM / DD 입력
           Row(
@@ -289,40 +301,38 @@ class _BirthdatePageState extends State<BirthdatePage> {
             ],
           ),
 
-          // 입력-설명 간격 (좁게)
-          AppSpacing.verticalSpaceSM,
+          // 입력-버튼 간격
+          const Spacer(),
 
-          // 설명 (입력 필드 바로 아래)
-          Column(
-            children: [
-              Text(
-                l10n.onboardingBirthdateDescription,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              AppSpacing.verticalSpaceSM,
-              Text(
-                l10n.onboardingBirthdateAgeLimit,
-                style: AppTextStyles.bodySmall.copyWith(color: AppColors.error),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          // 만 14세 이상 안내 문구
+          Text(
+            l10n.onboardingBirthdateAgeLimit,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.error,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
           ),
 
-          // 설명-버튼 간격 (입력 중앙 유지)
-          const Spacer(flex: 3),
+          AppSpacing.verticalSpaceMD,
 
           // 계속하기 버튼
           PrimaryButton(
             text: '계속하기',
             onPressed: isValid ? _handleNext : null,
             isFullWidth: true,
+            // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
+            style: ButtonStyle(
+              shape: WidgetStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.circle),
+                ),
+              ),
+            ),
           ),
 
-          // 하단 여백 (Flex로 제어)
-          const Spacer(flex: 2),
+          // 하단 여백 (버튼을 조금 위로)
+          AppSpacing.verticalSpace60,
         ],
       ),
     );

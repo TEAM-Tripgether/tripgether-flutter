@@ -154,6 +154,11 @@ class AppColors {
   ); // #5325CB - 선명한 보라 (중간점)
   static const Color gradientEnd = Color(0xFFB599FF); // #B599FF - 밝은 연보라 (끝점)
 
+  /// Onboarding Description Color (온보딩 설명 텍스트 색상)
+  static const Color onboardingDescription = Color(
+    0xFF130537,
+  ); // #130537 - 진한 남보라
+
   /// Extension method for Color opacity
   /// 색상의 투명도를 쉽게 조절할 수 있는 확장 메서드
   static Color withOpacity(Color color, double opacity) {

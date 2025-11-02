@@ -147,7 +147,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         color: AppColors.surface, // 흰색 배경
         borderRadius: BorderRadius.circular(AppRadius.circle), // pill 모양
         border: Border.all(
-          color: AppColors.gradientStart, // #1B0062 진한 남보라 테두리
+          color: AppColors.gradientEnd, // #B599FF 밝은 연보라 테두리
           width: AppSizes.borderMedium, // 2px 테두리
         ),
       ),
@@ -165,7 +165,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           Text(
             '10초만에 빠르게 회원가입!',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.gradientStart, // #1B0062 진한 남보라 텍스트
+              color: AppColors.gradientEnd, // #B599FF 밝은 연보라 텍스트
               fontWeight: FontWeight.w700,
             ),
           ),

@@ -106,6 +106,7 @@ flutter:
     - assets/splash/
     - assets/navigation_icons/
     - assets/platform_icons/
+    - assets/icons/
     - .env
   fonts:
     - family: Pretendard
