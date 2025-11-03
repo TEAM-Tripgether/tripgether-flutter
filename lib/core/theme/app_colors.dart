@@ -94,6 +94,9 @@ class AppColors {
   /// Shadow and Elevation Colors (그림자 및 높이 색상)
   /// 카드와 요소들의 그림자 효과에 사용
   static const Color shadow = Color(0xFF000000);
+  static const Color shadowLight = Color(
+    0x0D000000,
+  ); // rgba(0, 0, 0, 0.05) - 밝은 그림자
   static const Color scrim = Color(0xFF000000);
 
   /// Splash Screen Colors (스플래시 스크린 색상)
@@ -153,6 +156,11 @@ class AppColors {
     0xFF5325CB,
   ); // #5325CB - 선명한 보라 (중간점)
   static const Color gradientEnd = Color(0xFFB599FF); // #B599FF - 밝은 연보라 (끝점)
+
+  /// Onboarding Description Color (온보딩 설명 텍스트 색상)
+  static const Color onboardingDescription = Color(
+    0xFF130537,
+  ); // #130537 - 진한 남보라
 
   /// Extension method for Color opacity
   /// 색상의 투명도를 쉽게 조절할 수 있는 확장 메서드
@@ -232,12 +240,12 @@ extension AppColorPalette on AppColors {
     AppColors.gradientEnd, // #B599FF - 밝은 연보라 (끝점)
   ];
 
-  /// 소셜 로그인 버튼 색상
-  static const Color googleButton = Color(0xFFDB4437);
-  static const Color facebookButton = Color(0xFF4267B2);
-  static const Color appleButton = Color(0xFF000000);
-  static const Color kakaoButton = Color(0xFFFFE812);
-  static const Color naverButton = Color(0xFF03C75A);
+  /// 소셜 로그인 버튼 색상 (각 플랫폼의 공식 브랜드 색상)
+  static const Color googleButton = Color(0xFFF1F1F1); // 구글 라이트 그레이
+  static const Color facebookButton = Color(0xFF4267B2); // 페이스북 블루
+  static const Color appleButton = Color(0xFF000000); // 애플 블랙
+  static const Color kakaoButton = Color(0xFFFEE500); // 카카오 옐로우
+  static const Color naverButton = Color(0xFF03C75A); // 네이버 그린
 
   /// 평점 및 리뷰 색상
   static const Color ratingStarFilled = Color(0xFFFFB300);

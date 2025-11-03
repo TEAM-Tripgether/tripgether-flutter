@@ -717,9 +717,19 @@
     "description": "로그인 버튼"
   },
 
-  "signInWithGoogle": "Google로 시작하기",
+  "signInWithGoogle": "구글로 시작하기",
   "@signInWithGoogle": {
     "description": "구글 로그인 버튼"
+  },
+
+  "signInWithKakao": "카카오로 시작하기",
+  "@signInWithKakao": {
+    "description": "카카오 로그인 버튼"
+  },
+
+  "signInWithNaver": "네이버로 시작하기",
+  "@signInWithNaver": {
+    "description": "네이버 로그인 버튼"
   },
 
   "signUpWithEmail": "이메일로 가입하기",
@@ -819,11 +829,6 @@
     "description": "일반 권한 부족 에러 메시지"
   },
 
-  "onboardingWelcomeTitle": "준비 완료!",
-  "@onboardingWelcomeTitle": {
-    "description": "온보딩 환영 화면 제목"
-  },
-
   "onboardingWelcomeMessage": "이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️",
   "@onboardingWelcomeMessage": {
     "description": "온보딩 환영 화면 메시지"
@@ -913,5 +918,97 @@
   "noPopularCoursesYet": "아직 인기 코스가 없어요",
   "@noPopularCoursesYet": {
     "description": "인기 코스가 없을 때 표시되는 메시지"
+  },
+
+  "onboardingNicknamePrompt": "이름을 설정해주세요",
+  "@onboardingNicknamePrompt": {
+    "description": "온보딩 닉네임 입력 안내 제목"
+  },
+
+  "onboardingGenderPrompt": "성별을 선택해주세요. (선택)",
+  "@onboardingGenderPrompt": {
+    "description": "온보딩 성별 선택 안내 제목"
+  },
+
+  "genderMale": "남성",
+  "@genderMale": {
+    "description": "성별 선택 - 남성"
+  },
+
+  "genderFemale": "여성",
+  "@genderFemale": {
+    "description": "성별 선택 - 여성"
+  },
+
+  "genderOther": "기타",
+  "@genderOther": {
+    "description": "성별 선택 - 기타"
+  },
+
+  "genderSkip": "건너뛰기",
+  "@genderSkip": {
+    "description": "성별 선택 - 건너뛰기"
+  },
+
+  "onboardingWelcomeDescription": "모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 {userName}님",
+  "@onboardingWelcomeDescription": {
+    "description": "온보딩 환영 화면 설명 (닉네임 포함)",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "Kevin"
+      }
+    }
+  },
+
+  "snsPlaceExtractionTutorial": "SNS 장소추출 튜토리얼",
+  "@snsPlaceExtractionTutorial": {
+    "description": "SNS 장소추출 튜토리얼 버튼 텍스트"
+  },
+
+  "btnContinue": "계속하기",
+  "@btnContinue": {
+    "description": "계속하기 버튼 (온보딩 진행)"
+  },
+
+  "btnComplete": "완료하기",
+  "@btnComplete": {
+    "description": "완료하기 버튼 (온보딩 마지막 단계)"
+  },
+
+  "onboardingGenderDescription": "맞춤 추천을 위해 사용돼요\n선택하지 않아도 괜찮아요",
+  "@onboardingGenderDescription": {
+    "description": "온보딩 성별 선택 사용 목적 설명"
+  },
+
+  "onboardingInterestsDescription": "최소 3개, 최대 10개를 선택하면 맞춤 추천 정확도가 높아져요",
+  "@onboardingInterestsDescription": {
+    "description": "온보딩 관심사 선택 개수 안내"
+  },
+
+  "onboardingInterestsChangeInfo": "선택한 관심사는 언제든 설정에서 바꿀 수 있어요",
+  "@onboardingInterestsChangeInfo": {
+    "description": "온보딩 관심사 변경 가능 안내"
+  },
+
+  "onboardingWelcomeTitle": "{nickname}님,\n환영해요!",
+  "@onboardingWelcomeTitle": {
+    "description": "온보딩 완료 환영 메시지 (닉네임 포함)",
+    "placeholders": {
+      "nickname": {
+        "type": "String",
+        "example": "여행러버"
+      }
+    }
+  },
+
+  "onboardingWelcomeTitleFallback": "환영해요!",
+  "@onboardingWelcomeTitleFallback": {
+    "description": "온보딩 완료 환영 메시지 (닉네임 없을 때)"
+  },
+
+  "defaultNickname": "여행러버",
+  "@defaultNickname": {
+    "description": "온보딩 닉네임 입력 전 기본 플레이스홀더"
   }
 }

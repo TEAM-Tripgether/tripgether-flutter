@@ -410,7 +410,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get login => '로그인';
 
   @override
-  String get signInWithGoogle => 'Google로 시작하기';
+  String get signInWithGoogle => '구글로 시작하기';
+
+  @override
+  String get signInWithKakao => '카카오로 시작하기';
+
+  @override
+  String get signInWithNaver => '네이버로 시작하기';
 
   @override
   String get signUpWithEmail => '이메일로 가입하기';
@@ -468,9 +474,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get permissionGeneralRequired => '이 기능을 사용하려면 적절한 권한이 필요합니다.';
 
   @override
-  String get onboardingWelcomeTitle => '준비 완료!';
-
-  @override
   String get onboardingWelcomeMessage => '이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️';
 
   @override
@@ -523,4 +526,57 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get noPopularCoursesYet => '아직 인기 코스가 없어요';
+
+  @override
+  String get onboardingNicknamePrompt => '이름을 설정해주세요';
+
+  @override
+  String get onboardingGenderPrompt => '성별을 선택해주세요. (선택)';
+
+  @override
+  String get genderMale => '남성';
+
+  @override
+  String get genderFemale => '여성';
+
+  @override
+  String get genderOther => '기타';
+
+  @override
+  String get genderSkip => '건너뛰기';
+
+  @override
+  String onboardingWelcomeDescription(String userName) {
+    return '모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 $userName님';
+  }
+
+  @override
+  String get snsPlaceExtractionTutorial => 'SNS 장소추출 튜토리얼';
+
+  @override
+  String get btnContinue => '계속하기';
+
+  @override
+  String get btnComplete => '완료하기';
+
+  @override
+  String get onboardingGenderDescription => '맞춤 추천을 위해 사용돼요\n선택하지 않아도 괜찮아요';
+
+  @override
+  String get onboardingInterestsDescription =>
+      '최소 3개, 최대 10개를 선택하면 맞춤 추천 정확도가 높아져요';
+
+  @override
+  String get onboardingInterestsChangeInfo => '선택한 관심사는 언제든 설정에서 바꿀 수 있어요';
+
+  @override
+  String onboardingWelcomeTitle(String nickname) {
+    return '$nickname님,\n환영해요!';
+  }
+
+  @override
+  String get onboardingWelcomeTitleFallback => '환영해요!';
+
+  @override
+  String get defaultNickname => '여행러버';
 }

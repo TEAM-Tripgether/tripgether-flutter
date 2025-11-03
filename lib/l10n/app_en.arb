@@ -722,6 +722,16 @@
     "description": "Google sign in button"
   },
 
+  "signInWithKakao": "Sign in with Kakao",
+  "@signInWithKakao": {
+    "description": "Kakao sign in button"
+  },
+
+  "signInWithNaver": "Sign in with Naver",
+  "@signInWithNaver": {
+    "description": "Naver sign in button"
+  },
+
   "signUpWithEmail": "Sign up with Email",
   "@signUpWithEmail": {
     "description": "Email sign up button"
@@ -819,11 +829,6 @@
     "description": "General permission error message"
   },
 
-  "onboardingWelcomeTitle": "Ready to go!",
-  "@onboardingWelcomeTitle": {
-    "description": "Onboarding welcome screen title"
-  },
-
   "onboardingWelcomeMessage": "Start planning your special trip\nwith Tripgether ✈️",
   "@onboardingWelcomeMessage": {
     "description": "Onboarding welcome screen message"
@@ -913,5 +918,97 @@
   "noPopularCoursesYet": "No popular courses yet",
   "@noPopularCoursesYet": {
     "description": "Message when there are no popular courses"
+  },
+
+  "onboardingNicknamePrompt": "Please set your name",
+  "@onboardingNicknamePrompt": {
+    "description": "Onboarding nickname input prompt title"
+  },
+
+  "onboardingGenderPrompt": "Select your gender. (Optional)",
+  "@onboardingGenderPrompt": {
+    "description": "Onboarding gender selection prompt title"
+  },
+
+  "genderMale": "Male",
+  "@genderMale": {
+    "description": "Gender selection - Male"
+  },
+
+  "genderFemale": "Female",
+  "@genderFemale": {
+    "description": "Gender selection - Female"
+  },
+
+  "genderOther": "Other",
+  "@genderOther": {
+    "description": "Gender selection - Other"
+  },
+
+  "genderSkip": "Skip",
+  "@genderSkip": {
+    "description": "Gender selection - Skip"
+  },
+
+  "onboardingWelcomeDescription": "All set! 🎉\nLet's start your local journey, {userName}",
+  "@onboardingWelcomeDescription": {
+    "description": "Onboarding welcome screen description (with nickname)",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "Kevin"
+      }
+    }
+  },
+
+  "snsPlaceExtractionTutorial": "SNS Place Extraction Tutorial",
+  "@snsPlaceExtractionTutorial": {
+    "description": "SNS place extraction tutorial button text"
+  },
+
+  "btnContinue": "Continue",
+  "@btnContinue": {
+    "description": "Continue button (onboarding progression)"
+  },
+
+  "btnComplete": "Complete",
+  "@btnComplete": {
+    "description": "Complete button (onboarding final step)"
+  },
+
+  "onboardingGenderDescription": "Used for personalized recommendations\nYou can skip if you want",
+  "@onboardingGenderDescription": {
+    "description": "Gender selection purpose description in onboarding"
+  },
+
+  "onboardingInterestsDescription": "Select 3-10 interests for better recommendations",
+  "@onboardingInterestsDescription": {
+    "description": "Interest selection count guidance in onboarding"
+  },
+
+  "onboardingInterestsChangeInfo": "You can change your interests anytime in settings",
+  "@onboardingInterestsChangeInfo": {
+    "description": "Interest change availability notice in onboarding"
+  },
+
+  "onboardingWelcomeTitle": "Welcome,\n{nickname}!",
+  "@onboardingWelcomeTitle": {
+    "description": "Onboarding completion welcome message (with nickname)",
+    "placeholders": {
+      "nickname": {
+        "type": "String",
+        "example": "TravelLover"
+      }
+    }
+  },
+
+  "onboardingWelcomeTitleFallback": "Welcome!",
+  "@onboardingWelcomeTitleFallback": {
+    "description": "Onboarding completion welcome message (without nickname)"
+  },
+
+  "defaultNickname": "Traveler",
+  "@defaultNickname": {
+    "description": "Default placeholder before nickname input in onboarding"
   }
 }

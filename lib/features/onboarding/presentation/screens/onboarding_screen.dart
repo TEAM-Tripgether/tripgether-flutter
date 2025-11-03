@@ -61,38 +61,43 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-      // AppBar: 뒤로가기 버튼 + 페이지 인디케이터
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.h),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          // 왼쪽: 뒤로가기 버튼
-          leading: _currentPage > 0
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    _pageController.previousPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                  iconSize: 24.w,
-                  color: AppColors.textPrimary,
-                  padding: EdgeInsets.zero,
-                )
-              : IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () => Navigator.pop(context),
-                  iconSize: 24.w,
-                  color: AppColors.textPrimary,
-                  padding: EdgeInsets.zero,
+      // AppBar: Welcome 페이지(마지막 페이지)에서는 숨김
+      appBar: _currentPage == 4
+          ? null // Welcome 페이지에서는 AppBar 없음
+          : PreferredSize(
+              preferredSize: Size.fromHeight(60.h),
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                // 왼쪽: 뒤로가기 버튼
+                leading: _currentPage > 0
+                    ? IconButton(
+                        icon: const Icon(Icons.arrow_back_ios),
+                        onPressed: () {
+                          _pageController.previousPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        },
+                        iconSize: 24.w,
+                        color: AppColors.textPrimary,
+                        padding: EdgeInsets.zero,
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.arrow_back_ios),
+                        onPressed: () => Navigator.pop(context),
+                        iconSize: 24.w,
+                        color: AppColors.textPrimary,
+                        padding: EdgeInsets.zero,
+                      ),
+                // 중앙: 페이지 인디케이터
+                title: OnboardingPageIndicator(
+                  controller: _pageController,
+                  count: 5,
                 ),
-          // 중앙: 페이지 인디케이터
-          title: OnboardingPageIndicator(controller: _pageController, count: 5),
-          centerTitle: true,
-        ),
-      ),
+                centerTitle: true,
+              ),
+            ),
       // PageView: SafeArea 제거 (AppBar가 자동으로 Safe Area 처리)
       body: PageView(
         controller: _pageController,

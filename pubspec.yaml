@@ -4,7 +4,7 @@ description: "Tripgether - Share your travel moments and discover local places t
 publish_to: 'none' 
 
 
-version: 1.1.2
+version: 1.1.4
 
 environment:
   sdk: ^3.9.2
@@ -106,6 +106,7 @@ flutter:
     - assets/splash/
     - assets/navigation_icons/
     - assets/platform_icons/
+    - assets/icons/
     - .env
   fonts:
     - family: Pretendard

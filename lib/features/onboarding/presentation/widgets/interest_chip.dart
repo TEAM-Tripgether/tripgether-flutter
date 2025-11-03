@@ -36,8 +36,8 @@ class InterestChip extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          // 선택 시: 보라색 배경, 미선택 시: 흰색 배경
-          color: isSelected ? AppColors.primary : AppColors.surface,
+          // 선택 시: 보라색 배경 (#5325CB), 미선택 시: 흰색 배경
+          color: isSelected ? AppColors.gradientMiddle : AppColors.surface,
           // 선택 시: 테두리 없음, 미선택 시: 회색 테두리
           border: isSelected
               ? null
@@ -47,8 +47,8 @@ class InterestChip extends StatelessWidget {
         child: Text(
           label,
           style: AppTextStyles.labelLarge.copyWith(
-            // 선택 시: 흰색 텍스트, 미선택 시: 기본 텍스트 색상
-            color: isSelected ? AppColors.onPrimary : AppColors.textPrimary,
+            // 선택 시: 흰색 텍스트, 미선택 시: 회색(BBBBBB) 텍스트
+            color: isSelected ? AppColors.onPrimary : AppColors.outline,
           ),
         ),
       ),

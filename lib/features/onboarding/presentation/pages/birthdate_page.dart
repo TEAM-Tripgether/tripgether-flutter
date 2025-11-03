@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -7,6 +8,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/inputs/onboarding_text_field.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../providers/onboarding_provider.dart';
 
 /// 생년월일 입력 페이지 (페이지 2/5)
 ///
@@ -17,7 +19,10 @@ import '../../../../l10n/app_localizations.dart';
 /// - 페이지 진입 시 첫 번째 필드 자동 포커스
 /// - Backspace 개선: 빈 칸에서 이전 칸 내용까지 삭제
 /// - 중간 값 수정 시: 기존 값들을 뒤로 밀어내기 (값 보존)
-class BirthdatePage extends StatefulWidget {
+///
+/// **Provider 연동**:
+/// - onboardingProvider에 생년월일 저장 (YYYY-MM-DD 형식)
+class BirthdatePage extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final PageController pageController;
 
@@ -28,10 +33,10 @@ class BirthdatePage extends StatefulWidget {
   });
 
   @override
-  State<BirthdatePage> createState() => _BirthdatePageState();
+  ConsumerState<BirthdatePage> createState() => _BirthdatePageState();
 }
 
-class _BirthdatePageState extends State<BirthdatePage> {
+class _BirthdatePageState extends ConsumerState<BirthdatePage> {
   /// YYYY/MM/DD 형식이므로 총 8개의 TextField 필요
   final List<TextEditingController> _controllers = List.generate(
     8,
@@ -126,6 +131,20 @@ class _BirthdatePageState extends State<BirthdatePage> {
 
   void _handleNext() {
     if (_isValidDate()) {
+      // YYYY-MM-DD 형식으로 변환
+      final year =
+          _controllers[0].text +
+          _controllers[1].text +
+          _controllers[2].text +
+          _controllers[3].text;
+      final month = _controllers[4].text + _controllers[5].text;
+      final day = _controllers[6].text + _controllers[7].text;
+      final birthdate = '$year-$month-$day';
+
+      // onboardingProvider에 생년월일 저장
+      ref.read(onboardingProvider.notifier).updateBirthdate(birthdate);
+
+      // 다음 페이지로 이동
       widget.onNext();
     }
   }
@@ -211,12 +230,12 @@ class _BirthdatePageState extends State<BirthdatePage> {
     final isValid = _isValidDate();
 
     return Padding(
-      padding: AppSpacing.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 상단 공간
-          const Spacer(flex: 1),
+          // 상단 여백 (위로 올림)
+          AppSpacing.verticalSpaceHuge,
 
           // 제목
           Row(
@@ -227,7 +246,7 @@ class _BirthdatePageState extends State<BirthdatePage> {
                 l10n.onboardingBirthdatePrompt,
                 style: AppTextStyles.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
                 ),
               ),
               AppSpacing.horizontalSpace(4),
@@ -241,8 +260,20 @@ class _BirthdatePageState extends State<BirthdatePage> {
             ],
           ),
 
-          // 제목-입력 간격
-          const Spacer(flex: 3),
+          // 제목-설명 간격
+          AppSpacing.verticalSpaceSM,
+
+          // 설명 (제목 바로 아래, 국제화 적용)
+          Text(
+            l10n.onboardingBirthdateDescription,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.onboardingDescription, // #130537 - 진한 남보라
+            ),
+            textAlign: TextAlign.center,
+          ),
+
+          // 입력 필드를 중앙에 배치하기 위한 여백
+          const Spacer(),
 
           // YYYY / MM / DD 입력
           Row(
@@ -289,40 +320,38 @@ class _BirthdatePageState extends State<BirthdatePage> {
             ],
           ),
 
-          // 입력-설명 간격 (좁게)
-          AppSpacing.verticalSpaceSM,
+          // 입력-버튼 간격
+          const Spacer(),
 
-          // 설명 (입력 필드 바로 아래)
-          Column(
-            children: [
-              Text(
-                l10n.onboardingBirthdateDescription,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              AppSpacing.verticalSpaceSM,
-              Text(
-                l10n.onboardingBirthdateAgeLimit,
-                style: AppTextStyles.bodySmall.copyWith(color: AppColors.error),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          // 만 14세 이상 안내 문구
+          Text(
+            l10n.onboardingBirthdateAgeLimit,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.error,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
           ),
 
-          // 설명-버튼 간격 (입력 중앙 유지)
-          const Spacer(flex: 3),
+          AppSpacing.verticalSpaceMD,
 
-          // 계속하기 버튼
+          // 계속하기 버튼 (국제화 적용)
           PrimaryButton(
-            text: '계속하기',
+            text: l10n.btnContinue,
             onPressed: isValid ? _handleNext : null,
             isFullWidth: true,
+            // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
+            style: ButtonStyle(
+              shape: WidgetStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.circle),
+                ),
+              ),
+            ),
           ),
 
-          // 하단 여백 (Flex로 제어)
-          const Spacer(flex: 2),
+          // 하단 여백 (버튼을 조금 위로)
+          AppSpacing.verticalSpace60,
         ],
       ),
     );

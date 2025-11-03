@@ -35,15 +35,30 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
     try {
       final result = await _channel.invokeMethod<String>('getShareLog');
 
+      // 🔍 디버깅: 원본 로그 내용 출력
+      debugPrint('==== [로그 파일 읽기] ====');
+      debugPrint('원본 로그 길이: ${result?.length ?? 0}자');
+      debugPrint('원본 로그 내용:\n$result');
+      debugPrint('========================');
+
       // 로그 엔트리 개수 계산 (빈 줄 제외)
       final logLines = (result ?? '')
           .split('\n')
           .where((line) => line.trim().isNotEmpty)
           .toList();
 
+      // 🔍 디버깅: 파싱된 로그 라인 출력
+      debugPrint('파싱된 로그 라인 수: ${logLines.length}');
+      for (int i = 0; i < logLines.length; i++) {
+        debugPrint('  [$i] ${logLines[i]}');
+      }
+
+      // ✅ 에러 메시지인 경우 카운트를 0으로 처리
+      final isErrorMessage = result?.contains('로그 파일이 없거나 읽을 수 없습니다') ?? false;
+
       setState(() {
         _logContent = result ?? '로그 파일이 없습니다';
-        _logCount = logLines.length;
+        _logCount = isErrorMessage ? 0 : logLines.length;
         _isLoading = false;
       });
     } catch (e) {
@@ -58,8 +73,15 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
   /// 로그 삭제
   Future<void> _clearLog() async {
     try {
-      await _channel.invokeMethod('clearShareLog');
+      debugPrint('==== [로그 삭제 시작] ====');
+
+      final result = await _channel.invokeMethod('clearShareLog');
+      debugPrint('삭제 결과: $result');
+
+      debugPrint('삭제 후 로그 다시 읽기...');
       await _loadLog();
+
+      debugPrint('==== [로그 삭제 완료] ====');
     } catch (e) {
       debugPrint('로그 삭제 실패: $e');
     }
