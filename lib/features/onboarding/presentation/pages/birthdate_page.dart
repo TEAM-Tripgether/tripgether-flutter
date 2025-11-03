@@ -7,18 +7,22 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/inputs/onboarding_text_field.dart';
+import '../../../../shared/utils/date_input_formatter.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
 
 /// 생년월일 입력 페이지 (페이지 2/5)
 ///
-/// YYYY / MM / DD 형식으로 8개의 개별 TextField를 사용합니다.
-/// 만 14세 이상만 사용 가능합니다.
+/// **개선된 입력 방식**:
+/// - 단일 TextField로 YYYY / MM / DD 형식 자동 포맷팅
+/// - DateInputFormatter를 사용하여 자연스러운 입력 경험 제공
+/// - 만 14세 이상만 사용 가능
 ///
-/// 편의 기능:
-/// - 페이지 진입 시 첫 번째 필드 자동 포커스
-/// - Backspace 개선: 빈 칸에서 이전 칸으로 포커스만 이동
-/// - 값 입력 시: 현재 칸에 덮어쓰기 + 다음 칸으로 자동 포커스
+/// **편의 기능**:
+/// - 페이지 진입 시 자동 포커스
+/// - 숫자만 입력 가능 (슬래시는 자동 추가)
+/// - 연속 입력 가능 (포커스 이동 불필요)
+/// - 백스페이스 자연스럽게 동작
 ///
 /// **Provider 연동**:
 /// - onboardingProvider에 생년월일 저장 (YYYY-MM-DD 형식)
@@ -37,87 +41,69 @@ class BirthdatePage extends ConsumerStatefulWidget {
 }
 
 class _BirthdatePageState extends ConsumerState<BirthdatePage> {
-  /// YYYY/MM/DD 형식이므로 총 8개의 TextField 필요
-  final List<TextEditingController> _controllers = List.generate(
-    8,
-    (_) => TextEditingController(),
-  );
-  final List<FocusNode> _focusNodes = List.generate(8, (_) => FocusNode());
+  /// 생년월일 입력을 위한 단일 컨트롤러
+  /// 내부적으로는 "19980215" 형식으로 저장되지만, 화면에는 "1998 / 02 / 15"로 표시
+  final TextEditingController _birthdateController = TextEditingController();
 
-  /// 물리 키보드 감지를 위한 FocusNode (KeyboardListener용)
-  final List<FocusNode> _keyboardFocusNodes = List.generate(
-    8,
-    (_) => FocusNode(),
-  );
-
-  /// 모바일 키보드 Backspace 감지를 위한 이전 값 추적
-  final List<String> _previousValues = List.generate(8, (_) => '');
+  /// 입력 필드 포커스 관리
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    // 페이지 진입 시 첫 번째 필드에 자동 포커스
+    // 페이지 진입 시 자동 포커스
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNodes[0].requestFocus();
+      _focusNode.requestFocus();
     });
   }
 
   @override
   void dispose() {
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
-    for (final node in _focusNodes) {
-      node.dispose();
-    }
-    for (final node in _keyboardFocusNodes) {
-      node.dispose();
-    }
+    _birthdateController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
   /// 생년월일 유효성 검사
   ///
-  /// YYYY/MM/DD 형식의 입력을 검증하고, 만 14세 이상인지 확인합니다.
+  /// YYYY / MM / DD 형식의 입력을 검증하고, 만 14세 이상인지 확인합니다.
   ///
   /// Returns: 유효한 날짜이고 만 14세 이상이면 true, 아니면 false
   bool _isValidDate() {
     try {
-      // 1. 모든 필드가 입력되었는지 확인
-      if (_controllers.any((controller) => controller.text.isEmpty)) {
-        return false;
-      }
-
-      // 2. 연도, 월, 일 파싱
-      final year = int.parse(
-        _controllers[0].text +
-            _controllers[1].text +
-            _controllers[2].text +
-            _controllers[3].text,
+      // 1. 포맷팅된 텍스트에서 숫자만 추출
+      final digits = DateInputFormatter.getDigitsOnly(
+        _birthdateController.text,
       );
-      final month = int.parse(_controllers[4].text + _controllers[5].text);
-      final day = int.parse(_controllers[6].text + _controllers[7].text);
 
-      // 3. 기본 범위 검증
+      // 2. 8자리가 아니면 불완전한 입력
+      if (digits.length != 8) return false;
+
+      // 3. 연도, 월, 일 파싱
+      final year = int.parse(digits.substring(0, 4));
+      final month = int.parse(digits.substring(4, 6));
+      final day = int.parse(digits.substring(6, 8));
+
+      // 4. 기본 범위 검증
       if (month < 1 || month > 12) return false;
       if (day < 1 || day > 31) return false;
 
-      // 4. DateTime 생성 시도 (존재하지 않는 날짜는 예외 발생)
+      // 5. DateTime 생성 시도 (존재하지 않는 날짜는 예외 발생)
       final birthDate = DateTime(year, month, day);
 
-      // 5. DateTime이 자동으로 조정한 경우 감지 (예: 2월 30일 → 3월 2일)
+      // 6. DateTime이 자동으로 조정한 경우 감지 (예: 2월 30일 → 3월 2일)
       if (birthDate.year != year ||
           birthDate.month != month ||
           birthDate.day != day) {
         return false;
       }
 
-      // 6. 미래 날짜 방지
+      // 7. 미래 날짜 방지
       if (birthDate.isAfter(DateTime.now())) {
         return false;
       }
 
-      // 7. 만 14세 이상 확인 (생일이 지났는지 고려)
+      // 8. 만 14세 이상 확인 (생일이 지났는지 고려)
       final now = DateTime.now();
       final age = now.year - birthDate.year;
       final hasHadBirthdayThisYear =
@@ -132,20 +118,17 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
     }
   }
 
+  /// 다음 버튼 클릭 핸들러
   void _handleNext() {
     if (_isValidDate()) {
       // 키보드 내리기
       FocusScope.of(context).unfocus();
 
-      // YYYY-MM-DD 형식으로 변환
-      final year =
-          _controllers[0].text +
-          _controllers[1].text +
-          _controllers[2].text +
-          _controllers[3].text;
-      final month = _controllers[4].text + _controllers[5].text;
-      final day = _controllers[6].text + _controllers[7].text;
-      final birthdate = '$year-$month-$day';
+      // 숫자만 추출하여 YYYY-MM-DD 형식으로 변환
+      final digits = DateInputFormatter.getDigitsOnly(
+        _birthdateController.text,
+      );
+      final birthdate = DateInputFormatter.toIsoFormat(digits);
 
       // onboardingProvider에 생년월일 저장
       ref.read(onboardingProvider.notifier).updateBirthdate(birthdate);
@@ -153,65 +136,6 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
       // 다음 페이지로 이동
       widget.onNext();
     }
-  }
-
-  /// 날짜 입력 필드 생성
-  ///
-  /// OnboardingTextField를 사용하여 일관된 스타일 적용
-  ///
-  /// **입력 동작**:
-  /// - 값 입력 시: 현재 칸에 덮어쓰고 다음 칸으로 포커스 이동
-  /// - Backspace 시: 현재 칸 삭제 후 이전 칸으로 포커스만 이동
-  /// - 모바일 키보드와 물리 키보드 모두 지원
-  ///
-  /// [index] TextField의 인덱스 (0~7)
-  Widget _buildDateInputField(int index) {
-    return KeyboardListener(
-      focusNode: _keyboardFocusNodes[index],
-      onKeyEvent: (event) {
-        // 물리 키보드 Backspace 감지
-        if (event is KeyDownEvent &&
-            event.logicalKey == LogicalKeyboardKey.backspace) {
-          // 현재 필드가 비어있고 첫 번째 필드가 아닌 경우 → 이전 필드로 포커스만 이동
-          if (_controllers[index].text.isEmpty && index > 0) {
-            _focusNodes[index - 1].requestFocus();
-          }
-        }
-      },
-      child: OnboardingTextField(
-        width: 32.w,
-        controller: _controllers[index],
-        focusNode: _focusNodes[index],
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.center,
-        maxLength: 1,
-        style: AppTextStyles.headlineMedium.copyWith(
-          fontWeight: FontWeight.w400,
-          color: AppColors.textPrimary,
-        ),
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        onChanged: (value) {
-          // 모바일 키보드 입력 처리
-          final previousValue = _previousValues[index];
-
-          // 현재 값으로 업데이트
-          _previousValues[index] = value;
-
-          // 백스페이스 감지: 현재 비어있고, 이전에 값이 있었고, 첫 번째 필드가 아닌 경우
-          // → 이전 필드로 포커스만 이동 (삭제 안 함)
-          if (value.isEmpty && previousValue.isNotEmpty && index > 0) {
-            _focusNodes[index - 1].requestFocus();
-            setState(() {});
-          } else if (value.isNotEmpty) {
-            // 값 입력 시: 현재 칸에 덮어쓰고 다음 칸으로 포커스 이동
-            if (index < 7) {
-              _focusNodes[index + 1].requestFocus();
-            }
-            setState(() {}); // 검증 상태 업데이트
-          }
-        },
-      ),
-    );
   }
 
   @override
@@ -271,49 +195,30 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
             // 입력 필드를 중앙에 배치하기 위한 여백
             const Spacer(),
 
-            // YYYY / MM / DD 입력
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // YYYY (4자리)
-                _buildDateInputField(0),
-                AppSpacing.horizontalSpace(2),
-                _buildDateInputField(1),
-                AppSpacing.horizontalSpace(2),
-                _buildDateInputField(2),
-                AppSpacing.horizontalSpace(2),
-                _buildDateInputField(3),
-
-                // 구분자: /
-                AppSpacing.horizontalSpaceSM,
-                Text(
-                  '/',
-                  style: AppTextStyles.headlineSmall.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+            // YYYY / MM / DD 입력 (단일 TextField)
+            Center(
+              child: OnboardingTextField(
+                width: 240.w, // 충분한 너비 확보 (YYYY / MM / DD 표시)
+                controller: _birthdateController,
+                focusNode: _focusNode,
+                hintText: '2001 / 01 / 01', // 입력 형식 안내
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                maxLength: 14, // "YYYY / MM / DD" = 14자
+                style: AppTextStyles.headlineMedium.copyWith(
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.textPrimary,
+                  letterSpacing: 2.0, // 가독성을 위한 자간 조정
                 ),
-                AppSpacing.horizontalSpaceSM,
-
-                // MM (2자리)
-                _buildDateInputField(4),
-                AppSpacing.horizontalSpace(2),
-                _buildDateInputField(5),
-
-                // 구분자: /
-                AppSpacing.horizontalSpaceSM,
-                Text(
-                  '/',
-                  style: AppTextStyles.headlineSmall.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                AppSpacing.horizontalSpaceSM,
-
-                // DD (2자리)
-                _buildDateInputField(6),
-                AppSpacing.horizontalSpace(2),
-                _buildDateInputField(7),
-              ],
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly, // 숫자만 입력 허용
+                  DateInputFormatter(), // 자동 포맷팅 (YYYY / MM / DD)
+                ],
+                onChanged: (value) {
+                  // 검증 상태 업데이트를 위한 setState
+                  setState(() {});
+                },
+              ),
             ),
 
             // 입력-버튼 간격
