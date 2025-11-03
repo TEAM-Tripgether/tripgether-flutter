@@ -55,7 +55,7 @@ class _NicknamePageState extends State<NicknamePage> {
         _controller.text.length >= 2 && _controller.text.length <= 10;
 
     return Padding(
-      padding: AppSpacing.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

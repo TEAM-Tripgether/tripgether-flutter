@@ -94,6 +94,7 @@ class AppColors {
   /// Shadow and Elevation Colors (그림자 및 높이 색상)
   /// 카드와 요소들의 그림자 효과에 사용
   static const Color shadow = Color(0xFF000000);
+  static const Color shadowLight = Color(0x0D000000); // rgba(0, 0, 0, 0.05) - 밝은 그림자
   static const Color scrim = Color(0xFF000000);
 
   /// Splash Screen Colors (스플래시 스크린 색상)

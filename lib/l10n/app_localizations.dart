@@ -1123,6 +1123,24 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'완료하기'**
   String get btnComplete;
+
+  /// 온보딩 성별 선택 사용 목적 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'맞춤 추천을 위해 사용돼요\n선택하지 않아도 괜찮아요'**
+  String get onboardingGenderDescription;
+
+  /// 온보딩 관심사 선택 개수 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'최소 3개, 최대 10개를 선택하면 맞춤 추천 정확도가 높아져요'**
+  String get onboardingInterestsDescription;
+
+  /// 온보딩 관심사 변경 가능 안내
+  ///
+  /// In ko, this message translates to:
+  /// **'선택한 관심사는 언제든 설정에서 바꿀 수 있어요'**
+  String get onboardingInterestsChangeInfo;
 }
 
 class _AppLocalizationsDelegate

@@ -569,4 +569,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get btnComplete => 'Complete';
+
+  @override
+  String get onboardingGenderDescription =>
+      'Used for personalized recommendations\nYou can skip if you want';
+
+  @override
+  String get onboardingInterestsDescription =>
+      'Select 3-10 interests for better recommendations';
+
+  @override
+  String get onboardingInterestsChangeInfo =>
+      'You can change your interests anytime in settings';
 }

@@ -979,5 +979,20 @@
   "btnComplete": "Complete",
   "@btnComplete": {
     "description": "Complete button (onboarding final step)"
+  },
+
+  "onboardingGenderDescription": "Used for personalized recommendations\nYou can skip if you want",
+  "@onboardingGenderDescription": {
+    "description": "Gender selection purpose description in onboarding"
+  },
+
+  "onboardingInterestsDescription": "Select 3-10 interests for better recommendations",
+  "@onboardingInterestsDescription": {
+    "description": "Interest selection count guidance in onboarding"
+  },
+
+  "onboardingInterestsChangeInfo": "You can change your interests anytime in settings",
+  "@onboardingInterestsChangeInfo": {
+    "description": "Interest change availability notice in onboarding"
   }
 }

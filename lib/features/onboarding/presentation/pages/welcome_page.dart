@@ -50,7 +50,7 @@ class WelcomePage extends ConsumerWidget {
       ),
       // SafeArea를 제거하여 상단부터 전체 화면 사용
       child: Padding(
-        padding: AppSpacing.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -97,13 +97,13 @@ class WelcomePage extends ConsumerWidget {
                       // TODO: 튜토리얼 화면으로 이동
                     },
                     style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 48),
+                      minimumSize: Size(double.infinity, 48.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppRadius.circle),
                       ),
                       side: BorderSide(
                         color: AppColors.gradientMiddle, // #5325CB - 선명한 보라 테두리
-                        width: 2,
+                        width: 2.w,
                       ),
                     ),
                     child: Text(

@@ -36,7 +36,7 @@ class _GenderPageState extends State<GenderPage> {
     final l10n = AppLocalizations.of(context);
 
     return Padding(
-      padding: AppSpacing.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -55,9 +55,9 @@ class _GenderPageState extends State<GenderPage> {
           // 제목-설명 간격
           AppSpacing.verticalSpaceSM,
 
-          // 설명 (제목 바로 아래)
+          // 설명 (제목 바로 아래, 국제화 적용)
           Text(
-            '맞춤 추천을 위해 사용돼요\n선택하지 않아도 괜찮아요',
+            l10n.onboardingGenderDescription,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.onboardingDescription, // #130537 - 진한 남보라
             ),

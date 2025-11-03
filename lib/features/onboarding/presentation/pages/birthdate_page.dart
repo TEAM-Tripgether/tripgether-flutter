@@ -211,7 +211,7 @@ class _BirthdatePageState extends State<BirthdatePage> {
     final isValid = _isValidDate();
 
     return Padding(
-      padding: AppSpacing.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

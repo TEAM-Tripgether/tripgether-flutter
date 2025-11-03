@@ -561,4 +561,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get btnComplete => '완료하기';
+
+  @override
+  String get onboardingGenderDescription => '맞춤 추천을 위해 사용돼요\n선택하지 않아도 괜찮아요';
+
+  @override
+  String get onboardingInterestsDescription =>
+      '최소 3개, 최대 10개를 선택하면 맞춤 추천 정확도가 높아져요';
+
+  @override
+  String get onboardingInterestsChangeInfo => '선택한 관심사는 언제든 설정에서 바꿀 수 있어요';
 }

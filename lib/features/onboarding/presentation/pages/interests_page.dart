@@ -137,29 +137,29 @@ class _InterestsPageState extends State<InterestsPage> {
 
             // 드롭다운 컨테이너
             Positioned(
-              top: buttonPosition.dy + buttonSize.height + 8, // 버튼 아래 8px
-              left: 24, // 화면 좌측 패딩
-              right: 24, // 화면 우측 패딩
+              top: buttonPosition.dy + buttonSize.height + AppSpacing.sm, // 버튼 아래 8.h
+              left: AppSpacing.xxl, // 화면 좌측 패딩 24.w
+              right: AppSpacing.xxl, // 화면 우측 패딩 24.w
               child: Material(
                 elevation: 4,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.allLarge,
                 color: AppColors.surface,
                 child: Container(
-                  padding: AppSpacing.cardPadding, // 24 (좌우상하)
+                  padding: AppSpacing.cardPadding, // 16 (좌우상하)
                   decoration: BoxDecoration(
                     color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.allLarge,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 8,
+                        color: AppColors.shadowLight,
+                        blurRadius: AppSpacing.sm,
                         offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                   child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
                     children: category.items.map((item) {
                       final isSelected = _selectedInterests.contains(item);
                       return InterestChip(
@@ -194,7 +194,7 @@ class _InterestsPageState extends State<InterestsPage> {
     final isValid = selectedCount >= 3 && selectedCount <= 10;
 
     return Padding(
-      padding: AppSpacing.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -227,9 +227,9 @@ class _InterestsPageState extends State<InterestsPage> {
           // 제목-설명 간격
           AppSpacing.verticalSpaceSM,
 
-          // 설명 (제목 바로 아래)
+          // 설명 (제목 바로 아래, 국제화 적용)
           Text(
-            '최소 3개, 최대 10개를 선택하면 맞춤 추천 정확도가 높아져요',
+            l10n.onboardingInterestsDescription,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.onboardingDescription, // #130537 - 진한 남보라
             ),
@@ -288,9 +288,9 @@ class _InterestsPageState extends State<InterestsPage> {
             ),
           ),
 
-          // 안내 문구 (버튼 위)
+          // 안내 문구 (버튼 위, 국제화 적용)
           Text(
-            '선택한 관심사는 언제든 설정에서 바꿀 수 있어요',
+            l10n.onboardingInterestsChangeInfo,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
