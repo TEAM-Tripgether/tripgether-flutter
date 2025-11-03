@@ -1,11 +1,39 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-03T05:08:01Z",
-    "currentVersion": "1.1.4",
+    "lastUpdated": "2025-11-03T06:19:45Z",
+    "currentVersion": "1.1.5",
     "projectType": "flutter",
-    "totalReleases": 20
+    "totalReleases": 21
   },
   "releases": [
+    {
+      "version": "1.1.5",
+      "project_type": "flutter",
+      "date": "2025-11-03",
+      "pr_number": 57,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트 v1.1.5\n\n\nDocumentation\n\n프로필 업데이트 API 관련 문서 추가\n\n\n\nBug Fixes\n\n생년월일 입력 시 키보드 조작성 개선\n별명 입력 시 키보드 자동 해제 추가\n\n\n\nChores\n\n앱 버전을 1.1.5로 업데이트",
+      "parsed_changes": {
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "프로필 업데이트 API 관련 문서 추가"
+          ]
+        },
+        "bug_fixes": {
+          "title": "Bug Fixes",
+          "items": [
+            "생년월일 입력 시 키보드 조작성 개선",
+            "별명 입력 시 키보드 자동 해제 추가"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "앱 버전을 1.1.5로 업데이트"
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.4",
       "project_type": "flutter",

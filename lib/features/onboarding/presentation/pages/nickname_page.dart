@@ -53,10 +53,13 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
   void _handleNext() {
     // 1. 로컬 검증
     if (_controller.text.length >= 2 && _controller.text.length <= 10) {
-      // 2. onboardingProvider에 닉네임 저장
+      // 2. 키보드 내리기
+      FocusScope.of(context).unfocus();
+
+      // 3. onboardingProvider에 닉네임 저장
       ref.read(onboardingProvider.notifier).updateNickname(_controller.text);
 
-      // 3. 다음 페이지로 이동
+      // 4. 다음 페이지로 이동
       widget.onNext();
     }
   }

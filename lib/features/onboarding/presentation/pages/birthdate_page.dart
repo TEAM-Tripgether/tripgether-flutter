@@ -44,11 +44,14 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
   );
   final List<FocusNode> _focusNodes = List.generate(8, (_) => FocusNode());
 
-  /// KeyboardListener용 FocusNode (8개 필드 각각에 하나씩)
+  /// 물리 키보드 감지를 위한 FocusNode (KeyboardListener용)
   final List<FocusNode> _keyboardFocusNodes = List.generate(
     8,
     (_) => FocusNode(),
   );
+
+  /// 모바일 키보드 Backspace 감지를 위한 이전 값 추적
+  final List<String> _previousValues = List.generate(8, (_) => '');
 
   @override
   void initState() {
@@ -131,6 +134,9 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
 
   void _handleNext() {
     if (_isValidDate()) {
+      // 키보드 내리기
+      FocusScope.of(context).unfocus();
+
       // YYYY-MM-DD 형식으로 변환
       final year =
           _controllers[0].text +
@@ -153,19 +159,21 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
   ///
   /// OnboardingTextField를 사용하여 일관된 스타일 적용
   /// Backspace 개선: 빈 칸에서 Backspace → 이전 칸 내용 삭제 + 포커스 이동
+  /// 모바일 키보드와 물리 키보드 모두 지원
   ///
   /// [index] TextField의 인덱스 (0~7)
   Widget _buildDateInputField(int index) {
     return KeyboardListener(
-      focusNode: _keyboardFocusNodes[index], // ✅ 재사용 가능한 FocusNode 사용
+      focusNode: _keyboardFocusNodes[index],
       onKeyEvent: (event) {
-        // Backspace 키 감지
+        // 물리 키보드 Backspace 감지
         if (event is KeyDownEvent &&
             event.logicalKey == LogicalKeyboardKey.backspace) {
           // 현재 필드가 비어있고 첫 번째 필드가 아닌 경우
           if (_controllers[index].text.isEmpty && index > 0) {
             // 이전 필드 내용 삭제
             _controllers[index - 1].clear();
+            _previousValues[index - 1] = '';
             // 이전 필드로 포커스 이동
             _focusNodes[index - 1].requestFocus();
             setState(() {});
@@ -185,6 +193,22 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
         ),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         onChanged: (value) {
+          // 모바일 키보드 Backspace 감지
+          // 현재 값이 비어있고, 이전에 값이 있었으며, 첫 번째 필드가 아닌 경우
+          if (value.isEmpty && _previousValues[index].isNotEmpty && index > 0) {
+            // 이전 필드 내용 삭제
+            _controllers[index - 1].clear();
+            _previousValues[index - 1] = '';
+            // 이전 필드로 포커스 이동
+            _focusNodes[index - 1].requestFocus();
+            _previousValues[index] = '';
+            setState(() {});
+            return;
+          }
+
+          // 이전 값 업데이트
+          _previousValues[index] = value;
+
           if (value.isNotEmpty) {
             // 중간 값 수정 시: 기존 값들을 뒤로 밀어내기
             // 예: 1998 12 02 에서 12의 1을 1로 수정하면
@@ -205,11 +229,13 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
               i++
             ) {
               _controllers[index + 1 + i].text = remainingValues[i];
+              _previousValues[index + 1 + i] = remainingValues[i];
             }
 
             // 3. 남은 칸들은 비우기
             for (int i = index + 1 + remainingValues.length; i < 8; i++) {
               _controllers[i].clear();
+              _previousValues[i] = '';
             }
 
             // 4. 자동 포커스 이동
