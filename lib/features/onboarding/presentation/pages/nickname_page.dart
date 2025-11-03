@@ -70,82 +70,89 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
     final isValid =
         _controller.text.length >= 2 && _controller.text.length <= 10;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // 상단 여백 (위로 올림)
-          AppSpacing.verticalSpaceHuge,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        // 빈 공간 클릭 시 키보드 포커스 해제
+        FocusScope.of(context).unfocus();
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // 상단 여백 (위로 올림)
+            AppSpacing.verticalSpaceHuge,
 
-          // 제목 (국제화 적용)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.onboardingNicknamePrompt,
-                style: AppTextStyles.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
+            // 제목 (국제화 적용)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.onboardingNicknamePrompt,
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
+                  ),
                 ),
-              ),
-              AppSpacing.horizontalSpace(4),
-              Text(
-                '*',
-                style: AppTextStyles.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.error,
+                AppSpacing.horizontalSpace(4),
+                Text(
+                  '*',
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.error,
+                  ),
                 ),
-              ),
-            ],
-          ),
-
-          // 제목-설명 간격
-          AppSpacing.verticalSpaceSM,
-
-          // 설명 (제목 바로 아래)
-          Text(
-            '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요',
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.onboardingDescription, // #130537 - 진한 남보라
+              ],
             ),
-            textAlign: TextAlign.center,
-          ),
 
-          // 입력 필드를 중앙에 배치하기 위한 여백
-          const Spacer(),
+            // 제목-설명 간격
+            AppSpacing.verticalSpaceSM,
 
-          // 입력 필드
-          OnboardingTextField(
-            controller: _controller,
-            hintText: '닉네임을 입력하세요',
-            maxLength: 10,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodyLarge,
-          ),
+            // 설명 (제목 바로 아래)
+            Text(
+              '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.onboardingDescription, // #130537 - 진한 남보라
+              ),
+              textAlign: TextAlign.center,
+            ),
 
-          // 입력-버튼 간격
-          const Spacer(),
+            // 입력 필드를 중앙에 배치하기 위한 여백
+            const Spacer(),
 
-          // 계속하기 버튼 (국제화 적용)
-          PrimaryButton(
-            text: l10n.btnContinue,
-            onPressed: isValid ? _handleNext : null,
-            isFullWidth: true,
-            // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
-            style: ButtonStyle(
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.circle),
+            // 입력 필드
+            OnboardingTextField(
+              controller: _controller,
+              hintText: '닉네임을 입력하세요',
+              maxLength: 10,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyLarge,
+            ),
+
+            // 입력-버튼 간격
+            const Spacer(),
+
+            // 계속하기 버튼 (국제화 적용)
+            PrimaryButton(
+              text: l10n.btnContinue,
+              onPressed: isValid ? _handleNext : null,
+              isFullWidth: true,
+              // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
+              style: ButtonStyle(
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.circle),
+                  ),
                 ),
               ),
             ),
-          ),
 
-          // 하단 여백 (버튼을 조금 위로)
-          AppSpacing.verticalSpace60,
-        ],
+            // 하단 여백 (버튼을 조금 위로)
+            AppSpacing.verticalSpace60,
+          ],
+        ),
       ),
     );
   }
