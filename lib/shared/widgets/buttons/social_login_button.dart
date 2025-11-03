@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
@@ -69,10 +70,14 @@ class SocialLoginButton extends StatelessWidget {
     return ElevatedButton.styleFrom(
       backgroundColor: backgroundColor,
       foregroundColor: textColor,
-      elevation: AppElevation.none,
-      shadowColor: Colors.transparent,
+      elevation: AppElevation.high, // 그림자 효과 (3)
+      shadowColor: AppColors.shadow.withValues(
+        alpha: 0.25,
+      ), // 뚜렷한 검은색 그림자 (25%)
+      // 패딩: AppSpacing.buttonPaddingSmall 활용 (가로 16, 세로 12)
+      padding: AppSpacing.buttonPaddingSmall,
       shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.allLarge,
+        borderRadius: BorderRadius.circular(AppRadius.circle), // 완전한 pill 모양
         side: borderColor != null
             ? BorderSide(color: borderColor!, width: AppSizes.borderMedium)
             : BorderSide.none,
@@ -101,20 +106,27 @@ class SocialLoginButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(textColor),
                 ),
               )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            : Stack(
                 children: [
-                  // 아이콘이 있는 경우 표시
-                  if (icon != null) ...[icon!, SizedBox(width: AppSpacing.sm)],
-                  // 버튼 텍스트 (AppTextStyles 활용)
-                  Text(
-                    text,
-                    style: AppTextStyles.labelLarge.copyWith(
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.1,
-                      color: textColor,
+                  // 텍스트를 버튼 중앙에 배치
+                  Center(
+                    child: Text(
+                      text,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.1,
+                        color: textColor,
+                      ),
                     ),
                   ),
+                  // 아이콘을 왼쪽에 고정 배치 (약간의 패딩과 함께)
+                  if (icon != null)
+                    Positioned(
+                      left: AppSpacing.lg, // 16px 왼쪽 패딩
+                      top: 0,
+                      bottom: 0,
+                      child: Center(child: icon!),
+                    ),
                 ],
               ),
       ),

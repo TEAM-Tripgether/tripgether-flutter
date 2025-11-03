@@ -414,6 +414,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInWithGoogle => 'Sign in with Google';
 
   @override
+  String get signInWithKakao => 'Sign in with Kakao';
+
+  @override
+  String get signInWithNaver => 'Sign in with Naver';
+
+  @override
   String get signUpWithEmail => 'Sign up with Email';
 
   @override
@@ -474,9 +480,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Appropriate permission is required to use this feature.';
 
   @override
-  String get onboardingWelcomeTitle => 'Ready to go!';
-
-  @override
   String get onboardingWelcomeMessage =>
       'Start planning your special trip\nwith Tripgether ✈️';
 
@@ -531,4 +534,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noPopularCoursesYet => 'No popular courses yet';
+
+  @override
+  String get onboardingNicknamePrompt => 'Please set your name';
+
+  @override
+  String get onboardingGenderPrompt => 'Select your gender. (Optional)';
+
+  @override
+  String get genderMale => 'Male';
+
+  @override
+  String get genderFemale => 'Female';
+
+  @override
+  String get genderOther => 'Other';
+
+  @override
+  String get genderSkip => 'Skip';
+
+  @override
+  String onboardingWelcomeDescription(String userName) {
+    return 'All set! 🎉\nLet\'s start your local journey, $userName';
+  }
+
+  @override
+  String get snsPlaceExtractionTutorial => 'SNS Place Extraction Tutorial';
+
+  @override
+  String get btnContinue => 'Continue';
+
+  @override
+  String get btnComplete => 'Complete';
+
+  @override
+  String get onboardingGenderDescription =>
+      'Used for personalized recommendations\nYou can skip if you want';
+
+  @override
+  String get onboardingInterestsDescription =>
+      'Select 3-10 interests for better recommendations';
+
+  @override
+  String get onboardingInterestsChangeInfo =>
+      'You can change your interests anytime in settings';
+
+  @override
+  String onboardingWelcomeTitle(String nickname) {
+    return 'Welcome,\n$nickname!';
+  }
+
+  @override
+  String get onboardingWelcomeTitleFallback => 'Welcome!';
+
+  @override
+  String get defaultNickname => 'Traveler';
 }

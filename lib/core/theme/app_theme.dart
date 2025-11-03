@@ -81,7 +81,7 @@ class AppTheme {
           backgroundColor: AppColors.gradientMiddle, // #5325CB - 로그인 버튼 색상
           foregroundColor: AppColors.onPrimary,
           disabledBackgroundColor: AppColors.buttonDisabled,
-          disabledForegroundColor: AppColors.onPrimary.withValues(alpha: 0.38),
+          disabledForegroundColor: AppColors.onPrimary, // 투명도 제거 - 불투명 흰색
           elevation: AppElevation.medium,
           shadowColor: AppColors.shadow.withValues(alpha: 0.15),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.allLarge),

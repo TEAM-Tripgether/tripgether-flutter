@@ -44,7 +44,8 @@ class GenderSelectionCard extends StatelessWidget {
             color: isSelected ? AppColors.primary : AppColors.outline,
             width: isSelected ? 2.w : 1.w,
           ),
-          borderRadius: BorderRadius.circular(12.r),
+          // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
+          borderRadius: BorderRadius.circular(AppRadius.circle),
         ),
         child: Center(
           child: Text(

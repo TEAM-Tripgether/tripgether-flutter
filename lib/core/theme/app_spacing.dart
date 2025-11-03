@@ -100,6 +100,15 @@ class AppSpacing {
   /// 초대형 수직 간격: 40
   static SizedBox get verticalSpaceHuge => SizedBox(height: huge);
 
+  /// 특대 수직 간격: 60 (Divider 패딩 등)
+  static SizedBox get verticalSpace60 => SizedBox(height: 60.h);
+
+  /// 특대 수직 간격: 80 (로고-버튼 간격)
+  static SizedBox get verticalSpace80 => SizedBox(height: 80.h);
+
+  /// 초특대 수직 간격: 120 (상단 여백)
+  static SizedBox get verticalSpace120 => SizedBox(height: 120.h);
+
   // ==================== 수평 간격 (SizedBox용) ====================
   /// 최소 수평 간격: 4
   static SizedBox get horizontalSpaceXS => SizedBox(width: xs);
@@ -313,10 +322,18 @@ class AppSizes {
   /// 두꺼운 테두리: 3
   static const double borderThick = 3;
 
+  // ==================== Component Sizes ====================
+
+  /// 로고 큰 크기: 240 (로그인 화면)
+  static double get logoLarge => 240.w;
+
+  /// Divider 얇은 두께: 1
+  static const double dividerThin = 1.0;
+
   // ==================== Component Heights ====================
 
-  /// 버튼 최소 높이: 48
-  static double get buttonHeight => 48.h;
+  /// 버튼 최소 높이: 54
+  static double get buttonHeight => 54.h;
 
   /// 텍스트 버튼 최소 높이: 40
   static double get textButtonHeight => 40.h;
