@@ -244,9 +244,9 @@ class _BirthdatePageState extends State<BirthdatePage> {
           // 제목-설명 간격
           AppSpacing.verticalSpaceSM,
 
-          // 설명 (제목 바로 아래)
+          // 설명 (제목 바로 아래, 국제화 적용)
           Text(
-            '다른 유저에게는 보이지 않아요\n연령별 콘텐츠 설정 및 추천에만 사용돼요',
+            l10n.onboardingBirthdateDescription,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.onboardingDescription, // #130537 - 진한 남보라
             ),
