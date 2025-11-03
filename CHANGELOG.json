@@ -1,11 +1,32 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-03T06:19:45Z",
-    "currentVersion": "1.1.5",
+    "lastUpdated": "2025-11-03T07:14:28Z",
+    "currentVersion": "1.1.6",
     "projectType": "flutter",
-    "totalReleases": 21
+    "totalReleases": 22
   },
   "releases": [
+    {
+      "version": "1.1.6",
+      "project_type": "flutter",
+      "date": "2025-11-03",
+      "pr_number": 59,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n버그 수정\n\n날짜 입력 필드에서 백스페이스 및 중간 입력 처리 개선\n\n\n\nChores\n\n버전을 1.1.6으로 업데이트",
+      "parsed_changes": {
+        "버그_수정": {
+          "title": "버그 수정",
+          "items": [
+            "날짜 입력 필드에서 백스페이스 및 중간 입력 처리 개선"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전을 1.1.6으로 업데이트"
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.5",
       "project_type": "flutter",
