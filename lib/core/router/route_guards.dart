@@ -73,6 +73,7 @@ class RouteGuard {
         return AppRoutes.home;
       }
       // 스플래시 화면은 자체적으로 네비게이션 처리하므로 그대로 허용
+      // 온보딩 화면은 인증된 상태에서도 접근 가능 (최초 로그인 시)
       // 공개 경로는 그대로 허용
       return null;
     }

@@ -59,69 +59,90 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      // AppBar: Welcome 페이지(마지막 페이지)에서는 숨김
-      appBar: _currentPage == 4
-          ? null // Welcome 페이지에서는 AppBar 없음
-          : PreferredSize(
-              preferredSize: Size.fromHeight(60.h),
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                // 왼쪽: 뒤로가기 버튼
-                leading: _currentPage > 0
-                    ? IconButton(
-                        icon: const Icon(Icons.arrow_back_ios),
-                        onPressed: () {
-                          _pageController.previousPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        },
-                        iconSize: 24.w,
-                        color: AppColors.textPrimary,
-                        padding: EdgeInsets.zero,
-                      )
-                    : IconButton(
-                        icon: const Icon(Icons.arrow_back_ios),
-                        onPressed: () => Navigator.pop(context),
-                        iconSize: 24.w,
-                        color: AppColors.textPrimary,
-                        padding: EdgeInsets.zero,
-                      ),
-                // 중앙: 페이지 인디케이터
-                title: OnboardingPageIndicator(
-                  controller: _pageController,
-                  count: 5,
+    return PopScope(
+      // 시스템 뒤로가기 제어 (Android 물리 버튼, iOS 제스처)
+      canPop: false, // 시스템 pop을 직접 제어
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return; // 이미 pop되었으면 무시
+
+        if (_currentPage > 0) {
+          // 이후 페이지: 이전 온보딩 페이지로 이동
+          _pageController.previousPage(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+        // 첫 페이지(_currentPage == 0)에서는 아무 동작도 하지 않음 (차단)
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.surface,
+        // AppBar: Welcome 페이지(마지막 페이지)에서는 숨김
+        appBar: _currentPage == 4
+            ? null // Welcome 페이지에서는 AppBar 없음
+            : PreferredSize(
+                preferredSize: Size.fromHeight(60.h),
+                child: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  // 왼쪽: 뒤로가기 버튼 (첫 페이지에서는 숨김)
+                  // 첫 페이지에서 뒤로가기 시 Navigator.pop()이 호출되면
+                  // GoRouter 스택이 비어서 에러 발생 (context.go()로 진입했기 때문)
+                  leading: _currentPage > 0
+                      ? IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
+                          onPressed: () {
+                            _pageController.previousPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          iconSize: 24.w,
+                          color: AppColors.textPrimary,
+                          padding: EdgeInsets.zero,
+                        )
+                      : null, // 첫 페이지에서는 뒤로가기 버튼 없음
+                  // 중앙: 페이지 인디케이터
+                  title: OnboardingPageIndicator(
+                    controller: _pageController,
+                    count: 5,
+                  ),
+                  centerTitle: true,
                 ),
-                centerTitle: true,
               ),
+        // PageView: SafeArea 제거 (AppBar가 자동으로 Safe Area 처리)
+        body: PageView(
+          controller: _pageController,
+          // 모든 스와이프 제스처 차단 - 버튼으로만 페이지 이동
+          physics: const NeverScrollableScrollPhysics(),
+          onPageChanged: (index) {
+            setState(() => _currentPage = index);
+          },
+          children: [
+            // 페이지 1: 닉네임 설정
+            NicknamePage(
+              onNext: _goToNextPage,
+              pageController: _pageController,
             ),
-      // PageView: SafeArea 제거 (AppBar가 자동으로 Safe Area 처리)
-      body: PageView(
-        controller: _pageController,
-        // 모든 스와이프 제스처 차단 - 버튼으로만 페이지 이동
-        physics: const NeverScrollableScrollPhysics(),
-        onPageChanged: (index) {
-          setState(() => _currentPage = index);
-        },
-        children: [
-          // 페이지 1: 닉네임 설정
-          NicknamePage(onNext: _goToNextPage, pageController: _pageController),
 
-          // 페이지 2: 생년월일 입력
-          BirthdatePage(onNext: _goToNextPage, pageController: _pageController),
+            // 페이지 2: 생년월일 입력
+            BirthdatePage(
+              onNext: _goToNextPage,
+              pageController: _pageController,
+            ),
 
-          // 페이지 3: 성별 선택
-          GenderPage(onNext: _goToNextPage, pageController: _pageController),
+            // 페이지 3: 성별 선택
+            GenderPage(onNext: _goToNextPage, pageController: _pageController),
 
-          // 페이지 4: 관심사 선택
-          InterestsPage(onNext: _goToNextPage, pageController: _pageController),
+            // 페이지 4: 관심사 선택
+            InterestsPage(
+              onNext: _goToNextPage,
+              pageController: _pageController,
+            ),
 
-          // 페이지 5: 완료 화면
-          const WelcomePage(),
-        ],
+            // 페이지 5: 완료 화면
+            const WelcomePage(),
+          ],
+        ),
       ),
     );
   }
