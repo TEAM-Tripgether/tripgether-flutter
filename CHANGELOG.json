@@ -1,11 +1,33 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-03T12:32:37Z",
-    "currentVersion": "1.1.7",
+    "lastUpdated": "2025-11-03T14:30:02Z",
+    "currentVersion": "1.1.8",
     "projectType": "flutter",
-    "totalReleases": 23
+    "totalReleases": 24
   },
   "releases": [
+    {
+      "version": "1.1.8",
+      "project_type": "flutter",
+      "date": "2025-11-03",
+      "pr_number": 63,
+      "raw_summary": "Summary by CodeRabbit\n\n\n새로운 기능\n\n입력 필드 외부 영역을 탭하면 키보드가 자동으로 닫힙니다.\n\n\n\n개선 사항\n\n생년월일 입력이 단일 필드에서 자동 형식 지정(YYYY / MM / DD)으로 간편해졌습니다.\n닉네임 입력 페이지의 사용자 인터페이스를 개선했습니다.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "입력 필드 외부 영역을 탭하면 키보드가 자동으로 닫힙니다."
+          ]
+        },
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "생년월일 입력이 단일 필드에서 자동 형식 지정(YYYY / MM / DD)으로 간편해졌습니다.",
+            "닉네임 입력 페이지의 사용자 인터페이스를 개선했습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.7",
       "project_type": "flutter",
