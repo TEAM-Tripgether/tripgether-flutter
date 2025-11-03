@@ -82,8 +82,11 @@ class LoginNotifier extends _$LoginNotifier {
   /// 2. 사용자가 Google 계정을 선택하고 권한 동의
   /// 3. 로그인 성공 시 사용자 정보 및 토큰 획득
   ///
-  /// Returns: 로그인 성공 시 true, 실패 또는 취소 시 false
-  Future<bool> loginWithGoogle() async {
+  /// Returns: (성공 여부, 최초 로그인 여부)
+  /// - (true, true): 최초 로그인 성공 → 온보딩 필요
+  /// - (true, false): 기존 사용자 로그인 성공 → 홈으로 이동
+  /// - (false, false): 로그인 실패 또는 취소
+  Future<(bool success, bool isFirstLogin)> loginWithGoogle() async {
     debugPrint('[LoginProvider] 🔄 구글 로그인 시작...');
 
     try {
@@ -95,8 +98,8 @@ class LoginNotifier extends _$LoginNotifier {
       // 사용자가 로그인을 취소한 경우
       if (googleUser == null) {
         debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨');
-        // 취소는 false 반환
-        return false;
+        // 취소: (false, false) 반환
+        return (false, false);
       }
 
       // 2. 구글 인증 정보 가져오기 (accessToken, idToken)
@@ -167,10 +170,11 @@ class LoginNotifier extends _$LoginNotifier {
 
       debugPrint('[LoginProvider] ✅ 구글 로그인 성공!');
       debugPrint('  👤 사용자: ${googleUser.email}');
-      debugPrint('  🏠 홈 화면으로 이동 예정');
+      debugPrint('  🆕 최초 로그인 여부: ${authResponse.isFirstLogin}');
+      debugPrint('  🏠 이동할 화면: ${authResponse.isFirstLogin ? "온보딩" : "홈"}');
 
-      // 성공 상태는 UserNotifier가 관리
-      return true;
+      // 성공 상태와 최초 로그인 여부 반환
+      return (true, authResponse.isFirstLogin);
     } catch (e) {
       // 취소 예외 감지: 사용자가 로그인을 취소한 경우
       final errorString = e.toString();
@@ -178,13 +182,13 @@ class LoginNotifier extends _$LoginNotifier {
           errorString.contains('cancelled') ||
           errorString.contains('GoogleSignInExceptionCode.canceled')) {
         debugPrint('[LoginProvider] ℹ️ 구글 로그인 취소됨 (예외 경로)');
-        // 취소는 false 반환
-        return false;
+        // 취소: (false, false) 반환
+        return (false, false);
       }
 
-      // 실제 에러: false 반환
+      // 실제 에러: (false, false) 반환
       debugPrint('[LoginProvider] ❌ 구글 로그인 실패: $e');
-      return false;
+      return (false, false);
     }
   }
 
