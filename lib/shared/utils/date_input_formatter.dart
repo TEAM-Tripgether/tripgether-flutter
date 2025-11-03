@@ -38,6 +38,7 @@ class DateInputFormatter extends TextInputFormatter {
 
     // 4. YYYY / MM / DD 형식으로 포맷팅
     String formatted = '';
+
     for (int i = 0; i < trimmed.length; i++) {
       // 연도(4자리) 이후에 " / " 추가
       if (i == 4) {
@@ -50,11 +51,57 @@ class DateInputFormatter extends TextInputFormatter {
       formatted += trimmed[i];
     }
 
-    // 5. 커서를 항상 끝으로 이동 (자연스러운 입력 경험)
+    // 5. 커서 위치 계산 (중간 편집 지원)
+    int cursorPosition;
+
+    // 이전 값과 비교하여 입력/삭제 판단
+    final oldDigits = oldValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (trimmed.length > oldDigits.length) {
+      // 입력: 끝으로 이동
+      cursorPosition = formatted.length;
+    } else if (trimmed.length < oldDigits.length) {
+      // 삭제: 현재 커서 위치 유지 (슬래시 고려)
+      final oldCursor = oldValue.selection.baseOffset;
+      final digitsBefore = oldValue.text
+          .substring(0, oldCursor)
+          .replaceAll(RegExp(r'[^0-9]'), '')
+          .length;
+
+      // 삭제된 숫자 개수만큼 커서 이동
+      cursorPosition = _calculateCursorPosition(trimmed, digitsBefore - 1);
+    } else {
+      // 길이 동일 (중간 수정): 끝으로 이동
+      cursorPosition = formatted.length;
+    }
+
     return TextEditingValue(
       text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
+      selection: TextSelection.collapsed(offset: cursorPosition),
     );
+  }
+
+  /// 숫자 인덱스를 기반으로 포맷팅된 텍스트의 커서 위치 계산
+  ///
+  /// [digits] 숫자만 있는 문자열 (예: "19980215")
+  /// [digitIndex] 숫자 인덱스 (예: 4 = "1998"의 끝)
+  /// Returns: 포맷팅된 문자열에서의 커서 위치 (슬래시 포함)
+  int _calculateCursorPosition(String digits, int digitIndex) {
+    if (digitIndex < 0) return 0;
+    if (digitIndex >= digits.length) {
+      // 끝을 넘어가면 포맷팅된 전체 길이 계산
+      int position = digits.length;
+      if (digits.length > 4) position += 3; // " / " 추가
+      if (digits.length > 6) position += 3; // " / " 추가
+      return position;
+    }
+
+    // digitIndex까지의 실제 위치 계산
+    int position = digitIndex + 1;
+    if (digitIndex >= 4) position += 3; // YYYY 이후 " / "
+    if (digitIndex >= 6) position += 3; // MM 이후 " / "
+
+    return position;
   }
 
   /// 포맷팅된 텍스트에서 숫자만 추출하는 헬퍼 메서드

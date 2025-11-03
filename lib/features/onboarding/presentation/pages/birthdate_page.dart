@@ -48,6 +48,12 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
   /// 입력 필드 포커스 관리
   final FocusNode _focusNode = FocusNode();
 
+  /// 검증 결과 캐싱 (성능 최적화)
+  /// setState()가 호출될 때마다 _isValidDate()가 실행되는데,
+  /// 동일한 텍스트에 대해 반복 검증하는 것을 방지
+  String _lastValidatedText = '';
+  bool _cachedValidation = false;
+
   @override
   void initState() {
     super.initState();
@@ -68,16 +74,29 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
   ///
   /// YYYY / MM / DD 형식의 입력을 검증하고, 만 14세 이상인지 확인합니다.
   ///
+  /// **성능 최적화**: 동일한 텍스트에 대해 캐시된 결과 반환
+  ///
   /// Returns: 유효한 날짜이고 만 14세 이상이면 true, 아니면 false
   bool _isValidDate() {
+    final currentText = _birthdateController.text;
+
+    // 캐시된 결과 재사용 (동일한 텍스트면 검증 생략)
+    if (currentText == _lastValidatedText) {
+      return _cachedValidation;
+    }
+
+    // 새로운 검증 수행
+    _lastValidatedText = currentText;
+
     try {
-      // 1. 포맷팅된 텍스트에서 숫자만 추출
-      final digits = DateInputFormatter.getDigitsOnly(
-        _birthdateController.text,
-      );
+      // 1. 포맷팅된 텍스트에서 숫자만 추출 (슬래시와 공백 제거)
+      final digits = currentText.replaceAll(' / ', '');
 
       // 2. 8자리가 아니면 불완전한 입력
-      if (digits.length != 8) return false;
+      if (digits.length != 8) {
+        _cachedValidation = false;
+        return false;
+      }
 
       // 3. 연도, 월, 일 파싱
       final year = int.parse(digits.substring(0, 4));
@@ -85,8 +104,14 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
       final day = int.parse(digits.substring(6, 8));
 
       // 4. 기본 범위 검증
-      if (month < 1 || month > 12) return false;
-      if (day < 1 || day > 31) return false;
+      if (month < 1 || month > 12) {
+        _cachedValidation = false;
+        return false;
+      }
+      if (day < 1 || day > 31) {
+        _cachedValidation = false;
+        return false;
+      }
 
       // 5. DateTime 생성 시도 (존재하지 않는 날짜는 예외 발생)
       final birthDate = DateTime(year, month, day);
@@ -95,11 +120,13 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
       if (birthDate.year != year ||
           birthDate.month != month ||
           birthDate.day != day) {
+        _cachedValidation = false;
         return false;
       }
 
       // 7. 미래 날짜 방지
       if (birthDate.isAfter(DateTime.now())) {
+        _cachedValidation = false;
         return false;
       }
 
@@ -112,8 +139,10 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
 
       final actualAge = hasHadBirthdayThisYear ? age : age - 1;
 
-      return actualAge >= 14;
+      _cachedValidation = actualAge >= 14;
+      return _cachedValidation;
     } catch (e) {
+      _cachedValidation = false;
       return false;
     }
   }
@@ -125,9 +154,8 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
       FocusScope.of(context).unfocus();
 
       // 숫자만 추출하여 YYYY-MM-DD 형식으로 변환
-      final digits = DateInputFormatter.getDigitsOnly(
-        _birthdateController.text,
-      );
+      // 최적화: replaceAll(' / ', '')이 정규식보다 빠름
+      final digits = _birthdateController.text.replaceAll(' / ', '');
       final birthdate = DateInputFormatter.toIsoFormat(digits);
 
       // onboardingProvider에 생년월일 저장
