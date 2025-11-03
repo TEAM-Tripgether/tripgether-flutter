@@ -54,25 +54,25 @@ class DateInputFormatter extends TextInputFormatter {
     // 5. 커서 위치 계산 (중간 편집 지원)
     int cursorPosition;
 
-    // 이전 값과 비교하여 입력/삭제 판단
+    // 이전 커서 위치에서 숫자 개수 계산
+    final oldCursor = oldValue.selection.baseOffset;
     final oldDigits = oldValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    final digitsBeforeCursor = oldValue.text
+        .substring(0, oldCursor)
+        .replaceAll(RegExp(r'[^0-9]'), '')
+        .length;
 
     if (trimmed.length > oldDigits.length) {
-      // 입력: 끝으로 이동
+      // 입력: 끝으로 이동 (연속 입력)
       cursorPosition = formatted.length;
     } else if (trimmed.length < oldDigits.length) {
-      // 삭제: 현재 커서 위치 유지 (슬래시 고려)
-      final oldCursor = oldValue.selection.baseOffset;
-      final digitsBefore = oldValue.text
-          .substring(0, oldCursor)
-          .replaceAll(RegExp(r'[^0-9]'), '')
-          .length;
-
-      // 삭제된 숫자 개수만큼 커서 이동
-      cursorPosition = _calculateCursorPosition(trimmed, digitsBefore - 1);
+      // 삭제: 삭제한 위치에 커서 유지
+      // digitsBeforeCursor - 1 = 삭제 후 커서 앞의 숫자 개수
+      final newDigitIndex = digitsBeforeCursor - 1;
+      cursorPosition = _calculateCursorPosition(trimmed, newDigitIndex);
     } else {
-      // 길이 동일 (중간 수정): 끝으로 이동
-      cursorPosition = formatted.length;
+      // 길이 동일 (교체): 원래 커서 위치 유지
+      cursorPosition = _calculateCursorPosition(trimmed, digitsBeforeCursor);
     }
 
     return TextEditingValue(
