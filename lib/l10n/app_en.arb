@@ -829,11 +829,6 @@
     "description": "General permission error message"
   },
 
-  "onboardingWelcomeTitle": "Ready to go!",
-  "@onboardingWelcomeTitle": {
-    "description": "Onboarding welcome screen title"
-  },
-
   "onboardingWelcomeMessage": "Start planning your special trip\nwith Tripgether ✈️",
   "@onboardingWelcomeMessage": {
     "description": "Onboarding welcome screen message"
@@ -994,5 +989,26 @@
   "onboardingInterestsChangeInfo": "You can change your interests anytime in settings",
   "@onboardingInterestsChangeInfo": {
     "description": "Interest change availability notice in onboarding"
+  },
+
+  "onboardingWelcomeTitle": "Welcome,\n{nickname}!",
+  "@onboardingWelcomeTitle": {
+    "description": "Onboarding completion welcome message (with nickname)",
+    "placeholders": {
+      "nickname": {
+        "type": "String",
+        "example": "TravelLover"
+      }
+    }
+  },
+
+  "onboardingWelcomeTitleFallback": "Welcome!",
+  "@onboardingWelcomeTitleFallback": {
+    "description": "Onboarding completion welcome message (without nickname)"
+  },
+
+  "defaultNickname": "Traveler",
+  "@defaultNickname": {
+    "description": "Default placeholder before nickname input in onboarding"
   }
 }

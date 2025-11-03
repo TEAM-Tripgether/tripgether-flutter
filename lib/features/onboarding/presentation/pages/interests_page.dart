@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -7,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../constants/interest_categories.dart';
 import '../widgets/category_dropdown_button.dart';
 import '../widgets/interest_chip.dart';
+import '../../providers/onboarding_provider.dart';
 
 /// 관심사 선택 페이지 (페이지 4/5)
 ///
@@ -17,9 +19,9 @@ import '../widgets/interest_chip.dart';
 /// - 기존: Accordion 방식 (한 번에 하나씩 펼침)
 /// - 신규: Wrap 레이아웃 (화면 너비에 맞춰 자동 배치) + BottomSheet
 ///
-/// 로컬 상태로 관리:
-/// - _selectedInterests: 선택된 관심사 Set<String
-class InterestsPage extends StatefulWidget {
+/// **Provider 연동**:
+/// - onboardingProvider에 관심사 목록 저장
+class InterestsPage extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final PageController pageController;
 
@@ -30,10 +32,10 @@ class InterestsPage extends StatefulWidget {
   });
 
   @override
-  State<InterestsPage> createState() => _InterestsPageState();
+  ConsumerState<InterestsPage> createState() => _InterestsPageState();
 }
 
-class _InterestsPageState extends State<InterestsPage> {
+class _InterestsPageState extends ConsumerState<InterestsPage> {
   // 로컬 상태: 선택된 관심사들
   final Set<String> _selectedInterests = {};
 
@@ -49,6 +51,10 @@ class _InterestsPageState extends State<InterestsPage> {
   @override
   void initState() {
     super.initState();
+    // onboardingProvider에서 저장된 관심사 불러오기
+    final savedInterests = ref.read(onboardingProvider).interests;
+    _selectedInterests.addAll(savedInterests);
+
     // 각 카테고리에 GlobalKey 할당
     for (var category in interestCategories) {
       _buttonKeys[category.id] = GlobalKey();
@@ -302,7 +308,17 @@ class _InterestsPageState extends State<InterestsPage> {
           // 완료하기 버튼 (국제화 적용)
           PrimaryButton(
             text: l10n.btnComplete,
-            onPressed: isValid ? widget.onNext : null,
+            onPressed: isValid
+                ? () {
+                    // onboardingProvider에 관심사 저장
+                    ref
+                        .read(onboardingProvider.notifier)
+                        .updateInterests(_selectedInterests.toList());
+
+                    // 다음 페이지로 이동 (welcome_page)
+                    widget.onNext();
+                  }
+                : null,
             isFullWidth: true,
             // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
             style: ButtonStyle(

@@ -956,12 +956,6 @@ abstract class AppLocalizations {
   /// **'이 기능을 사용하려면 적절한 권한이 필요합니다.'**
   String get permissionGeneralRequired;
 
-  /// 온보딩 환영 화면 제목
-  ///
-  /// In ko, this message translates to:
-  /// **'준비 완료!'**
-  String get onboardingWelcomeTitle;
-
   /// 온보딩 환영 화면 메시지
   ///
   /// In ko, this message translates to:
@@ -1141,6 +1135,24 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'선택한 관심사는 언제든 설정에서 바꿀 수 있어요'**
   String get onboardingInterestsChangeInfo;
+
+  /// 온보딩 완료 환영 메시지 (닉네임 포함)
+  ///
+  /// In ko, this message translates to:
+  /// **'{nickname}님,\n환영해요!'**
+  String onboardingWelcomeTitle(String nickname);
+
+  /// 온보딩 완료 환영 메시지 (닉네임 없을 때)
+  ///
+  /// In ko, this message translates to:
+  /// **'환영해요!'**
+  String get onboardingWelcomeTitleFallback;
+
+  /// 온보딩 닉네임 입력 전 기본 플레이스홀더
+  ///
+  /// In ko, this message translates to:
+  /// **'여행러버'**
+  String get defaultNickname;
 }
 
 class _AppLocalizationsDelegate

@@ -480,9 +480,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Appropriate permission is required to use this feature.';
 
   @override
-  String get onboardingWelcomeTitle => 'Ready to go!';
-
-  @override
   String get onboardingWelcomeMessage =>
       'Start planning your special trip\nwith Tripgether ✈️';
 
@@ -581,4 +578,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingInterestsChangeInfo =>
       'You can change your interests anytime in settings';
+
+  @override
+  String onboardingWelcomeTitle(String nickname) {
+    return 'Welcome,\n$nickname!';
+  }
+
+  @override
+  String get onboardingWelcomeTitleFallback => 'Welcome!';
+
+  @override
+  String get defaultNickname => 'Traveler';
 }

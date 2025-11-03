@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../widgets/gender_selection_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../providers/onboarding_provider.dart';
 
 /// 성별 선택 페이지 (페이지 3/5)
 ///
 /// 남성, 여성, 선택 안 함 중 선택할 수 있습니다.
 /// 선택 사항이므로 선택하지 않아도 다음으로 진행 가능합니다.
 ///
-/// 로컬 상태로 관리:
-/// - _selectedGender: 현재 선택된 성별 ('male', 'female', 'notSelected', null)
-class GenderPage extends StatefulWidget {
+/// **Provider 연동**:
+/// - onboardingProvider에 성별 저장 (MALE, FEMALE, NONE)
+class GenderPage extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final PageController pageController;
 
@@ -24,12 +26,22 @@ class GenderPage extends StatefulWidget {
   });
 
   @override
-  State<GenderPage> createState() => _GenderPageState();
+  ConsumerState<GenderPage> createState() => _GenderPageState();
 }
 
-class _GenderPageState extends State<GenderPage> {
+class _GenderPageState extends ConsumerState<GenderPage> {
   // 로컬 상태: 선택된 성별 ('male', 'female', 'notSelected', null)
   String? _selectedGender;
+
+  @override
+  void initState() {
+    super.initState();
+    // onboardingProvider에서 저장된 성별 불러오기
+    final savedGender = ref.read(onboardingProvider).gender;
+    if (savedGender != 'NONE') {
+      _selectedGender = savedGender.toLowerCase();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +109,22 @@ class _GenderPageState extends State<GenderPage> {
           PrimaryButton(
             text: l10n.btnContinue,
             // 성별을 선택해야만 활성화 (null이 아닐 때만)
-            onPressed: _selectedGender != null ? widget.onNext : null,
+            onPressed: _selectedGender != null
+                ? () {
+                    // onboardingProvider에 성별 저장
+                    final genderValue = _selectedGender == 'male'
+                        ? 'MALE'
+                        : _selectedGender == 'female'
+                            ? 'FEMALE'
+                            : 'NONE';
+                    ref
+                        .read(onboardingProvider.notifier)
+                        .updateGender(genderValue);
+
+                    // 다음 페이지로 이동
+                    widget.onNext();
+                  }
+                : null,
             isFullWidth: true,
             // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
             style: ButtonStyle(

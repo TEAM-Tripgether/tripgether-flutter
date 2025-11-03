@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/inputs/onboarding_text_field.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../providers/onboarding_provider.dart';
 
 /// 닉네임 설정 페이지 (페이지 1/5)
 ///
 /// 소셜 로그인에서 가져온 닉네임을 기본값으로 제공하며,
 /// 사용자가 수정할 수 있습니다 (2-10자).
-class NicknamePage extends StatefulWidget {
+///
+/// **Provider 연동**:
+/// - onboardingProvider에 닉네임 저장
+/// - welcome_page에서 저장된 닉네임으로 환영 메시지 표시
+class NicknamePage extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final PageController pageController;
 
@@ -21,17 +27,20 @@ class NicknamePage extends StatefulWidget {
   });
 
   @override
-  State<NicknamePage> createState() => _NicknamePageState();
+  ConsumerState<NicknamePage> createState() => _NicknamePageState();
 }
 
-class _NicknamePageState extends State<NicknamePage> {
+class _NicknamePageState extends ConsumerState<NicknamePage> {
   late final TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    // TODO: 실제로는 Google에서 가져온 닉네임으로 초기화
-    _controller = TextEditingController(text: 'Kevin');
+
+    // onboardingProvider에서 저장된 닉네임 가져오기 (있으면)
+    // 처음 진입 시에는 빈 문자열
+    final savedNickname = ref.read(onboardingProvider).nickname;
+    _controller = TextEditingController(text: savedNickname);
     _controller.addListener(() => setState(() {}));
   }
 
@@ -42,8 +51,12 @@ class _NicknamePageState extends State<NicknamePage> {
   }
 
   void _handleNext() {
-    // UI만 구현: 로컬 검증만 수행
+    // 1. 로컬 검증
     if (_controller.text.length >= 2 && _controller.text.length <= 10) {
+      // 2. onboardingProvider에 닉네임 저장
+      ref.read(onboardingProvider.notifier).updateNickname(_controller.text);
+
+      // 3. 다음 페이지로 이동
       widget.onNext();
     }
   }

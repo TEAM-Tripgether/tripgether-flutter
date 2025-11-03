@@ -474,9 +474,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get permissionGeneralRequired => '이 기능을 사용하려면 적절한 권한이 필요합니다.';
 
   @override
-  String get onboardingWelcomeTitle => '준비 완료!';
-
-  @override
   String get onboardingWelcomeMessage => '이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️';
 
   @override
@@ -571,4 +568,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingInterestsChangeInfo => '선택한 관심사는 언제든 설정에서 바꿀 수 있어요';
+
+  @override
+  String onboardingWelcomeTitle(String nickname) {
+    return '$nickname님,\n환영해요!';
+  }
+
+  @override
+  String get onboardingWelcomeTitleFallback => '환영해요!';
+
+  @override
+  String get defaultNickname => '여행러버';
 }

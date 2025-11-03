@@ -8,13 +8,16 @@ import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../auth/providers/user_provider.dart';
+import '../../providers/onboarding_provider.dart';
 
 /// 온보딩 완료 화면 (페이지 5/5)
 ///
 /// 환영 메시지와 함께 그라데이션 배경을 표시하며,
 /// "Tripgether 시작하기" 버튼으로 홈 화면으로 이동합니다.
-/// Google 로그인으로 받은 닉네임을 동적으로 표시합니다.
+///
+/// **Provider 연동**:
+/// - onboardingProvider에서 입력받은 닉네임을 사용하여 개인화된 환영 메시지 표시
+/// - 닉네임이 없으면 국제화된 플레이스홀더 사용
 class WelcomePage extends ConsumerWidget {
   const WelcomePage({super.key});
 
@@ -22,15 +25,14 @@ class WelcomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
 
-    // UserNotifierProvider에서 사용자 정보 가져오기
-    final userAsync = ref.watch(userNotifierProvider);
+    // onboardingProvider에서 닉네임 가져오기
+    final onboardingData = ref.watch(onboardingProvider);
 
-    // 사용자 닉네임 추출 (로딩 중이거나 없으면 기본값 "Kevin" 사용)
-    final nickname = userAsync.when(
-      data: (user) => user?.nickname ?? 'Kevin',
-      loading: () => 'Kevin',
-      error: (_, stack) => 'Kevin',
-    );
+    // 닉네임 유무에 따라 환영 메시지 선택
+    // - 닉네임 있음: "{nickname}님, 환영해요!"
+    // - 닉네임 없음: "환영해요!" (플레이스홀더)
+    final nickname = onboardingData.nickname;
+    final hasNickname = nickname.isNotEmpty;
 
     return Container(
       width: double.infinity,
@@ -62,9 +64,11 @@ class WelcomePage extends ConsumerWidget {
 
             AppSpacing.verticalSpaceHuge,
 
-            // 환영 메시지
+            // 환영 메시지 (닉네임 유무에 따라 다른 메시지)
             Text(
-              l10n.onboardingWelcomeTitle,
+              hasNickname
+                  ? l10n.onboardingWelcomeTitle(nickname) // "{nickname}님,\n환영해요!"
+                  : l10n.onboardingWelcomeTitleFallback, // "환영해요!"
               style: AppTextStyles.headlineLarge.copyWith(
                 fontWeight: FontWeight.w700,
                 color: AppColors.onPrimary,
@@ -74,9 +78,9 @@ class WelcomePage extends ConsumerWidget {
 
             AppSpacing.verticalSpaceMD,
 
-            // 설명 메시지 (동적 닉네임 + 국제화 적용)
+            // 설명 메시지 (국제화 적용)
             Text(
-              l10n.onboardingWelcomeDescription(nickname),
+              l10n.onboardingWelcomeMessage,
               style: AppTextStyles.titleMedium.copyWith(
                 color: AppColors.onPrimary.withValues(alpha: 0.9),
               ),

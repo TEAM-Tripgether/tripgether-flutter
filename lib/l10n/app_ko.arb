@@ -829,11 +829,6 @@
     "description": "일반 권한 부족 에러 메시지"
   },
 
-  "onboardingWelcomeTitle": "준비 완료!",
-  "@onboardingWelcomeTitle": {
-    "description": "온보딩 환영 화면 제목"
-  },
-
   "onboardingWelcomeMessage": "이제 Tripgether와 함께\n특별한 여행을 계획해보세요 ✈️",
   "@onboardingWelcomeMessage": {
     "description": "온보딩 환영 화면 메시지"
@@ -994,5 +989,26 @@
   "onboardingInterestsChangeInfo": "선택한 관심사는 언제든 설정에서 바꿀 수 있어요",
   "@onboardingInterestsChangeInfo": {
     "description": "온보딩 관심사 변경 가능 안내"
+  },
+
+  "onboardingWelcomeTitle": "{nickname}님,\n환영해요!",
+  "@onboardingWelcomeTitle": {
+    "description": "온보딩 완료 환영 메시지 (닉네임 포함)",
+    "placeholders": {
+      "nickname": {
+        "type": "String",
+        "example": "여행러버"
+      }
+    }
+  },
+
+  "onboardingWelcomeTitleFallback": "환영해요!",
+  "@onboardingWelcomeTitleFallback": {
+    "description": "온보딩 완료 환영 메시지 (닉네임 없을 때)"
+  },
+
+  "defaultNickname": "여행러버",
+  "@defaultNickname": {
+    "description": "온보딩 닉네임 입력 전 기본 플레이스홀더"
   }
 }
