@@ -17,8 +17,8 @@ import '../../providers/onboarding_provider.dart';
 ///
 /// 편의 기능:
 /// - 페이지 진입 시 첫 번째 필드 자동 포커스
-/// - Backspace 개선: 빈 칸에서 이전 칸 내용까지 삭제
-/// - 중간 값 수정 시: 기존 값들을 뒤로 밀어내기 (값 보존)
+/// - Backspace 개선: 빈 칸에서 이전 칸으로 포커스만 이동
+/// - 값 입력 시: 현재 칸에 덮어쓰기 + 다음 칸으로 자동 포커스
 ///
 /// **Provider 연동**:
 /// - onboardingProvider에 생년월일 저장 (YYYY-MM-DD 형식)
@@ -158,8 +158,11 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
   /// 날짜 입력 필드 생성
   ///
   /// OnboardingTextField를 사용하여 일관된 스타일 적용
-  /// Backspace 개선: 빈 칸에서 Backspace → 이전 칸 내용 삭제 + 포커스 이동
-  /// 모바일 키보드와 물리 키보드 모두 지원
+  ///
+  /// **입력 동작**:
+  /// - 값 입력 시: 현재 칸에 덮어쓰고 다음 칸으로 포커스 이동
+  /// - Backspace 시: 현재 칸 삭제 후 이전 칸으로 포커스만 이동
+  /// - 모바일 키보드와 물리 키보드 모두 지원
   ///
   /// [index] TextField의 인덱스 (0~7)
   Widget _buildDateInputField(int index) {
@@ -169,14 +172,9 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
         // 물리 키보드 Backspace 감지
         if (event is KeyDownEvent &&
             event.logicalKey == LogicalKeyboardKey.backspace) {
-          // 현재 필드가 비어있고 첫 번째 필드가 아닌 경우
+          // 현재 필드가 비어있고 첫 번째 필드가 아닌 경우 → 이전 필드로 포커스만 이동
           if (_controllers[index].text.isEmpty && index > 0) {
-            // 이전 필드 내용 삭제
-            _controllers[index - 1].clear();
-            _previousValues[index - 1] = '';
-            // 이전 필드로 포커스 이동
             _focusNodes[index - 1].requestFocus();
-            setState(() {});
           }
         }
       },
@@ -193,55 +191,22 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
         ),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         onChanged: (value) {
-          // 모바일 키보드 Backspace 감지
-          // 먼저 이전 값을 저장 (백스페이스 감지를 위해 필요)
+          // 모바일 키보드 입력 처리
           final previousValue = _previousValues[index];
 
-          // 현재 값으로 업데이트 (항상 먼저 실행!)
+          // 현재 값으로 업데이트
           _previousValues[index] = value;
 
           // 백스페이스 감지: 현재 비어있고, 이전에 값이 있었고, 첫 번째 필드가 아닌 경우
+          // → 이전 필드로 포커스만 이동 (삭제 안 함)
           if (value.isEmpty && previousValue.isNotEmpty && index > 0) {
-            // 이전 필드 내용 삭제
-            _controllers[index - 1].clear();
-            _previousValues[index - 1] = '';
-            // 이전 필드로 포커스 이동
             _focusNodes[index - 1].requestFocus();
             setState(() {});
           } else if (value.isNotEmpty) {
-            // 중간 값 수정 시: 기존 값들을 뒤로 밀어내기
-            // 예: 1998 12 02 에서 12의 1을 1로 수정하면
-            // → 1998 1(새값) 2(기존 12의 2) 0(기존 02의 0) 2(기존 02의 2)
-
-            // 1. 현재 인덱스 이후의 값들을 임시로 저장
-            final List<String> remainingValues = [];
-            for (int i = index + 1; i < 8; i++) {
-              if (_controllers[i].text.isNotEmpty) {
-                remainingValues.add(_controllers[i].text);
-              }
-            }
-
-            // 2. 저장된 값들을 다음 칸부터 순서대로 재배치
-            for (
-              int i = 0;
-              i < remainingValues.length && (index + 1 + i) < 8;
-              i++
-            ) {
-              _controllers[index + 1 + i].text = remainingValues[i];
-              _previousValues[index + 1 + i] = remainingValues[i];
-            }
-
-            // 3. 남은 칸들은 비우기
-            for (int i = index + 1 + remainingValues.length; i < 8; i++) {
-              _controllers[i].clear();
-              _previousValues[i] = '';
-            }
-
-            // 4. 자동 포커스 이동
+            // 값 입력 시: 현재 칸에 덮어쓰고 다음 칸으로 포커스 이동
             if (index < 7) {
               _focusNodes[index + 1].requestFocus();
             }
-
             setState(() {}); // 검증 상태 업데이트
           }
         },
@@ -254,130 +219,137 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
     final l10n = AppLocalizations.of(context);
     final isValid = _isValidDate();
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // 상단 여백 (위로 올림)
-          AppSpacing.verticalSpaceHuge,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        // 빈 공간 클릭 시 키보드 포커스 해제
+        FocusScope.of(context).unfocus();
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // 상단 여백 (위로 올림)
+            AppSpacing.verticalSpaceHuge,
 
-          // 제목
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.onboardingBirthdatePrompt,
-                style: AppTextStyles.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
+            // 제목
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.onboardingBirthdatePrompt,
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
+                  ),
                 ),
-              ),
-              AppSpacing.horizontalSpace(4),
-              Text(
-                '*',
-                style: AppTextStyles.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.error,
+                AppSpacing.horizontalSpace(4),
+                Text(
+                  '*',
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.error,
+                  ),
                 ),
-              ),
-            ],
-          ),
-
-          // 제목-설명 간격
-          AppSpacing.verticalSpaceSM,
-
-          // 설명 (제목 바로 아래, 국제화 적용)
-          Text(
-            l10n.onboardingBirthdateDescription,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.onboardingDescription, // #130537 - 진한 남보라
+              ],
             ),
-            textAlign: TextAlign.center,
-          ),
 
-          // 입력 필드를 중앙에 배치하기 위한 여백
-          const Spacer(),
+            // 제목-설명 간격
+            AppSpacing.verticalSpaceSM,
 
-          // YYYY / MM / DD 입력
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // YYYY (4자리)
-              _buildDateInputField(0),
-              AppSpacing.horizontalSpace(2),
-              _buildDateInputField(1),
-              AppSpacing.horizontalSpace(2),
-              _buildDateInputField(2),
-              AppSpacing.horizontalSpace(2),
-              _buildDateInputField(3),
-
-              // 구분자: /
-              AppSpacing.horizontalSpaceSM,
-              Text(
-                '/',
-                style: AppTextStyles.headlineSmall.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+            // 설명 (제목 바로 아래, 국제화 적용)
+            Text(
+              l10n.onboardingBirthdateDescription,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.onboardingDescription, // #130537 - 진한 남보라
               ),
-              AppSpacing.horizontalSpaceSM,
-
-              // MM (2자리)
-              _buildDateInputField(4),
-              AppSpacing.horizontalSpace(2),
-              _buildDateInputField(5),
-
-              // 구분자: /
-              AppSpacing.horizontalSpaceSM,
-              Text(
-                '/',
-                style: AppTextStyles.headlineSmall.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              AppSpacing.horizontalSpaceSM,
-
-              // DD (2자리)
-              _buildDateInputField(6),
-              AppSpacing.horizontalSpace(2),
-              _buildDateInputField(7),
-            ],
-          ),
-
-          // 입력-버튼 간격
-          const Spacer(),
-
-          // 만 14세 이상 안내 문구
-          Text(
-            l10n.onboardingBirthdateAgeLimit,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.error,
-              fontWeight: FontWeight.w600,
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
 
-          AppSpacing.verticalSpaceMD,
+            // 입력 필드를 중앙에 배치하기 위한 여백
+            const Spacer(),
 
-          // 계속하기 버튼 (국제화 적용)
-          PrimaryButton(
-            text: l10n.btnContinue,
-            onPressed: isValid ? _handleNext : null,
-            isFullWidth: true,
-            // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
-            style: ButtonStyle(
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.circle),
+            // YYYY / MM / DD 입력
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // YYYY (4자리)
+                _buildDateInputField(0),
+                AppSpacing.horizontalSpace(2),
+                _buildDateInputField(1),
+                AppSpacing.horizontalSpace(2),
+                _buildDateInputField(2),
+                AppSpacing.horizontalSpace(2),
+                _buildDateInputField(3),
+
+                // 구분자: /
+                AppSpacing.horizontalSpaceSM,
+                Text(
+                  '/',
+                  style: AppTextStyles.headlineSmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                AppSpacing.horizontalSpaceSM,
+
+                // MM (2자리)
+                _buildDateInputField(4),
+                AppSpacing.horizontalSpace(2),
+                _buildDateInputField(5),
+
+                // 구분자: /
+                AppSpacing.horizontalSpaceSM,
+                Text(
+                  '/',
+                  style: AppTextStyles.headlineSmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                AppSpacing.horizontalSpaceSM,
+
+                // DD (2자리)
+                _buildDateInputField(6),
+                AppSpacing.horizontalSpace(2),
+                _buildDateInputField(7),
+              ],
+            ),
+
+            // 입력-버튼 간격
+            const Spacer(),
+
+            // 만 14세 이상 안내 문구
+            Text(
+              l10n.onboardingBirthdateAgeLimit,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            AppSpacing.verticalSpaceMD,
+
+            // 계속하기 버튼 (국제화 적용)
+            PrimaryButton(
+              text: l10n.btnContinue,
+              onPressed: isValid ? _handleNext : null,
+              isFullWidth: true,
+              // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
+              style: ButtonStyle(
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.circle),
+                  ),
                 ),
               ),
             ),
-          ),
 
-          // 하단 여백 (버튼을 조금 위로)
-          AppSpacing.verticalSpace60,
-        ],
+            // 하단 여백 (버튼을 조금 위로)
+            AppSpacing.verticalSpace60,
+          ],
+        ),
       ),
     );
   }
