@@ -101,10 +101,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           padding: EdgeInsets.zero,
                         )
                       : null, // 첫 페이지에서는 뒤로가기 버튼 없음
-                  // 중앙: 페이지 인디케이터
-                  title: OnboardingPageIndicator(
-                    controller: _pageController,
-                    count: 5,
+                  // 중앙: 페이지 인디케이터 (너비 제한)
+                  title: SizedBox(
+                    width: 200.w, // Progress Bar 최대 너비 제한
+                    child: OnboardingPageIndicator(
+                      controller: _pageController,
+                      count: 5,
+                    ),
                   ),
                   centerTitle: true,
                 ),
