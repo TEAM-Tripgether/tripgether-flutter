@@ -143,7 +143,10 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
 
             // 드롭다운 컨테이너
             Positioned(
-              top: buttonPosition.dy + buttonSize.height + AppSpacing.sm, // 버튼 아래 8.h
+              top:
+                  buttonPosition.dy +
+                  buttonSize.height +
+                  AppSpacing.sm, // 버튼 아래 8.h
               left: AppSpacing.xxl, // 화면 좌측 패딩 24.w
               right: AppSpacing.xxl, // 화면 우측 패딩 24.w
               child: Material(

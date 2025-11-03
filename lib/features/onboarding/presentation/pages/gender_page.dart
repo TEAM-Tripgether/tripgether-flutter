@@ -115,8 +115,8 @@ class _GenderPageState extends ConsumerState<GenderPage> {
                     final genderValue = _selectedGender == 'male'
                         ? 'MALE'
                         : _selectedGender == 'female'
-                            ? 'FEMALE'
-                            : 'NONE';
+                        ? 'FEMALE'
+                        : 'NONE';
                     ref
                         .read(onboardingProvider.notifier)
                         .updateGender(genderValue);

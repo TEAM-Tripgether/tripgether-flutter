@@ -59,10 +59,12 @@ class CategoryDropdownButton extends StatelessWidget {
         decoration: BoxDecoration(
           // 우선순위: 열린 상태 > 선택된 항목 있음 > 기본 상태
           color: isExpanded
-              ? AppColors.primaryContainer // #E8DDFF - 연한 보라색 (열린 상태)
+              ? AppColors
+                    .primaryContainer // #E8DDFF - 연한 보라색 (열린 상태)
               : selectedCount > 0
-                  ? AppColors.primaryContainer // #E8DDFF - 연한 보라색 (선택됨)
-                  : Colors.grey.withValues(alpha: 0.1), // 연한 회색 (기본)
+              ? AppColors
+                    .primaryContainer // #E8DDFF - 연한 보라색 (선택됨)
+              : Colors.grey.withValues(alpha: 0.1), // 연한 회색 (기본)
           // 열린 상태 또는 선택된 항목 있음: 보라색 테두리
           border: (isExpanded || selectedCount > 0)
               ? Border.all(
@@ -83,10 +85,12 @@ class CategoryDropdownButton extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 // 우선순위: 열린 상태 > 선택된 항목 있음 > 기본 상태
                 color: isExpanded
-                    ? AppColors.gradientMiddle // #5325CB - 선명한 보라색 (열린 상태)
+                    ? AppColors
+                          .gradientMiddle // #5325CB - 선명한 보라색 (열린 상태)
                     : selectedCount > 0
-                        ? AppColors.gradientMiddle // #5325CB - 선명한 보라색 (선택됨)
-                        : AppColors.outline, // #BBBBBB - 회색 (기본)
+                    ? AppColors
+                          .gradientMiddle // #5325CB - 선명한 보라색 (선택됨)
+                    : AppColors.outline, // #BBBBBB - 회색 (기본)
               ),
             ),
 
@@ -96,7 +100,8 @@ class CategoryDropdownButton extends StatelessWidget {
             // 드롭다운 아이콘 (열림/닫힘 상태에 따라 ▲/▼)
             Icon(
               isExpanded
-                  ? Icons.keyboard_arrow_up // 열린 상태: ▲
+                  ? Icons
+                        .keyboard_arrow_up // 열린 상태: ▲
                   : Icons.keyboard_arrow_down, // 닫힌 상태: ▼
               size: AppSizes.iconSmall, // 18px
               color: AppColors.textSecondary,

@@ -91,7 +91,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         padding: EdgeInsets.zero,
                       ),
                 // 중앙: 페이지 인디케이터
-                title: OnboardingPageIndicator(controller: _pageController, count: 5),
+                title: OnboardingPageIndicator(
+                  controller: _pageController,
+                  count: 5,
+                ),
                 centerTitle: true,
               ),
             ),

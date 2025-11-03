@@ -67,7 +67,9 @@ class WelcomePage extends ConsumerWidget {
             // 환영 메시지 (닉네임 유무에 따라 다른 메시지)
             Text(
               hasNickname
-                  ? l10n.onboardingWelcomeTitle(nickname) // "{nickname}님,\n환영해요!"
+                  ? l10n.onboardingWelcomeTitle(
+                      nickname,
+                    ) // "{nickname}님,\n환영해요!"
                   : l10n.onboardingWelcomeTitleFallback, // "환영해요!"
               style: AppTextStyles.headlineLarge.copyWith(
                 fontWeight: FontWeight.w700,

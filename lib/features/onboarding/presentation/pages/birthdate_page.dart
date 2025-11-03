@@ -132,7 +132,8 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
   void _handleNext() {
     if (_isValidDate()) {
       // YYYY-MM-DD 형식으로 변환
-      final year = _controllers[0].text +
+      final year =
+          _controllers[0].text +
           _controllers[1].text +
           _controllers[2].text +
           _controllers[3].text;

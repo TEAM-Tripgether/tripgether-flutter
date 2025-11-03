@@ -71,7 +71,9 @@ class SocialLoginButton extends StatelessWidget {
       backgroundColor: backgroundColor,
       foregroundColor: textColor,
       elevation: AppElevation.high, // 그림자 효과 (3)
-      shadowColor: AppColors.shadow.withValues(alpha: 0.25), // 뚜렷한 검은색 그림자 (25%)
+      shadowColor: AppColors.shadow.withValues(
+        alpha: 0.25,
+      ), // 뚜렷한 검은색 그림자 (25%)
       // 패딩: AppSpacing.buttonPaddingSmall 활용 (가로 16, 세로 12)
       padding: AppSpacing.buttonPaddingSmall,
       shape: RoundedRectangleBorder(
