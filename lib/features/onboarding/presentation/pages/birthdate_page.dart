@@ -194,22 +194,21 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         onChanged: (value) {
           // 모바일 키보드 Backspace 감지
-          // 현재 값이 비어있고, 이전에 값이 있었으며, 첫 번째 필드가 아닌 경우
-          if (value.isEmpty && _previousValues[index].isNotEmpty && index > 0) {
+          // 먼저 이전 값을 저장 (백스페이스 감지를 위해 필요)
+          final previousValue = _previousValues[index];
+
+          // 현재 값으로 업데이트 (항상 먼저 실행!)
+          _previousValues[index] = value;
+
+          // 백스페이스 감지: 현재 비어있고, 이전에 값이 있었고, 첫 번째 필드가 아닌 경우
+          if (value.isEmpty && previousValue.isNotEmpty && index > 0) {
             // 이전 필드 내용 삭제
             _controllers[index - 1].clear();
             _previousValues[index - 1] = '';
             // 이전 필드로 포커스 이동
             _focusNodes[index - 1].requestFocus();
-            _previousValues[index] = '';
             setState(() {});
-            return;
-          }
-
-          // 이전 값 업데이트
-          _previousValues[index] = value;
-
-          if (value.isNotEmpty) {
+          } else if (value.isNotEmpty) {
             // 중간 값 수정 시: 기존 값들을 뒤로 밀어내기
             // 예: 1998 12 02 에서 12의 1을 1로 수정하면
             // → 1998 1(새값) 2(기존 12의 2) 0(기존 02의 0) 2(기존 02의 2)
@@ -242,9 +241,9 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
             if (index < 7) {
               _focusNodes[index + 1].requestFocus();
             }
-          }
 
-          setState(() {}); // 검증 상태 업데이트
+            setState(() {}); // 검증 상태 업데이트
+          }
         },
       ),
     );
