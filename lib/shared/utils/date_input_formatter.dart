@@ -22,13 +22,20 @@ class DateInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // 1. 숫자만 추출 (슬래시와 공백 제거)
-    final digitsOnly = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    // 1. 커서 위치 앞의 텍스트만 가져오기 (뒤는 버림)
+    final cursorPosition = newValue.selection.baseOffset;
+    final textBeforeCursor = newValue.text.substring(
+      0,
+      min(cursorPosition, newValue.text.length),
+    );
 
-    // 2. 최대 8자리까지만 허용 (YYYYMMDD)
+    // 2. 숫자만 추출 (슬래시와 공백 제거)
+    final digitsOnly = textBeforeCursor.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // 3. 최대 8자리까지만 허용 (YYYYMMDD)
     final trimmed = digitsOnly.substring(0, min(8, digitsOnly.length));
 
-    // 3. 입력된 숫자가 없으면 빈 문자열 반환
+    // 4. 입력된 숫자가 없으면 빈 문자열 반환
     if (trimmed.isEmpty) {
       return const TextEditingValue(
         text: '',
@@ -36,7 +43,7 @@ class DateInputFormatter extends TextInputFormatter {
       );
     }
 
-    // 4. YYYY / MM / DD 형식으로 포맷팅
+    // 5. YYYY / MM / DD 형식으로 포맷팅
     String formatted = '';
 
     for (int i = 0; i < trimmed.length; i++) {
@@ -51,7 +58,7 @@ class DateInputFormatter extends TextInputFormatter {
       formatted += trimmed[i];
     }
 
-    // 5. 커서는 항상 끝으로 이동 (간단한 로직)
+    // 6. 커서는 항상 끝으로 이동 (간단한 로직)
     // 커서 위치에서 입력하면 뒤는 다 지우고 새로 입력하는 방식
     return TextEditingValue(
       text: formatted,
