@@ -1,11 +1,33 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-03T14:30:02Z",
-    "currentVersion": "1.1.8",
+    "lastUpdated": "2025-11-04T16:28:53Z",
+    "currentVersion": "1.1.9",
     "projectType": "flutter",
-    "totalReleases": 24
+    "totalReleases": 25
   },
   "releases": [
+    {
+      "version": "1.1.9",
+      "project_type": "flutter",
+      "date": "2025-11-04",
+      "pr_number": 65,
+      "raw_summary": "Summary by CodeRabbit\n변경 사항\n\n\n새로운 기능\n\niOS 공유 확장이 개선된 인터페이스로 리디자인되었습니다. 새로운 사용자 인터페이스로 더 직관적인 공유 환경을 제공합니다.\n이미지, 동영상, 파일, 텍스트 등 다양한 유형의 콘텐츠 공유 기능이 향상되었습니다.\n\n\n\nChores\n\n버전이 v1.1.9로 업데이트되었습니다.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "iOS 공유 확장이 개선된 인터페이스로 리디자인되었습니다. 새로운 사용자 인터페이스로 더 직관적인 공유 환경을 제공합니다.",
+            "이미지, 동영상, 파일, 텍스트 등 다양한 유형의 콘텐츠 공유 기능이 향상되었습니다."
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전이 v1.1.9로 업데이트되었습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.8",
       "project_type": "flutter",
