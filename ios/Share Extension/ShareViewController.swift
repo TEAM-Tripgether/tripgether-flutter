@@ -15,7 +15,7 @@ import Photos
 import AVFoundation
 import UserNotifications
 
-class ShareViewController: SLComposeServiceViewController {
+class ShareViewController: UIViewController {
     // IMPORTANT: 메인 앱의 Bundle Identifier와 동일하게 설정 (App Group ID 접두사로도 사용)
     let hostAppBundleIdentifier = "com.tripgether.alom"
     let sharedKey = "ShareKey"
@@ -27,60 +27,282 @@ class ShareViewController: SLComposeServiceViewController {
     let urlContentType = kUTTypeURL as String
     let fileURLType = kUTTypeFileURL as String
 
-    override func isContentValid() -> Bool {
-        return true
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // ✨ 즉시 처리 모드: UI 표시 없이 바로 데이터 처리
+        // Share Extension을 선택하면 즉시 공유 데이터를 추출하고 저장
+        print("[ShareExtension] 🚀 즉시 처리 모드 시작")
+
+        // UI 숨기기
+        view.isHidden = true
+
+        processSharedContentImmediately()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        // viewDidAppear에서는 UI 설정만 수행
-    }
+    // MARK: - 즉시 처리 모드
 
-    override func didSelectPost() {
-        print("[ShareViewController] didSelectPost 호출됨")
+    /// 즉시 처리 모드: UI 표시 없이 공유 데이터를 바로 처리
+    /// Share Extension 선택 즉시 데이터 추출 → 저장 → 앱 실행
+    private func processSharedContentImmediately() {
+        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem else {
+            print("[ShareExtension] ⚠️ Extension Item이 없음")
+            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            return
+        }
 
-        // 사용자가 Post 버튼을 눌렀을 때 공유 데이터 처리
-        if let content = extensionContext?.inputItems.first as? NSExtensionItem,
-           let attachments = content.attachments {
-            for (index, attachment) in attachments.enumerated() {
-                if attachment.hasItemConformingToTypeIdentifier(imageContentType) {
-                    handleImages(content: content, attachment: attachment, index: index)
-                } else if attachment.hasItemConformingToTypeIdentifier(textContentType) {
-                    handleText(content: content, attachment: attachment, index: index)
-                } else if attachment.hasItemConformingToTypeIdentifier(fileURLType) {
-                    handleFiles(content: content, attachment: attachment, index: index)
-                } else if attachment.hasItemConformingToTypeIdentifier(urlContentType) {
-                    handleUrl(content: content, attachment: attachment, index: index)
-                } else if attachment.hasItemConformingToTypeIdentifier(videoContentType) {
-                    handleVideos(content: content, attachment: attachment, index: index)
+        guard let attachments = extensionItem.attachments, !attachments.isEmpty else {
+            print("[ShareExtension] ⚠️ Attachment가 없음")
+            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            return
+        }
+
+        print("[ShareExtension] 📦 Attachment 개수: \(attachments.count)")
+
+        // 모든 attachment를 비동기로 처리
+        let dispatchGroup = DispatchGroup()
+        var hasProcessedAnyItem = false
+
+        for (index, attachment) in attachments.enumerated() {
+            dispatchGroup.enter()
+
+            // 우선순위: URL > 텍스트 > 이미지 > 비디오 > 파일
+            if attachment.hasItemConformingToTypeIdentifier(urlContentType) {
+                print("[ShareExtension] 🔗 URL 타입 감지 (index: \(index))")
+                processUrlImmediately(attachment: attachment) { success in
+                    if success { hasProcessedAnyItem = true }
+                    dispatchGroup.leave()
                 }
+            } else if attachment.hasItemConformingToTypeIdentifier(textContentType) {
+                print("[ShareExtension] 📝 텍스트 타입 감지 (index: \(index))")
+                processTextImmediately(attachment: attachment) { success in
+                    if success { hasProcessedAnyItem = true }
+                    dispatchGroup.leave()
+                }
+            } else if attachment.hasItemConformingToTypeIdentifier(imageContentType) {
+                print("[ShareExtension] 🖼️ 이미지 타입 감지 (index: \(index))")
+                processImageImmediately(attachment: attachment) { success in
+                    if success { hasProcessedAnyItem = true }
+                    dispatchGroup.leave()
+                }
+            } else if attachment.hasItemConformingToTypeIdentifier(videoContentType) {
+                print("[ShareExtension] 🎥 비디오 타입 감지 (index: \(index))")
+                processVideoImmediately(attachment: attachment) { success in
+                    if success { hasProcessedAnyItem = true }
+                    dispatchGroup.leave()
+                }
+            } else if attachment.hasItemConformingToTypeIdentifier(fileURLType) {
+                print("[ShareExtension] 📄 파일 타입 감지 (index: \(index))")
+                processFileImmediately(attachment: attachment) { success in
+                    if success { hasProcessedAnyItem = true }
+                    dispatchGroup.leave()
+                }
+            } else {
+                print("[ShareExtension] ⚠️ 알 수 없는 타입 (index: \(index))")
+                dispatchGroup.leave()
             }
         }
 
-        // 첨부파일이 없는 경우 (텍스트만 있는 경우)
-        if let content = extensionContext?.inputItems.first as? NSExtensionItem {
-            if content.attachments?.isEmpty ?? true {
-                // 텍스트 내용 확인
-                let sharedTextContent = contentText ?? ""
-                if !sharedTextContent.isEmpty {
-                    sharedText.append(sharedTextContent)
-                    let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
-                    userDefaults?.set(sharedText, forKey: sharedKey)
-                    userDefaults?.synchronize()
-                    showSuccessAndDismiss()
+        // 모든 attachment 처리 완료 후
+        dispatchGroup.notify(queue: .main) {
+            if hasProcessedAnyItem {
+                print("[ShareExtension] ✅ 데이터 처리 완료 - 저장 및 앱 실행")
+                self.saveAndLaunchApp()
+            } else {
+                print("[ShareExtension] ⚠️ 처리된 데이터 없음 - Extension 종료")
+                self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            }
+        }
+    }
+
+    /// URL을 즉시 처리 (비동기)
+    private func processUrlImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
+        attachment.loadItem(forTypeIdentifier: urlContentType, options: nil) { [weak self] data, error in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            if let error = error {
+                print("[ShareExtension] ❌ URL 로드 실패: \(error)")
+                completion(false)
+                return
+            }
+
+            if let url = data as? URL {
+                print("[ShareExtension] ✅ URL 추출 성공: \(url.absoluteString)")
+                self.sharedText.append(url.absoluteString)
+                completion(true)
+            } else {
+                print("[ShareExtension] ⚠️ URL 변환 실패")
+                completion(false)
+            }
+        }
+    }
+
+    /// 텍스트를 즉시 처리 (비동기)
+    private func processTextImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
+        attachment.loadItem(forTypeIdentifier: textContentType, options: nil) { [weak self] data, error in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            if let error = error {
+                print("[ShareExtension] ❌ 텍스트 로드 실패: \(error)")
+                completion(false)
+                return
+            }
+
+            if let text = data as? String {
+                print("[ShareExtension] ✅ 텍스트 추출 성공: \(text)")
+                self.sharedText.append(text)
+                completion(true)
+            } else {
+                print("[ShareExtension] ⚠️ 텍스트 변환 실패")
+                completion(false)
+            }
+        }
+    }
+
+    /// 이미지를 즉시 처리 (비동기)
+    private func processImageImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
+        attachment.loadItem(forTypeIdentifier: imageContentType, options: nil) { [weak self] data, error in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            if let error = error {
+                print("[ShareExtension] ❌ 이미지 로드 실패: \(error)")
+                completion(false)
+                return
+            }
+
+            if let url = data as? URL {
+                print("[ShareExtension] ✅ 이미지 URL 추출: \(url.path)")
+
+                let fileName = self.getFileName(from: url, type: .image)
+                let newPath = FileManager.default
+                    .containerURL(forSecurityApplicationGroupIdentifier: "group.\(self.hostAppBundleIdentifier)")!
+                    .appendingPathComponent(fileName)
+
+                if self.copyFile(at: url, to: newPath) {
+                    self.sharedMedia.append(SharedMediaFile(path: newPath.absoluteString, thumbnail: nil, duration: nil, type: .image))
+                    completion(true)
                 } else {
-                    extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+                    completion(false)
                 }
+            } else {
+                print("[ShareExtension] ⚠️ 이미지 URL 변환 실패")
+                completion(false)
             }
         }
     }
 
-    override func configurationItems() -> [Any]! {
-        return []
+    /// 비디오를 즉시 처리 (비동기)
+    private func processVideoImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
+        attachment.loadItem(forTypeIdentifier: videoContentType, options: nil) { [weak self] data, error in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            if let error = error {
+                print("[ShareExtension] ❌ 비디오 로드 실패: \(error)")
+                completion(false)
+                return
+            }
+
+            if let url = data as? URL {
+                print("[ShareExtension] ✅ 비디오 URL 추출: \(url.path)")
+
+                let fileName = self.getFileName(from: url, type: .video)
+                let newPath = FileManager.default
+                    .containerURL(forSecurityApplicationGroupIdentifier: "group.\(self.hostAppBundleIdentifier)")!
+                    .appendingPathComponent(fileName)
+
+                if self.copyFile(at: url, to: newPath) {
+                    if let sharedFile = self.getSharedMediaFile(forVideo: newPath) {
+                        self.sharedMedia.append(sharedFile)
+                        completion(true)
+                    } else {
+                        completion(false)
+                    }
+                } else {
+                    completion(false)
+                }
+            } else {
+                print("[ShareExtension] ⚠️ 비디오 URL 변환 실패")
+                completion(false)
+            }
+        }
+    }
+
+    /// 파일을 즉시 처리 (비동기)
+    private func processFileImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
+        attachment.loadItem(forTypeIdentifier: fileURLType, options: nil) { [weak self] data, error in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            if let error = error {
+                print("[ShareExtension] ❌ 파일 로드 실패: \(error)")
+                completion(false)
+                return
+            }
+
+            if let url = data as? URL {
+                print("[ShareExtension] ✅ 파일 URL 추출: \(url.path)")
+
+                let fileName = self.getFileName(from: url, type: .file)
+                let newPath = FileManager.default
+                    .containerURL(forSecurityApplicationGroupIdentifier: "group.\(self.hostAppBundleIdentifier)")!
+                    .appendingPathComponent(fileName)
+
+                if self.copyFile(at: url, to: newPath) {
+                    self.sharedMedia.append(SharedMediaFile(path: newPath.absoluteString, thumbnail: nil, duration: nil, type: .file))
+                    completion(true)
+                } else {
+                    completion(false)
+                }
+            } else {
+                print("[ShareExtension] ⚠️ 파일 URL 변환 실패")
+                completion(false)
+            }
+        }
+    }
+
+    /// UserDefaults에 저장하고 앱 실행
+    private func saveAndLaunchApp() {
+        let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
+
+        // 텍스트 데이터가 있으면 저장
+        if !sharedText.isEmpty {
+            print("[ShareExtension] 💾 텍스트 데이터 저장: \(sharedText)")
+            userDefaults?.set(sharedText, forKey: sharedKey)
+            saveDebugLog(message: "텍스트 저장 완료: \(sharedText.joined(separator: ", "))")
+        }
+
+        // 미디어 파일이 있으면 저장
+        if !sharedMedia.isEmpty {
+            print("[ShareExtension] 💾 미디어 데이터 저장: \(sharedMedia.count)개")
+            userDefaults?.set(toData(data: sharedMedia), forKey: sharedKey)
+            saveDebugLog(message: "미디어 저장 완료: \(sharedMedia.count)개")
+        }
+
+        // 동기화
+        let syncSuccess = userDefaults?.synchronize() ?? false
+        print("[ShareExtension] UserDefaults 동기화: \(syncSuccess ? "성공" : "실패")")
+
+        if syncSuccess {
+            // 앱 실행 (URL Scheme 방식)
+            showSuccessAndDismiss()
+        } else {
+            print("[ShareExtension] ❌ 저장 실패")
+            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        }
     }
 
     private func handleText(content: NSExtensionItem, attachment: NSItemProvider, index: Int) {
@@ -240,26 +462,39 @@ class ShareViewController: SLComposeServiceViewController {
         extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
 
-    /// 저장 성공 후 Local Notification 발송
+    /// 저장 성공 후 메인 앱 강제 실행 (URL Scheme 사용) + 알림 발송
+    /// Android와 동일한 UX: 공유 즉시 앱 자동 실행
     private func showSuccessAndDismiss() {
-        // Local Notification 발송 (앱이 종료되어 있어도 작동)
+        print("[ShareExtension] 데이터 저장 완료 - 메인 앱 실행 시작")
+
+        // 1️⃣ 알림 발송 (사용자 피드백)
         sendLocalNotification()
 
-        // Extension 닫기
-        extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        // 2️⃣ URL Scheme로 메인 앱 강제 실행 (즉시 앱 열기)
+        openMainApp()
+
+        // 3️⃣ Extension 닫기 (0.5초 지연 - 앱 실행 시간 확보)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        }
     }
 
     /// Local Notification 발송
-    /// 사용자가 알림을 탭하면 앱이 실행됨
+    /// 앱이 백그라운드/종료 상태일 때 사용자에게 저장 완료 피드백 제공
+    /// 포그라운드일 때는 URL Scheme이 우선 동작하므로 알림은 자동 무시됨
     private func sendLocalNotification() {
         let content = UNMutableNotificationContent()
         content.title = "✓ Tripgether에 저장됨"
         content.body = "탭하여 공유된 콘텐츠를 확인하세요"
         content.sound = .default
 
-        // 즉시 발송
+        // 즉시 발송 (0.1초 후)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        let request = UNNotificationRequest(identifier: "share_completed", content: content, trigger: trigger)
+        let request = UNNotificationRequest(
+            identifier: "share_completed", // AppDelegate에서 이 ID로 탭 감지
+            content: content,
+            trigger: trigger
+        )
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
@@ -268,6 +503,38 @@ class ShareViewController: SLComposeServiceViewController {
                 print("[ShareExtension] ✅ Notification 발송 성공")
             }
         }
+    }
+
+    /// URL Scheme를 통해 메인 앱 실행
+    /// Share Extension은 직접 앱을 실행할 수 없으므로 UIResponder 체인을 통해 시스템에 요청
+    @objc private func openMainApp() {
+        guard let url = URL(string: "tripgether://share") else {
+            print("[ShareExtension] ❌ URL Scheme 생성 실패")
+            return
+        }
+
+        print("[ShareExtension] URL Scheme 호출: \(url.absoluteString)")
+
+        // UIResponder 체인을 따라 올라가며 openURL을 수행할 수 있는 객체 찾기
+        var responder: UIResponder? = self as UIResponder
+        let selector = #selector(openURL(_:))
+
+        while responder != nil {
+            if let responder = responder, responder.responds(to: selector) && responder != self {
+                print("[ShareExtension] ✅ URL 실행 가능한 Responder 발견")
+                responder.perform(selector, with: url, afterDelay: 0)
+                return
+            }
+            responder = responder?.next
+        }
+
+        print("[ShareExtension] ⚠️ URL을 실행할 Responder를 찾지 못함")
+    }
+
+    /// URL 열기 (UIResponder 체인의 상위 객체가 실제로 처리)
+    @objc private func openURL(_ url: URL) {
+        // 이 메서드는 셀렉터 탐색용으로만 사용됨
+        // 실제 URL 열기는 UIResponder 체인의 상위 객체(ExtensionContext)가 처리
     }
 
     func getExtension(from url: URL, type: SharedMediaType) -> String {
