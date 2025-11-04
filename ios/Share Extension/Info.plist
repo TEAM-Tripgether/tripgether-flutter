@@ -6,6 +6,14 @@
     <string>$(CUSTOM_GROUP_ID)</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+
+	<!-- URL Scheme Whitelist (iOS 9+ 요구사항) -->
+	<!-- Share Extension에서 메인 앱을 실행하기 위해 필요 -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tripgether</string>
+	</array>
+
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
