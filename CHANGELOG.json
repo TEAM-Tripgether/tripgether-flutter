@@ -1,11 +1,32 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-04T16:28:53Z",
-    "currentVersion": "1.1.9",
+    "lastUpdated": "2025-11-05T01:28:05Z",
+    "currentVersion": "1.1.10",
     "projectType": "flutter",
-    "totalReleases": 25
+    "totalReleases": 26
   },
   "releases": [
+    {
+      "version": "1.1.10",
+      "project_type": "flutter",
+      "date": "2025-11-05",
+      "pr_number": 67,
+      "raw_summary": "Summary by CodeRabbit\n\n\n새로운 기능\n\niOS 공유 확장에서 하단 시트 애니메이션이 개선되었습니다. 부드러운 스프링 애니메이션으로 화면에 표시되는 효과가 추가되었습니다.\n\n\n\n기타\n\n앱 버전이 1.1.10으로 업데이트되었습니다.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "iOS 공유 확장에서 하단 시트 애니메이션이 개선되었습니다. 부드러운 스프링 애니메이션으로 화면에 표시되는 효과가 추가되었습니다."
+          ]
+        },
+        "기타": {
+          "title": "기타",
+          "items": [
+            "앱 버전이 1.1.10으로 업데이트되었습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.9",
       "project_type": "flutter",
