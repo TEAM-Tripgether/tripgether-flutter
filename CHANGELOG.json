@@ -1,11 +1,36 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-05T01:28:05Z",
-    "currentVersion": "1.1.10",
+    "lastUpdated": "2025-11-05T14:01:40Z",
+    "currentVersion": "1.1.11",
     "projectType": "flutter",
-    "totalReleases": 26
+    "totalReleases": 27
   },
   "releases": [
+    {
+      "version": "1.1.11",
+      "project_type": "flutter",
+      "date": "2025-11-05",
+      "pr_number": 69,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\nNew Features\n\n공유 확장 화면이 바텀시트 UI로 개선됨\n2.5초 후 자동으로 닫히는 기능 추가\n배경 탭으로 빠른 닫기 가능\n\"앱에서 보기\" 버튼을 통한 앱 실행 기능 추가\n알림 처리 로직 개선\n\n\n\nChores\n\n버전 업데이트 (v1.1.11)",
+      "parsed_changes": {
+        "new_features": {
+          "title": "New Features",
+          "items": [
+            "공유 확장 화면이 바텀시트 UI로 개선됨",
+            "2.5초 후 자동으로 닫히는 기능 추가",
+            "배경 탭으로 빠른 닫기 가능",
+            "\"앱에서 보기\" 버튼을 통한 앱 실행 기능 추가",
+            "알림 처리 로직 개선"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전 업데이트 (v1.1.11)"
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.10",
       "project_type": "flutter",
