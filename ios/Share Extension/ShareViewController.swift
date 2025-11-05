@@ -27,6 +27,9 @@ class ShareViewController: UIViewController {
     let urlContentType = kUTTypeURL as String
     let fileURLType = kUTTypeFileURL as String
 
+    // UI Constants
+    private let bottomSheetHeight: CGFloat = 300
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -73,8 +76,7 @@ class ShareViewController: UIViewController {
     @objc private func handleBackgroundTap(_ gesture: UITapGestureRecognizer) {
         let location = gesture.location(in: view)
 
-        // 하단 300pt 영역은 터치 무시 (UI 영역)
-        let bottomSheetHeight: CGFloat = 300
+        // 하단 영역은 터치 무시 (UI 영역)
         let bottomSheetYPosition = view.bounds.height - bottomSheetHeight
 
         if location.y < bottomSheetYPosition {
@@ -87,7 +89,6 @@ class ShareViewController: UIViewController {
     /// 바텀 시트 스타일 UI 설정
     private func setupBottomSheetUI() {
         // 바텀시트 높이 설정 (더 높게)
-        let bottomSheetHeight: CGFloat = 300
         let yPosition = view.bounds.height - bottomSheetHeight
 
         // 하단부 그라데이션 - 흰색 추가 (위에서 아래로 흰색이 많아짐)
@@ -178,6 +179,7 @@ class ShareViewController: UIViewController {
                 print("[ShareExtension] ⚠️ extensionContext.open 실패 - UIApplication 시도")
 
                 // Fallback: UIApplication.shared.open
+                // Extension에서 직접 UIApplication에 접근할 수 없으므로 리플렉션 사용
                 if let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication {
                     application.open(url, options: [:], completionHandler: { opened in
                         print("[ShareExtension] UIApplication.open 결과: \(opened)")
@@ -186,6 +188,7 @@ class ShareViewController: UIViewController {
             }
 
             // Extension 닫기 (0.5초 후)
+            // 앱 전환이 완료될 시간을 확보하기 위한 지연
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
             }
