@@ -471,13 +471,31 @@ class ShareViewController: UIViewController {
     private func showSuccessAndDismiss() {
         print("[ShareExtension] 데이터 저장 완료 - UI는 사용자가 닫을 때까지 유지")
 
+        // 🎬 바텀 시트 애니메이션: 아래에서 위로 올라오기
+        DispatchQueue.main.async {
+            UIView.animate(
+                withDuration: 0.3,
+                delay: 0,
+                usingSpringWithDamping: 0.8,
+                initialSpringVelocity: 0.5,
+                options: .curveEaseOut,
+                animations: {
+                    // 화면 밖(아래쪽)에서 원래 위치로 이동
+                    self.customContainerView?.transform = .identity
+                },
+                completion: { _ in
+                    print("[ShareExtension] ✅ 바텀 시트 애니메이션 완료")
+                }
+            )
+        }
+
         // ⚠️ 알림 발송 제거 (커스텀 UI로 대체)
         // sendLocalNotification()
 
         // ⚠️ 자동 앱 실행 제거 (사용자가 버튼을 누를 때만 실행)
         // openMainApp()
 
-        // ⚠️ 자동 닫기 제거 - UI는 ��용자가 수동으로 닫을 때까지 유지
+        // ⚠️ ���동 닫기 제거 - UI는 ��용자가 수동으로 닫을 때까지 유지
         // 사용자는 다음 방법으로 닫을 수 있음:
         // 1. "앱에서 보기" 버튼 클릭 → openAppAndDismiss() 실행
         // 2. 아래로 스와이프 → handlePanGesture() 실행
@@ -492,7 +510,7 @@ class ShareViewController: UIViewController {
     private func sendLocalNotification() {
         let content = UNMutableNotificationContent()
         content.title = "✓ Tripgether에 저장됨"
-        content.body = "탭하여 공유된 콘텐츠를 확인하세요"
+        content.body = "���하여 공유된 콘텐츠를 확인하세요"
         content.sound = .default
 
         // 즉시 발송 (0.1초 후)
@@ -720,6 +738,9 @@ class ShareViewController: UIViewController {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(containerView)
         self.customContainerView = containerView
+
+        // 🎬 초기 위치: 화면 아래에서 시작 (화면 밖)
+        containerView.transform = CGAffineTransform(translationX: 0, y: 180)
 
         // 컨테이너 뷰 팬 제스처 추가 (아래로 스와이프 시 닫기)
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
