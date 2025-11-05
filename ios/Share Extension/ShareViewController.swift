@@ -30,14 +30,166 @@ class ShareViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // ✨ 즉시 처리 모드: UI 표시 없이 바로 데이터 처리
-        // Share Extension을 선택하면 즉시 공유 데이터를 추출하고 저장
-        print("[ShareExtension] 🚀 즉시 처리 모드 시작")
+        // ✨ 바텀 시트 UI 모드
+        print("[ShareExtension] 🚀 바텀 시트 UI 모드 시작")
 
-        // UI 숨기기
-        view.isHidden = true
+        // 배경: 투명
+        view.backgroundColor = .clear
 
+        // 바텀 시트 스타일 UI 설정
+        setupBottomSheetUI()
+
+        // 상단 영역 터치 시 닫기 제스처 추가
+        setupDismissGesture()
+
+        // 백그라운드에서 데이터 처리
         processSharedContentImmediately()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // 부모 뷰 계층을 모두 투명하게 만들기
+        makeParentViewsTransparent()
+    }
+
+    /// 부모 뷰 계층을 투명하게 만들기
+    private func makeParentViewsTransparent() {
+        var currentView: UIView? = view
+        while let parentView = currentView?.superview {
+            print("[ShareExtension] 부모 뷰 투명화: \(type(of: parentView))")
+            parentView.backgroundColor = .clear
+            currentView = parentView
+        }
+    }
+
+    /// 상단 영역 터치 시 Share Extension 닫기
+    private func setupDismissGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleBackgroundTap))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func handleBackgroundTap(_ gesture: UITapGestureRecognizer) {
+        let location = gesture.location(in: view)
+
+        // 하단 300pt 영역은 터치 무시 (UI 영역)
+        let bottomSheetHeight: CGFloat = 300
+        let bottomSheetYPosition = view.bounds.height - bottomSheetHeight
+
+        if location.y < bottomSheetYPosition {
+            // 상단 영역 터치 시 Extension 닫기
+            print("[ShareExtension] 배경 터치로 닫기")
+            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        }
+    }
+
+    /// 바텀 시트 스타일 UI 설정
+    private func setupBottomSheetUI() {
+        // 바텀시트 높이 설정 (더 높게)
+        let bottomSheetHeight: CGFloat = 300
+        let yPosition = view.bounds.height - bottomSheetHeight
+
+        // 하단부 그라데이션 - 흰색 추가 (위에서 아래로 흰색이 많아짐)
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = CGRect(
+            x: 0,
+            y: yPosition,
+            width: view.bounds.width,
+            height: bottomSheetHeight
+        )
+        gradientLayer.colors = [
+            UIColor.clear.cgColor, // 최상단: 완전 투명
+            UIColor(red: 27/255, green: 0/255, blue: 98/255, alpha: 0.2).cgColor,    // #1B0062 - 진한 남보라 (20%)
+            UIColor(red: 83/255, green: 37/255, blue: 203/255, alpha: 0.4).cgColor,  // #5325CB - 선명한 보라 (40%)
+            UIColor(red: 181/255, green: 153/255, blue: 255/255, alpha: 0.6).cgColor, // #B599FF - 밝은 연보라 (60%)
+            UIColor.white.cgColor // 최하단: 흰색 (100%)
+        ]
+        gradientLayer.locations = [0.0, 0.2, 0.4, 0.7, 1.0] // 위→아래로 갈수록 흰색이 많이 차지
+        view.layer.insertSublayer(gradientLayer, at: 0)
+
+        // 바텀 컨테이너 뷰 (하단에 배치)
+        let bottomContainer = UIView()
+        bottomContainer.translatesAutoresizingMaskIntoConstraints = false
+        bottomContainer.backgroundColor = .clear
+        view.addSubview(bottomContainer)
+
+        // 좌측: 메시지 레이블 (흰색 텍스트)
+        let messageLabel = UILabel()
+        messageLabel.text = "게시물을 추가했어요"
+        messageLabel.textColor = .white
+        messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        bottomContainer.addSubview(messageLabel)
+
+        // 우측: "앱에서 보기" 버튼 (투명 배경 + 흰색 텍스트 + 밑줄)
+        let openAppButton = UIButton(type: .system)
+
+        // 밑줄이 있는 텍스트 생성 (흰색)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(ofSize: 14, weight: .medium),
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        let attributedTitle = NSAttributedString(string: "앱에서 보기", attributes: attributes)
+        openAppButton.setAttributedTitle(attributedTitle, for: .normal)
+
+        openAppButton.backgroundColor = .clear
+        openAppButton.addTarget(self, action: #selector(openAppButtonTapped), for: .touchUpInside)
+        openAppButton.translatesAutoresizingMaskIntoConstraints = false
+        bottomContainer.addSubview(openAppButton)
+
+        // Auto Layout 제약조건
+        NSLayoutConstraint.activate([
+            // 바텀 컨테이너: 화면 하단에 배치
+            bottomContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            bottomContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            bottomContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            bottomContainer.heightAnchor.constraint(equalToConstant: 50),
+
+            // 메시지 레이블: 좌측
+            messageLabel.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor),
+            messageLabel.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
+
+            // 버튼: 우측
+            openAppButton.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor),
+            openAppButton.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
+            openAppButton.widthAnchor.constraint(equalToConstant: 100),
+            openAppButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+    }
+
+    @objc private func openAppButtonTapped() {
+        print("[ShareExtension] 앱에서 보기 버튼 클릭됨")
+
+        guard let url = URL(string: "tripgether://share") else {
+            print("[ShareExtension] ❌ URL Scheme 생성 실패")
+            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            return
+        }
+
+        print("[ShareExtension] URL Scheme: \(url.absoluteString)")
+
+        // iOS 13+ extensionContext.open() 사용
+        extensionContext?.open(url, completionHandler: { [weak self] success in
+            print("[ShareExtension] extensionContext.open 결과: \(success)")
+
+            if !success {
+                print("[ShareExtension] ⚠️ extensionContext.open 실패 - UIApplication 시도")
+
+                // Fallback: UIApplication.shared.open
+                if let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication {
+                    application.open(url, options: [:], completionHandler: { opened in
+                        print("[ShareExtension] UIApplication.open 결과: \(opened)")
+                    })
+                }
+            }
+
+            // Extension 닫기 (0.5초 후)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            }
+        })
     }
 
     // MARK: - 즉시 처리 모드
@@ -462,21 +614,9 @@ class ShareViewController: UIViewController {
         extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
 
-    /// 저장 성공 후 메인 앱 강제 실행 (URL Scheme 사용) + 알림 발송
-    /// Android와 동일한 UX: 공유 즉시 앱 자동 실행
     private func showSuccessAndDismiss() {
-        print("[ShareExtension] 데이터 저장 완료 - 메인 앱 실행 시작")
-
-        // 1️⃣ 알림 발송 (사용자 피드백)
-        sendLocalNotification()
-
-        // 2️⃣ URL Scheme로 메인 앱 강제 실행 (즉시 앱 열기)
-        openMainApp()
-
-        // 3️⃣ Extension 닫기 (0.5초 지연 - 앱 실행 시간 확보)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-        }
+        print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시됨")
+        // UI는 viewDidLoad에서 이미 설정됨
     }
 
     /// Local Notification 발송
