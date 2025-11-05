@@ -160,7 +160,7 @@ import UserNotifications
   }
 
   /// 사용자가 알림을 탭했을 때 처리
-  /// Share Extension에서 발송한 "share_completed" 알림을 탭하면 앱이 실행되고 공유 데이터를 자동 로드합니다
+  /// Share Extension에서 발송한 알림을 탭하면 앱이 실행되고 공유 데이터를 자동 로드합니다
   override func userNotificationCenter(
     _ center: UNUserNotificationCenter,
     didReceive response: UNNotificationResponse,
@@ -173,11 +173,11 @@ import UserNotifications
     if identifier == "share_completed" {
       print("[AppDelegate] 🚀 공유 완료 알림 탭 - 앱이 실행되었습니다")
       print("[AppDelegate] 💡 공유 데이터는 HomeScreen의 라이프사이클 리스너에서 자동으로 로드됩니다")
+    }
 
-      // 앱이 백그라운드에서 포그라운드로 전환됨
-      // HomeScreen의 AppLifecycleListener가 onResume/onShow 이벤트를 감지하여
-      // SharingService.checkForData()를 자동으로 호출합니다
-      // 따라서 여기서는 별도의 데이터 로드 작업이 필요하지 않습니다
+    // "앱에서 보기" 버튼으로 발송된 알림
+    if identifier == "open_app_notification" {
+      print("[AppDelegate] 🚀 앱 열기 알림 탭 - 앱이 실행되었습니다")
     }
 
     completionHandler()
