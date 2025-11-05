@@ -29,7 +29,7 @@ class ShareViewController: UIViewController {
 
     // UI Constants
     private let bottomSheetHeight: CGFloat = 300
-    private let autoDismissDelay: TimeInterval = 2.5 // 2.5초 후 자동 닫기
+    private let autoDismissDelay: TimeInterval = 5.0 // 5초 후 자동 닫기
     private var autoDismissTimer: Timer?
 
     override func viewDidLoad() {
@@ -627,17 +627,30 @@ class ShareViewController: UIViewController {
         print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시됨")
         // UI는 viewDidLoad에서 이미 설정됨
 
-        // 2.5초 후 자동으로 닫기 타이머 시작
+        // 5초 후 자동으로 닫기 타이머 시작
         startAutoDismissTimer()
     }
 
-    /// 자동 닫기 타이머 시작 (2.5초 후 자동으로 Extension 닫기)
+    /// 자동 닫기 타이머 시작 (5초 후 자동으로 Extension 닫기)
     private func startAutoDismissTimer() {
+        // 기존 타이머가 있으면 먼저 취소
+        cancelAutoDismissTimer()
+
         print("[ShareExtension] ⏰ 자동 닫기 타이머 시작 (\(autoDismissDelay)초)")
 
-        autoDismissTimer = Timer.scheduledTimer(withTimeInterval: autoDismissDelay, repeats: false) { [weak self] _ in
-            print("[ShareExtension] ⏰ 자동 닫기 타이머 완료 - Extension 닫기")
-            self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        // 메인 스레드에서 타이머 실행 보장
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            self.autoDismissTimer = Timer.scheduledTimer(withTimeInterval: self.autoDismissDelay, repeats: false) { [weak self] _ in
+                print("[ShareExtension] ⏰ 자동 닫기 타이머 완료 - Extension 닫기")
+                self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            }
+
+            // 타이머를 RunLoop에 추가하여 확실히 실행되도록 보장
+            if let timer = self.autoDismissTimer {
+                RunLoop.main.add(timer, forMode: .common)
+            }
         }
     }
 

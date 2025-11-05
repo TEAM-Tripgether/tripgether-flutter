@@ -1,11 +1,32 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-05T14:01:40Z",
-    "currentVersion": "1.1.11",
+    "lastUpdated": "2025-11-05T14:40:15Z",
+    "currentVersion": "1.1.12",
     "projectType": "flutter",
-    "totalReleases": 27
+    "totalReleases": 28
   },
   "releases": [
+    {
+      "version": "1.1.12",
+      "project_type": "flutter",
+      "date": "2025-11-05",
+      "pr_number": 71,
+      "raw_summary": "Summary by CodeRabbit\nv1.1.12 릴리스 노트\n\n\n개선 사항\n\n공유 기능의 자동 종료 시간이 개선되어 안정성이 향상되었습니다.\n\n\n\n기타\n\n버전 1.1.12로 업데이트 (빌드 번호: 41)",
+      "parsed_changes": {
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "공유 기능의 자동 종료 시간이 개선되어 안정성이 향상되었습니다."
+          ]
+        },
+        "기타": {
+          "title": "기타",
+          "items": [
+            "버전 1.1.12로 업데이트 (빌드 번호: 41)"
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.11",
       "project_type": "flutter",
