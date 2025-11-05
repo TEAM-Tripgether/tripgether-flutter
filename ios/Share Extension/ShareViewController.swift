@@ -29,6 +29,8 @@ class ShareViewController: UIViewController {
 
     // UI Constants
     private let bottomSheetHeight: CGFloat = 300
+    private let autoDismissDelay: TimeInterval = 2.5 // 2.5초 후 자동 닫기
+    private var autoDismissTimer: Timer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +84,7 @@ class ShareViewController: UIViewController {
         if location.y < bottomSheetYPosition {
             // 상단 영역 터치 시 Extension 닫기
             print("[ShareExtension] 배경 터치로 닫기")
+            cancelAutoDismissTimer() // 타이머 취소
             extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
     }
@@ -162,6 +165,9 @@ class ShareViewController: UIViewController {
 
     @objc private func openAppButtonTapped() {
         print("[ShareExtension] 앱에서 보기 버튼 클릭됨")
+
+        // 자동 닫기 타이머 취소 (사용자가 버튼 클릭했으므로)
+        cancelAutoDismissTimer()
 
         guard let url = URL(string: "tripgether://share") else {
             print("[ShareExtension] ❌ URL Scheme 생성 실패")
@@ -620,6 +626,28 @@ class ShareViewController: UIViewController {
     private func showSuccessAndDismiss() {
         print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시됨")
         // UI는 viewDidLoad에서 이미 설정됨
+
+        // 2.5초 후 자동으로 닫기 타이머 시작
+        startAutoDismissTimer()
+    }
+
+    /// 자동 닫기 타이머 시작 (2.5초 후 자동으로 Extension 닫기)
+    private func startAutoDismissTimer() {
+        print("[ShareExtension] ⏰ 자동 닫기 타이머 시작 (\(autoDismissDelay)초)")
+
+        autoDismissTimer = Timer.scheduledTimer(withTimeInterval: autoDismissDelay, repeats: false) { [weak self] _ in
+            print("[ShareExtension] ⏰ 자동 닫기 타이머 완료 - Extension 닫기")
+            self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        }
+    }
+
+    /// 자동 닫기 타이머 취소
+    private func cancelAutoDismissTimer() {
+        if autoDismissTimer != nil {
+            print("[ShareExtension] ⏰ 자동 닫기 타이머 취소")
+            autoDismissTimer?.invalidate()
+            autoDismissTimer = nil
+        }
     }
 
     /// Local Notification 발송
