@@ -27,21 +27,178 @@ class ShareViewController: UIViewController {
     let urlContentType = kUTTypeURL as String
     let fileURLType = kUTTypeFileURL as String
 
-    // 커스텀 UI 요소
-    private var customContainerView: UIView?
+    // UI Constants
+    private let bottomSheetHeight: CGFloat = 300
+    private let autoDismissDelay: TimeInterval = 2.5 // 2.5초 후 자동 닫기
+    private var autoDismissTimer: Timer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // ✨ 즉시 처리 모드: 커스텀 UI와 함께 바로 데이터 처리
-        // Share Extension을 선택하면 즉시 공유 데이터를 추출하고 저장
-        print("[ShareExtension] 🚀 즉시 처리 모드 시작")
+        // ✨ 바텀 시트 UI 모드
+        print("[ShareExtension] 🚀 바텀 시트 UI 모드 시작")
 
-        // 커스텀 UI 설정
-        setupCustomUI()
+        // 배경: 투명
+        view.backgroundColor = .clear
+
+        // 바텀 시트 스타일 UI 설정
+        setupBottomSheetUI()
+
+        // 상단 영역 터치 시 닫기 제스처 추가
+        setupDismissGesture()
 
         // 백그라운드에서 데이터 처리
         processSharedContentImmediately()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // 부모 뷰 계층을 모두 투명하게 만들기
+        makeParentViewsTransparent()
+    }
+
+    /// 부모 뷰 계층을 투명하게 만들기
+    private func makeParentViewsTransparent() {
+        var currentView: UIView? = view
+        while let parentView = currentView?.superview {
+            print("[ShareExtension] 부모 뷰 투명화: \(type(of: parentView))")
+            parentView.backgroundColor = .clear
+            currentView = parentView
+        }
+    }
+
+    /// 상단 영역 터치 시 Share Extension 닫기
+    private func setupDismissGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleBackgroundTap))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func handleBackgroundTap(_ gesture: UITapGestureRecognizer) {
+        let location = gesture.location(in: view)
+
+        // 하단 영역은 터치 무시 (UI 영역)
+        let bottomSheetYPosition = view.bounds.height - bottomSheetHeight
+
+        if location.y < bottomSheetYPosition {
+            // 상단 영역 터치 시 Extension 닫기
+            print("[ShareExtension] 배경 터치로 닫기")
+            cancelAutoDismissTimer() // 타이머 취소
+            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        }
+    }
+
+    /// 바텀 시트 스타일 UI 설정
+    private func setupBottomSheetUI() {
+        // 바텀시트 높이 설정 (더 높게)
+        let yPosition = view.bounds.height - bottomSheetHeight
+
+        // 하단부 그라데이션 - 흰색 추가 (위에서 아래로 흰색이 많아짐)
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = CGRect(
+            x: 0,
+            y: yPosition,
+            width: view.bounds.width,
+            height: bottomSheetHeight
+        )
+        gradientLayer.colors = [
+            UIColor.clear.cgColor, // 최상단: 완전 투명
+            UIColor(red: 27/255, green: 0/255, blue: 98/255, alpha: 0.2).cgColor,    // #1B0062 - 진한 남보라 (20%)
+            UIColor(red: 83/255, green: 37/255, blue: 203/255, alpha: 0.4).cgColor,  // #5325CB - 선명한 보라 (40%)
+            UIColor(red: 181/255, green: 153/255, blue: 255/255, alpha: 0.6).cgColor, // #B599FF - 밝은 연보라 (60%)
+            UIColor.white.cgColor // 최하단: 흰색 (100%)
+        ]
+        gradientLayer.locations = [0.0, 0.2, 0.4, 0.7, 1.0] // 위→아래로 갈수록 흰색이 많이 차지
+        view.layer.insertSublayer(gradientLayer, at: 0)
+
+        // 바텀 컨테이너 뷰 (하단에 배치)
+        let bottomContainer = UIView()
+        bottomContainer.translatesAutoresizingMaskIntoConstraints = false
+        bottomContainer.backgroundColor = .clear
+        view.addSubview(bottomContainer)
+
+        // 좌측: 메시지 레이블 (흰색 텍스트)
+        let messageLabel = UILabel()
+        messageLabel.text = "게시물을 추가했어요"
+        messageLabel.textColor = .white
+        messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        bottomContainer.addSubview(messageLabel)
+
+        // 우측: "앱에서 보기" 버튼 (투명 배경 + 흰색 텍스트 + 밑줄)
+        let openAppButton = UIButton(type: .system)
+
+        // 밑줄이 있는 텍스트 생성 (흰색)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(ofSize: 14, weight: .medium),
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        let attributedTitle = NSAttributedString(string: "앱에서 보기", attributes: attributes)
+        openAppButton.setAttributedTitle(attributedTitle, for: .normal)
+
+        openAppButton.backgroundColor = .clear
+        openAppButton.addTarget(self, action: #selector(openAppButtonTapped), for: .touchUpInside)
+        openAppButton.translatesAutoresizingMaskIntoConstraints = false
+        bottomContainer.addSubview(openAppButton)
+
+        // Auto Layout 제약조건
+        NSLayoutConstraint.activate([
+            // 바텀 컨테이너: 화면 하단에 배치
+            bottomContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            bottomContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            bottomContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            bottomContainer.heightAnchor.constraint(equalToConstant: 50),
+
+            // 메시지 레이블: 좌측
+            messageLabel.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor),
+            messageLabel.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
+
+            // 버튼: 우측
+            openAppButton.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor),
+            openAppButton.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
+            openAppButton.widthAnchor.constraint(equalToConstant: 100),
+            openAppButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+    }
+
+    @objc private func openAppButtonTapped() {
+        print("[ShareExtension] 앱에서 보기 버튼 클릭됨")
+
+        // 자동 닫기 타이머 취소 (사용자가 버튼 클릭했으므로)
+        cancelAutoDismissTimer()
+
+        guard let url = URL(string: "tripgether://share") else {
+            print("[ShareExtension] ❌ URL Scheme 생성 실패")
+            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            return
+        }
+
+        print("[ShareExtension] URL Scheme: \(url.absoluteString)")
+
+        // iOS 13+ extensionContext.open() 사용
+        extensionContext?.open(url, completionHandler: { [weak self] success in
+            print("[ShareExtension] extensionContext.open 결과: \(success)")
+
+            if !success {
+                print("[ShareExtension] ⚠️ extensionContext.open 실패 - UIApplication 시도")
+
+                // Fallback: UIApplication.shared.open
+                // Extension에서 직접 UIApplication에 접근할 수 없으므로 리플렉션 사용
+                if let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication {
+                    application.open(url, options: [:], completionHandler: { opened in
+                        print("[ShareExtension] UIApplication.open 결과: \(opened)")
+                    })
+                }
+            }
+
+            // Extension 닫기 (0.5초 후)
+            // 앱 전환이 완료될 시간을 확보하기 위한 지연
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            }
+        })
     }
 
     // MARK: - 즉시 처리 모드
@@ -466,42 +623,31 @@ class ShareViewController: UIViewController {
         extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
 
-    /// 저장 성공 후 알림 제거 (UI는 수동으로 닫을 때까지 유지)
-    /// 사용자가 "앱에서 보기" 버튼을 누르거나 스와이프로 닫기 전까지 UI 유지
     private func showSuccessAndDismiss() {
-        print("[ShareExtension] 데이터 저장 완료 - UI는 사용자가 닫을 때까지 유지")
+        print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시됨")
+        // UI는 viewDidLoad에서 이미 설정됨
 
-        // 🎬 바텀 시트 애니메이션: 아래에서 위로 올라오기
-        DispatchQueue.main.async {
-            UIView.animate(
-                withDuration: 0.3,
-                delay: 0,
-                usingSpringWithDamping: 0.8,
-                initialSpringVelocity: 0.5,
-                options: .curveEaseOut,
-                animations: {
-                    // 화면 밖(아래쪽)에서 원래 위치로 이동
-                    self.customContainerView?.transform = .identity
-                },
-                completion: { _ in
-                    print("[ShareExtension] ✅ 바텀 시트 애니메이션 완료")
-                }
-            )
+        // 2.5초 후 자동으로 닫기 타이머 시작
+        startAutoDismissTimer()
+    }
+
+    /// 자동 닫기 타이머 시작 (2.5초 후 자동으로 Extension 닫기)
+    private func startAutoDismissTimer() {
+        print("[ShareExtension] ⏰ 자동 닫기 타이머 시작 (\(autoDismissDelay)초)")
+
+        autoDismissTimer = Timer.scheduledTimer(withTimeInterval: autoDismissDelay, repeats: false) { [weak self] _ in
+            print("[ShareExtension] ⏰ 자동 닫기 타이머 완료 - Extension 닫기")
+            self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
+    }
 
-        // ⚠️ 알림 발송 제거 (커스텀 UI로 대체)
-        // sendLocalNotification()
-
-        // ⚠️ 자동 앱 실행 제거 (사용자가 버튼을 누를 때만 실행)
-        // openMainApp()
-
-        // ⚠️ ���동 닫기 제거 - UI는 ��용자가 수동으로 닫을 때까지 유지
-        // 사용자는 다음 방법으로 닫을 수 있음:
-        // 1. "앱에서 보기" 버튼 클릭 → openAppAndDismiss() 실행
-        // 2. 아래로 스와이프 → handlePanGesture() 실행
-        // 3. 배경 탭 → handleBackgroundTap() 실행
-
-        print("[ShareExtension] ✅ UI 표시 완료 - 사용자 조작 대기 중")
+    /// 자동 닫기 타이머 취소
+    private func cancelAutoDismissTimer() {
+        if autoDismissTimer != nil {
+            print("[ShareExtension] ⏰ 자동 닫기 타이머 취소")
+            autoDismissTimer?.invalidate()
+            autoDismissTimer = nil
+        }
     }
 
     /// Local Notification 발송
@@ -510,7 +656,7 @@ class ShareViewController: UIViewController {
     private func sendLocalNotification() {
         let content = UNMutableNotificationContent()
         content.title = "✓ Tripgether에 저장됨"
-        content.body = "���하여 공유된 콘텐츠를 확인하세요"
+        content.body = "탭하여 공유된 콘텐츠를 확인하세요"
         content.sound = .default
 
         // 즉시 발송 (0.1초 후)
@@ -531,98 +677,35 @@ class ShareViewController: UIViewController {
     }
 
     /// URL Scheme를 통해 메인 앱 실행
-    /// 여러 방법을 순차적으로 시도하여 앱 실행 성공률 극대화
+    /// Share Extension은 직접 앱을 실행할 수 없으므로 UIResponder 체인을 통해 시스템에 요청
     @objc private func openMainApp() {
         guard let url = URL(string: "tripgether://share") else {
             print("[ShareExtension] ❌ URL Scheme 생성 실패")
             return
         }
 
-        print("[ShareExtension] 🚀 메인 앱 실행 시도: \(url.absoluteString)")
+        print("[ShareExtension] URL Scheme 호출: \(url.absoluteString)")
 
-        // iOS 10+ 방���: UIApplication.shared를 통한 canOpenURL 체크 후 open
-        if let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? NSObject {
-            let canOpenSelector = NSSelectorFromString("canOpenURL:")
-            let openSelector = NSSelectorFromString("openURL:options:completionHandler:")
+        // UIResponder 체인을 따라 올라가며 openURL을 수행할 수 있는 객체 찾기
+        var responder: UIResponder? = self as UIResponder
+        let selector = #selector(openURL(_:))
 
-            // canOpenURL 체크
-            if application.responds(to: canOpenSelector),
-               let canOpen = application.perform(canOpenSelector, with: url)?.takeUnretainedValue() as? Bool,
-               canOpen {
-                print("[ShareExtension] ✅ URL Scheme 사용 가능 확인됨")
-
-                // openURL 실행 (iOS 10+ 스타일)
-                // ⚠️ perform은 최대 2개의 with 파라미터만 지원하므로 간소화
-                if application.responds(to: openSelector) {
-                    print("[ShareExtension] ⚠️ UIApplication.open() 호출 시도 (샌드박스 제약으로 실패 가능)")
-                    // perform으로는 3개 인자를 전달할 수 없어 주석 처리
-                    // application.perform(openSelector, with: url, with: options, with: nil)
-                    return
-                }
-            } else {
-                print("[ShareExtension] ⚠️ canOpenURL 체크 실패 - URL Scheme 접근 불가")
-            }
-        }
-
-        // 방법 1 실패: NSExtensionContext.open() 시도 (iOS 13+)
-        print("[ShareExtension] 🔄 Fallback: extensionContext.open() 시도")
-        extensionContext?.open(url, completionHandler: { [weak self] success in
-            if success {
-                print("[ShareExtension] ✅ Method 2 성공: extensionContext.open()")
-            } else {
-                print("[ShareExtension] ⚠️ Method 2 실패: extensionContext.open()")
-                // 최후의 수단: 알림 발송
-                self?.fallbackToNotification()
-            }
-        })
-    }
-
-    /// Selector를 통한 URL 열기 (fallback method)
-    private func openURLViaSelector(_ url: URL) {
-        print("[ShareExtension] 🔄 Method 2 시도: Selector 방식")
-
-        // UIApplication.shared.openURL 호출 시도
-        let selector = NSSelectorFromString("openURL:")
-
-        // UIApplication.shared를 동적으로 가져오기
-        if let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? NSObject {
-            if application.responds(to: selector) {
-                // perform 메서드로 openURL 실행
-                application.perform(selector, with: url)
-                print("[ShareExtension] ✅ Method 2 성공: UIApplication.shared.openURL()")
+        while responder != nil {
+            if let responder = responder, responder.responds(to: selector) && responder != self {
+                print("[ShareExtension] ✅ URL 실행 가능한 Responder 발견")
+                responder.perform(selector, with: url, afterDelay: 0)
                 return
             }
+            responder = responder?.next
         }
 
-        print("[ShareExtension] ⚠️ Method 2 실패: UIApplication 접근 불가")
-
-        // 방법 3: 알림 발송 (최후의 수단)
-        fallbackToNotification()
+        print("[ShareExtension] ⚠️ URL을 실행할 Responder를 찾지 못함")
     }
 
-    /// 알림 발송 (최후의 수단)
-    private func fallbackToNotification() {
-        print("[ShareExtension] 🔄 Method 3 시도: Notification 발송 (fallback)")
-
-        let content = UNMutableNotificationContent()
-        content.title = "✓ Tripgether에 저장됨"
-        content.body = "탭하여 공유된 콘텐츠를 확인하세요"
-        content.sound = .default
-
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        let request = UNNotificationRequest(
-            identifier: "share_completed",
-            content: content,
-            trigger: trigger
-        )
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("[ShareExtension] ❌ Method 3 실패: Notification 발송 실패 - \(error)")
-            } else {
-                print("[ShareExtension] ✅ Method 3 성공: Notification 발송 완료")
-            }
-        }
+    /// URL 열기 (UIResponder 체인의 상위 객체가 실제로 처리)
+    @objc private func openURL(_ url: URL) {
+        // 이 메서드는 셀렉터 탐색용으로만 사용됨
+        // 실제 URL 열기는 UIResponder 체인의 상위 객체(ExtensionContext)가 처리
     }
 
     func getExtension(from url: URL, type: SharedMediaType) -> String {
@@ -715,184 +798,6 @@ class ShareViewController: UIViewController {
     func toData(data: [SharedMediaFile]) -> Data {
         let encodedData = try? JSONEncoder().encode(data)
         return encodedData ?? Data()
-    }
-
-    // MARK: - 커스텀 UI 설정
-
-    /// 커스텀 Share Extension UI 설정
-    /// 앱 대표 컬러(#664BAE) 바텀 시트 스타일의 "게시물을 추가했어요" 메시지와 "앱에서 보기" 버튼 표시
-    /// 사용자가 수동으로 닫기 전까지 UI 유지 (자동 닫기 X)
-    private func setupCustomUI() {
-        // 배경 반투명 처리 (뒤에 공유하는 앱이 보이도록)
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.4)
-
-        // 배경 탭 제스처 추가 (배경 탭 시 닫기)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleBackgroundTap))
-        view.addGestureRecognizer(tapGesture)
-
-        // 컨테이너 뷰 (앱 대표 컬러 #664BAE 바텀 시트)
-        let containerView = UIView()
-        containerView.backgroundColor = UIColor(red: 102/255, green: 75/255, blue: 174/255, alpha: 1.0) // #664BAE (앱 대표 컬러)
-        containerView.layer.cornerRadius = 16
-        containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] // 상단 모서리만 둥글게
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(containerView)
-        self.customContainerView = containerView
-
-        // 🎬 초기 위치: 화면 아래에서 시작 (화면 밖)
-        containerView.transform = CGAffineTransform(translationX: 0, y: 180)
-
-        // 컨테이너 뷰 팬 제스처 추가 (아래로 스와이프 시 닫기)
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
-        containerView.addGestureRecognizer(panGesture)
-
-        // 상단 인디케이터 (스와이프 힌트)
-        let indicatorView = UIView()
-        indicatorView.backgroundColor = UIColor.white.withAlphaComponent(0.5)
-        indicatorView.layer.cornerRadius = 2.5
-        indicatorView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(indicatorView)
-
-        // 아이콘 (체크마크)
-        let iconImageView = UIImageView()
-        iconImageView.image = UIImage(systemName: "checkmark.circle.fill")
-        iconImageView.tintColor = .white
-        iconImageView.contentMode = .scaleAspectFit
-        iconImageView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(iconImageView)
-
-        // 메시지 레이블
-        let messageLabel = UILabel()
-        messageLabel.text = "게시물을 추가했어요"
-        messageLabel.textColor = .white
-        messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        messageLabel.textAlignment = .center
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(messageLabel)
-
-        // "앱에서 보기" 버튼
-        let openAppButton = UIButton(type: .system)
-        openAppButton.setTitle("앱에서 보기", for: .normal)
-        openAppButton.setTitleColor(UIColor(red: 102/255, green: 75/255, blue: 174/255, alpha: 1.0), for: .normal) // #664BAE
-        openAppButton.backgroundColor = .white
-        openAppButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-        openAppButton.layer.cornerRadius = 8
-        openAppButton.addTarget(self, action: #selector(openAppAndDismiss), for: .touchUpInside)
-        openAppButton.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(openAppButton)
-
-        // Auto Layout 제약조건
-        NSLayoutConstraint.activate([
-            // 컨테이너 뷰: 화면 하단에 배치
-            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            containerView.heightAnchor.constraint(equalToConstant: 180),
-
-            // 상단 인디케이터: 스와이프 힌트
-            indicatorView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 8),
-            indicatorView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            indicatorView.widthAnchor.constraint(equalToConstant: 36),
-            indicatorView.heightAnchor.constraint(equalToConstant: 5),
-
-            // 아이콘: 상단 중앙
-            iconImageView.topAnchor.constraint(equalTo: indicatorView.bottomAnchor, constant: 16),
-            iconImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            iconImageView.widthAnchor.constraint(equalToConstant: 32),
-            iconImageView.heightAnchor.constraint(equalToConstant: 32),
-
-            // 메시지 레이블: 아이콘 아래
-            messageLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 12),
-            messageLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
-            messageLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-
-            // 버튼: 하단
-            openAppButton.topAnchor.constraint(equalTo: messageLabel.bottomAnchor, constant: 16),
-            openAppButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            openAppButton.widthAnchor.constraint(equalToConstant: 120),
-            openAppButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
-
-        print("[ShareExtension] ✅ 커스텀 UI 설정 완료 (앱 대표 컬러 #664BAE)")
-    }
-
-    /// 배경 탭 시 Extension 닫기
-    @objc private func handleBackgroundTap() {
-        print("[ShareExtension] 배경 탭으로 Extension 닫기")
-        extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-    }
-
-    /// 팬 제스처 처리 (아래로 스와이프 시 닫기)
-    @objc private func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
-        guard let containerView = customContainerView else { return }
-
-        let translation = gesture.translation(in: view)
-        let velocity = gesture.velocity(in: view)
-
-        switch gesture.state {
-        case .changed:
-            // 아래로만 드래그 가능 (위로는 막기)
-            if translation.y > 0 {
-                containerView.transform = CGAffineTransform(translationX: 0, y: translation.y)
-            }
-
-        case .ended:
-            // 드래그 거리가 100pt 이상이거나 속도가 빠르면 닫기
-            if translation.y > 100 || velocity.y > 500 {
-                print("[ShareExtension] 스와이프로 Extension 닫기")
-                UIView.animate(withDuration: 0.3, animations: {
-                    containerView.transform = CGAffineTransform(translationX: 0, y: self.view.bounds.height)
-                }) { _ in
-                    self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-                }
-            } else {
-                // 원래 위치로 되돌리기
-                UIView.animate(withDuration: 0.3) {
-                    containerView.transform = .identity
-                }
-            }
-
-        case .cancelled, .failed:
-            // 제스처 취소 시 원래 위치로
-            UIView.animate(withDuration: 0.3) {
-                containerView.transform = .identity
-            }
-
-        default:
-            break
-        }
-    }
-
-    /// "앱에서 보기" 버튼 클릭 시: 바로 앱 실행 + Extension 닫기
-    @objc private func openAppAndDismiss() {
-        print("[ShareExtension] '앱에서 보기' 버튼 클릭 - 앱으로 바로 이동 시도")
-
-        guard let url = URL(string: "tripgether://share") else {
-            print("[ShareExtension] ❌ URL Scheme 생성 실패")
-            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-            return
-        }
-
-        // iOS 13+ extensionContext.open() 메서드로 앱 실행
-        extensionContext?.open(url, completionHandler: { [weak self] success in
-            if success {
-                print("[ShareExtension] ✅ 앱 실행 성공!")
-            } else {
-                print("[ShareExtension] ⚠️ extensionContext.open() 실패 - URL Scheme 방식 시도")
-
-                // Fallback: URL Scheme 직접 실행 시도
-                if let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication {
-                    application.open(url, options: [:], completionHandler: { opened in
-                        print("[ShareExtension] UIApplication.open 결과: \(opened)")
-                    })
-                }
-            }
-
-            // Extension 닫기
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-            }
-        })
     }
 
     /// 백그라운드 저장 확인용 디버그 로그 파일 생성
