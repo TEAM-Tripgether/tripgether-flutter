@@ -1,11 +1,184 @@
 {
   "metadata": {
-    "lastUpdated": "2025-10-31T06:00:24Z",
-    "currentVersion": "1.1.2",
+    "lastUpdated": "2025-11-05T01:28:05Z",
+    "currentVersion": "1.1.10",
     "projectType": "flutter",
-    "totalReleases": 19
+    "totalReleases": 26
   },
   "releases": [
+    {
+      "version": "1.1.10",
+      "project_type": "flutter",
+      "date": "2025-11-05",
+      "pr_number": 67,
+      "raw_summary": "Summary by CodeRabbit\n\n\n새로운 기능\n\niOS 공유 확장에서 하단 시트 애니메이션이 개선되었습니다. 부드러운 스프링 애니메이션으로 화면에 표시되는 효과가 추가되었습니다.\n\n\n\n기타\n\n앱 버전이 1.1.10으로 업데이트되었습니다.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "iOS 공유 확장에서 하단 시트 애니메이션이 개선되었습니다. 부드러운 스프링 애니메이션으로 화면에 표시되는 효과가 추가되었습니다."
+          ]
+        },
+        "기타": {
+          "title": "기타",
+          "items": [
+            "앱 버전이 1.1.10으로 업데이트되었습니다."
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.9",
+      "project_type": "flutter",
+      "date": "2025-11-04",
+      "pr_number": 65,
+      "raw_summary": "Summary by CodeRabbit\n변경 사항\n\n\n새로운 기능\n\niOS 공유 확장이 개선된 인터페이스로 리디자인되었습니다. 새로운 사용자 인터페이스로 더 직관적인 공유 환경을 제공합니다.\n이미지, 동영상, 파일, 텍스트 등 다양한 유형의 콘텐츠 공유 기능이 향상되었습니다.\n\n\n\nChores\n\n버전이 v1.1.9로 업데이트되었습니다.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "iOS 공유 확장이 개선된 인터페이스로 리디자인되었습니다. 새로운 사용자 인터페이스로 더 직관적인 공유 환경을 제공합니다.",
+            "이미지, 동영상, 파일, 텍스트 등 다양한 유형의 콘텐츠 공유 기능이 향상되었습니다."
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전이 v1.1.9로 업데이트되었습니다."
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.8",
+      "project_type": "flutter",
+      "date": "2025-11-03",
+      "pr_number": 63,
+      "raw_summary": "Summary by CodeRabbit\n\n\n새로운 기능\n\n입력 필드 외부 영역을 탭하면 키보드가 자동으로 닫힙니다.\n\n\n\n개선 사항\n\n생년월일 입력이 단일 필드에서 자동 형식 지정(YYYY / MM / DD)으로 간편해졌습니다.\n닉네임 입력 페이지의 사용자 인터페이스를 개선했습니다.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "입력 필드 외부 영역을 탭하면 키보드가 자동으로 닫힙니다."
+          ]
+        },
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "생년월일 입력이 단일 필드에서 자동 형식 지정(YYYY / MM / DD)으로 간편해졌습니다.",
+            "닉네임 입력 페이지의 사용자 인터페이스를 개선했습니다."
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.7",
+      "project_type": "flutter",
+      "date": "2025-11-03",
+      "pr_number": 61,
+      "raw_summary": "Summary by CodeRabbit\n업데이트 내용\n\n\n새로운 기능\n\n온보딩 화면의 진행률 표시기를 새로운 디자인으로 개선\n온보딩 중 시스템 뒤로가기 버튼 네비게이션 개선\n\n\n\n버그 수정\n\n첫 로그인 사용자가 올바르게 온보딩 플로우로 이동하도록 수정\n\n\n\n버전\n\n1.1.7로 업데이트",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "온보딩 화면의 진행률 표시기를 새로운 디자인으로 개선",
+            "온보딩 중 시스템 뒤로가기 버튼 네비게이션 개선"
+          ]
+        },
+        "버그_수정": {
+          "title": "버그 수정",
+          "items": [
+            "첫 로그인 사용자가 올바르게 온보딩 플로우로 이동하도록 수정"
+          ]
+        },
+        "버전": {
+          "title": "버전",
+          "items": [
+            "1.1.7로 업데이트"
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.6",
+      "project_type": "flutter",
+      "date": "2025-11-03",
+      "pr_number": 59,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n버그 수정\n\n날짜 입력 필드에서 백스페이스 및 중간 입력 처리 개선\n\n\n\nChores\n\n버전을 1.1.6으로 업데이트",
+      "parsed_changes": {
+        "버그_수정": {
+          "title": "버그 수정",
+          "items": [
+            "날짜 입력 필드에서 백스페이스 및 중간 입력 처리 개선"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전을 1.1.6으로 업데이트"
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.5",
+      "project_type": "flutter",
+      "date": "2025-11-03",
+      "pr_number": 57,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트 v1.1.5\n\n\nDocumentation\n\n프로필 업데이트 API 관련 문서 추가\n\n\n\nBug Fixes\n\n생년월일 입력 시 키보드 조작성 개선\n별명 입력 시 키보드 자동 해제 추가\n\n\n\nChores\n\n앱 버전을 1.1.5로 업데이트",
+      "parsed_changes": {
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "프로필 업데이트 API 관련 문서 추가"
+          ]
+        },
+        "bug_fixes": {
+          "title": "Bug Fixes",
+          "items": [
+            "생년월일 입력 시 키보드 조작성 개선",
+            "별명 입력 시 키보드 자동 해제 추가"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "앱 버전을 1.1.5로 업데이트"
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.4",
+      "project_type": "flutter",
+      "date": "2025-11-03",
+      "pr_number": 55,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n새로운 기능\n\nSNS 로그인 옵션 확대 (카카오, 네이버 추가)\n5단계 온보딩 프로세스 개선 (닉네임, 성별, 생일, 관심사 선택)\n관심사 카테고리 확대 및 재편성\n\n\n\n스타일\n\n로그인 화면 재디자인 (흰색 배경, SNS 중심 레이아웃)\nUI 색상 및 버튼 스타일 업데이트\n온보딩 화면 시각적 개선\n\n\n\n문서\n\n다국어 지원 확대 (영어/한국어 로컬라이제이션 추가)",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "SNS 로그인 옵션 확대 (카카오, 네이버 추가)",
+            "5단계 온보딩 프로세스 개선 (닉네임, 성별, 생일, 관심사 선택)",
+            "관심사 카테고리 확대 및 재편성"
+          ]
+        },
+        "스타일": {
+          "title": "스타일",
+          "items": [
+            "로그인 화면 재디자인 (흰색 배경, SNS 중심 레이아웃)",
+            "UI 색상 및 버튼 스타일 업데이트",
+            "온보딩 화면 시각적 개선"
+          ]
+        },
+        "문서": {
+          "title": "문서",
+          "items": [
+            "다국어 지원 확대 (영어/한국어 로컬라이제이션 추가)"
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.2",
       "project_type": "flutter",
