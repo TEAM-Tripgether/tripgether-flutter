@@ -32,6 +32,9 @@ class ShareViewController: UIViewController {
     private let autoDismissDelay: TimeInterval = 5.0 // 5초 후 자동 닫기
     private var autoDismissTimer: Timer?
 
+    // 🔧 메모리 관리: 그라데이션 레이어를 프로퍼티로 저장하여 명시적으로 정리
+    private var gradientLayer: CAGradientLayer?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -54,8 +57,50 @@ class ShareViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        print("[ShareExtension] 🎬 viewDidAppear 호출됨")
+
         // 부모 뷰 계층을 모두 투명하게 만들기
         makeParentViewsTransparent()
+
+        // 🔧 TestFlight 이슈 해결: viewDidAppear에서 UI 강제 표시
+        // 프로덕션 환경에서는 viewDidLoad만으로는 UI가 제대로 표시되지 않을 수 있음
+        print("[ShareExtension] 🔄 UI 가시성 강제 적용")
+
+        // 뷰 계층 강제 업데이트
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+
+        // 모든 서브뷰도 강제 표시
+        view.subviews.forEach { subview in
+            subview.isHidden = false
+            subview.alpha = 1.0
+            subview.setNeedsLayout()
+            subview.layoutIfNeeded()
+        }
+
+        print("[ShareExtension] ✅ viewDidAppear 완료 - UI 표시됨")
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        print("[ShareExtension] 🚪 viewDidDisappear 호출됨 - Extension 종료")
+
+        // 🔧 Flutter 문서 권장사항: Extension 종료 보장
+        // Extension이 종료될 때 명시적으로 메인 앱으로 제어권 반환
+        extensionContext?.cancelRequest(withError: NSError(domain: "ShareExtension", code: 0, userInfo: nil))
+    }
+
+    deinit {
+        print("[ShareExtension] 🗑️ deinit 호출됨 - 메모리 해제")
+
+        // 🔧 메모리 관리: 그라데이션 레이어 명시적 제거
+        gradientLayer?.removeFromSuperlayer()
+        gradientLayer = nil
+
+        // 타이머 정리
+        autoDismissTimer?.invalidate()
+        autoDismissTimer = nil
     }
 
     /// 부모 뷰 계층을 투명하게 만들기
@@ -84,7 +129,6 @@ class ShareViewController: UIViewController {
         if location.y < bottomSheetYPosition {
             // 상단 영역 터치 시 Extension 닫기
             print("[ShareExtension] 배경 터치로 닫기")
-            cancelAutoDismissTimer() // 타이머 취소
             extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
     }
@@ -95,22 +139,27 @@ class ShareViewController: UIViewController {
         let yPosition = view.bounds.height - bottomSheetHeight
 
         // 하단부 그라데이션 - 흰색 추가 (위에서 아래로 흰색이 많아짐)
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = CGRect(
+        // 🔧 메모리 관리: 프로퍼티에 저장하여 나중에 명시적으로 제거
+        gradientLayer = CAGradientLayer()
+        gradientLayer?.frame = CGRect(
             x: 0,
             y: yPosition,
             width: view.bounds.width,
             height: bottomSheetHeight
         )
-        gradientLayer.colors = [
+        gradientLayer?.colors = [
             UIColor.clear.cgColor, // 최상단: 완전 투명
             UIColor(red: 27/255, green: 0/255, blue: 98/255, alpha: 0.2).cgColor,    // #1B0062 - 진한 남보라 (20%)
             UIColor(red: 83/255, green: 37/255, blue: 203/255, alpha: 0.4).cgColor,  // #5325CB - 선명한 보라 (40%)
             UIColor(red: 181/255, green: 153/255, blue: 255/255, alpha: 0.6).cgColor, // #B599FF - 밝은 연보라 (60%)
             UIColor.white.cgColor // 최하단: 흰색 (100%)
         ]
-        gradientLayer.locations = [0.0, 0.2, 0.4, 0.7, 1.0] // 위→아래로 갈수록 흰색이 많이 차지
-        view.layer.insertSublayer(gradientLayer, at: 0)
+        gradientLayer?.locations = [0.0, 0.2, 0.4, 0.7, 1.0] // 위→아래로 갈수록 흰색이 많이 차지
+
+        // 레이어 추가
+        if let layer = gradientLayer {
+            view.layer.insertSublayer(layer, at: 0)
+        }
 
         // 바텀 컨테이너 뷰 (하단에 배치)
         let bottomContainer = UIView()
@@ -165,9 +214,6 @@ class ShareViewController: UIViewController {
 
     @objc private func openAppButtonTapped() {
         print("[ShareExtension] 앱에서 보기 버튼 클릭됨")
-
-        // 자동 닫기 타이머 취소 (사용자가 버튼 클릭했으므로)
-        cancelAutoDismissTimer()
 
         guard let url = URL(string: "tripgether://share") else {
             print("[ShareExtension] ❌ URL Scheme 생성 실패")
@@ -624,42 +670,31 @@ class ShareViewController: UIViewController {
     }
 
     private func showSuccessAndDismiss() {
-        print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시됨")
-        // UI는 viewDidLoad에서 이미 설정됨
+        print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시")
 
-        // 5초 후 자동으로 닫기 타이머 시작
-        startAutoDismissTimer()
-    }
+        // 🔧 TestFlight 이슈 해결 핵심:
+        // 비동기 작업이 완료된 시점에는 이미 UI가 준비되어 있어야 함
+        // 하지만 iOS가 Extension을 빠르게 종료하려고 하므로,
+        // 명시적으로 UI를 강제 표시하고 레이아웃을 즉시 적용
 
-    /// 자동 닫기 타이머 시작 (5초 후 자동으로 Extension 닫기)
-    private func startAutoDismissTimer() {
-        // 기존 타이머가 있으면 먼저 취소
-        cancelAutoDismissTimer()
-
-        print("[ShareExtension] ⏰ 자동 닫기 타이머 시작 (\(autoDismissDelay)초)")
-
-        // 메인 스레드에서 타이머 실행 보장
+        // 메인 스레드에서 즉시 실행
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
-            self.autoDismissTimer = Timer.scheduledTimer(withTimeInterval: self.autoDismissDelay, repeats: false) { [weak self] _ in
-                print("[ShareExtension] ⏰ 자동 닫기 타이머 완료 - Extension 닫기")
-                self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-            }
+            print("[ShareExtension] 🔄 UI 강제 업데이트 시작")
 
-            // 타이머를 RunLoop에 추가하여 확실히 실행되도록 보장
-            if let timer = self.autoDismissTimer {
-                RunLoop.main.add(timer, forMode: .common)
-            }
-        }
-    }
+            // 모든 서브뷰를 강제로 레이아웃
+            self.view.setNeedsLayout()
+            self.view.layoutIfNeeded()
 
-    /// 자동 닫기 타이머 취소
-    private func cancelAutoDismissTimer() {
-        if autoDismissTimer != nil {
-            print("[ShareExtension] ⏰ 자동 닫기 타이머 취소")
-            autoDismissTimer?.invalidate()
-            autoDismissTimer = nil
+            // 부모 뷰도 강제 레이아웃
+            self.view.superview?.setNeedsLayout()
+            self.view.superview?.layoutIfNeeded()
+
+            print("[ShareExtension] ✅ 바텀 시트 UI 표시 완료 - 사용자 액션 대기 중")
+
+            // 사용자가 "앱에서 보기" 버튼을 누르거나 배경을 터치할 때까지 유지
+            // 타이머 없이 수동 닫기 방식 사용
         }
     }
 
