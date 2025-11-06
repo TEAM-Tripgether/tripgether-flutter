@@ -1,11 +1,38 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-05T14:40:15Z",
-    "currentVersion": "1.1.12",
+    "lastUpdated": "2025-11-06T14:27:11Z",
+    "currentVersion": "1.1.13",
     "projectType": "flutter",
-    "totalReleases": 28
+    "totalReleases": 29
   },
   "releases": [
+    {
+      "version": "1.1.13",
+      "project_type": "flutter",
+      "date": "2025-11-06",
+      "pr_number": 73,
+      "raw_summary": "Summary by CodeRabbit\n\n\nBug Fixes\n\niOS 공유 확장의 UI 안정성 및 메모리 관리 개선\n\n\n\nDocumentation\n\n프로젝트 버전 정보 업데이트\n\n\n\nChores\n\n패키지 버전을 1.1.13으로 업데이트",
+      "parsed_changes": {
+        "bug_fixes": {
+          "title": "Bug Fixes",
+          "items": [
+            "iOS 공유 확장의 UI 안정성 및 메모리 관리 개선"
+          ]
+        },
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "프로젝트 버전 정보 업데이트"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "패키지 버전을 1.1.13으로 업데이트"
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.12",
       "project_type": "flutter",
