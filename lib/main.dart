@@ -60,30 +60,61 @@ void main() async {
 /// - 환경별(개발/스테이징/프로덕션) Firebase 프로젝트를 쉽게 전환 가능
 Future<void> _initializeFirebase() async {
   try {
+    // .env 파일에서 Firebase 키 읽기 (널 체크 포함)
+    final apiKey = Platform.isAndroid
+        ? dotenv.env['FIREBASE_ANDROID_API_KEY']
+        : dotenv.env['FIREBASE_IOS_API_KEY'];
+    final appId = Platform.isAndroid
+        ? dotenv.env['FIREBASE_ANDROID_APP_ID']
+        : dotenv.env['FIREBASE_IOS_APP_ID'];
+    final messagingSenderId = dotenv.env['FIREBASE_MESSAGING_SENDER_ID'];
+    final projectId = dotenv.env['FIREBASE_PROJECT_ID'];
+    final storageBucket = dotenv.env['FIREBASE_STORAGE_BUCKET'];
+    final iosBundleId = dotenv.env['FIREBASE_IOS_BUNDLE_ID'];
+
+    // 필수 값 검증
+    if (apiKey == null || appId == null || messagingSenderId == null ||
+        projectId == null || storageBucket == null) {
+      debugPrint('❌ Firebase 초기화 실패: .env 파일에 필수 키가 없습니다');
+      debugPrint('   - FIREBASE_${Platform.isAndroid ? 'ANDROID' : 'IOS'}_API_KEY: ${apiKey != null ? '✓' : '✗'}');
+      debugPrint('   - FIREBASE_${Platform.isAndroid ? 'ANDROID' : 'IOS'}_APP_ID: ${appId != null ? '✓' : '✗'}');
+      debugPrint('   - FIREBASE_MESSAGING_SENDER_ID: ${messagingSenderId != null ? '✓' : '✗'}');
+      debugPrint('   - FIREBASE_PROJECT_ID: ${projectId != null ? '✓' : '✗'}');
+      debugPrint('   - FIREBASE_STORAGE_BUCKET: ${storageBucket != null ? '✓' : '✗'}');
+      return;
+    }
+
+    // iOS인 경우 Bundle ID도 필수
+    if (!Platform.isAndroid && iosBundleId == null) {
+      debugPrint('❌ Firebase 초기화 실패: iOS는 FIREBASE_IOS_BUNDLE_ID가 필수입니다');
+      return;
+    }
+
     // 플랫폼별 FirebaseOptions 구성
     final options = Platform.isAndroid
         ? FirebaseOptions(
-            apiKey: dotenv.env['FIREBASE_ANDROID_API_KEY']!,
-            appId: dotenv.env['FIREBASE_ANDROID_APP_ID']!,
-            messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
-            projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
-            storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+            apiKey: apiKey,
+            appId: appId,
+            messagingSenderId: messagingSenderId,
+            projectId: projectId,
+            storageBucket: storageBucket,
           )
         : FirebaseOptions(
-            apiKey: dotenv.env['FIREBASE_IOS_API_KEY']!,
-            appId: dotenv.env['FIREBASE_IOS_APP_ID']!,
-            messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
-            projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
-            storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
-            iosBundleId: dotenv.env['FIREBASE_IOS_BUNDLE_ID']!,
+            apiKey: apiKey,
+            appId: appId,
+            messagingSenderId: messagingSenderId,
+            projectId: projectId,
+            storageBucket: storageBucket,
+            iosBundleId: iosBundleId!,
           );
 
     // Firebase 초기화 실행
     await Firebase.initializeApp(options: options);
 
     debugPrint('✅ Firebase 초기화 성공 (${Platform.isAndroid ? 'Android' : 'iOS'})');
-  } catch (e) {
+  } catch (e, stackTrace) {
     debugPrint('❌ Firebase 초기화 실패: $e');
+    debugPrint('스택 트레이스: $stackTrace');
     // Firebase 초기화 실패 시에도 앱은 계속 실행됨 (FCM 기능만 비활성화)
   }
 }
