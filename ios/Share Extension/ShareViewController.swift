@@ -15,6 +15,10 @@ import Photos
 import AVFoundation
 import UserNotifications
 
+/// Share Extension의 메인 뷰 컨트롤러
+/// @objc 어노테이션: Swift-Objective-C 브릿징을 명확하게 하여
+/// iOS 시스템이 NSExtensionPrincipalClass로부터 이 클래스를 올바르게 인식하도록 함
+@objc(ShareViewController)
 class ShareViewController: UIViewController {
     // IMPORTANT: 메인 앱의 Bundle Identifier와 동일하게 설정 (App Group ID 접두사로도 사용)
     let hostAppBundleIdentifier = "com.tripgether.alom"
