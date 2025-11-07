@@ -25,25 +25,29 @@
                    <!--TODO: Add this flag, if you want to support sharing images into your app-->
                    <string>Image</string>
                </array>
+
+            <!-- ⚠️ TRUEPREDICATE: 디버깅 전용 (TestFlight 테스트만 가능, App Store 제출 불가) -->
+            <!-- 목적: NSExtensionActivationRule이 문제인지 확인 -->
+            <!-- 테스트 후 반드시 원래 규칙으로 복구 필요 -->
+            <key>NSExtensionActivationRule</key>
+            <string>TRUEPREDICATE</string>
+
+            <!-- 원래 규칙 (백업) - 테스트 후 복구용 -->
+            <!--
             <key>NSExtensionActivationRule</key>
             <dict>
-                <!--TODO: Add this flag, if you want to support sharing text into your app-->
                 <key>NSExtensionActivationSupportsText</key>
                 <true/>
-                <!--TODO: Add this tag, if you want to support sharing urls into your app-->
             	<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
             	<integer>1</integer>
-            	<!--TODO: Add this flag, if you want to support sharing images into your app-->
                 <key>NSExtensionActivationSupportsImageWithMaxCount</key>
                 <integer>100</integer>
-                <!--TODO: Add this flag, if you want to support sharing video into your app-->
                 <key>NSExtensionActivationSupportsMovieWithMaxCount</key>
                 <integer>100</integer>
-                <!--TODO: Add this flag, if you want to support sharing other files into your app-->
-                <!--Change the integer to however many files you want to be able to share at a time-->
 				<key>NSExtensionActivationSupportsFileWithMaxCount</key>
 				<integer>1</integer>
             </dict>
+            -->
         </dict>
 		<!-- NSExtensionPrincipalClass: 모듈 이름 제거하여 @objc 어노테이션과 일치시킴 -->
 		<!-- Swift-Objective-C 브릿징을 명확하게 하여 iOS 시스템의 Extension 인식 개선 -->
