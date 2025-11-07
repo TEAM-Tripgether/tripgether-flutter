@@ -1,11 +1,27 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-06T14:27:11Z",
-    "currentVersion": "1.1.13",
+    "lastUpdated": "2025-11-07T08:27:50Z",
+    "currentVersion": "1.1.14",
     "projectType": "flutter",
-    "totalReleases": 29
+    "totalReleases": 30
   },
   "releases": [
+    {
+      "version": "1.1.14",
+      "project_type": "flutter",
+      "date": "2025-11-07",
+      "pr_number": 75,
+      "raw_summary": "Summary by CodeRabbit\nRelease Notes\n\nChores\n\n버전을 1.1.14로 업데이트했습니다.\niOS 플랫폼에서 공유 기능의 호환성을 개선했습니다.",
+      "parsed_changes": {
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전을 1.1.14로 업데이트했습니다.",
+            "iOS 플랫폼에서 공유 기능의 호환성을 개선했습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.13",
       "project_type": "flutter",
