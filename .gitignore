@@ -61,6 +61,10 @@ app.*.map.json
 # iOS 환경 변수 설정 파일 (빌드 시 자동 생성됨 - Git에 업로드 금지)
 /ios/Flutter/GoogleEnv.xcconfig
 
+# Firebase 설정 파일 (민감한 인증 정보 포함 - Git에 업로드 절대 금지)
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist
+
 # Claude Code (프로젝트 설정 파일과 캐시)
 .claude/
 .claude-plugins/
