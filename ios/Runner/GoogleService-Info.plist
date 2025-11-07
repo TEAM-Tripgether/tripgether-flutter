@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!--
+  이 파일은 Firebase 동적 초기화를 위한 더미 템플릿입니다.
+  실제 Firebase 설정은 .env 파일에서 관리됩니다.
+  민감한 API 키를 Git에 올리지 않기 위해 이 방식을 사용합니다.
+-->
+<dict>
+	<key>API_KEY</key>
+	<string>PLACEHOLDER_API_KEY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>000000000000</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.tripgether.alom</string>
+	<key>PROJECT_ID</key>
+	<string>tripgether-project</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tripgether-project.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:000000000000:ios:0000000000000000000000</string>
+</dict>
+</plist>

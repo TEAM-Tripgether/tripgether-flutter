@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'core/router/router.dart';
 import 'core/theme/app_theme.dart';
@@ -26,6 +28,9 @@ void main() async {
   // 환경 변수 로드 (.env 파일)
   await dotenv.load(fileName: ".env");
 
+  // Firebase 초기화 (.env 값으로 동적 초기화)
+  await _initializeFirebase();
+
   // Google Sign-In 초기화
   await GoogleAuthService.initialize();
 
@@ -44,6 +49,43 @@ void main() async {
       child: MyApp(router: router),
     ),
   );
+}
+
+/// Firebase 동적 초기화
+/// .env 파일에서 읽은 키 값으로 플랫폼별 FirebaseOptions를 구성하여 초기화합니다.
+///
+/// **장점**:
+/// - google-services.json과 GoogleService-Info.plist 파일의 민감한 키를 Git에 올리지 않아도 됨
+/// - .env 파일만 팀원들에게 공유하면 됨
+/// - 환경별(개발/스테이징/프로덕션) Firebase 프로젝트를 쉽게 전환 가능
+Future<void> _initializeFirebase() async {
+  try {
+    // 플랫폼별 FirebaseOptions 구성
+    final options = Platform.isAndroid
+        ? FirebaseOptions(
+            apiKey: dotenv.env['FIREBASE_ANDROID_API_KEY']!,
+            appId: dotenv.env['FIREBASE_ANDROID_APP_ID']!,
+            messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+            projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+            storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+          )
+        : FirebaseOptions(
+            apiKey: dotenv.env['FIREBASE_IOS_API_KEY']!,
+            appId: dotenv.env['FIREBASE_IOS_APP_ID']!,
+            messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+            projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+            storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+            iosBundleId: dotenv.env['FIREBASE_IOS_BUNDLE_ID']!,
+          );
+
+    // Firebase 초기화 실행
+    await Firebase.initializeApp(options: options);
+
+    debugPrint('✅ Firebase 초기화 성공 (${Platform.isAndroid ? 'Android' : 'iOS'})');
+  } catch (e) {
+    debugPrint('❌ Firebase 초기화 실패: $e');
+    // Firebase 초기화 실패 시에도 앱은 계속 실행됨 (FCM 기능만 비활성화)
+  }
 }
 
 /// 앱의 루트 위젯 - PRD.md 구조에 따른 메인 앱 설정
