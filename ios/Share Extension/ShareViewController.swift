@@ -42,19 +42,10 @@ class ShareViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // ✨ 바텀 시트 UI 모드
-        print("[ShareExtension] 🚀 바텀 시트 UI 모드 시작")
+        // ✅ 알림 전용 모드 (바텀 시트 UI 비활성화)
+        print("[ShareExtension] 🚀 알림 전용 모드 시작")
 
-        // 배경: 투명
-        view.backgroundColor = .clear
-
-        // 바텀 시트 스타일 UI 설정
-        setupBottomSheetUI()
-
-        // 상단 영역 터치 시 닫기 제스처 추가
-        setupDismissGesture()
-
-        // 백그라운드에서 데이터 처리
+        // 공유 데이터 즉시 처리
         processSharedContentImmediately()
     }
 
@@ -674,31 +665,16 @@ class ShareViewController: UIViewController {
     }
 
     private func showSuccessAndDismiss() {
-        print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시")
+        print("[ShareExtension] ✅ 데이터 저장 완료 - 알림 전용 모드")
 
-        // 🔧 TestFlight 이슈 해결 핵심:
-        // 비동기 작업이 완료된 시점에는 이미 UI가 준비되어 있어야 함
-        // 하지만 iOS가 Extension을 빠르게 종료하려고 하므로,
-        // 명시적으로 UI를 강제 표시하고 레이아웃을 즉시 적용
+        // 🔔 Local Notification 발송
+        sendLocalNotification()
 
-        // 메인 스레드에서 즉시 실행
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-
-            print("[ShareExtension] 🔄 UI 강제 업데이트 시작")
-
-            // 모든 서브뷰를 강제로 레이아웃
-            self.view.setNeedsLayout()
-            self.view.layoutIfNeeded()
-
-            // 부모 뷰도 강제 레이아웃
-            self.view.superview?.setNeedsLayout()
-            self.view.superview?.layoutIfNeeded()
-
-            print("[ShareExtension] ✅ 바텀 시트 UI 표시 완료 - 사용자 액션 대기 중")
-
-            // 사용자가 "앱에서 보기" 버튼을 누르거나 배경을 터치할 때까지 유지
-            // 타이머 없이 수동 닫기 방식 사용
+        // Extension 즉시 종료 (0.5초 후)
+        // 알림이 표시될 시간 확보
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            print("[ShareExtension] 🚪 Extension 종료")
+            self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
     }
 
