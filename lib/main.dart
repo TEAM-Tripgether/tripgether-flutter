@@ -1,46 +1,86 @@
-import 'dart:io' show Platform;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:tripgether/core/services/fcm/firebase_messaging_service.dart';
+import 'package:tripgether/core/services/fcm/local_notifications_service.dart';
 
+import 'firebase_options.dart';
 import 'core/router/router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/services/sharing_service.dart';
 import 'core/services/auth/google_auth_service.dart';
+import 'features/auth/providers/user_provider.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
-  // Flutter 바인딩 초기화
+  // 1. Flutter 바인딩 초기화 (최우선 - 모든 네이티브 플러그인 사용 전 필수)
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 화면 방향을 세로 모드(정방향)로 고정
+  // 2. 환경 변수 로드 (.env 파일)
+  // 다른 서비스들이 환경 변수를 참조할 수 있으므로 먼저 로드
+  await dotenv.load(fileName: ".env");
+
+  // 3. FlutterSecureStorage 워밍업 (iOS Keychain 활성화)
+  // iOS에서 Keychain 첫 접근 시 발생할 수 있는 블로킹을 미리 해결
+  // 이를 통해 UserNotifier.build()에서의 Storage 읽기가 즉시 완료됨
+  const storage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
+  try {
+    await storage.read(key: 'warmup_key');
+    debugPrint('✅ FlutterSecureStorage 워밍업 완료');
+  } catch (e) {
+    debugPrint('✅ FlutterSecureStorage 워밍업 완료 (에러 무시): $e');
+  }
+
+  // 4. 화면 방향을 세로 모드(정방향)로 고정
   // 앱 전체에서 가로 모드를 비활성화하여 일관된 UX 제공
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // 정방향 세로 모드만 허용
   ]);
 
-  // 환경 변수 로드 (.env 파일)
-  await dotenv.load(fileName: ".env");
+  // 5. Firebase 초기화 (firebase_options.dart에서 플랫폼별 설정 자동 선택)
+  // FCM 서비스의 의존성이므로 먼저 초기화
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Firebase 초기화 (.env 값으로 동적 초기화)
-  await _initializeFirebase();
+  // 6. Local Notifications 초기화
+  // Firebase Messaging이 이 서비스를 의존하므로 먼저 초기화
+  final localNotificationsService = LocalNotificationsService.instance();
+  await localNotificationsService.init();
 
-  // Google Sign-In 초기화
+  // 7. Firebase Messaging 초기화
+  // Firebase와 Local Notifications에 의존
+  final firebaseMessagingService = FirebaseMessagingService.instance();
+  await firebaseMessagingService.init(
+    localNotificationsService: localNotificationsService,
+  );
+
+  // 8. Google Sign-In 초기화
+  // 환경 변수의 Google OAuth 설정을 사용
   await GoogleAuthService.initialize();
 
-  // 공유 서비스 초기화 (앱 시작 시 Share Extension 데이터 확인)
+  // 9. 공유 서비스 초기화 (앱 시작 시 Share Extension 데이터 확인)
   await SharingService.instance.initialize();
 
-  // ProviderContainer 생성 (GoRouter refreshListenable을 위해 필요)
+  // 10. ProviderContainer 생성 (Riverpod 상태 관리를 위해 필요)
   final container = ProviderContainer();
 
-  // GoRouter 생성 (UserNotifier 상태 변화 감지 활성화)
+  // 11. ⭐ UserNotifier 사전 초기화 (Router 생성 데드락 방지)
+  // GoRouterRefreshNotifier.listen()과 RouteGuard.isAuthenticated()가
+  // 동기적으로 userNotifierProvider를 읽기 전에 async build()를 완료시킴
+  // 이를 통해 Router 생성 시 이미 초기화된 provider를 사용하므로 블로킹 없음
+  await container.read(userNotifierProvider.future);
+
+  // 12. GoRouter 생성 (UserNotifier 상태 변화 감지 활성화)
+  // UserNotifier가 이미 초기화되어 있으므로 동기적 listen() 호출이 안전함
+  // GoRouterRefreshNotifier가 UserNotifier 상태 변화를 감지하여 redirect를 재실행
   final router = AppRouter.createRouter(container);
 
   runApp(
@@ -49,74 +89,6 @@ void main() async {
       child: MyApp(router: router),
     ),
   );
-}
-
-/// Firebase 동적 초기화
-/// .env 파일에서 읽은 키 값으로 플랫폼별 FirebaseOptions를 구성하여 초기화합니다.
-///
-/// **장점**:
-/// - google-services.json과 GoogleService-Info.plist 파일의 민감한 키를 Git에 올리지 않아도 됨
-/// - .env 파일만 팀원들에게 공유하면 됨
-/// - 환경별(개발/스테이징/프로덕션) Firebase 프로젝트를 쉽게 전환 가능
-Future<void> _initializeFirebase() async {
-  try {
-    // .env 파일에서 Firebase 키 읽기 (널 체크 포함)
-    final apiKey = Platform.isAndroid
-        ? dotenv.env['FIREBASE_ANDROID_API_KEY']
-        : dotenv.env['FIREBASE_IOS_API_KEY'];
-    final appId = Platform.isAndroid
-        ? dotenv.env['FIREBASE_ANDROID_APP_ID']
-        : dotenv.env['FIREBASE_IOS_APP_ID'];
-    final messagingSenderId = dotenv.env['FIREBASE_MESSAGING_SENDER_ID'];
-    final projectId = dotenv.env['FIREBASE_PROJECT_ID'];
-    final storageBucket = dotenv.env['FIREBASE_STORAGE_BUCKET'];
-    final iosBundleId = dotenv.env['FIREBASE_IOS_BUNDLE_ID'];
-
-    // 필수 값 검증
-    if (apiKey == null || appId == null || messagingSenderId == null ||
-        projectId == null || storageBucket == null) {
-      debugPrint('❌ Firebase 초기화 실패: .env 파일에 필수 키가 없습니다');
-      debugPrint('   - FIREBASE_${Platform.isAndroid ? 'ANDROID' : 'IOS'}_API_KEY: ${apiKey != null ? '✓' : '✗'}');
-      debugPrint('   - FIREBASE_${Platform.isAndroid ? 'ANDROID' : 'IOS'}_APP_ID: ${appId != null ? '✓' : '✗'}');
-      debugPrint('   - FIREBASE_MESSAGING_SENDER_ID: ${messagingSenderId != null ? '✓' : '✗'}');
-      debugPrint('   - FIREBASE_PROJECT_ID: ${projectId != null ? '✓' : '✗'}');
-      debugPrint('   - FIREBASE_STORAGE_BUCKET: ${storageBucket != null ? '✓' : '✗'}');
-      return;
-    }
-
-    // iOS인 경우 Bundle ID도 필수
-    if (!Platform.isAndroid && iosBundleId == null) {
-      debugPrint('❌ Firebase 초기화 실패: iOS는 FIREBASE_IOS_BUNDLE_ID가 필수입니다');
-      return;
-    }
-
-    // 플랫폼별 FirebaseOptions 구성
-    final options = Platform.isAndroid
-        ? FirebaseOptions(
-            apiKey: apiKey,
-            appId: appId,
-            messagingSenderId: messagingSenderId,
-            projectId: projectId,
-            storageBucket: storageBucket,
-          )
-        : FirebaseOptions(
-            apiKey: apiKey,
-            appId: appId,
-            messagingSenderId: messagingSenderId,
-            projectId: projectId,
-            storageBucket: storageBucket,
-            iosBundleId: iosBundleId!,
-          );
-
-    // Firebase 초기화 실행
-    await Firebase.initializeApp(options: options);
-
-    debugPrint('✅ Firebase 초기화 성공 (${Platform.isAndroid ? 'Android' : 'iOS'})');
-  } catch (e, stackTrace) {
-    debugPrint('❌ Firebase 초기화 실패: $e');
-    debugPrint('스택 트레이스: $stackTrace');
-    // Firebase 초기화 실패 시에도 앱은 계속 실행됨 (FCM 기능만 비활성화)
-  }
 }
 
 /// 앱의 루트 위젯 - PRD.md 구조에 따른 메인 앱 설정
