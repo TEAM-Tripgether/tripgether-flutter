@@ -1,1106 +1,650 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## 🔴 최우선 규칙 (Priority 0)
 
-## Project Overview
+### Git 커밋 메시지 규칙
 
-Tripgether is a Flutter mobile application focused on travel planning and collaboration. The app enables users to discover and save travel content from social media, organize places, and collaborate on travel planning. Core features include Google OAuth authentication, content sharing from external apps, and organized travel content management.
+**형식**:
+```
+브랜치명 : feat/fix/etc : 변경 내용 설명 GitHub이슈링크
+```
 
-## Technology Stack & Architecture
+**예시**:
+```
+firebase의 FCM 탑재 : feat : FCM 푸시 알림 기능 구현 https://github.com/TEAM-Tripgether/tripgether-flutter/issues/77
 
-**State Management**: Flutter Riverpod with @riverpod annotations for code generation
-**Routing**: GoRouter with centralized route management via `AppRoutes` class in `lib/core/router/routes.dart`
-**Authentication**: Google Sign-In 7.2.0 with event-based API (Completer pattern)
-**Network**: Dio + Retrofit for REST API communication
-**UI Framework**: Material Design with custom Pretendard font family
-**Responsiveness**: flutter_screenutil for consistent sizing across devices
-**Image Caching**: cached_network_image for performance optimization
-**Loading Effects**: Shimmer for skeleton loading screens
-**Animations**: Lottie, Flutter Animate, and Staggered Animations
-**Internationalization**: flutter_localizations with ARB files for multi-language support
-**Content Sharing**: receive_sharing_intent for receiving shared content from other apps
-**Security**: Flutter Secure Storage for sensitive data
+온보딩 화면 수정 : fix : 성별 선택 버튼 오류 수정 #45
+```
 
-## Development Commands
+**패턴 구성**:
+- **브랜치명**: 현재 브랜치 이름 (예: `firebase의 FCM 탑재`, `온보딩 화면 수정`)
+- **타입**: `feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore` 등
+- **변경 내용**: 무엇을 변경했는지 간결하게 설명
+- **이슈 링크**: GitHub 전체 URL 또는 `#이슈번호`
 
-### Core Flutter Commands
+**절대 금지**:
+- ❌ `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
+- ❌ `Co-Authored-By: Claude <noreply@anthropic.com>`
+- ❌ 불필요한 태그나 서명 추가
+
+## 프로젝트 개요
+
+**Tripgether**: Flutter 여행 계획 협업 앱 (Google OAuth, FCM, 외부 앱 공유)
+
+## 기술 스택
+
+- **상태 관리**: Riverpod (@riverpod 어노테이션)
+- **라우팅**: GoRouter + AppRoutes 상수
+- **인증**: Google Sign-In 7.2.0 (event-based API)
+- **반응형**: flutter_screenutil (.w, .h, .sp, .r)
+- **UI**: CachedNetworkImage + Shimmer 로딩
+- **다국어**: AppLocalizations (ko, en)
+- **보안**: Flutter Secure Storage
+- **푸시**: Firebase Cloud Messaging
+
+## 핵심 명령어
+
 ```bash
-# Run the app in development mode
+# 개발
 flutter run
+dart run build_runner watch  # Riverpod 코드 생성
 
-# Run tests
-flutter test
-
-# Build APK
-flutter build apk
-
-# Build iOS
-flutter build ios
-
-# Get dependencies
-flutter pub get
-
-# Clean build cache
-flutter clean && flutter pub get
-```
-
-### Code Generation (Riverpod)
-```bash
-# Generate Riverpod providers (required after adding @riverpod annotations)
-dart run build_runner build
-
-# Watch mode for continuous generation during development
-dart run build_runner watch
-
-# Clean generated files
-dart run build_runner clean
-```
-
-### Linting & Analysis
-```bash
-# Run static analysis
+# 분석
 flutter analyze
-
-# Format code
 dart format .
+
+# 빌드
+flutter build apk
+flutter build ios
 ```
 
-### App Management Tools
-```bash
-# Generate launcher icons (after updating flutter_launcher_icons config)
-dart run flutter_launcher_icons:main
-
-# Change app package name
-dart run change_app_package_name:main com.new.package.name
-```
-
-## Project Structure
+## 프로젝트 구조
 
 ```
 lib/
-├── core/                           # 핵심 공통 기능
-│   ├── theme/ ⭐                   # 디자인 시스템 (중앙화된 스타일)
-│   │   ├── app_colors.dart        # 색상 팔레트
-│   │   ├── app_text_styles.dart   # 타이포그래피
-│   │   └── app_theme.dart         # 통합 테마 설정
-│   ├── router/                     # 라우팅 설정
-│   │   ├── app_router.dart        # GoRouter 설정 및 라우트 정의
-│   │   └── routes.dart            # AppRoutes 클래스 (경로 상수 중앙 관리)
-│   ├── services/                   # 공통 서비스
-│   │   ├── auth/                  # 인증 서비스
-│   │   │   └── google_auth_service.dart  # Google OAuth 처리
-│   │   └── sharing_service.dart   # 외부 앱 공유 데이터 수신
-│   └── utils/                      # 유틸리티
-│       └── url_formatter.dart     # URL 정리 및 타입 판별
-├── features/                       # 기능별 모듈
-│   ├── auth/                      # 인증 기능
-│   │   ├── presentation/          # UI 레이어
-│   │   │   ├── screens/          # 로그인 화면
-│   │   │   └── widgets/          # 로그인 폼, 소셜 로그인 버튼
-│   │   └── providers/            # 상태 관리 (Riverpod)
-│   │       └── login_provider.dart
-│   ├── home/                      # 홈 화면 기능
-│   │   ├── data/models/          # 데이터 모델
-│   │   └── presentation/
-│   │       └── screens/          # 홈, SNS 콘텐츠, 장소 목록 화면
-│   └── debug/                     # 디버깅 도구
-├── shared/ ⭐                      # 공유 위젯 및 리소스 (재사용 필수)
-│   └── widgets/
-│       ├── common/               # 공통 위젯 (AppBar, 로딩 등)
-│       ├── layout/               # 레이아웃 위젯
-│       ├── buttons/              # 버튼 컴포넌트
-│       ├── cards/                # 카드 컴포넌트
-│       └── inputs/               # 입력 컴포넌트
-└── l10n/                         # 다국어 지원
-    ├── app_localizations.dart    # 자동 생성된 다국어 클래스
-    └── arb/                      # ARB 파일 (ko.arb, en.arb)
+├── core/
+│   ├── theme/ ⭐           # 중앙화된 디자인 시스템
+│   │   ├── app_colors.dart
+│   │   ├── app_text_styles.dart
+│   │   └── app_theme.dart
+│   ├── router/
+│   │   └── routes.dart     # AppRoutes 상수
+│   ├── services/
+│   │   ├── auth/google_auth_service.dart
+│   │   ├── fcm/            # Firebase Messaging
+│   │   └── sharing_service.dart
+│   └── utils/
+├── features/               # 기능별 모듈
+├── shared/widgets/ ⭐      # 공용 컴포넌트 재사용 필수
+└── l10n/                   # 다국어 ARB
 ```
 
-⭐ = 특별히 중요한 디렉토리 (모든 개발에서 우선 확인 필수)
+## 필수 개발 규칙
 
-## Key Dependencies & Usage Patterns
+### 1. 디자인 시스템 (최우선)
 
-**Design System** (최우선): `core/theme/` 스타일과 `shared/widgets/` 컴포넌트 필수 사용
-**Centralized Routing**: `AppRoutes` 상수만 사용, 하드코딩 경로 금지
-**Riverpod State Management**: @riverpod 어노테이션 + build_runner 코드 생성
-**Responsive UI**: ScreenUtil (.w, .h, .sp, .r) 모든 크기 값에 사용
-**Image Loading**: CachedNetworkImage + Shimmer 로딩 효과
-**Internationalization**: AppLocalizations 모든 사용자 텍스트
-**Content Sharing**: 외부 앱 공유 데이터 처리 (완료됨)
+**⚠️ CRITICAL**: 모든 UI 개발은 `core/theme/` 시스템 사용 필수!
 
-## Assets & Fonts
-
-**Logos**:
-- `assets/logo.png` - Main app logo
-- `assets/app_logo_black.png` - Black logo with tagline for login screen
-
-**Custom Font**: Pretendard family with 9 weights (100-900) located in `assets/fonts/`
-
-Use Pretendard font in widgets:
-```dart
-TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w500)
+#### 📁 테마 구조
+```
+core/theme/
+├── app_colors.dart       # 색상 (Primary, Status, Social, Gradient 등)
+├── app_text_styles.dart  # 텍스트 (Headline, Title, Body, Label 등)
+├── app_spacing.dart      # 간격, Radius, Elevation, Sizes
+└── app_theme.dart        # Material 3 통합 테마 (자동 적용)
 ```
 
-## Current Implementation Status
-
-### ✅ Completed Features
-
-1. **Authentication System**
-   - Google OAuth 2.0 with Sign-In 7.2.0 event-based API
-   - LoginProvider with Riverpod for state management
-   - Automatic navigation after successful login
-   - Proper lifecycle management with ref.mounted checks
-
-2. **Routing System**
-   - GoRouter configuration with nested routes
-   - Centralized route management via AppRoutes class
-   - All hardcoded routes replaced with AppRoutes constants
-   - Support for route parameters (:placeId, :contentId)
-
-3. **Content Sharing**
-   - receive_sharing_intent integration
-   - Support for text, URLs, images, videos, documents
-   - URL cleaning and platform detection (YouTube, Instagram)
-   - Android and iOS platform configuration
-
-4. **Home Screen**
-   - SNS content display with horizontal scroll
-   - Saved places with vertical list layout
-   - Shared data handling and processing
-   - Pull-to-refresh and infinite scroll patterns
-
-5. **UI Components**
-   - Responsive design with flutter_screenutil
-   - Shimmer loading effects
-   - CachedNetworkImage for performance
-   - CommonAppBar for consistent navigation
-   - Custom card layouts for content and places
-
-6. **Internationalization**
-   - Korean and English support
-   - ARB-based localization system
-   - AppLocalizations throughout the app
-
-### 🚧 Work in Progress
-
-- Backend API integration (currently using dummy data)
-- User profile management
-- Trip creation and collaboration features
-- Map integration for place details
-- Push notifications with Firebase Cloud Messaging
-
-### ⚠️ Known Limitations
-
-- Widget tests need updating to match current app structure
-- Firebase analytics/crashlytics disabled due to package conflicts
-- Some detail screens (place detail, SNS content detail) not fully implemented
-- No data persistence layer yet (local database)
-
-## Authentication & Routing
-
-### Google OAuth Implementation
-
-**Service Location**: `lib/core/services/auth/google_auth_service.dart`
+#### 🎨 AppColors 활용
 
 ```dart
-// Google Sign-In with event-based API (7.2.0)
-final user = await GoogleAuthService.signIn();
-if (user != null) {
-  final auth = await user.authentication;
-  final idToken = auth.idToken; // Send to backend for validation
-}
-
-// Sign out
-await GoogleAuthService.signOut();
-```
-
-**Provider Location**: `lib/features/auth/providers/login_provider.dart`
-
-```dart
-// Login with Google
-final success = await ref.read(loginProvider.notifier).loginWithGoogle();
-if (success) {
-  context.go(AppRoutes.home);
-}
-```
-
-**Key Implementation Details**:
-- Event-based API with Completer pattern for async flow
-- No accessToken or serverAuthCode in 7.x (use idToken only)
-- Provider lifecycle management with ref.mounted checks
-- Automatic navigation after successful authentication
-
-### Routing System
-
-**Route Definition**: `lib/core/router/routes.dart`
-
-```dart
-class AppRoutes {
-  static const String login = '/auth/login';
-  static const String home = '/home';
-  static const String snsContentsList = '/home/sns-contents';
-  static const String snsContentDetail = '/home/sns-contents/detail/:contentId';
-  static const String placeDetail = '/place-detail/:placeId';
-  // ... more routes
-}
-```
-
-**Usage in Navigation**:
-
-```dart
-// Simple navigation
-context.go(AppRoutes.home);
-
-// With parameters
-final detailPath = AppRoutes.placeDetail.replaceFirst(':placeId', place.id);
-context.go(detailPath, extra: place);
-
-// Push (preserves back stack)
-context.push(AppRoutes.snsContentsList);
-```
-
-**⚠️ IMPORTANT**: Never use hardcoded route strings. Always use AppRoutes constants.
-
-## Design System & Common Components
-
-### 🎨 Core Theme System (`lib/core/theme/`)
-
-**⚠️ CRITICAL**: 모든 스타일은 `core/theme`의 중앙화된 시스템을 사용해야 합니다.
-
-#### Available Theme Files
-- `app_colors.dart` - 색상 팔레트 (Primary, Secondary, Neutral, Semantic colors)
-- `app_text_styles.dart` - 타이포그래피 시스템 (Heading, Body, Caption, Label styles)
-- `app_theme.dart` - 통합 테마 설정
-
-#### Usage Pattern
-
-```dart
-// ✅ CORRECT: Use centralized theme
 import 'package:tripgether/core/theme/app_colors.dart';
+
+// Primary
+AppColors.primary           // #664BAE 메인
+AppColors.buttonDisabled    // #B2A4D6 비활성
+
+// Text
+AppColors.textPrimary       // #333333 입력
+AppColors.textSecondary     // #828693 부가
+AppColors.textDisabled      // #9E9E9E 힌트
+
+// Status
+AppColors.success / error / warning / info
+
+// Gradient
+LinearGradient(colors: AppColorPalette.diagonalGradient)  // [#1B0062, #5325CB, #B599FF]
+
+// Social
+AppColorPalette.googleButton / kakaoButton / naverButton
+
+// Shimmer
+Shimmer.fromColors(
+  baseColor: AppColors.shimmerBase,
+  highlightColor: AppColors.shimmerHighlight,
+)
+```
+
+#### ✍️ AppTextStyles 활용
+
+```dart
 import 'package:tripgether/core/theme/app_text_styles.dart';
 
-Text(
-  '제목',
-  style: AppTextStyles.heading1,  // 중앙화된 텍스트 스타일
-);
+// Headline (32/28/24)
+AppTextStyles.headlineLarge / Medium / Small
 
-Container(
-  color: AppColors.primary,  // 중앙화된 색상
-);
+// Title (20/16/14)
+AppTextStyles.titleLarge / Medium / Small
 
-// ❌ WRONG: Direct inline styles
-Text(
-  '제목',
-  style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w600),  // 금지!
-);
+// Body (16/14/12)
+AppTextStyles.bodyLarge / Medium / Small
 
-Container(
-  color: Color(0xFF6366F1),  // 금지!
-);
+// Label (14/12/11)
+AppTextStyles.labelLarge / Medium / Small
+
+// Custom
+AppTextStyles.buttonText  // 16px, w700
+AppTextStyles.caption     // 12px, w400, 보조색
 ```
 
-### 🧩 Shared Widgets (`lib/shared/widgets/`)
-
-**⚠️ CRITICAL**: 공통 UI 컴포넌트는 반드시 `shared/widgets`를 재사용해야 합니다.
-
-#### Available Widget Categories
-
-**Common Widgets** (`shared/widgets/common/`)
-- `common_app_bar.dart` - 일관된 앱바 컴포넌트
-- `shimmer_loading.dart` - 스켈레톤 로딩 효과
-- 기타 공통 UI 요소
-
-**Layout Widgets** (`shared/widgets/layout/`)
-- 카드, 섹션, 컨테이너 등 레이아웃 컴포넌트
-
-**Buttons** (`shared/widgets/buttons/`)
-- 다양한 스타일의 버튼 컴포넌트
-
-**Cards** (`shared/widgets/cards/`)
-- 재사용 가능한 카드 컴포넌트
-
-**Inputs** (`shared/widgets/inputs/`)
-- 폼 입력 컴포넌트
-
-#### Widget Usage Pattern
+#### 📏 AppSpacing 활용
 
 ```dart
-// ✅ CORRECT: Use shared widgets
-import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
-import 'package:tripgether/shared/widgets/buttons/primary_button.dart';
+import 'package:tripgether/core/theme/app_spacing.dart';
 
-Scaffold(
-  appBar: CommonAppBar(title: '페이지 제목'),  // 공통 위젯 사용
-  body: Column(
+// 기본 간격 (xs=4, sm=8, md=12, lg=16, xl=20, xxl=24, xxxl=32, huge=40)
+AppSpacing.lg / xl / xxl
+
+// 화면 패딩
+AppSpacing.screenPadding           // 18 (기본)
+AppSpacing.screenPaddingLarge      // 32 (로그인)
+
+// SizedBox 간격
+AppSpacing.verticalSpaceLG,    // 16
+AppSpacing.horizontalSpaceMD,  // 12
+
+// Border Radius
+AppRadius.allLarge    // 12 (버튼, 카드)
+AppRadius.allMedium   // 8 (칩)
+AppRadius.topLarge    // 상단만 (바텀시트)
+
+// Elevation
+AppElevation.medium   // 2 (카드)
+AppElevation.higher   // 6 (다이얼로그)
+
+// Sizes
+AppSizes.iconDefault      // 24
+AppSizes.buttonHeight     // 54
+AppSizes.logoLarge        // 240
+```
+
+#### ❌ 금지 사항
+
+```dart
+// ❌ WRONG - 절대 금지!
+TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w600)
+Color(0xFF6366F1) / Colors.grey[300]
+EdgeInsets.all(16) / BorderRadius.circular(12)
+```
+
+### 2. 공용 위젯 (`shared/widgets/`)
+
+**⚠️ CRITICAL**: 중복 UI 생성 절대 금지! 기존 위젯 필수 재사용!
+
+#### 📦 위젯 카테고리
+
+```
+shared/widgets/
+├── common/         # AppBar, EmptyState, ChipList, Avatar 등
+├── buttons/        # CommonButton, SocialLoginButton
+├── cards/          # SnsContentCard, PlaceCard, CourseCard
+├── inputs/         # SearchBar, OnboardingTextField
+└── layout/         # GradientBackground, SectionHeader, BottomNavigation
+```
+
+#### 🧩 Common 위젯
+
+```dart
+import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
+
+// 홈 화면 AppBar
+CommonAppBar.forHome(
+  onMenuPressed: () => _openDrawer(),
+  onNotificationPressed: () => _openNotifications(),
+)
+
+// 서브 페이지 AppBar
+CommonAppBar.forSubPage(
+  title: '장소 목록',
+  rightActions: [IconButton(...)],
+)
+
+// 설정 화면 AppBar
+CommonAppBar.forSettings(
+  title: '프로필 편집',
+  onSavePressed: () => _save(),
+)
+
+// 빈 상태 표시
+EmptyState(
+  icon: Icons.search_off,
+  title: '검색 결과가 없습니다',
+  message: '다른 키워드로 검색해보세요',
+  action: PrimaryButton(...),
+)
+
+// 팩토리 메서드
+EmptyStates.noSearchResults(title: '...', message: '...')
+EmptyStates.noData(title: '데이터 없음')
+EmptyStates.networkError(title: '연결 오류', action: ...)
+EmptyStates.notYetAdded(title: '아직 추가된 항목이 없습니다')
+
+// 칩 리스트
+ChipList(
+  items: ['데이트', '산책', '빈티지'],
+  onItemTap: (item) => _handleChipTap(item),
+)
+
+// 선택 가능 칩
+SelectableChipList(
+  items: _categories,
+  selectedItems: _selectedCategories,
+  onSelectionChanged: (selected) => setState(() => _selectedCategories = selected),
+  singleSelection: false,  // true면 단일 선택
+)
+
+// 프로필 아바타
+ProfileAvatar(
+  imageUrl: user.profileImageUrl,
+  size: AppSizes.avatarLarge,
+  onTap: () => _viewProfile(),
+)
+```
+
+#### 🎛️ Buttons 위젯
+
+```dart
+import 'package:tripgether/shared/widgets/buttons/common_button.dart';
+import 'package:tripgether/shared/widgets/buttons/social_login_button.dart';
+
+// Primary Button (ElevatedButton)
+PrimaryButton(
+  text: '저장',
+  icon: Icons.check,        // 선택 사항
+  onPressed: () => _save(),
+  isFullWidth: true,
+  isLoading: _isLoading,    // 로딩 상태
+)
+
+// Secondary Button (OutlinedButton)
+SecondaryButton(
+  text: '취소',
+  onPressed: () => _cancel(),
+  height: AppSizes.buttonHeightSmall,
+)
+
+// Tertiary Button (TextButton)
+TertiaryButton(
+  text: '건너뛰기',
+  onPressed: () => _skip(),
+)
+
+// Icon Button
+CommonIconButton(
+  icon: Icons.favorite,
+  onPressed: () => _toggleFavorite(),
+  tooltip: '좋아요',
+  hasBackground: true,
+  backgroundColor: AppColors.primary,
+)
+
+// Button Group (가로/세로 배치)
+ButtonGroup(
+  children: [
+    SecondaryButton(text: '취소', onPressed: _cancel),
+    PrimaryButton(text: '확인', onPressed: _confirm),
+  ],
+  isHorizontal: true,
+  spacing: AppSpacing.md,
+)
+
+// 소셜 로그인 버튼
+SocialLoginButton(
+  text: "Google로 시작하기",
+  backgroundColor: AppColorPalette.googleButton,
+  textColor: Colors.black,
+  icon: SvgPicture.asset('assets/icons/google.svg'),
+  onPressed: () => _loginWithGoogle(),
+  isLoading: _isGoogleLoading,
+)
+```
+
+#### 🎴 Cards 위젯
+
+```dart
+import 'package:tripgether/shared/widgets/cards/sns_content_card.dart';
+import 'package:tripgether/shared/widgets/cards/place_card.dart';
+
+// SNS 콘텐츠 카드 (단일)
+SnsContentCard(
+  content: snsContent,
+  onTap: () => _openContentDetail(),
+  width: 120.w,
+  isGridLayout: false,
+)
+
+// SNS 콘텐츠 가로 스크롤 리스트
+SnsContentHorizontalList(
+  contents: _snsContents,
+  title: '추천 콘텐츠',
+  onSeeMoreTap: () => _seeMore(),
+  onContentTap: (content, index) => _openDetail(content),
+)
+
+// 장소 카드
+PlaceCard(
+  place: savedPlace,
+  onTap: () => _openPlaceDetail(),
+  onImageTap: (index) => _viewImage(index),
+)
+
+// 장소 그리드 카드
+PlaceGridCard(
+  place: savedPlace,
+  onTap: () => _openDetail(),
+  margin: EdgeInsets.all(AppSpacing.sm),
+)
+
+// 장소 리스트 섹션
+PlaceListSection(
+  places: _savedPlaces,
+  title: '저장한 장소',
+  maxItems: 5,
+  onSeeMoreTap: () => _seeMore(),
+  onPlaceTap: (place) => _openDetail(place),
+)
+
+// 코스 카드
+CourseCard(course: courseData, onTap: () => _openCourse())
+NearbyCourseCard(course: courseData)
+PopularCourseCard(course: courseData)
+```
+
+#### 🔤 Inputs 위젯
+
+```dart
+import 'package:tripgether/shared/widgets/inputs/search_bar.dart';
+
+// 검색바 (읽기 전용, 탭하여 검색 화면 이동)
+TripSearchBar(
+  hintText: '키워드·도시·장소를 검색해 보세요',
+  readOnly: true,
+  onTap: () => context.push(AppRoutes.search),
+)
+
+// 검색바 (직접 입력)
+TripSearchBar(
+  controller: _searchController,
+  onChanged: (query) => _handleSearch(query),
+  onSubmitted: (query) => _submitSearch(query),
+  autofocus: true,
+)
+
+// 온보딩 텍스트 필드
+OnboardingTextField(
+  controller: _nameController,
+  hintText: '이름을 입력하세요',
+  prefixIcon: Icons.person,
+)
+```
+
+#### 🎨 Layout 위젯
+
+```dart
+import 'package:tripgether/shared/widgets/layout/gradient_background.dart';
+import 'package:tripgether/shared/widgets/layout/section_header.dart';
+
+// 그라데이션 배경
+GradientBackground(
+  padding: EdgeInsets.all(AppSpacing.lg),
+  child: TripSearchBar(...),
+)
+
+// 섹션 헤더
+SectionHeader(
+  title: '추천 장소',
+  onSeeMoreTap: () => _seeMore(),
+)
+
+// 인사말 섹션
+GreetingSection(
+  userName: user.nickname,
+  greeting: '안녕하세요!',
+)
+
+// 바텀 네비게이션
+BottomNavigation(
+  currentIndex: _currentIndex,
+  onTap: (index) => setState(() => _currentIndex = index),
+)
+```
+
+#### ❌ 금지 사항
+
+```dart
+// ❌ WRONG - 중복 위젯 생성 절대 금지!
+AppBar(title: Text('제목'))  // CommonAppBar 사용 필수!
+
+ElevatedButton(child: Text('확인'))  // PrimaryButton 사용!
+
+Container(  // EmptyState 사용!
+  child: Column(
     children: [
-      PrimaryButton(
-        onPressed: () {},
-        text: '확인',
-      ),
+      Icon(Icons.inbox),
+      Text('데이터 없음'),
     ],
   ),
+)
+
+TextField(  // TripSearchBar 사용!
+  decoration: InputDecoration(
+    hintText: '검색',
+    prefixIcon: Icon(Icons.search),
+  ),
+)
+```
+
+### 3. 라우팅
+```dart
+// ✅ CORRECT
+context.go(AppRoutes.home);
+
+// ❌ WRONG - 하드코딩 경로 금지
+context.go('/home');
+```
+
+### 4. 반응형 UI
+```dart
+// ✅ CORRECT - ScreenUtil 필수
+Container(
+  width: 300.w,
+  height: 120.h,
+  padding: EdgeInsets.all(16.w),
 );
 
-// ❌ WRONG: Create duplicate widgets
-AppBar(
-  title: Text('페이지 제목'),  // 중복 생성 금지!
-  backgroundColor: AppColors.primary,
+// ❌ WRONG - 하드코딩 픽셀 금지
+Container(width: 300, height: 120);
+```
+
+### 5. 상태 관리
+```dart
+// Riverpod @riverpod 어노테이션 사용
+@riverpod
+class UserNotifier extends _$UserNotifier {
+  @override
+  Future<User?> build() async { ... }
+}
+
+// Provider disposal 전 ref.mounted 체크 필수
+if (!ref.mounted) return;
+```
+
+### 6. 다국어
+```dart
+// ✅ CORRECT
+final l10n = AppLocalizations.of(context);
+Text(l10n.loginTitle);
+
+// ❌ WRONG - 하드코딩 문자열 금지
+Text('로그인');
+```
+
+## 개발 원칙
+
+1. **완전 구현**: TODO 주석 금지, 모든 기능 완성
+2. **DRY 원칙**: 코드 중복 최소화
+3. **한국어 주석**: 모든 코드에 명확한 주석
+4. **재사용 우선**: `shared/widgets/` 확인 후 개발
+5. **테마 준수**: `core/theme/` 스타일 필수 사용
+
+## 주요 패키지 사용
+
+### ScreenUtil
+```dart
+Container(
+  width: 300.w,    // 너비
+  height: 120.h,   // 높이
+  padding: EdgeInsets.all(16.w),
+  child: Text('텍스트', style: TextStyle(fontSize: 18.sp)),
 );
+```
 
-ElevatedButton(  // 중복 버튼 생성 금지!
-  onPressed: () {},
-  child: Text('확인'),
+### Shimmer 로딩
+```dart
+Shimmer.fromColors(
+  baseColor: Colors.grey[300]!,
+  highlightColor: Colors.grey[100]!,
+  child: Container(width: 200.w, height: 16.h, color: Colors.white),
 );
 ```
 
-### Development Workflow
-
-1. **새 화면 개발 시**:
-   - `core/theme/app_text_styles.dart`에서 텍스트 스타일 선택
-   - `core/theme/app_colors.dart`에서 색상 선택
-   - `shared/widgets/` 에서 재사용 가능한 컴포넌트 확인
-
-2. **공통 위젯이 없는 경우**:
-   - 새 위젯을 `shared/widgets/` 에 생성
-   - 적절한 카테고리 폴더에 배치 (common, layout, buttons, cards, inputs)
-   - 다른 화면에서도 재사용 가능하도록 설계
-
-3. **스타일 수정 필요 시**:
-   - `core/theme/` 파일 수정 (전역 적용)
-   - 개별 위젯에서 직접 수정 금지
-
-## Content Sharing (완료됨)
-
-**Location**: `lib/core/services/sharing_service.dart`
-**Supported**: Text, URLs, Images, Videos, Documents
-**Status**: ✅ Fully implemented with URL cleaning and platform detection
-
-자세한 사용법은 코드의 주석을 참고하세요.
-
-## Claude Code 개발 지침
-
-**개발자 역할**: 시니어 플러터 개발자로서 신중하고 자세한 답변을 제공하며 뛰어난 사고력을 바탕으로 개발 지원
-
-### 개발 원칙
-
-1. **단계별 사고와 계획**
-   - 사용자 질문에 먼저 단계별로 생각하며 계획을 세워 답변
-   - 복잡한 문제는 작은 단위로 분해하여 해결
-
-2. **코드 품질 기준**
-   - 올바르고 모범적인 DRY 원칙(Don't Repeat Yourself)을 준수하는 중복 없는 코드
-   - 버그 없는 안정적인 코드 작성
-   - 가독성을 우선하되, 성능을 고려한 최적화된 코드
-
-3. **기능 구현**
-   - 요청된 모든 기능을 완전히 구현
-   - 절반만 구현하거나 TODO 주석으로 남기지 않음
-   - 실제 동작하는 완성된 코드 제공
-
-4. **솔직한 소통**
-   - 모르는 경우는 솔직하게 모른다고 답변
-   - 추가 조사가 필요한 경우 이를 명확히 언급
-   - 추측이나 불확실한 정보 제공 금지
-
-5. **언어 및 설명**
-   - 별도 요청사항이 없으면 모든 응답은 한국어로 작성
-   - 사용자가 주니어 개발자라고 가정하고 코드에 대한 자세한 설명 포함
-   - 복잡한 개념은 쉽게 풀어서 설명
-   - 모든 코드에는 한국어 주석으로 기능과 목적을 명확히 설명
-   - 함수나 클래스의 역할, 매개변수, 반환값을 주석으로 문서화
-   - 복잡한 비즈니스 로직이나 알고리즘은 단계별로 주석 작성
-
-### Flutter 개발 특화 지침
-
-#### 필수 사항
-
-1. **디자인 시스템** (최우선):
-   - ❌ 인라인 스타일 절대 금지 (`TextStyle(...)`, `Color(0xFF...)`)
-   - ✅ `AppTextStyles`, `AppColors` 사용 필수
-   - ❌ 개별 위젯에서 중복 UI 컴포넌트 생성 금지
-   - ✅ `shared/widgets/` 재사용 필수
-
-2. **라우팅**:
-   - ❌ 절대 하드코딩된 경로 사용 금지 (`'/home'`, `'/login'` 등)
-   - ✅ 반드시 `AppRoutes` 상수 사용 (`AppRoutes.home`, `AppRoutes.login`)
-   - 동적 파라미터는 `replaceFirst()` 사용
-
-3. **상태 관리**:
-   - Riverpod `@riverpod` 어노테이션 사용
-   - Provider disposal 전 `ref.mounted` 체크 필수
-   - 비즈니스 로직 성공/실패와 UI 상태 관리 분리
-
-4. **반응형 UI**:
-   - 모든 크기 값에 ScreenUtil 사용 (`.w`, `.h`, `.sp`, `.r`)
-   - 절대 하드코딩된 픽셀 값 사용 금지
-
-5. **다국어 지원**:
-   - 모든 사용자 노출 텍스트는 `AppLocalizations.of(context)` 사용
-   - 하드코딩된 문자열 금지
-
-#### 권장 사항
-
-- **로딩 효과**: Shimmer 패키지로 스켈레톤 화면 구현
-- **이미지**: CachedNetworkImage + Shimmer placeholder
-- **폰트**: Pretendard 폰트 패밀리 사용
-- **애니메이션**: Lottie, Flutter Animate 조합
-- **SVG 아이콘**: flutter_svg 사용
-- **보안**: Flutter Secure Storage로 민감 데이터 관리
-
-## 주요 패키지 사용 예제
-
-### ScreenUtil (반응형 UI)
-
+### CachedNetworkImage
 ```dart
-// main.dart에서 ScreenUtil 초기화
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      // 디자인 기준 사이즈 (보통 iPhone 6/7/8 Plus 기준)
-      designSize: Size(414, 896),
-      minTextAdapt: true, // 텍스트 크기 자동 조정
-      splitScreenMode: true, // 분할 화면 모드 지원
-      builder: (context, child) {
-        return MaterialApp(
-          title: 'Tripgether',
-          home: child,
-        );
-      },
-      child: HomeScreen(),
-    );
-  }
-}
-
-// 위젯에서 ScreenUtil 사용 예제
-class ProfileCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      // 너비: 디자인 기준의 300px에 대응하는 반응형 크기
-      width: 300.w,
-      // 높이: 디자인 기준의 120px에 대응하는 반응형 크기
-      height: 120.h,
-      // 패딩: 좌우 16px, 상하 12px
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      child: Text(
-        '사용자 프로필',
-        style: TextStyle(
-          fontFamily: 'Pretendard',
-          // 폰트 크기: 디자인 기준 18px에 대응
-          fontSize: 18.sp,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-}
+CachedNetworkImage(
+  imageUrl: url,
+  placeholder: (context, url) => Shimmer.fromColors(...),
+  errorWidget: (context, url, error) => Icon(Icons.error),
+);
 ```
 
-### Shimmer (스켈레톤 로딩)
+## Firebase Cloud Messaging (FCM)
 
+### 초기화 순서 (main.dart)
 ```dart
-import 'package:shimmer/shimmer.dart';
-
-// 리스트 아이템 스켈레톤
-class TripCardSkeleton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!, // 기본 색상
-      highlightColor: Colors.grey[100]!, // 하이라이트 색상
-      child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        child: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 이미지 플레이스홀더
-              Container(
-                width: double.infinity,
-                height: 200.h,
-                color: Colors.white,
-              ),
-              SizedBox(height: 12.h),
-              // 제목 플레이스홀더
-              Container(
-                width: 200.w,
-                height: 16.h,
-                color: Colors.white,
-              ),
-              SizedBox(height: 8.h),
-              // 설명 플레이스홀더
-              Container(
-                width: 150.w,
-                height: 14.h,
-                color: Colors.white,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// 사용 예제: 데이터 로딩 상태에 따른 분기 처리
-class TripListScreen extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tripsAsync = ref.watch(tripListProvider);
-
-    return Scaffold(
-      body: tripsAsync.when(
-        loading: () => ListView.builder(
-          itemCount: 5, // 스켈레톤 개수
-          itemBuilder: (context, index) => TripCardSkeleton(),
-        ),
-        error: (error, stack) => Center(child: Text('오류: $error')),
-        data: (trips) => ListView.builder(
-          itemCount: trips.length,
-          itemBuilder: (context, index) => TripCard(trip: trips[index]),
-        ),
-      ),
-    );
-  }
-}
+1. Firebase.initializeApp()
+2. LocalNotificationsService.init()
+3. FirebaseMessagingService.init()
 ```
 
-### CachedNetworkImage (이미지 캐싱)
+### iOS Push 설정
+- **APNs 인증서**: Firebase Console에 등록 완료
+- **Xcode Capability**: Push Notifications 수동 활성화 필요
+- **Entitlements**: `aps-environment: development`
+- **Info.plist**: `UIBackgroundModes: remote-notification`
 
-```dart
-import 'package:cached_network_image/cached_network_image.dart';
+### 테스트
+- FCM 토큰: 실제 iOS 디바이스에서만 발급 (시뮬레이터 불가)
+- Firebase Console → Cloud Messaging → 테스트 메시지 전송
+- 가이드: `docs/fcm_test_guide.md` 참고
 
-class TripImageWidget extends StatelessWidget {
-  final String imageUrl;
+## 완료된 기능
 
-  const TripImageWidget({required this.imageUrl});
+✅ Google OAuth 인증
+✅ GoRouter 중앙 관리
+✅ 외부 앱 공유 수신
+✅ FCM 서비스 통합
+✅ 반응형 UI (ScreenUtil)
+✅ 다국어 지원 (ko, en)
 
-  @override
-  Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      // 이미지 크기 지정 (ScreenUtil 활용)
-      width: double.infinity,
-      height: 200.h,
-      fit: BoxFit.cover,
-      // 로딩 중 플레이스홀더 (Shimmer 활용)
-      placeholder: (context, url) => Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        child: Container(
-          width: double.infinity,
-          height: 200.h,
-          color: Colors.white,
-        ),
-      ),
-      // 에러 시 표시할 위젯
-      errorWidget: (context, url, error) => Container(
-        width: double.infinity,
-        height: 200.h,
-        color: Colors.grey[200],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error, color: Colors.grey[400], size: 48.w),
-            SizedBox(height: 8.h),
-            Text(
-              '이미지를 불러올 수 없습니다',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14.sp,
-                fontFamily: 'Pretendard',
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-```
+## 진행 중
 
-### Flutter SVG (커스텀 아이콘)
+🚧 백엔드 API 연동
+🚧 사용자 프로필 관리
+🚧 여행 생성/협업 기능
+🚧 iOS Push Notifications 활성화
 
-```dart
-import 'package:flutter_svg/flutter_svg.dart';
+# WorkFlow
+Always follow the instructions in plan.md. When I say "go", find the next unmarked test in plan.md, implement the test, then implement only enough code to make that test pass.
 
-// Bottom Navigation에서 SVG 아이콘 사용
-class CustomBottomNavigation extends StatelessWidget {
-  final int currentIndex;
-  final ValueChanged<int> onTap;
+# ROLE AND EXPERTISE
 
-  const CustomBottomNavigation({
-    required this.currentIndex,
-    required this.onTap,
-  });
+You are a senior software engineer who follows Kent Beck's Test-Driven Development (TDD) and Tidy First principles. Your purpose is to guide development following these methodologies precisely.
 
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: currentIndex,
-      onTap: onTap,
-      type: BottomNavigationBarType.fixed,
-      items: [
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            'assets/navigation_icons/home_inactive.svg',
-            width: 24.w, // ScreenUtil로 크기 조정
-            height: 24.h,
-          ),
-          activeIcon: SvgPicture.asset(
-            'assets/navigation_icons/home_active.svg',
-            width: 24.w,
-            height: 24.h,
-          ),
-          label: '홈',
-        ),
-        // ... 다른 탭들
-      ],
-    );
-  }
-}
+# CORE DEVELOPMENT PRINCIPLES
 
-// 일반 위젯에서 SVG 아이콘 사용
-class IconButton extends StatelessWidget {
-  final VoidCallback onPressed;
+- Always follow the TDD cycle: Red → Green → Refactor
+- Write the simplest failing test first
+- Implement the minimum code needed to make tests pass
+- Refactor only after tests are passing
+- Follow Beck's "Tidy First" approach by separating structural changes from behavioral changes
+- Maintain high code quality throughout development
 
-  const IconButton({required this.onPressed});
+# TDD METHODOLOGY GUIDANCE
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 48.w,
-        height: 48.h,
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(8.r), // ScreenUtil의 radius
-        ),
-        child: Center(
-          child: SvgPicture.asset(
-            'assets/icons/search.svg',
-            width: 20.w,
-            height: 20.h,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColor,
-              BlendMode.srcIn,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-```
+- Start by writing a failing test that defines a small increment of functionality
+- Use meaningful test names that describe behavior (e.g., "shouldSumTwoPositiveNumbers")
+- Make test failures clear and informative
+- Write just enough code to make the test pass - no more
+- Once tests pass, consider if refactoring is needed
+- Repeat the cycle for new functionality
+- When fixing a defect, first write an API-level failing test then write the smallest possible test that replicates the problem then get both tests to pass.
 
-### InfiniteScrollPagination (무한 스크롤)
+# TIDY FIRST APPROACH
 
-```dart
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+- Separate all changes into two distinct types:
+  1. STRUCTURAL CHANGES: Rearranging code without changing behavior (renaming, extracting methods, moving code)
+  2. BEHAVIORAL CHANGES: Adding or modifying actual functionality
+- Never mix structural and behavioral changes in the same commit
+- Always make structural changes first when both are needed
+- Validate structural changes do not alter behavior by running tests before and after
 
-class InfiniteTripList extends ConsumerStatefulWidget {
-  @override
-  ConsumerState<InfiniteTripList> createState() => _InfiniteTripListState();
-}
+# COMMIT DISCIPLINE
 
-class _InfiniteTripListState extends ConsumerState<InfiniteTripList> {
-  static const _pageSize = 20; // 한 번에 로드할 아이템 수
-  final PagingController<int, Trip> _pagingController =
-      PagingController(firstPageKey: 0);
+- Only commit when:
+  1. ALL tests are passing
+  2. ALL compiler/linter warnings have been resolved
+  3. The change represents a single logical unit of work
+  4. Commit messages clearly state whether the commit contains structural or behavioral changes
+- Use small, frequent commits rather than large, infrequent ones
 
-  @override
-  void initState() {
-    super.initState();
-    // 페이지 요청 리스너 등록
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
-  }
+# CODE QUALITY STANDARDS
 
-  Future<void> _fetchPage(int pageKey) async {
-    try {
-      // API에서 데이터 가져오기
-      final newItems = await ref.read(tripServiceProvider).getTrips(
-        page: pageKey,
-        pageSize: _pageSize,
-      );
+- Eliminate duplication ruthlessly
+- Express intent clearly through naming and structure
+- Make dependencies explicit
+- Keep methods small and focused on a single responsibility
+- Minimize state and side effects
+- Use the simplest solution that could possibly work
 
-      // 마지막 페이지인지 확인
-      final isLastPage = newItems.length < _pageSize;
-      if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
-      } else {
-        final nextPageKey = pageKey + newItems.length;
-        _pagingController.appendPage(newItems, nextPageKey);
-      }
-    } catch (error) {
-      _pagingController.error = error;
-    }
-  }
+# REFACTORING GUIDELINES
 
-  @override
-  Widget build(BuildContext context) {
-    return PagedListView<int, Trip>(
-      pagingController: _pagingController,
-      builderDelegate: PagedChildBuilderDelegate<Trip>(
-        itemBuilder: (context, item, index) => TripCard(trip: item),
-        // 로딩 인디케이터 (Shimmer 활용)
-        firstPageProgressIndicatorBuilder: (_) => ListView.builder(
-          itemCount: 5,
-          itemBuilder: (context, index) => TripCardSkeleton(),
-        ),
-        // 새 페이지 로딩 인디케이터
-        newPageProgressIndicatorBuilder: (_) => Center(
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        // 에러 위젯
-        firstPageErrorIndicatorBuilder: (_) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '데이터를 불러올 수 없습니다',
-                style: TextStyle(fontSize: 16.sp, fontFamily: 'Pretendard'),
-              ),
-              SizedBox(height: 16.h),
-              ElevatedButton(
-                onPressed: () => _pagingController.refresh(),
-                child: Text('다시 시도'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+- Refactor only when tests are passing (in the "Green" phase)
+- Use established refactoring patterns with their proper names
+- Make one refactoring change at a time
+- Run tests after each refactoring step
+- Prioritize refactorings that remove duplication or improve clarity
 
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-}
-```
+# EXAMPLE WORKFLOW
 
-### PullToRefresh (당겨서 새로고침)
+When approaching a new feature:
 
-```dart
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+1. Write a simple failing test for a small part of the feature
+2. Implement the bare minimum to make it pass
+3. Run tests to confirm they pass (Green)
+4. Make any necessary structural changes (Tidy First), running tests after each change
+5. Commit structural changes separately
+6. Add another test for the next small increment of functionality
+7. Repeat until the feature is complete, committing behavioral changes separately from structural ones
 
-class RefreshableTripList extends ConsumerStatefulWidget {
-  @override
-  ConsumerState<RefreshableTripList> createState() => _RefreshableTripListState();
-}
+Follow this process precisely, always prioritizing clean, well-tested code over quick implementation.
 
-class _RefreshableTripListState extends ConsumerState<RefreshableTripList> {
-  final RefreshController _refreshController = RefreshController(initialRefresh: false);
-
-  void _onRefresh() async {
-    try {
-      // 데이터 새로고침
-      await ref.refresh(tripListProvider.future);
-      _refreshController.refreshCompleted();
-    } catch (error) {
-      _refreshController.refreshFailed();
-    }
-  }
-
-  void _onLoading() async {
-    try {
-      // 추가 데이터 로드
-      await ref.read(tripListProvider.notifier).loadMore();
-      _refreshController.loadComplete();
-    } catch (error) {
-      _refreshController.loadFailed();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final tripsAsync = ref.watch(tripListProvider);
-
-    return SmartRefresher(
-      controller: _refreshController,
-      enablePullDown: true, // 당겨서 새로고침 활성화
-      enablePullUp: true,   // 위로 당겨서 더 로드 활성화
-      onRefresh: _onRefresh,
-      onLoading: _onLoading,
-      // 커스텀 새로고침 헤더
-      header: WaterDropMaterialHeader(
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      // 커스텀 로딩 푸터
-      footer: CustomFooter(
-        builder: (BuildContext context, LoadStatus mode) {
-          Widget body;
-          if (mode == LoadStatus.idle) {
-            body = Text(
-              "위로 당겨서 더 보기",
-              style: TextStyle(fontSize: 14.sp, fontFamily: 'Pretendard'),
-            );
-          } else if (mode == LoadStatus.loading) {
-            body = CircularProgressIndicator();
-          } else if (mode == LoadStatus.failed) {
-            body = Text(
-              "로드 실패, 다시 시도하세요",
-              style: TextStyle(fontSize: 14.sp, fontFamily: 'Pretendard'),
-            );
-          } else {
-            body = Text(
-              "더 이상 데이터가 없습니다",
-              style: TextStyle(fontSize: 14.sp, fontFamily: 'Pretendard'),
-            );
-          }
-          return Container(
-            height: 55.h,
-            child: Center(child: body),
-          );
-        },
-      ),
-      child: tripsAsync.when(
-        loading: () => ListView.builder(
-          itemCount: 5,
-          itemBuilder: (context, index) => TripCardSkeleton(),
-        ),
-        error: (error, stack) => Center(child: Text('오류: $error')),
-        data: (trips) => ListView.builder(
-          itemCount: trips.length,
-          itemBuilder: (context, index) => TripCard(trip: trips[index]),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
-  }
-}
-```
-
-## 코드 주석 작성 규칙
-
-### 함수/클래스 문서화
-
-```dart
-/// 사용자의 여행 목록을 관리하는 서비스 클래스
-///
-/// API를 통해 여행 데이터를 가져오고, 로컬 캐시를 관리합니다.
-/// Riverpod을 사용하여 상태 관리를 수행합니다.
-class TripService {
-  final ApiClient _apiClient;
-  final CacheManager _cacheManager;
-
-  TripService(this._apiClient, this._cacheManager);
-
-  /// 사용자의 모든 여행 목록을 가져옵니다
-  ///
-  /// [userId] 사용자 ID (필수)
-  /// [includeArchived] 보관된 여행 포함 여부 (기본값: false)
-  ///
-  /// Returns: 여행 목록 (List<Trip>)
-  /// Throws: [ApiException] API 호출 실패 시
-  /// Throws: [NetworkException] 네트워크 연결 오류 시
-  Future<List<Trip>> fetchTrips({
-    required String userId,
-    bool includeArchived = false,
-  }) async {
-    // 1. 캐시에서 먼저 확인
-    final cachedTrips = await _cacheManager.getTrips(userId);
-    if (cachedTrips != null && !_cacheManager.isExpired(cachedTrips)) {
-      return cachedTrips.data;
-    }
-
-    // 2. API에서 최신 데이터 가져오기
-    try {
-      final response = await _apiClient.getTrips(
-        userId: userId,
-        includeArchived: includeArchived,
-      );
-
-      // 3. 캐시에 저장 (1시간 유효)
-      await _cacheManager.saveTrips(
-        userId,
-        response.data,
-        duration: Duration(hours: 1),
-      );
-
-      return response.data;
-    } catch (e) {
-      // 4. 에러 발생 시 캐시된 데이터라도 반환 (있다면)
-      if (cachedTrips != null) {
-        return cachedTrips.data;
-      }
-      rethrow;
-    }
-  }
-}
-```
-
-### 복잡한 UI 위젯 주석
-
-```dart
-/// 여행 카드 위젯
-///
-/// 여행의 기본 정보(제목, 이미지, 날짜, 참가자)를 표시하며,
-/// 탭 시 여행 상세 화면으로 이동합니다.
-class TripCard extends ConsumerWidget {
-  /// 표시할 여행 데이터
-  final Trip trip;
-
-  /// 카드 탭 시 실행될 콜백 함수
-  final VoidCallback? onTap;
-
-  /// 카드의 마진 여부 (기본값: true)
-  final bool hasMargin;
-
-  const TripCard({
-    super.key,
-    required this.trip,
-    this.onTap,
-    this.hasMargin = true,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      onTap: onTap ?? () {
-        // 기본 동작: 여행 상세 화면으로 이동
-        context.push('/trips/${trip.id}');
-      },
-      child: Container(
-        // ScreenUtil을 사용하여 반응형 마진 적용
-        margin: hasMargin
-          ? EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h)
-          : EdgeInsets.zero,
-        child: Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 여행 대표 이미지 (CachedNetworkImage 사용)
-              _buildTripImage(),
-
-              // 여행 정보 영역
-              Padding(
-                padding: EdgeInsets.all(16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 여행 제목
-                    _buildTripTitle(),
-
-                    SizedBox(height: 8.h),
-
-                    // 여행 날짜 및 기간
-                    _buildTripDates(),
-
-                    SizedBox(height: 12.h),
-
-                    // 참가자 아바타 목록
-                    _buildParticipants(),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// 여행 대표 이미지를 구성하는 위젯
-  /// Shimmer 로딩 효과와 에러 처리를 포함
-  Widget _buildTripImage() {
-    return ClipRRect(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(12.r),
-        topRight: Radius.circular(12.r),
-      ),
-      child: CachedNetworkImage(
-        imageUrl: trip.imageUrl ?? '',
-        height: 200.h,
-        width: double.infinity,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
-          child: Container(
-            height: 200.h,
-            width: double.infinity,
-            color: Colors.white,
-          ),
-        ),
-        errorWidget: (context, url, error) => Container(
-          height: 200.h,
-          width: double.infinity,
-          color: Colors.grey[200],
-          child: Icon(Icons.image_not_supported, size: 48.w),
-        ),
-      ),
-    );
-  }
-
-  /// 여행 제목 텍스트 위젯
-  Widget _buildTripTitle() {
-    return Text(
-      trip.title,
-      style: TextStyle(
-        fontFamily: 'Pretendard',
-        fontSize: 18.sp,
-        fontWeight: FontWeight.w600,
-        color: Colors.black87,
-      ),
-      maxLines: 2, // 최대 2줄까지 표시
-      overflow: TextOverflow.ellipsis, // 넘치는 텍스트는 ... 으로 처리
-    );
-  }
-
-  // ... 기타 위젯 빌더 메서드들
-}
-```
-
-### 비즈니스 로직 주석 예시
-
-```dart
-/// 여행 공유 서비스
-/// 여행 정보를 다양한 플랫폼에 공유하는 기능을 제공합니다
-class TripSharingService {
-  /// 여행을 이미지와 함께 공유합니다
-  ///
-  /// 공유 과정:
-  /// 1. 여행 정보로 공유용 이미지 생성
-  /// 2. 공유 텍스트 구성 (제목, 기간, 딥링크)
-  /// 3. 시스템 공유 다이얼로그 표시
-  Future<void> shareTrip(Trip trip) async {
-    try {
-      // 1. 공유용 이미지 생성 (1080x1080, 인스타그램 최적화)
-      final shareImage = await _generateShareImage(trip);
-
-      // 2. 공유 텍스트 구성
-      final shareText = _buildShareText(trip);
-
-      // 3. 딥링크 생성
-      final deepLink = 'https://tripgether.com/trip/${trip.id}';
-
-      // 4. 공유 실행
-      await Share.shareXFiles([shareImage], text: '$shareText\n$deepLink');
-    } catch (e) {
-      // 공유 실패 시 에러 로깅
-      debugPrint('여행 공유 실패: $e');
-      rethrow;
-    }
-  }
-}
+Always write one test at a time, make it run, then improve structure. Always run all the tests (except long-running tests) each time.
