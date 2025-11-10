@@ -61,10 +61,6 @@ app.*.map.json
 # iOS 환경 변수 설정 파일 (빌드 시 자동 생성됨 - Git에 업로드 금지)
 /ios/Flutter/GoogleEnv.xcconfig
 
-# Firebase 설정 파일
-# 주의: 현재는 더미 템플릿 파일이므로 커밋 가능
-# 실제 Firebase 키는 .env 파일에서 관리하며, .env는 .gitignore에 포함됨
-
 # Claude Code (프로젝트 설정 파일과 캐시)
 .claude/
 .claude-plugins/

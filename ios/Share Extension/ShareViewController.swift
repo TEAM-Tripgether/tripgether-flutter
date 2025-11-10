@@ -33,7 +33,7 @@ class ShareViewController: UIViewController {
 
     // UI Constants
     private let bottomSheetHeight: CGFloat = 300
-    private let autoDismissDelay: TimeInterval = 5.0 // 5초 후 자동 닫기
+    private let autoDismissDelay: TimeInterval = 2.5 // 2.5초 후 자동 닫기
     private var autoDismissTimer: Timer?
 
     // 🔧 메모리 관리: 그라데이션 레이어를 프로퍼티로 저장하여 명시적으로 정리
@@ -42,10 +42,19 @@ class ShareViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // ✅ 알림 전용 모드 (바텀 시트 UI 비활성화)
-        print("[ShareExtension] 🚀 알림 전용 모드 시작")
+        // ✨ 바텀 시트 UI 모드
+        print("[ShareExtension] 🚀 바텀 시트 UI 모드 시작")
 
-        // 공유 데이터 즉시 처리
+        // 배경: 투명
+        view.backgroundColor = .clear
+
+        // 바텀 시트 스타일 UI 설정
+        setupBottomSheetUI()
+
+        // 상단 영역 터치 시 닫기 제스처 추가
+        setupDismissGesture()
+
+        // 백그라운드에서 데이터 처리
         processSharedContentImmediately()
     }
 
@@ -124,14 +133,16 @@ class ShareViewController: UIViewController {
         if location.y < bottomSheetYPosition {
             // 상단 영역 터치 시 Extension 닫기
             print("[ShareExtension] 배경 터치로 닫기")
+            cancelAutoDismissTimer() // 타이머 취소
             extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
     }
 
     /// 바텀 시트 스타일 UI 설정
     private func setupBottomSheetUI() {
-        // 바텀시트 높이 설정 (더 높게)
-        let yPosition = view.bounds.height - bottomSheetHeight
+        // 바텀시트 높이 설정 (더 낮게 - 그라데이션 시작점 조정)
+        let gradientHeight: CGFloat = 250  // 그라데이션 높이를 줄임
+        let yPosition = view.bounds.height - gradientHeight
 
         // 하단부 그라데이션 - 흰색 추가 (위에서 아래로 흰색이 많아짐)
         // 🔧 메모리 관리: 프로퍼티에 저장하여 나중에 명시적으로 제거
@@ -140,16 +151,16 @@ class ShareViewController: UIViewController {
             x: 0,
             y: yPosition,
             width: view.bounds.width,
-            height: bottomSheetHeight
+            height: gradientHeight
         )
         gradientLayer?.colors = [
             UIColor.clear.cgColor, // 최상단: 완전 투명
-            UIColor(red: 27/255, green: 0/255, blue: 98/255, alpha: 0.2).cgColor,    // #1B0062 - 진한 남보라 (20%)
-            UIColor(red: 83/255, green: 37/255, blue: 203/255, alpha: 0.4).cgColor,  // #5325CB - 선명한 보라 (40%)
-            UIColor(red: 181/255, green: 153/255, blue: 255/255, alpha: 0.6).cgColor, // #B599FF - 밝은 연보라 (60%)
+            UIColor(red: 27/255, green: 0/255, blue: 98/255, alpha: 0.6).cgColor,    // #1B0062 - 진한 남보라 (60%)
+            UIColor(red: 83/255, green: 37/255, blue: 203/255, alpha: 0.8).cgColor,  // #5325CB - 선명한 보라 (80%)
+            UIColor(red: 181/255, green: 153/255, blue: 255/255, alpha: 0.95).cgColor, // #B599FF - 밝은 연보라 (95%)
             UIColor.white.cgColor // 최하단: 흰색 (100%)
         ]
-        gradientLayer?.locations = [0.0, 0.2, 0.4, 0.7, 1.0] // 위→아래로 갈수록 흰색이 많이 차지
+        gradientLayer?.locations = [0.0, 0.2, 0.45, 0.75, 1.0] // 그라데이션 전환 지점 조정
 
         // 레이어 추가
         if let layer = gradientLayer {
@@ -209,6 +220,9 @@ class ShareViewController: UIViewController {
 
     @objc private func openAppButtonTapped() {
         print("[ShareExtension] 앱에서 보기 버튼 클릭됨")
+
+        // 자동 닫기 타이머 취소 (사용자가 버튼 클릭했으므로)
+        cancelAutoDismissTimer()
 
         guard let url = URL(string: "tripgether://share") else {
             print("[ShareExtension] ❌ URL Scheme 생성 실패")
@@ -665,16 +679,29 @@ class ShareViewController: UIViewController {
     }
 
     private func showSuccessAndDismiss() {
-        print("[ShareExtension] ✅ 데이터 저장 완료 - 알림 전용 모드")
+        print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시됨")
+        // UI는 viewDidLoad에서 이미 설정됨
 
-        // 🔔 Local Notification 발송
-        sendLocalNotification()
+        // 2.5초 후 자동으로 닫기 타이머 시작
+        startAutoDismissTimer()
+    }
 
-        // Extension 즉시 종료 (0.5초 후)
-        // 알림이 표시될 시간 확보
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            print("[ShareExtension] 🚪 Extension 종료")
+    /// 자동 닫기 타이머 시작 (2.5초 후 자동으로 Extension 닫기)
+    private func startAutoDismissTimer() {
+        print("[ShareExtension] ⏰ 자동 닫기 타이머 시작 (\(autoDismissDelay)초)")
+
+        autoDismissTimer = Timer.scheduledTimer(withTimeInterval: autoDismissDelay, repeats: false) { [weak self] _ in
+            print("[ShareExtension] ⏰ 자동 닫기 타이머 완료 - Extension 닫기")
             self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        }
+    }
+
+    /// 자동 닫기 타이머 취소
+    private func cancelAutoDismissTimer() {
+        if autoDismissTimer != nil {
+            print("[ShareExtension] ⏰ 자동 닫기 타이머 취소")
+            autoDismissTimer?.invalidate()
+            autoDismissTimer = nil
         }
     }
 
