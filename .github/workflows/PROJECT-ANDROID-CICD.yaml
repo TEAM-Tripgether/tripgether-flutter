@@ -52,9 +52,9 @@ jobs:
           echo "Keystore created from DEBUG_KEYSTORE"
           ls -la android/app/keystore
           echo "storeFile=keystore/key.jks" > android/key.properties
-          echo "storePassword=android" >> android/key.properties
-          echo "keyAlias=androiddebugkey" >> android/key.properties
-          echo "keyPassword=android" >> android/key.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=tripgether-release" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "key.properties created"
           ls -la android/
 
