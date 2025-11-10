@@ -4,7 +4,7 @@ description: "Tripgether - Share your travel moments and discover local places t
 publish_to: 'none' 
 
 
-version: 1.1.8
+version: 1.1.16
 
 environment:
   sdk: ^3.9.2
@@ -39,6 +39,7 @@ dependencies:
   flutter_secure_storage: ^9.2.4  # 민감 데이터 안전 저장
   google_sign_in: ^7.2.0          # 구글 소셜 로그인 (Firebase 없이)
   flutter_dotenv: ^6.0.0          # 환경 변수 관리 (.env 파일)
+  device_info_plus: ^10.1.2       # 기기 정보 수집 (FCM 기기 식별용)
 
   # UI/UX 레이아웃
   flutter_screenutil: ^5.9.3      # 화면, 해상도 대응 유틸리티

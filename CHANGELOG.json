@@ -1,11 +1,143 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-03T14:30:02Z",
-    "currentVersion": "1.1.8",
+    "lastUpdated": "2025-11-07T08:27:50Z",
+    "currentVersion": "1.1.14",
     "projectType": "flutter",
-    "totalReleases": 24
+    "totalReleases": 30
   },
   "releases": [
+    {
+      "version": "1.1.14",
+      "project_type": "flutter",
+      "date": "2025-11-07",
+      "pr_number": 75,
+      "raw_summary": "Summary by CodeRabbit\nRelease Notes\n\nChores\n\n버전을 1.1.14로 업데이트했습니다.\niOS 플랫폼에서 공유 기능의 호환성을 개선했습니다.",
+      "parsed_changes": {
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전을 1.1.14로 업데이트했습니다.",
+            "iOS 플랫폼에서 공유 기능의 호환성을 개선했습니다."
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.13",
+      "project_type": "flutter",
+      "date": "2025-11-06",
+      "pr_number": 73,
+      "raw_summary": "Summary by CodeRabbit\n\n\nBug Fixes\n\niOS 공유 확장의 UI 안정성 및 메모리 관리 개선\n\n\n\nDocumentation\n\n프로젝트 버전 정보 업데이트\n\n\n\nChores\n\n패키지 버전을 1.1.13으로 업데이트",
+      "parsed_changes": {
+        "bug_fixes": {
+          "title": "Bug Fixes",
+          "items": [
+            "iOS 공유 확장의 UI 안정성 및 메모리 관리 개선"
+          ]
+        },
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "프로젝트 버전 정보 업데이트"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "패키지 버전을 1.1.13으로 업데이트"
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.12",
+      "project_type": "flutter",
+      "date": "2025-11-05",
+      "pr_number": 71,
+      "raw_summary": "Summary by CodeRabbit\nv1.1.12 릴리스 노트\n\n\n개선 사항\n\n공유 기능의 자동 종료 시간이 개선되어 안정성이 향상되었습니다.\n\n\n\n기타\n\n버전 1.1.12로 업데이트 (빌드 번호: 41)",
+      "parsed_changes": {
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "공유 기능의 자동 종료 시간이 개선되어 안정성이 향상되었습니다."
+          ]
+        },
+        "기타": {
+          "title": "기타",
+          "items": [
+            "버전 1.1.12로 업데이트 (빌드 번호: 41)"
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.11",
+      "project_type": "flutter",
+      "date": "2025-11-05",
+      "pr_number": 69,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\nNew Features\n\n공유 확장 화면이 바텀시트 UI로 개선됨\n2.5초 후 자동으로 닫히는 기능 추가\n배경 탭으로 빠른 닫기 가능\n\"앱에서 보기\" 버튼을 통한 앱 실행 기능 추가\n알림 처리 로직 개선\n\n\n\nChores\n\n버전 업데이트 (v1.1.11)",
+      "parsed_changes": {
+        "new_features": {
+          "title": "New Features",
+          "items": [
+            "공유 확장 화면이 바텀시트 UI로 개선됨",
+            "2.5초 후 자동으로 닫히는 기능 추가",
+            "배경 탭으로 빠른 닫기 가능",
+            "\"앱에서 보기\" 버튼을 통한 앱 실행 기능 추가",
+            "알림 처리 로직 개선"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전 업데이트 (v1.1.11)"
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.10",
+      "project_type": "flutter",
+      "date": "2025-11-05",
+      "pr_number": 67,
+      "raw_summary": "Summary by CodeRabbit\n\n\n새로운 기능\n\niOS 공유 확장에서 하단 시트 애니메이션이 개선되었습니다. 부드러운 스프링 애니메이션으로 화면에 표시되는 효과가 추가되었습니다.\n\n\n\n기타\n\n앱 버전이 1.1.10으로 업데이트되었습니다.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "iOS 공유 확장에서 하단 시트 애니메이션이 개선되었습니다. 부드러운 스프링 애니메이션으로 화면에 표시되는 효과가 추가되었습니다."
+          ]
+        },
+        "기타": {
+          "title": "기타",
+          "items": [
+            "앱 버전이 1.1.10으로 업데이트되었습니다."
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1.9",
+      "project_type": "flutter",
+      "date": "2025-11-04",
+      "pr_number": 65,
+      "raw_summary": "Summary by CodeRabbit\n변경 사항\n\n\n새로운 기능\n\niOS 공유 확장이 개선된 인터페이스로 리디자인되었습니다. 새로운 사용자 인터페이스로 더 직관적인 공유 환경을 제공합니다.\n이미지, 동영상, 파일, 텍스트 등 다양한 유형의 콘텐츠 공유 기능이 향상되었습니다.\n\n\n\nChores\n\n버전이 v1.1.9로 업데이트되었습니다.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "iOS 공유 확장이 개선된 인터페이스로 리디자인되었습니다. 새로운 사용자 인터페이스로 더 직관적인 공유 환경을 제공합니다.",
+            "이미지, 동영상, 파일, 텍스트 등 다양한 유형의 콘텐츠 공유 기능이 향상되었습니다."
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전이 v1.1.9로 업데이트되었습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.1.8",
       "project_type": "flutter",

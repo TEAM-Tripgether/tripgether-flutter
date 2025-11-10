@@ -1,12 +1,29 @@
 # 🌏 Tripgether
 
 <!-- 수정하지마세요 자동으로 동기화 됩니다 -->
-## 최신 버전 : v1.1.8 (2025-11-03)
+## 최신 버전 : v1.1.14 (2025-11-07)
 [전체 업데이트 내역 보기](CHANGELOG.md)
 
 > 여행 콘텐츠를 발견하고, 장소를 저장하며, 함께 여행을 계획하세요.
 
 **Tripgether**는 소셜 미디어에서 발견한 여행 콘텐츠를 저장하고 정리하며, 다른 여행자들과 함께 여행을 계획할 수 있는 협업 여행 플래닝 모바일 애플리케이션입니다.
+
+---
+
+## 📚 프로젝트 문서
+
+체계적인 개발을 위한 완벽한 기술 문서가 준비되어 있습니다:
+
+| 문서 | 설명 | 대상 독자 |
+|------|------|----------|
+| **[docs/README.md](docs/README.md)** | 📖 문서 허브 (시작점) | 모든 개발자 |
+| **[Architecture.md](docs/Architecture.md)** | 🏗️ 아키텍처 설명 | 신규 개발자, 리뷰어 |
+| **[DesignSystem.md](docs/DesignSystem.md)** | 🎨 디자인 시스템 | UI 개발자, 디자이너 |
+| **[Widgets.md](docs/Widgets.md)** | 🧩 공용 위젯 API | UI 개발자 |
+| **[Services.md](docs/Services.md)** | 🛠️ 핵심 서비스 API | 백엔드 통합 개발자 |
+| **[Development.md](docs/Development.md)** | 💻 개발 가이드 | 모든 개발자 |
+
+**신규 개발자 필독 순서**: Development.md → Architecture.md → DesignSystem.md → Widgets.md → Services.md
 
 ---
 
