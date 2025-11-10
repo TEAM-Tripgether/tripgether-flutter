@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tripgether/core/services/fcm/local_notifications_service.dart';
+import 'package:tripgether/core/services/device_info_service.dart';
 
 /// Firebase Cloud Messaging 서비스
 /// FCM 푸시 알림을 관리하고 메시지를 처리합니다
@@ -62,19 +63,54 @@ class FirebaseMessagingService {
   /// Retrieves and manages the FCM token for push notifications
   /// 푸시 알림을 위한 FCM 토큰을 가져오고 관리합니다
   Future<void> _handlePushNotificationsToken() async {
+    // 1. Get device information first (always runs, even on simulator)
+    // 1. 먼저 기기 정보 수집 (시뮬레이터에서도 항상 실행됨)
+    final deviceName = await DeviceInfoService.getDeviceName();
+    final deviceType = DeviceInfoService.getDeviceType();
+    final osVersion = await DeviceInfoService.getOSVersion();
+    final isPhysical = await DeviceInfoService.isPhysicalDevice();
+
+    // 2. Print device info (always visible, even on simulator)
+    // 2. 기기 정보 출력 (시뮬레이터에서도 항상 표시됨)
+    debugPrint('📱 Device Name: $deviceName');
+    debugPrint('📱 Device Type: $deviceType');
+    debugPrint('📱 OS Version: $osVersion');
+    debugPrint('📱 Physical Device: $isPhysical');
+
+    // Print full device info for debugging (개발 중에만 활성화)
+    // 전체 기기 정보 출력 (디버깅용)
+    if (kDebugMode) {
+      final fullDeviceInfo = await DeviceInfoService.getFullDeviceInfo();
+      debugPrint('📱 Full Device Info: $fullDeviceInfo');
+    }
+
+    // 3. Try to get FCM token (may fail on iOS simulator)
+    // 3. FCM 토큰 가져오기 시도 (iOS 시뮬레이터에서는 실패할 수 있음)
     try {
       // Get the FCM token for the device
       // 디바이스의 FCM 토큰 가져오기
       final token = await FirebaseMessaging.instance.getToken();
+
+      // Print FCM token
+      // FCM 토큰 출력
       debugPrint('✅ Push notifications token: $token');
 
       // Listen for token refresh events
       // 토큰 갱신 이벤트 수신 대기
       FirebaseMessaging.instance.onTokenRefresh
-          .listen((fcmToken) {
+          .listen((fcmToken) async {
             debugPrint('🔄 FCM token refreshed: $fcmToken');
-            // TODO: optionally send token to your server for targeting this device
-            // TODO: 선택적으로 서버에 토큰을 전송하여 이 디바이스를 타겟팅할 수 있습니다
+
+            // Get updated device info
+            // 갱신된 기기 정보 가져오기
+            final updatedDeviceName = await DeviceInfoService.getDeviceName();
+            final updatedDeviceType = DeviceInfoService.getDeviceType();
+
+            debugPrint('📱 Updated Device Name: $updatedDeviceName');
+            debugPrint('📱 Updated Device Type: $updatedDeviceType');
+
+            // TODO: Send updated token to backend server
+            // TODO: 갱신된 토큰을 백엔드 서버로 전송
           })
           .onError((error) {
             // Handle errors during token refresh
@@ -85,7 +121,14 @@ class FirebaseMessagingService {
       // Handle token retrieval errors
       // 토큰 가져오기 에러 처리
       debugPrint('⚠️ Unable to get FCM token: $e');
-      debugPrint('📱 Note: FCM tokens are only available on physical iOS devices, not simulators');
+
+      // Show helpful message for simulator users
+      // 시뮬레이터 사용자를 위한 안내 메시지
+      if (!isPhysical) {
+        debugPrint('📱 Note: FCM tokens are only available on physical iOS devices, not simulators');
+        debugPrint('💡 Device information is collected successfully, but push notifications require a real device');
+      }
+
       // Don't throw - allow app to continue running on simulator
       // 에러를 throw하지 않음 - 시뮬레이터에서도 앱이 계속 실행되도록 함
     }

@@ -7,6 +7,8 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // Firebase Google Services plugin (google-services.json 처리를 위해 필요)
+    id("com.google.gms.google-services")
 }
 
 // ═══════════════════════════════════════════════════════════
