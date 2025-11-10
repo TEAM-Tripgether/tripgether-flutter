@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "375187969849",
+    "project_id": "tripgether-55abb",
+    "storage_bucket": "tripgether-55abb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375187969849:android:71450bf449a02e3c4dfae8",
+        "android_client_info": {
+          "package_name": "com.tripgether.alom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV1dDBVg9Zb2NI0xOOr1cb0nmCy9Ws1_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

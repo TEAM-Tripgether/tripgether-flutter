@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import UserNotifications
+import flutter_local_notifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -14,11 +15,20 @@ import UserNotifications
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
 
+    // Flutter Local Notifications Plugin 설정
+    // LocalNotificationService에서 사용하는 flutter_local_notifications 패키지를 위한 설정
+    FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
+      GeneratedPluginRegistrant.register(with: registry)
+    }
+
     // 알림 권한 요청 (Share Extension에서 알림을 발송하기 위해 필요)
     requestNotificationPermission()
 
     // 알림 델리게이트 설정 (알림 탭 처리를 위해)
-    UNUserNotificationCenter.current().delegate = self
+    // iOS 10.0 이상에서 UNUserNotificationCenterDelegate 사용
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self
+    }
 
     // Flutter Method Channel 설정
     if let controller = window?.rootViewController as? FlutterViewController {
