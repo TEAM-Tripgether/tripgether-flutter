@@ -82,41 +82,41 @@ class DeviceInfoService {
       if (Platform.isIOS) {
         final iosInfo = await _deviceInfo.iosInfo;
         return {
-          'name': iosInfo.name,                     // "Elipair's iPhone"
-          'model': iosInfo.model,                   // "iPhone"
-          'systemName': iosInfo.systemName,         // "iOS"
-          'systemVersion': iosInfo.systemVersion,   // "17.4"
+          'name': iosInfo.name, // "Elipair's iPhone"
+          'model': iosInfo.model, // "iPhone"
+          'systemName': iosInfo.systemName, // "iOS"
+          'systemVersion': iosInfo.systemVersion, // "17.4"
           'localizedModel': iosInfo.localizedModel, // "iPhone"
           'identifierForVendor': iosInfo.identifierForVendor, // UUID
           'isPhysicalDevice': iosInfo.isPhysicalDevice, // true/false
           'utsname': {
-            'machine': iosInfo.utsname.machine,     // "iPhone15,2" (실제 모델 코드)
-            'nodename': iosInfo.utsname.nodename,   // 디바이스 노드 이름
-            'release': iosInfo.utsname.release,     // 커널 릴리즈 버전
-            'sysname': iosInfo.utsname.sysname,     // 시스템 이름
-            'version': iosInfo.utsname.version,     // 커널 빌드 버전
+            'machine': iosInfo.utsname.machine, // "iPhone15,2" (실제 모델 코드)
+            'nodename': iosInfo.utsname.nodename, // 디바이스 노드 이름
+            'release': iosInfo.utsname.release, // 커널 릴리즈 버전
+            'sysname': iosInfo.utsname.sysname, // 시스템 이름
+            'version': iosInfo.utsname.version, // 커널 빌드 버전
           },
         };
       } else if (Platform.isAndroid) {
         final androidInfo = await _deviceInfo.androidInfo;
         return {
-          'brand': androidInfo.brand,               // "Samsung"
+          'brand': androidInfo.brand, // "Samsung"
           'manufacturer': androidInfo.manufacturer, // "samsung"
-          'model': androidInfo.model,               // "SM-S911N"
-          'device': androidInfo.device,             // "r0s"
-          'product': androidInfo.product,           // "r0sxx"
-          'androidId': androidInfo.id,              // 안드로이드 고유 ID
-          'board': androidInfo.board,               // 보드 이름
-          'bootloader': androidInfo.bootloader,     // 부트로더 버전
-          'display': androidInfo.display,           // 디스플레이 ID
-          'fingerprint': androidInfo.fingerprint,   // 빌드 지문
-          'hardware': androidInfo.hardware,         // 하드웨어 이름
-          'host': androidInfo.host,                 // 빌드 호스트
+          'model': androidInfo.model, // "SM-S911N"
+          'device': androidInfo.device, // "r0s"
+          'product': androidInfo.product, // "r0sxx"
+          'androidId': androidInfo.id, // 안드로이드 고유 ID
+          'board': androidInfo.board, // 보드 이름
+          'bootloader': androidInfo.bootloader, // 부트로더 버전
+          'display': androidInfo.display, // 디스플레이 ID
+          'fingerprint': androidInfo.fingerprint, // 빌드 지문
+          'hardware': androidInfo.hardware, // 하드웨어 이름
+          'host': androidInfo.host, // 빌드 호스트
           'isPhysicalDevice': androidInfo.isPhysicalDevice, // true/false
-          'tags': androidInfo.tags,                 // 빌드 태그
-          'type': androidInfo.type,                 // 빌드 타입
+          'tags': androidInfo.tags, // 빌드 태그
+          'type': androidInfo.type, // 빌드 타입
           'versionRelease': androidInfo.version.release, // "13" (안드로이드 버전)
-          'versionSdkInt': androidInfo.version.sdkInt,   // 33 (API 레벨)
+          'versionSdkInt': androidInfo.version.sdkInt, // 33 (API 레벨)
         };
       }
 

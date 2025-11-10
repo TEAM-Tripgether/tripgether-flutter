@@ -79,7 +79,9 @@ class LocalNotificationsService {
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Handle notification tap in foreground
         // 포그라운드에서 알림 탭 처리
-        debugPrint('Foreground notification has been tapped: ${response.payload}');
+        debugPrint(
+          'Foreground notification has been tapped: ${response.payload}',
+        );
       },
     );
 

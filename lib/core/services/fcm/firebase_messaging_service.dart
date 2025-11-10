@@ -125,8 +125,12 @@ class FirebaseMessagingService {
       // Show helpful message for simulator users
       // 시뮬레이터 사용자를 위한 안내 메시지
       if (!isPhysical) {
-        debugPrint('📱 Note: FCM tokens are only available on physical iOS devices, not simulators');
-        debugPrint('💡 Device information is collected successfully, but push notifications require a real device');
+        debugPrint(
+          '📱 Note: FCM tokens are only available on physical iOS devices, not simulators',
+        );
+        debugPrint(
+          '💡 Device information is collected successfully, but push notifications require a real device',
+        );
       }
 
       // Don't throw - allow app to continue running on simulator
@@ -169,7 +173,9 @@ class FirebaseMessagingService {
   /// Handles notification taps when app is opened from the background or terminated state
   /// 앱이 백그라운드 또는 종료 상태에서 알림 탭으로 열렸을 때 처리합니다
   void _onMessageOpenedApp(RemoteMessage message) {
-    debugPrint('Notification caused the app to open: ${message.data.toString()}');
+    debugPrint(
+      'Notification caused the app to open: ${message.data.toString()}',
+    );
     // TODO: Add navigation or specific handling based on message data
     // TODO: 메시지 데이터를 기반으로 화면 이동 또는 특정 처리를 추가하세요
   }
