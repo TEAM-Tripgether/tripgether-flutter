@@ -31,22 +31,112 @@ class ShareViewController: UIViewController {
     let urlContentType = kUTTypeURL as String
     let fileURLType = kUTTypeFileURL as String
 
-    // UI Constants
-    private let bottomSheetHeight: CGFloat = 300
-    private let autoDismissDelay: TimeInterval = 5.0 // 5초 후 자동 닫기
+    // MARK: - Constants
+    private enum UIConstants {
+        static let bottomSheetHeight: CGFloat = 120
+        static let handleWidth: CGFloat = 40
+        static let handleHeight: CGFloat = 6
+        static let cornerRadius: CGFloat = 28
+        static let horizontalPadding: CGFloat = 20
+    }
+
+    private enum TimingConstants {
+        static let autoDismiss: TimeInterval = 5.0  // 5초 후 자동 닫기
+        static let extensionDismissal: TimeInterval = 0.5  // Extension 종료 대기 시간
+    }
+
+    // MARK: - Debug Configuration
+    #if DEBUG
+    private let isDebugLoggingEnabled = true
+    #else
+    private let isDebugLoggingEnabled = false
+    #endif
+
+    /// 민감 데이터를 마스킹하여 로깅
+    private func logSecure(_ message: String, sensitiveData: String? = nil) {
+        guard isDebugLoggingEnabled else { return }
+
+        if let data = sensitiveData {
+            let masked = data.prefix(10) + "***" + data.suffix(5)
+            print("[ShareExtension] \(message): \(masked)")
+        } else {
+            print("[ShareExtension] \(message)")
+        }
+    }
+
+    // UI State
     private var autoDismissTimer: Timer?
 
     // 🔧 메모리 관리: 그라데이션 레이어를 프로퍼티로 저장하여 명시적으로 정리
     private var gradientLayer: CAGradientLayer?
+    private var bottomSheetContainer: UIView?
+    private var hasShownAppGroupError = false
+
+    private var appGroupIdentifier: String {
+        "group.\(hostAppBundleIdentifier)"
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // ✅ 알림 전용 모드 (바텀 시트 UI 비활성화)
-        print("[ShareExtension] 🚀 알림 전용 모드 시작")
+        // ✨ 바텀 시트 UI 모드
+        print("[ShareExtension] 🚀 바텀 시트 UI 모드 시작")
 
-        // 공유 데이터 즉시 처리
-        processSharedContentImmediately()
+        // 🔧 CRITICAL: View 배경을 투명하게 설정 (바텀 시트만 보이도록)
+        view.backgroundColor = .clear
+
+        // 바텀 시트 UI 설정 (디밍 배경 포함)
+        setupBottomSheetUI()
+
+        // 🔧 UI 설정 완료 후 데이터 처리 시작 (메인 스레드에서 실행)
+        DispatchQueue.main.async { [weak self] in
+            self?.processSharedContentImmediately()
+        }
+    }
+
+    private func appGroupUserDefaults() -> UserDefaults? {
+        if let userDefaults = UserDefaults(suiteName: appGroupIdentifier) {
+            return userDefaults
+        }
+
+        handleMissingAppGroupConfiguration()
+        return nil
+    }
+
+    private func appGroupContainerURL() -> URL? {
+        if let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) {
+            return url
+        }
+
+        handleMissingAppGroupConfiguration()
+        return nil
+    }
+
+    private func handleMissingAppGroupConfiguration() {
+        guard !hasShownAppGroupError else { return }
+        hasShownAppGroupError = true
+
+        let message = """
+        App Group \(appGroupIdentifier)을(를) 사용할 수 없습니다.
+        Xcode의 Signing & Capabilities와 Apple Developer 계정에서 동일한 App Group을 활성화했는지 확인하세요.
+        """
+        print("[ShareExtension] ❌ App Group 누락 - \(message)")
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let alert = UIAlertController(
+                title: "App Group 설정 필요",
+                message: message,
+                preferredStyle: .alert
+            )
+
+            alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
+                self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            })
+
+            self.present(alert, animated: true, completion: nil)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -54,14 +144,8 @@ class ShareViewController: UIViewController {
 
         print("[ShareExtension] 🎬 viewDidAppear 호출됨")
 
-        // 부모 뷰 계층을 모두 투명하게 만들기
-        makeParentViewsTransparent()
-
         // 🔧 TestFlight 이슈 해결: viewDidAppear에서 UI 강제 표시
         // 프로덕션 환경에서는 viewDidLoad만으로는 UI가 제대로 표시되지 않을 수 있음
-        print("[ShareExtension] 🔄 UI 가시성 강제 적용")
-
-        // 뷰 계층 강제 업데이트
         view.setNeedsLayout()
         view.layoutIfNeeded()
 
@@ -81,9 +165,17 @@ class ShareViewController: UIViewController {
 
         print("[ShareExtension] 🚪 viewDidDisappear 호출됨 - Extension 종료")
 
-        // 🔧 Flutter 문서 권장사항: Extension 종료 보장
-        // Extension이 종료될 때 명시적으로 메인 앱으로 제어권 반환
-        extensionContext?.cancelRequest(withError: NSError(domain: "ShareExtension", code: 0, userInfo: nil))
+        // 🔧 viewDidDisappear는 Extension이 닫힐 때 호출되므로
+        // 여기서는 cancelRequest를 호출하지 않음
+        // completeRequest는 사용자 액션(버튼 탭, 타이머)에서만 호출
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let bottomSheet = bottomSheetContainer {
+            gradientLayer?.frame = bottomSheet.bounds
+        }
     }
 
     deinit {
@@ -98,16 +190,6 @@ class ShareViewController: UIViewController {
         autoDismissTimer = nil
     }
 
-    /// 부모 뷰 계층을 투명하게 만들기
-    private func makeParentViewsTransparent() {
-        var currentView: UIView? = view
-        while let parentView = currentView?.superview {
-            print("[ShareExtension] 부모 뷰 투명화: \(type(of: parentView))")
-            parentView.backgroundColor = .clear
-            currentView = parentView
-        }
-    }
-
     /// 상단 영역 터치 시 Share Extension 닫기
     private func setupDismissGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleBackgroundTap))
@@ -119,96 +201,105 @@ class ShareViewController: UIViewController {
         let location = gesture.location(in: view)
 
         // 하단 영역은 터치 무시 (UI 영역)
-        let bottomSheetYPosition = view.bounds.height - bottomSheetHeight
+        let bottomSheetYPosition = view.bounds.height - UIConstants.bottomSheetHeight
 
         if location.y < bottomSheetYPosition {
             // 상단 영역 터치 시 Extension 닫기
             print("[ShareExtension] 배경 터치로 닫기")
+            cancelAutoDismissTimer() // 타이머 취소
             extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
     }
 
     /// 바텀 시트 스타일 UI 설정
     private func setupBottomSheetUI() {
-        // 바텀시트 높이 설정 (더 높게)
-        let yPosition = view.bounds.height - bottomSheetHeight
+        // 바텀 시트 컨테이너 (화면 하단 전체를 채움)
+        let bottomSheet = UIView()
+        bottomSheet.translatesAutoresizingMaskIntoConstraints = false
+        bottomSheet.backgroundColor = .clear
+        view.addSubview(bottomSheet)
+        bottomSheetContainer = bottomSheet
 
-        // 하단부 그라데이션 - 흰색 추가 (위에서 아래로 흰색이 많아짐)
-        // 🔧 메모리 관리: 프로퍼티에 저장하여 나중에 명시적으로 제거
+        // 그라데이션 배경 (반투명)
         gradientLayer = CAGradientLayer()
-        gradientLayer?.frame = CGRect(
-            x: 0,
-            y: yPosition,
-            width: view.bounds.width,
-            height: bottomSheetHeight
-        )
         gradientLayer?.colors = [
-            UIColor.clear.cgColor, // 최상단: 완전 투명
-            UIColor(red: 27/255, green: 0/255, blue: 98/255, alpha: 0.2).cgColor,    // #1B0062 - 진한 남보라 (20%)
-            UIColor(red: 83/255, green: 37/255, blue: 203/255, alpha: 0.4).cgColor,  // #5325CB - 선명한 보라 (40%)
-            UIColor(red: 181/255, green: 153/255, blue: 255/255, alpha: 0.6).cgColor, // #B599FF - 밝은 연보라 (60%)
-            UIColor.white.cgColor // 최하단: 흰색 (100%)
+            UIColor(red: 27/255, green: 0/255, blue: 98/255, alpha: 0.85).cgColor,    // #1B0062 - 진한 남보라 (반투명)
+            UIColor(red: 83/255, green: 37/255, blue: 203/255, alpha: 0.90).cgColor,  // #5325CB - 선명한 보라 (반투명)
+            UIColor(red: 181/255, green: 153/255, blue: 255/255, alpha: 0.95).cgColor, // #B599FF - 밝은 연보라 (반투명)
         ]
-        gradientLayer?.locations = [0.0, 0.2, 0.4, 0.7, 1.0] // 위→아래로 갈수록 흰색이 많이 차지
+        gradientLayer?.locations = [0.0, 0.5, 1.0]
+        gradientLayer?.startPoint = CGPoint(x: 0.5, y: 0)
+        gradientLayer?.endPoint = CGPoint(x: 0.5, y: 1)
+        gradientLayer?.cornerRadius = 28
+        gradientLayer?.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
 
-        // 레이어 추가
-        if let layer = gradientLayer {
-            view.layer.insertSublayer(layer, at: 0)
+        if let gradientLayer = gradientLayer {
+            bottomSheet.layer.insertSublayer(gradientLayer, at: 0)
         }
 
-        // 바텀 컨테이너 뷰 (하단에 배치)
-        let bottomContainer = UIView()
-        bottomContainer.translatesAutoresizingMaskIntoConstraints = false
-        bottomContainer.backgroundColor = .clear
-        view.addSubview(bottomContainer)
+        NSLayoutConstraint.activate([
+            bottomSheet.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomSheet.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomSheet.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            bottomSheet.heightAnchor.constraint(equalToConstant: UIConstants.bottomSheetHeight)
+        ])
 
-        // 좌측: 메시지 레이블 (흰색 텍스트)
+        let handle = UIView()
+        handle.translatesAutoresizingMaskIntoConstraints = false
+        handle.backgroundColor = UIColor.white.withAlphaComponent(0.6)
+        handle.layer.cornerRadius = 3
+        bottomSheet.addSubview(handle)
+        NSLayoutConstraint.activate([
+            handle.topAnchor.constraint(equalTo: bottomSheet.topAnchor, constant: 12),
+            handle.centerXAnchor.constraint(equalTo: bottomSheet.centerXAnchor),
+            handle.widthAnchor.constraint(equalToConstant: UIConstants.handleWidth),
+            handle.heightAnchor.constraint(equalToConstant: UIConstants.handleHeight)
+        ])
+
+        // 중앙 콘텐츠 영역 (가로 배치)
+        let contentContainer = UIStackView()
+        contentContainer.axis = .horizontal
+        contentContainer.alignment = .center
+        contentContainer.spacing = 8
+        contentContainer.translatesAutoresizingMaskIntoConstraints = false
+        bottomSheet.addSubview(contentContainer)
+
+        // 메시지 레이블
         let messageLabel = UILabel()
-        messageLabel.text = "게시물을 추가했어요"
+        messageLabel.text = "트립게더에서 컨텐츠 분석을 시작합니다."
         messageLabel.textColor = .white
-        messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        messageLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        bottomContainer.addSubview(messageLabel)
+        contentContainer.addArrangedSubview(messageLabel)
 
-        // 우측: "앱에서 보기" 버튼 (투명 배경 + 흰색 텍스트 + 밑줄)
+        // "앱에서 보기" 버튼 (underline 스타일)
         let openAppButton = UIButton(type: .system)
-
-        // 밑줄이 있는 텍스트 생성 (흰색)
         let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 15, weight: .medium),
             .foregroundColor: UIColor.white,
-            .font: UIFont.systemFont(ofSize: 14, weight: .medium),
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
-        let attributedTitle = NSAttributedString(string: "앱에서 보기", attributes: attributes)
-        openAppButton.setAttributedTitle(attributedTitle, for: .normal)
-
-        openAppButton.backgroundColor = .clear
+        let attributedString = NSAttributedString(string: "앱에서 보기", attributes: attributes)
+        openAppButton.setAttributedTitle(attributedString, for: .normal)
         openAppButton.addTarget(self, action: #selector(openAppButtonTapped), for: .touchUpInside)
         openAppButton.translatesAutoresizingMaskIntoConstraints = false
-        bottomContainer.addSubview(openAppButton)
+        contentContainer.addArrangedSubview(openAppButton)
 
-        // Auto Layout 제약조건
         NSLayoutConstraint.activate([
-            // 바텀 컨테이너: 화면 하단에 배치
-            bottomContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            bottomContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            bottomContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
-            bottomContainer.heightAnchor.constraint(equalToConstant: 50),
-
-            // 메시지 레이블: 좌측
-            messageLabel.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor),
-            messageLabel.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
-
-            // 버튼: 우측
-            openAppButton.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor),
-            openAppButton.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
-            openAppButton.widthAnchor.constraint(equalToConstant: 100),
-            openAppButton.heightAnchor.constraint(equalToConstant: 40)
+            // 콘텐츠 컨테이너를 바텀 시트 중앙에 배치
+            contentContainer.centerXAnchor.constraint(equalTo: bottomSheet.centerXAnchor),
+            contentContainer.centerYAnchor.constraint(equalTo: bottomSheet.centerYAnchor, constant: 10),
+            contentContainer.leadingAnchor.constraint(greaterThanOrEqualTo: bottomSheet.leadingAnchor, constant: UIConstants.horizontalPadding),
+            contentContainer.trailingAnchor.constraint(lessThanOrEqualTo: bottomSheet.trailingAnchor, constant: -UIConstants.horizontalPadding)
         ])
     }
 
+
     @objc private func openAppButtonTapped() {
         print("[ShareExtension] 앱에서 보기 버튼 클릭됨")
+
+        // 자동 닫기 타이머 취소 (사용자가 버튼 클릭했으므로)
+        cancelAutoDismissTimer()
 
         guard let url = URL(string: "tripgether://share") else {
             print("[ShareExtension] ❌ URL Scheme 생성 실패")
@@ -216,30 +307,7 @@ class ShareViewController: UIViewController {
             return
         }
 
-        print("[ShareExtension] URL Scheme: \(url.absoluteString)")
-
-        // iOS 13+ extensionContext.open() 사용
-        extensionContext?.open(url, completionHandler: { [weak self] success in
-            print("[ShareExtension] extensionContext.open 결과: \(success)")
-
-            if !success {
-                print("[ShareExtension] ⚠️ extensionContext.open 실패 - UIApplication 시도")
-
-                // Fallback: UIApplication.shared.open
-                // Extension에서 직접 UIApplication에 접근할 수 없으므로 리플렉션 사용
-                if let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication {
-                    application.open(url, options: [:], completionHandler: { opened in
-                        print("[ShareExtension] UIApplication.open 결과: \(opened)")
-                    })
-                }
-            }
-
-            // Extension 닫기 (0.5초 후)
-            // 앱 전환이 완료될 시간을 확보하기 위한 지연
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-            }
-        })
+        launchMainApp(with: url)
     }
 
     // MARK: - 즉시 처리 모드
@@ -369,34 +437,38 @@ class ShareViewController: UIViewController {
 
     /// 이미지를 즉시 처리 (비동기)
     private func processImageImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
-        attachment.loadItem(forTypeIdentifier: imageContentType, options: nil) { [weak self] data, error in
+        attachment.loadFileRepresentation(forTypeIdentifier: imageContentType) { [weak self] url, error in
             guard let self = self else {
                 completion(false)
                 return
             }
 
             if let error = error {
-                print("[ShareExtension] ❌ 이미지 로드 실패: \(error)")
+                print("[ShareExtension] ❌ 이미지 파일 로드 실패: \(error)")
                 completion(false)
                 return
             }
 
-            if let url = data as? URL {
-                print("[ShareExtension] ✅ 이미지 URL 추출: \(url.path)")
+            guard let sourceURL = url else {
+                print("[ShareExtension] ⚠️ loadFileRepresentation에서 이미지 URL을 받지 못해 legacy API로 재시도합니다")
+                self.processImageUsingLegacyLoader(attachment: attachment, completion: completion)
+                return
+            }
 
-                let fileName = self.getFileName(from: url, type: .image)
-                let newPath = FileManager.default
-                    .containerURL(forSecurityApplicationGroupIdentifier: "group.\(self.hostAppBundleIdentifier)")!
-                    .appendingPathComponent(fileName)
+            let fileName = self.getFileName(from: sourceURL, type: .image)
+            guard let containerURL = self.appGroupContainerURL() else {
+                completion(false)
+                return
+            }
 
-                if self.copyFile(at: url, to: newPath) {
-                    self.sharedMedia.append(SharedMediaFile(path: newPath.absoluteString, thumbnail: nil, duration: nil, type: .image))
-                    completion(true)
-                } else {
-                    completion(false)
-                }
+            let destinationURL = containerURL.appendingPathComponent(fileName)
+
+            if self.copyFile(at: sourceURL, to: destinationURL) {
+                self.sharedMedia.append(
+                    SharedMediaFile(path: destinationURL.absoluteString, thumbnail: nil, duration: nil, type: .image)
+                )
+                completion(true)
             } else {
-                print("[ShareExtension] ⚠️ 이미지 URL 변환 실패")
                 completion(false)
             }
         }
@@ -404,38 +476,40 @@ class ShareViewController: UIViewController {
 
     /// 비디오를 즉시 처리 (비동기)
     private func processVideoImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
-        attachment.loadItem(forTypeIdentifier: videoContentType, options: nil) { [weak self] data, error in
+        attachment.loadFileRepresentation(forTypeIdentifier: videoContentType) { [weak self] url, error in
             guard let self = self else {
                 completion(false)
                 return
             }
 
             if let error = error {
-                print("[ShareExtension] ❌ 비디오 로드 실패: \(error)")
+                print("[ShareExtension] ❌ 비디오 파일 로드 실패: \(error)")
                 completion(false)
                 return
             }
 
-            if let url = data as? URL {
-                print("[ShareExtension] ✅ 비디오 URL 추출: \(url.path)")
+            guard let sourceURL = url else {
+                print("[ShareExtension] ⚠️ loadFileRepresentation에서 비디오 URL을 받지 못해 legacy API로 재시도합니다")
+                self.processVideoUsingLegacyLoader(attachment: attachment, completion: completion)
+                return
+            }
 
-                let fileName = self.getFileName(from: url, type: .video)
-                let newPath = FileManager.default
-                    .containerURL(forSecurityApplicationGroupIdentifier: "group.\(self.hostAppBundleIdentifier)")!
-                    .appendingPathComponent(fileName)
+            let fileName = self.getFileName(from: sourceURL, type: .video)
+            guard let containerURL = self.appGroupContainerURL() else {
+                completion(false)
+                return
+            }
 
-                if self.copyFile(at: url, to: newPath) {
-                    if let sharedFile = self.getSharedMediaFile(forVideo: newPath) {
-                        self.sharedMedia.append(sharedFile)
-                        completion(true)
-                    } else {
-                        completion(false)
-                    }
+            let destinationURL = containerURL.appendingPathComponent(fileName)
+
+            if self.copyFile(at: sourceURL, to: destinationURL) {
+                if let sharedFile = self.getSharedMediaFile(forVideo: destinationURL) {
+                    self.sharedMedia.append(sharedFile)
+                    completion(true)
                 } else {
                     completion(false)
                 }
             } else {
-                print("[ShareExtension] ⚠️ 비디오 URL 변환 실패")
                 completion(false)
             }
         }
@@ -443,7 +517,7 @@ class ShareViewController: UIViewController {
 
     /// 파일을 즉시 처리 (비동기)
     private func processFileImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
-        attachment.loadItem(forTypeIdentifier: fileURLType, options: nil) { [weak self] data, error in
+        attachment.loadFileRepresentation(forTypeIdentifier: fileURLType) { [weak self] url, error in
             guard let self = self else {
                 completion(false)
                 return
@@ -455,51 +529,197 @@ class ShareViewController: UIViewController {
                 return
             }
 
-            if let url = data as? URL {
-                print("[ShareExtension] ✅ 파일 URL 추출: \(url.path)")
+            guard let sourceURL = url else {
+                print("[ShareExtension] ⚠️ loadFileRepresentation에서 파일 URL을 받지 못해 legacy API로 재시도합니다")
+                self.processFileUsingLegacyLoader(attachment: attachment, completion: completion)
+                return
+            }
 
-                let fileName = self.getFileName(from: url, type: .file)
-                let newPath = FileManager.default
-                    .containerURL(forSecurityApplicationGroupIdentifier: "group.\(self.hostAppBundleIdentifier)")!
-                    .appendingPathComponent(fileName)
+            let fileName = self.getFileName(from: sourceURL, type: .file)
+            guard let containerURL = self.appGroupContainerURL() else {
+                completion(false)
+                return
+            }
 
-                if self.copyFile(at: url, to: newPath) {
-                    self.sharedMedia.append(SharedMediaFile(path: newPath.absoluteString, thumbnail: nil, duration: nil, type: .file))
-                    completion(true)
-                } else {
-                    completion(false)
-                }
+            let destinationURL = containerURL.appendingPathComponent(fileName)
+
+            if self.copyFile(at: sourceURL, to: destinationURL) {
+                self.sharedMedia.append(SharedMediaFile(path: destinationURL.absoluteString, thumbnail: nil, duration: nil, type: .file))
+                completion(true)
             } else {
-                print("[ShareExtension] ⚠️ 파일 URL 변환 실패")
                 completion(false)
             }
         }
     }
 
+    private func processImageUsingLegacyLoader(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
+        attachment.loadItem(forTypeIdentifier: imageContentType, options: nil) { [weak self] data, error in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            if let error = error {
+                print("[ShareExtension] ❌ (Legacy) 이미지 로드 실패: \(error)")
+                completion(false)
+                return
+            }
+
+            if let url = data as? URL {
+                self.handleLegacyURL(url, type: .image, completion: completion)
+            } else if let image = data as? UIImage,
+                      let imageData = image.jpegData(compressionQuality: 0.95) {
+                self.handleLegacyData(imageData, type: .image, completion: completion)
+            } else {
+                print("[ShareExtension] ⚠️ (Legacy) 이미지 데이터를 처리할 수 없습니다")
+                completion(false)
+            }
+        }
+    }
+
+    private func processVideoUsingLegacyLoader(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
+        attachment.loadItem(forTypeIdentifier: videoContentType, options: nil) { [weak self] data, error in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            if let error = error {
+                print("[ShareExtension] ❌ (Legacy) 비디오 로드 실패: \(error)")
+                completion(false)
+                return
+            }
+
+            if let url = data as? URL {
+                self.handleLegacyURL(url, type: .video, completion: completion)
+            } else if let asset = data as? AVURLAsset {
+                self.handleLegacyURL(asset.url, type: .video, completion: completion)
+            } else {
+                print("[ShareExtension] ⚠️ (Legacy) 비디오 데이터를 처리할 수 없습니다")
+                completion(false)
+            }
+        }
+    }
+
+    private func processFileUsingLegacyLoader(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
+        attachment.loadItem(forTypeIdentifier: fileURLType, options: nil) { [weak self] data, error in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            if let error = error {
+                print("[ShareExtension] ❌ (Legacy) 파일 로드 실패: \(error)")
+                completion(false)
+                return
+            }
+
+            if let url = data as? URL {
+                self.handleLegacyURL(url, type: .file, completion: completion)
+            } else if let text = data as? String,
+                      let textData = text.data(using: .utf8) {
+                self.handleLegacyData(textData, type: .file, completion: completion)
+            } else {
+                print("[ShareExtension] ⚠️ (Legacy) 파일 데이터를 처리할 수 없습니다")
+                completion(false)
+            }
+        }
+    }
+
+    private func handleLegacyURL(_ url: URL, type: SharedMediaType, completion: @escaping (Bool) -> Void) {
+        guard let containerURL = appGroupContainerURL() else {
+            completion(false)
+            return
+        }
+
+        let fileName = getFileName(from: url, type: type)
+        let destinationURL = containerURL.appendingPathComponent(fileName)
+
+        switch type {
+        case .image, .file:
+            if copyFile(at: url, to: destinationURL) {
+                sharedMedia.append(SharedMediaFile(path: destinationURL.absoluteString, thumbnail: nil, duration: nil, type: type))
+                completion(true)
+            } else {
+                completion(false)
+            }
+        case .video:
+            if copyFile(at: url, to: destinationURL),
+               let sharedFile = getSharedMediaFile(forVideo: destinationURL) {
+                sharedMedia.append(sharedFile)
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }
+    }
+
+    private func handleLegacyData(_ data: Data, type: SharedMediaType, completion: @escaping (Bool) -> Void) {
+        guard let containerURL = appGroupContainerURL() else {
+            completion(false)
+            return
+        }
+
+        let extensionName: String
+        switch type {
+        case .image:
+            extensionName = "jpg"
+        case .video:
+            extensionName = "mp4"
+        case .file:
+            extensionName = "dat"
+        }
+
+        let fileName = UUID().uuidString + ".\(extensionName)"
+        let destinationURL = containerURL.appendingPathComponent(fileName)
+
+        do {
+            try data.write(to: destinationURL)
+            switch type {
+            case .image, .file:
+                sharedMedia.append(SharedMediaFile(path: destinationURL.absoluteString, thumbnail: nil, duration: nil, type: type))
+            case .video:
+                if let sharedFile = getSharedMediaFile(forVideo: destinationURL) {
+                    sharedMedia.append(sharedFile)
+                } else {
+                    completion(false)
+                    return
+                }
+            }
+            completion(true)
+        } catch {
+            print("[ShareExtension] ❌ (Legacy) 데이터 파일 저장 실패: \(error)")
+            completion(false)
+        }
+    }
+
     /// UserDefaults에 저장하고 앱 실행
     private func saveAndLaunchApp() {
-        let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
+        guard let userDefaults = appGroupUserDefaults() else {
+            print("[ShareExtension] ❌ App Group UserDefaults를 사용할 수 없습니다")
+            return
+        }
 
         // 텍스트 데이터가 있으면 저장
         if !sharedText.isEmpty {
-            print("[ShareExtension] 💾 텍스트 데이터 저장: \(sharedText)")
-            userDefaults?.set(sharedText, forKey: sharedKey)
-            saveDebugLog(message: "텍스트 저장 완료: \(sharedText.joined(separator: ", "))")
+            logSecure("💾 텍스트 데이터 저장", sensitiveData: sharedText.joined(separator: ", "))
+            userDefaults.set(sharedText, forKey: sharedKey)
+            saveDebugLog(message: "텍스트 저장 완료: \(sharedText.count)개 항목")
         }
 
         // 미디어 파일이 있으면 저장
         if !sharedMedia.isEmpty {
             print("[ShareExtension] 💾 미디어 데이터 저장: \(sharedMedia.count)개")
-            userDefaults?.set(toData(data: sharedMedia), forKey: sharedKey)
+            userDefaults.set(toData(data: sharedMedia), forKey: sharedKey)
             saveDebugLog(message: "미디어 저장 완료: \(sharedMedia.count)개")
         }
 
         // 동기화
-        let syncSuccess = userDefaults?.synchronize() ?? false
+        let syncSuccess = userDefaults.synchronize()
         print("[ShareExtension] UserDefaults 동기화: \(syncSuccess ? "성공" : "실패")")
 
         if syncSuccess {
-            // 앱 실행 (URL Scheme 방식)
+            // 데이터 저장 완료 후 바텀 시트 UI 표시
             showSuccessAndDismiss()
         } else {
             print("[ShareExtension] ❌ 저장 실패")
@@ -512,13 +732,14 @@ class ShareViewController: UIViewController {
             if error == nil, let item = data as? String, let this = self {
                 this.sharedText.append(item)
                 if index == (content.attachments?.count ?? 1) - 1 {
-                    let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
+                    guard let userDefaults = this.appGroupUserDefaults() else {
+                        return
+                    }
 
-                    // 💾 단일 데이터 방식: 마지막 공유만 저장 (메모리 효율)
                     print("[ShareExtension] ✅ 단일 데이터 저장: \(this.sharedText)")
 
-                    userDefaults?.set(this.sharedText, forKey: this.sharedKey)
-                    userDefaults?.synchronize()
+                    userDefaults.set(this.sharedText, forKey: this.sharedKey)
+                    userDefaults.synchronize()
 
                     // 📝 로그 파일 생성
                     this.saveDebugLog(message: "텍스트 저장 완료: \(item)")
@@ -541,13 +762,14 @@ class ShareViewController: UIViewController {
             if error == nil, let item = data as? URL, let this = self {
                 this.sharedText.append(item.absoluteString)
                 if index == (content.attachments?.count ?? 1) - 1 {
-                    let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
+                    guard let userDefaults = this.appGroupUserDefaults() else {
+                        return
+                    }
 
-                    // 💾 단일 데이터 방식: 마지막 공유만 저장 (메모리 효율)
                     print("[ShareExtension] ✅ 단일 데이터 저장: \(this.sharedText)")
 
-                    userDefaults?.set(this.sharedText, forKey: this.sharedKey)
-                    userDefaults?.synchronize()
+                    userDefaults.set(this.sharedText, forKey: this.sharedKey)
+                    userDefaults.synchronize()
 
                     // 📝 로그 파일 생성
                     this.saveDebugLog(message: "URL 저장 완료: \(item.absoluteString)")
@@ -569,17 +791,20 @@ class ShareViewController: UIViewController {
         attachment.loadItem(forTypeIdentifier: imageContentType, options: nil) { [weak self] data, error in
             if error == nil, let url = data as? URL, let this = self {
                 let fileName = this.getFileName(from: url, type: .image)
-                let newPath = FileManager.default
-                    .containerURL(forSecurityApplicationGroupIdentifier: "group.\(this.hostAppBundleIdentifier)")!
-                    .appendingPathComponent(fileName)
+                guard let containerURL = this.appGroupContainerURL() else {
+                    return
+                }
+                let newPath = containerURL.appendingPathComponent(fileName)
                 let copied = this.copyFile(at: url, to: newPath)
                 if copied {
                     this.sharedMedia.append(SharedMediaFile(path: newPath.absoluteString, thumbnail: nil, duration: nil, type: .image))
                 }
                 if index == (content.attachments?.count ?? 1) - 1 {
-                    let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
-                    userDefaults?.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
-                    userDefaults?.synchronize()
+                    guard let userDefaults = this.appGroupUserDefaults() else {
+                        return
+                    }
+                    userDefaults.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
+                    userDefaults.synchronize()
 
                     // UI 업데이트는 메인 스레드에서 실행
                     DispatchQueue.main.async {
@@ -598,18 +823,21 @@ class ShareViewController: UIViewController {
         attachment.loadItem(forTypeIdentifier: videoContentType, options: nil) { [weak self] data, error in
             if error == nil, let url = data as? URL, let this = self {
                 let fileName = this.getFileName(from: url, type: .video)
-                let newPath = FileManager.default
-                    .containerURL(forSecurityApplicationGroupIdentifier: "group.\(this.hostAppBundleIdentifier)")!
-                    .appendingPathComponent(fileName)
+                guard let containerURL = this.appGroupContainerURL() else {
+                    return
+                }
+                let newPath = containerURL.appendingPathComponent(fileName)
                 let copied = this.copyFile(at: url, to: newPath)
                 if copied {
                     guard let sharedFile = this.getSharedMediaFile(forVideo: newPath) else { return }
                     this.sharedMedia.append(sharedFile)
                 }
                 if index == (content.attachments?.count ?? 1) - 1 {
-                    let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
-                    userDefaults?.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
-                    userDefaults?.synchronize()
+                    guard let userDefaults = this.appGroupUserDefaults() else {
+                        return
+                    }
+                    userDefaults.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
+                    userDefaults.synchronize()
 
                     // UI 업데이트는 메인 스레드에서 실행
                     DispatchQueue.main.async {
@@ -628,17 +856,20 @@ class ShareViewController: UIViewController {
         attachment.loadItem(forTypeIdentifier: fileURLType, options: nil) { [weak self] data, error in
             if error == nil, let url = data as? URL, let this = self {
                 let fileName = this.getFileName(from: url, type: .file)
-                let newPath = FileManager.default
-                    .containerURL(forSecurityApplicationGroupIdentifier: "group.\(this.hostAppBundleIdentifier)")!
-                    .appendingPathComponent(fileName)
+                guard let containerURL = this.appGroupContainerURL() else {
+                    return
+                }
+                let newPath = containerURL.appendingPathComponent(fileName)
                 let copied = this.copyFile(at: url, to: newPath)
                 if copied {
                     this.sharedMedia.append(SharedMediaFile(path: newPath.absoluteString, thumbnail: nil, duration: nil, type: .file))
                 }
                 if index == (content.attachments?.count ?? 1) - 1 {
-                    let userDefaults = UserDefaults(suiteName: "group.\(this.hostAppBundleIdentifier)")
-                    userDefaults?.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
-                    userDefaults?.synchronize()
+                    guard let userDefaults = this.appGroupUserDefaults() else {
+                        return
+                    }
+                    userDefaults.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
+                    userDefaults.synchronize()
 
                     // UI 업데이트는 메인 스레드에서 실행
                     DispatchQueue.main.async {
@@ -665,16 +896,29 @@ class ShareViewController: UIViewController {
     }
 
     private func showSuccessAndDismiss() {
-        print("[ShareExtension] ✅ 데이터 저장 완료 - 알림 전용 모드")
+        print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시 시작")
 
-        // 🔔 Local Notification 발송
-        sendLocalNotification()
+        // 🔧 즉시 타이머 시작 (UI는 viewDidLoad에서 이미 설정됨)
+        // viewDidAppear에서 강제 표시되므로 추가 대기 불필요
+        startAutoDismissTimer()
+    }
 
-        // Extension 즉시 종료 (0.5초 후)
-        // 알림이 표시될 시간 확보
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            print("[ShareExtension] 🚪 Extension 종료")
+    /// 자동 닫기 타이머 시작 (5초 후 자동으로 Extension 닫기)
+    private func startAutoDismissTimer() {
+        print("[ShareExtension] ⏰ 자동 닫기 타이머 시작 (\(TimingConstants.autoDismiss)초)")
+
+        autoDismissTimer = Timer.scheduledTimer(withTimeInterval: TimingConstants.autoDismiss, repeats: false) { [weak self] _ in
+            print("[ShareExtension] ⏰ 자동 닫기 타이머 완료 - Extension 닫기")
             self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        }
+    }
+
+    /// 자동 닫기 타이머 취소
+    private func cancelAutoDismissTimer() {
+        if autoDismissTimer != nil {
+            print("[ShareExtension] ⏰ 자동 닫기 타이머 취소")
+            autoDismissTimer?.invalidate()
+            autoDismissTimer = nil
         }
     }
 
@@ -705,15 +949,51 @@ class ShareViewController: UIViewController {
     }
 
     /// URL Scheme를 통해 메인 앱 실행
-    /// Share Extension은 직접 앱을 실행할 수 없으므로 UIResponder 체인을 통해 시스템에 요청
+    /// Share Extension은 직접 앱을 실행할 수 없으므로 시스템 API를 통해 요청
     @objc private func openMainApp() {
         guard let url = URL(string: "tripgether://share") else {
             print("[ShareExtension] ❌ URL Scheme 생성 실패")
             return
         }
 
+        launchMainApp(with: url)
+    }
+
+    private func launchMainApp(with url: URL) {
         print("[ShareExtension] URL Scheme 호출: \(url.absoluteString)")
 
+        extensionContext?.open(url, completionHandler: { [weak self] success in
+            print("[ShareExtension] extensionContext.open 결과: \(success)")
+
+            guard let self = self else { return }
+
+            if success {
+                self.scheduleExtensionDismissal()
+                return
+            }
+
+            print("[ShareExtension] ⚠️ extensionContext.open 실패 - UIApplication 시도")
+
+            if let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication {
+                application.open(url, options: [:], completionHandler: { opened in
+                    print("[ShareExtension] UIApplication.open 결과: \(opened)")
+                })
+                self.scheduleExtensionDismissal()
+                return
+            }
+
+            self.openViaResponderChain(url: url)
+            self.scheduleExtensionDismissal()
+        })
+    }
+
+    private func scheduleExtensionDismissal() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + TimingConstants.extensionDismissal) { [weak self] in
+            self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        }
+    }
+
+    private func openViaResponderChain(url: URL) {
         // UIResponder 체인을 따라 올라가며 openURL을 수행할 수 있는 객체 찾기
         var responder: UIResponder? = self as UIResponder
         let selector = #selector(openURL(_:))
@@ -758,6 +1038,13 @@ class ShareViewController: UIViewController {
     }
 
     func copyFile(at srcURL: URL, to dstURL: URL) -> Bool {
+        let shouldStopAccessing = srcURL.startAccessingSecurityScopedResource()
+        defer {
+            if shouldStopAccessing {
+                srcURL.stopAccessingSecurityScopedResource()
+            }
+        }
+
         do {
             if FileManager.default.fileExists(atPath: dstURL.path) {
                 try FileManager.default.removeItem(at: dstURL)
@@ -793,10 +1080,10 @@ class ShareViewController: UIViewController {
 
     private func getThumbnailPath(for url: URL) -> URL {
         let fileName = Data(url.lastPathComponent.utf8).base64EncodedString().replacingOccurrences(of: "==", with: "")
-        let path = FileManager.default
-            .containerURL(forSecurityApplicationGroupIdentifier: "group.\(hostAppBundleIdentifier)")!
-            .appendingPathComponent("\(fileName).jpg")
-        return path
+        guard let containerURL = appGroupContainerURL() else {
+            return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(fileName).jpg")
+        }
+        return containerURL.appendingPathComponent("\(fileName).jpg")
     }
 
     class SharedMediaFile: Codable {
@@ -832,14 +1119,12 @@ class ShareViewController: UIViewController {
     /// App Groups 컨테이너에 로그 파일을 저장하여 앱에서 확인 가능
     /// 최신 5개 로그만 유지 (로그 로테이션)
     private func saveDebugLog(message: String) {
-        let containerURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.\(hostAppBundleIdentifier)"
-        )
-
-        guard let logFileURL = containerURL?.appendingPathComponent("share_extension_log.txt") else {
-            print("[ShareExtension] ❌ 로그 파일 경로 생성 실패")
+        guard let containerURL = appGroupContainerURL() else {
+            print("[ShareExtension] ❌ 로그 파일 경로 생성 실패 - App Group 없음")
             return
         }
+
+        let logFileURL = containerURL.appendingPathComponent("share_extension_log.txt")
 
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .medium)
         let logMessage = "[\(timestamp)] \(message)\n"
