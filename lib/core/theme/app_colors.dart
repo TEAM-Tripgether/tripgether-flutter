@@ -30,7 +30,7 @@ class AppColors {
 
   /// Surface Colors (표면 색상)
   /// 카드, 시트, 메뉴 등의 배경에 사용
-  static const Color surface = Color(0xFFFFFBFE); // 기본 표면 색상
+  static const Color surface = Color(0xFFFFFFFF); // 기본 표면 색상 (순수 흰색)
   static const Color surfaceVariant = Color(0xFFE7E0EC); // 변형 표면 색상
   static const Color surfaceTint = primary; // 표면 틴트 색상
   static const Color onSurface = Color(0xFF1C1B1F); // 표면 위의 텍스트
@@ -38,7 +38,7 @@ class AppColors {
 
   /// Background Colors (배경 색상)
   /// 전체 화면의 배경에 사용
-  static const Color background = Color(0xFFFFFBFE); // 기본 배경
+  static const Color background = Color(0xFFFFFFFF); // 기본 배경 (순수 흰색)
   static const Color onBackground = Color(0xFF1C1B1F); // 배경 위의 텍스트
 
   /// Error Colors (에러 색상) - 사용자 지정
@@ -89,7 +89,7 @@ class AppColors {
   static const Color neutral80 = Color(0xFFC6C6CA);
   static const Color neutral90 = Color(0xFFE2E2E6);
   static const Color neutral95 = Color(0xFFF1F1F5);
-  static const Color neutral99 = Color(0xFFFFFBFE);
+  static const Color neutral99 = Color(0xFFFFFFFF); // 순수 흰색
 
   /// Shadow and Elevation Colors (그림자 및 높이 색상)
   /// 카드와 요소들의 그림자 효과에 사용
@@ -138,9 +138,9 @@ class AppColors {
 
   /// Shimmer Colors (스켈레톤 로딩 색상)
   /// Shimmer 효과의 기본 색상과 하이라이트 색상
-  static const Color shimmerBase = neutral95; // E2E2E6 - 기본 배경 (grey[300] 대체)
+  static const Color shimmerBase = neutral95; // F1F1F5 - 기본 배경 (grey[300] 대체)
   static const Color shimmerHighlight =
-      neutral99; // FFFBFE - 하이라이트 (grey[100] 대체)
+      neutral99; // FFFFFF - 하이라이트 순수 흰색 (grey[100] 대체)
 
   /// Gradient Colors (그라데이션 색상)
   /// 홈 화면 헤더 그라데이션용 중간 색상
