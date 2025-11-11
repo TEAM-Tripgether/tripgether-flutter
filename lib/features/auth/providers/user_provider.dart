@@ -31,9 +31,12 @@ class UserNotifier extends _$UserNotifier {
   ///
   /// 사용자 정보와 토큰을 안전하게 저장하는 보안 저장소입니다.
   /// - Android: EncryptedSharedPreferences
-  /// - iOS: Keychain
+  /// - iOS: Keychain (앱 삭제 시 데이터 자동 삭제)
   static const _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+    ),
   );
 
   /// 사용자 정보 저장 키
@@ -139,22 +142,24 @@ class UserNotifier extends _$UserNotifier {
   /// - 사용자 정보 (User 객체)
   /// - Access Token
   /// - Refresh Token
+  /// - **모든 FlutterSecureStorage 데이터** (완전 초기화)
   ///
   /// **흐름**:
-  /// 1. Secure Storage에서 모든 키 삭제
+  /// 1. Secure Storage의 모든 데이터 삭제 (deleteAll)
   /// 2. Provider 상태를 AsyncValue.data(null)로 업데이트
   /// 3. UI는 자동으로 "로그인 필요" 상태로 전환
   Future<void> clearUser() async {
     debugPrint('[UserNotifier] 🗑️ 사용자 정보 삭제 시작');
 
     try {
-      // 1. Secure Storage에서 사용자 정보 삭제
-      await _deleteUserFromStorage();
+      // ⭐ 모든 Secure Storage 데이터 완전 삭제
+      // iOS Keychain과 Android EncryptedSharedPreferences의
+      // 모든 키-값 쌍을 삭제하여 완전 초기화
+      await _storage.deleteAll();
 
-      // 2. 토큰 삭제
-      await _deleteTokensFromStorage();
+      debugPrint('[UserNotifier] 🗑️ 모든 Storage 데이터 삭제 완료');
 
-      // 3. Provider 상태 업데이트 (로그아웃 상태)
+      // Provider 상태 업데이트 (로그아웃 상태)
       state = const AsyncValue.data(null);
 
       debugPrint('[UserNotifier] ✅ 사용자 정보 삭제 완료');
@@ -260,16 +265,6 @@ class UserNotifier extends _$UserNotifier {
     }
   }
 
-  /// Secure Storage에서 사용자 정보 삭제
-  Future<void> _deleteUserFromStorage() async {
-    try {
-      await _storage.delete(key: _userKey);
-    } catch (e) {
-      debugPrint('[UserNotifier] ⚠️ Storage에서 사용자 정보 삭제 실패: $e');
-      // 삭제 실패는 무시 (이미 없을 수 있음)
-    }
-  }
-
   /// Secure Storage에 JWT 토큰 저장
   ///
   /// **저장 내용**:
@@ -290,19 +285,6 @@ class UserNotifier extends _$UserNotifier {
     } catch (e) {
       debugPrint('[UserNotifier] ⚠️ 토큰 저장 실패: $e');
       rethrow;
-    }
-  }
-
-  /// Secure Storage에서 JWT 토큰 삭제
-  Future<void> _deleteTokensFromStorage() async {
-    try {
-      await _storage.delete(key: _accessTokenKey);
-      await _storage.delete(key: _refreshTokenKey);
-
-      debugPrint('[UserNotifier] 🔑 토큰 삭제 완료');
-    } catch (e) {
-      debugPrint('[UserNotifier] ⚠️ 토큰 삭제 실패: $e');
-      // 삭제 실패는 무시
     }
   }
 }

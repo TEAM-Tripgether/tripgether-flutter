@@ -32,6 +32,9 @@ void main() async {
   // 이를 통해 UserNotifier.build()에서의 Storage 읽기가 즉시 완료됨
   const storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+    ),
   );
   try {
     await storage.read(key: 'warmup_key');
