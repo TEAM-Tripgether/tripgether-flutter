@@ -175,12 +175,10 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
                         label: item,
                         isSelected: isSelected,
                         onTap: () {
-                          // Overlay 내부 상태 업데이트
-                          overlaySetState(() {
-                            _handleInterestTap(item);
-                          });
-                          // 부모 위젯도 함께 업데이트 (선택 개수 표시용)
-                          setState(() {});
+                          // 부모 위젯 상태 업데이트 (selectedCount 및 버튼 표시)
+                          _handleInterestTap(item);
+                          // Overlay 내부만 재빌드 (칩 선택 상태 시각적 업데이트)
+                          overlaySetState(() {});
                         },
                       );
                     }).toList(),
