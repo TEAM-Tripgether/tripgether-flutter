@@ -192,15 +192,15 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
               children: [
                 Text(
                   l10n.onboardingBirthdatePrompt,
-                  style: AppTextStyles.headlineMedium.copyWith(
+                  style: AppTextStyles.greetingSemiBold20.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
+                    color: AppColors.gradient2, // #5325CB - 선명한 보라색
                   ),
                 ),
                 AppSpacing.horizontalSpace(4),
                 Text(
                   '*',
-                  style: AppTextStyles.headlineMedium.copyWith(
+                  style: AppTextStyles.greetingSemiBold20.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.error,
                   ),
@@ -214,7 +214,7 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
             // 설명 (제목 바로 아래, 국제화 적용)
             Text(
               l10n.onboardingBirthdateDescription,
-              style: AppTextStyles.bodySmall.copyWith(
+              style: AppTextStyles.metaMedium12.copyWith(
                 color: AppColors.onboardingDescription, // #130537 - 진한 남보라
               ),
               textAlign: TextAlign.center,
@@ -233,7 +233,7 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
                 maxLength: 14, // "YYYY / MM / DD" = 14자
-                style: AppTextStyles.headlineMedium.copyWith(
+                style: AppTextStyles.greetingSemiBold20.copyWith(
                   fontWeight: FontWeight.w400,
                   color: AppColors.textPrimary,
                   letterSpacing: 2.0, // 가독성을 위한 자간 조정
@@ -255,7 +255,7 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
             // 만 14세 이상 안내 문구
             Text(
               l10n.onboardingBirthdateAgeLimit,
-              style: AppTextStyles.bodySmall.copyWith(
+              style: AppTextStyles.metaMedium12.copyWith(
                 color: AppColors.error,
                 fontWeight: FontWeight.w600,
               ),

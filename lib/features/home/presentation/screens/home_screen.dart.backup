@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tripgether/core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/services/sharing_service.dart';
@@ -51,6 +50,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
   }
 
+  @override
+  void onRefreshStateChanged(bool isRefreshing) {
+    // 프로그래밍 방식 새로고침 상태 변경 시 UI 업데이트
+    // AppBar 하단에 LinearProgressIndicator 표시/숨김
+    if (mounted) {
+      setState(() {
+        _isProgrammaticRefreshing = isRefreshing;
+      });
+    }
+  }
+
   // ════════════════════════════════════════════════════════════════════════
   // AutomaticKeepAliveClientMixin 필수 구현
   // ════════════════════════════════════════════════════════════════════════
@@ -73,6 +83,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   /// 공유 데이터 처리 중 상태
   bool _isProcessingSharedData = false;
+
+  /// 프로그래밍 방식(탭 재클릭) 새로고침 진행 중 상태
+  /// true일 때 AppBar 하단에 LinearProgressIndicator 표시
+  bool _isProgrammaticRefreshing = false;
 
   /// 더미 SNS 콘텐츠 리스트
   late List<SnsContent> _snsContents;
@@ -338,11 +352,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      // CustomScrollView + CupertinoSliverRefreshControl로 iOS 스타일 Pull-to-Refresh 구현
+      // 새로고침 시 콘텐츠가 실제로 밀려나며 공간이 생성됨 (Instagram/Twitter 방식)
       body: CustomScrollView(
-        controller: scrollController,
+        controller: scrollController, // RefreshableTabMixin에서 제공
         slivers: [
-          CupertinoSliverRefreshControl(onRefresh: onRefresh),
+          // CupertinoSliverRefreshControl: iOS 스타일 Pull-to-Refresh
+          // 콘텐츠를 실제로 밀어내며 공간을 생성하는 효과
+          CupertinoSliverRefreshControl(
+            onRefresh:
+                onRefresh, // 탭 재클릭 시 또는 Pull-to-Refresh 시 데이터 새로고침 (최소 실행 시간 보장)
+          ),
+          // SliverToBoxAdapter: 홈 헤더 (로고 + 인사말 + 검색창)
           SliverToBoxAdapter(
             child: Consumer(
               builder: (context, ref, child) {
@@ -436,12 +457,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   },
                 ),
 
-              AppSpacing.verticalSpaceLG,
+              SizedBox(height: 24.h),
 
               // 섹션 구분선 (더 두꺼운 배경색 영역)
               const SectionDivider.thick(),
 
-              AppSpacing.verticalSpaceXXL,
+              SizedBox(height: 24.h),
 
               // 최근 저장한 장소 섹션 (세로 리스트, 이미지 가로 스크롤)
               // 처음 3개만 표시하여 스크롤 부담 감소
@@ -483,7 +504,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ],
 
               // 하단 여백
-              AppSpacing.verticalSpaceXL,
+              SizedBox(height: 20.h),
             ]), // SliverChildListDelegate 닫기
           ), // SliverList 닫기
         ], // CustomScrollView의 slivers 닫기

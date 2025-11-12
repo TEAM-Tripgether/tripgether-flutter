@@ -170,7 +170,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
             const Text('Share Extension 로그'),
             Text(
               '최신 5개만 자동 유지 (현재: ${_logEntries.length}개)',
-              style: AppTextStyles.caption,
+              style: AppTextStyles.caption12,
             ),
           ],
         ),
@@ -239,7 +239,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
             AppSpacing.verticalSpaceLG,
             Text(
               message,
-              style: AppTextStyles.bodyMedium.copyWith(
+              style: AppTextStyles.bodyRegular14.copyWith(
                 color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,
@@ -279,7 +279,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                   ),
                   child: Text(
                     '#${_logEntries.length - index}',
-                    style: AppTextStyles.labelMedium.copyWith(
+                    style: AppTextStyles.buttonMediumMedium14.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w700,
                     ),
@@ -289,7 +289,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                 Expanded(
                   child: Text(
                     entry.timestamp,
-                    style: AppTextStyles.caption,
+                    style: AppTextStyles.caption12,
                   ),
                 ),
                 if (hasUrl)
@@ -306,7 +306,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
             // 메시지 내용
             Text(
               entry.message,
-              style: AppTextStyles.bodyMedium,
+              style: AppTextStyles.bodyRegular14,
             ),
 
             // URL 표시 (있는 경우)
@@ -333,7 +333,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                     Expanded(
                       child: Text(
                         entry.url!,
-                        style: AppTextStyles.bodySmall.copyWith(
+                        style: AppTextStyles.metaMedium12.copyWith(
                           color: AppColors.success,
                           fontWeight: FontWeight.w600,
                         ),

@@ -89,7 +89,7 @@ class SnsContentCard extends StatelessWidget {
                     SizedBox(height: AppSpacing.xs.h),
                     Text(
                       content.title,
-                      style: AppTextStyles.titleSmall.copyWith(
+                      style: AppTextStyles.contentTitle.copyWith(
                         color: Colors.white,
                         height: 1.3,
                         shadows: [
@@ -175,7 +175,7 @@ class SnsContentHorizontalList extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title!, style: AppTextStyles.titleLarge),
+          Text(title!, style: AppTextStyles.greetingBold20),
           if (onSeeMoreTap != null)
             GestureDetector(
               onTap: onSeeMoreTap,
@@ -183,7 +183,7 @@ class SnsContentHorizontalList extends StatelessWidget {
                 children: [
                   Text(
                     l10n.seeMore,
-                    style: AppTextStyles.labelMedium.copyWith(
+                    style: AppTextStyles.buttonMediumMedium14.copyWith(
                       color: primaryColor,
                     ),
                   ),

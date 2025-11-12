@@ -41,7 +41,7 @@ class GenderSelectionCard extends StatelessWidget {
           color: isSelected ? AppColors.primaryContainer : AppColors.surface,
           // 선택 시: 두꺼운 보라색 테두리, 미선택 시: 얇은 회색 테두리
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.outline,
+            color: isSelected ? AppColors.primary : AppColors.subColor2,
             width: isSelected ? 2.w : 1.w,
           ),
           // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
@@ -50,7 +50,7 @@ class GenderSelectionCard extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            style: AppTextStyles.titleMedium.copyWith(
+            style: AppTextStyles.sectionTitle.copyWith(
               // 선택 시: 보라색 텍스트, 미선택 시: 기본 텍스트 색상
               color: isSelected ? AppColors.primary : AppColors.textPrimary,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,

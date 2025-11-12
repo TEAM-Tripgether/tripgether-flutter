@@ -123,14 +123,15 @@ class _CourseSearchScreenState extends State<CourseSearchScreen> {
     final l10n = AppLocalizations.of(context);
 
     return AppBar(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.white,
+      surfaceTintColor: Colors.transparent, // Material 3 색상 변경 방지
       elevation: 0,
       leadingWidth: 48.w, // search bar 높이와 동일
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back_ios_new, // 더 얇은 아이콘으로 변경
           size: 24.w, // search bar 높이(48.h)의 절반보다 약간 작게
-          color: AppColors.onSurface,
+          color: AppColors.textColor1,
         ),
         onPressed: () => Navigator.pop(context),
         padding: EdgeInsets.zero, // 패딩 제거

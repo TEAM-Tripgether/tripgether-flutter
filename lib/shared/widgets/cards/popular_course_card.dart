@@ -89,8 +89,8 @@ class PopularCourseCard extends StatelessWidget {
                     if (description != null && description!.isNotEmpty) ...[
                       Text(
                         description!,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.onPrimary,
+                        style: AppTextStyles.metaMedium12.copyWith(
+                          color: AppColors.white,
                           height: 1.3,
                         ),
                         maxLines: 2,
@@ -102,8 +102,8 @@ class PopularCourseCard extends StatelessWidget {
                     // 제목 텍스트 (큰 글씨, 볼드)
                     Text(
                       title,
-                      style: AppTextStyles.titleLarge.copyWith(
-                        color: AppColors.onPrimary,
+                      style: AppTextStyles.greetingBold20.copyWith(
+                        color: AppColors.white,
                         fontWeight: FontWeight.w700,
                         height: 1.2,
                       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -93,18 +94,18 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       // 제목을 중앙에 정렬
       centerTitle: true,
 
-      // 배경색 설정 (기본값: 앱 테마 색상)
-      backgroundColor: backgroundColor ?? AppColors.surface,
+      // 배경색 설정 (항상 흰색 고정)
+      backgroundColor: backgroundColor ?? AppColors.white,
 
       // 텍스트 및 아이콘 색상
-      foregroundColor: AppColors.onSurface,
+      foregroundColor: AppColors.textColor1,
 
       // 그림자 설정
       elevation: elevation,
       scrolledUnderElevation: scrolledUnderElevation,
 
-      // Surface tint 색상 (Material 3)
-      surfaceTintColor: AppColors.surfaceTint,
+      // Surface tint 제거 (Material 3에서 색상 자동 변경 방지)
+      surfaceTintColor: Colors.transparent,
 
       // 왼쪽 액션 설정
       leading: _buildLeftAction(context),
@@ -189,9 +190,10 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
           label: '알림 버튼', // 스크린 리더용 시맨틱 라벨
           button: true,
           child: IconButton(
-            icon: Icon(
-              Icons.notifications_outlined,
-              size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
+            icon: SvgPicture.asset(
+              'assets/icons/alarm_inactive.svg',
+              width: AppSizes.iconDefault,
+              height: AppSizes.iconDefault,
             ),
             onPressed:
                 onNotificationPressed ?? () => _showNotificationDialog(context),

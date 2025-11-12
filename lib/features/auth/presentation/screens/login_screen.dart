@@ -158,7 +158,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         color: AppColors.surface, // 흰색 배경
         borderRadius: BorderRadius.circular(AppRadius.circle), // pill 모양
         border: Border.all(
-          color: AppColors.gradientEnd, // #B599FF 밝은 연보라 테두리
+          color: AppColors.gradient3, // #B599FF 밝은 연보라 테두리
           width: AppSizes.borderMedium, // 2px 테두리
         ),
       ),
@@ -175,8 +175,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           // 텍스트
           Text(
             '10초만에 빠르게 회원가입!',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.gradientEnd, // #B599FF 밝은 연보라 텍스트
+            style: AppTextStyles.bodyRegular14.copyWith(
+              color: AppColors.gradient3, // #B599FF 밝은 연보라 텍스트
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -233,7 +233,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     Expanded(
                       child: Divider(
-                        color: AppColors.outline,
+                        color: AppColors.subColor2,
                         thickness: AppSizes.dividerThin,
                       ),
                     ),
@@ -241,14 +241,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
                       child: Text(
                         'SNS 계정으로 로그인/회원가입',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.outline,
+                        style: AppTextStyles.metaMedium12.copyWith(
+                          color: AppColors.subColor2,
                         ),
                       ),
                     ),
                     Expanded(
                       child: Divider(
-                        color: AppColors.outline,
+                        color: AppColors.subColor2,
                         thickness: AppSizes.dividerThin,
                       ),
                     ),

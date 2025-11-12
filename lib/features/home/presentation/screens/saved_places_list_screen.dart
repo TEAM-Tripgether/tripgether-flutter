@@ -25,13 +25,11 @@ class SavedPlacesListScreen extends StatefulWidget {
 class _FilterConfig {
   final PlaceCategory? category;
   final String label;
-  final String emoji;
   final Color? selectedColor;
 
   const _FilterConfig({
     this.category,
     required this.label,
-    this.emoji = '',
     this.selectedColor,
   });
 }
@@ -67,7 +65,6 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
         (category) => _FilterConfig(
           category: category,
           label: category.displayName,
-          emoji: category.emoji,
           selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         ),
       ),
@@ -227,21 +224,11 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
   /// [config] 필터 설정 데이터
   Widget _buildSingleFilterChip(_FilterConfig config) {
     final isSelected = _selectedCategory == config.category;
-    final hasEmoji = config.emoji.isNotEmpty;
 
     return Padding(
       padding: EdgeInsets.only(right: AppSpacing.sm),
       child: FilterChip(
-        label: hasEmoji
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(config.emoji),
-                  SizedBox(width: AppSpacing.xs),
-                  Text(config.label),
-                ],
-              )
-            : Text(config.label),
+        label: Text(config.label),
         selected: isSelected,
         onSelected: (_) => _onFilterChanged(config.category),
         selectedColor: config.selectedColor,
@@ -257,7 +244,7 @@ class _SavedPlacesListScreenState extends State<SavedPlacesListScreen> {
       return Center(
         child: Text(
           l10n.noData,
-          style: AppTextStyles.bodyLarge.copyWith(
+          style: AppTextStyles.bodyMedium16.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
         ),

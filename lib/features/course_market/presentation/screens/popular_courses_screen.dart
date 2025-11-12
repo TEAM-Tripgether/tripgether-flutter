@@ -25,7 +25,7 @@ class PopularCoursesScreen extends ConsumerWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(l10n.popularCourses),
-        titleTextStyle: AppTextStyles.titleLarge,
+        titleTextStyle: AppTextStyles.greetingBold20,
       ),
       body: Center(
         child: Column(
@@ -39,7 +39,7 @@ class PopularCoursesScreen extends ConsumerWidget {
             AppSpacing.verticalSpaceLG,
             Text(
               l10n.comingSoon,
-              style: AppTextStyles.bodyLarge.copyWith(
+              style: AppTextStyles.bodyMedium16.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),

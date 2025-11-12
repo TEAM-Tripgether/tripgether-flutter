@@ -43,9 +43,9 @@ class WelcomePage extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.gradientMiddle, // #5325CB - 선명한 보라
-            AppColors.gradientEnd, // #B599FF - 밝은 연보라
-            AppColors.onPrimary, // #FFFFFF - 흰색
+            AppColors.gradient2, // #5325CB - 선명한 보라
+            AppColors.gradient3, // #B599FF - 밝은 연보라
+            AppColors.white, // #FFFFFF - 흰색
           ],
           stops: const [0.0, 0.5, 0.85], // 50% : 35% : 15% 비율
         ),
@@ -71,9 +71,9 @@ class WelcomePage extends ConsumerWidget {
                       nickname,
                     ) // "{nickname}님,\n환영해요!"
                   : l10n.onboardingWelcomeTitleFallback, // "환영해요!"
-              style: AppTextStyles.headlineLarge.copyWith(
+              style: AppTextStyles.greetingBold20.copyWith(
                 fontWeight: FontWeight.w700,
-                color: AppColors.onPrimary,
+                color: AppColors.white,
               ),
               textAlign: TextAlign.center,
             ),
@@ -83,8 +83,8 @@ class WelcomePage extends ConsumerWidget {
             // 설명 메시지 (국제화 적용)
             Text(
               l10n.onboardingWelcomeMessage,
-              style: AppTextStyles.titleMedium.copyWith(
-                color: AppColors.onPrimary.withValues(alpha: 0.9),
+              style: AppTextStyles.sectionTitle.copyWith(
+                color: AppColors.white.withValues(alpha: 0.9),
               ),
               textAlign: TextAlign.center,
             ),
@@ -108,14 +108,14 @@ class WelcomePage extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(AppRadius.circle),
                       ),
                       side: BorderSide(
-                        color: AppColors.gradientMiddle, // #5325CB - 선명한 보라 테두리
+                        color: AppColors.gradient2, // #5325CB - 선명한 보라 테두리
                         width: 2.w,
                       ),
                     ),
                     child: Text(
                       l10n.snsPlaceExtractionTutorial,
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        color: AppColors.gradientMiddle, // #5325CB - 선명한 보라 텍스트
+                      style: AppTextStyles.bodyMedium16.copyWith(
+                        color: AppColors.gradient2, // #5325CB - 선명한 보라 텍스트
                         fontWeight: FontWeight.w600,
                       ),
                     ),

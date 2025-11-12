@@ -264,7 +264,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
       return Center(
         child: Text(
           l10n.noData,
-          style: AppTextStyles.bodyLarge.copyWith(
+          style: AppTextStyles.bodyMedium16.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
         ),
@@ -302,7 +302,7 @@ class _SnsContentsListScreenState extends State<SnsContentsListScreen> {
                   padding: AppSpacing.cardPadding,
                   child: Text(
                     l10n.noMoreContent,
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    style: AppTextStyles.bodyRegular14.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),

@@ -1,419 +1,170 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_colors.dart';
 
 /// Tripgether 앱의 텍스트 스타일 정의
 ///
-/// Material 3 기반 타이포그래피 시스템을 제공하며,
-/// Pretendard 폰트 패밀리를 사용합니다.
-class AppTextStyles {
-  AppTextStyles._(); // Private constructor to prevent instantiation
-
-  /// Pretendard 폰트 패밀리 이름
-  static const String fontFamily = 'Pretendard';
-
-  // ==================== Static Getters (직접 접근용) ====================
-  // 사용법: AppTextStyles.titleLarge
-  // Context 불필요, IDE 자동완성 지원
-
-  /// Headline Styles (제목용)
-  static TextStyle get headlineLarge => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 32,
-    fontWeight: FontWeight.w600,
-    height: 1.25,
-    color: AppColors.onSurface,
-  );
-
-  static TextStyle get headlineMedium => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 28,
-    fontWeight: FontWeight.w500,
-    height: 1.29,
-    color: AppColors.onSurface,
-  );
-
-  static TextStyle get headlineSmall => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 24,
-    fontWeight: FontWeight.w700,
-    height: 1.33,
-    color: AppColors.onSurface,
-  );
-
-  /// Title Styles (섹션 제목용)
-  static TextStyle get titleLarge => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    height: 1.27,
-    color: AppColors.onSurface,
-  );
-
-  static TextStyle get titleMedium => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-    height: 1.50,
-    letterSpacing: 0.15,
-    color: AppColors.onSurface,
-  );
-
-  static TextStyle get titleSmall => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-    height: 1.43,
-    letterSpacing: 0.1,
-    color: AppColors.onSurface,
-  );
-
-  /// Body Styles (본문용)
-  static TextStyle get bodyLarge => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-    height: 1.50,
-    letterSpacing: 0.15,
-    color: AppColors.onSurface,
-  );
-
-  static TextStyle get bodyMedium => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-    height: 1.43,
-    letterSpacing: 0.25,
-    color: AppColors.onSurface,
-  );
-
-  static TextStyle get bodySmall => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    height: 1.33,
-    letterSpacing: 0.4,
-    color: AppColors.onSurfaceVariant,
-  );
-
-  /// Label Styles (라벨 및 버튼용)
-  static TextStyle get labelLarge => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-    height: 1.43,
-    letterSpacing: 0.1,
-    color: AppColors.onSurface,
-  );
-
-  static TextStyle get labelMedium => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w600,
-    height: 1.33,
-    letterSpacing: 0.5,
-    color: AppColors.onSurface,
-  );
-
-  static TextStyle get labelSmall => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 11,
-    fontWeight: FontWeight.w600,
-    height: 1.45,
-    letterSpacing: 0.5,
-    color: AppColors.onSurface,
-  );
-
-  /// Custom Styles (프로젝트 특화)
-  static TextStyle get buttonText => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.1,
-  );
-
-  static TextStyle get caption => const TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    color: AppColors.textSecondary,
-    height: 1.33,
-  );
-
-  // ==================== Material 3 TextTheme (기존 유지) ====================
-
-  /// Material 3 기반 TextTheme 생성
-  ///
-  /// Material Design 3의 타이포그래피 가이드라인을 따릅니다.
-  /// - Display: 큰 제목용 (57, 45, 36)
-  /// - Headline: 제목용 (32, 28, 24)
-  /// - Title: 섹션 제목용 (22, 16, 14)
-  /// - Label: 라벨 및 캡션용 (14, 12, 11)
-  /// - Body: 본문용 (16, 14, 12)
-  static TextTheme buildTextTheme() {
-    return const TextTheme(
-      // ==================== Display Styles (큰 제목용) ====================
-
-      /// displayLarge: 57px, 가벼운 굵기 (300)
-      /// 사용처: 히어로 섹션, 랜딩 페이지 주제목
-      displayLarge: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 57,
-        fontWeight: FontWeight.w300,
-        height: 1.12,
-        letterSpacing: -0.25,
-        color: AppColors.onSurface,
-      ),
-
-      /// displayMedium: 45px, 가벼운 굵기 (300)
-      /// 사용처: 주요 섹션 타이틀
-      displayMedium: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 45,
-        fontWeight: FontWeight.w300,
-        height: 1.16,
-        color: AppColors.onSurface,
-      ),
-
-      /// displaySmall: 36px, 가벼운 굵기 (300)
-      /// 사용처: 부제목, 섹션 헤더
-      displaySmall: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 36,
-        fontWeight: FontWeight.w300,
-        height: 1.22,
-        color: AppColors.onSurface,
-      ),
-
-      // ==================== Headline Styles (제목용) ====================
-
-      /// headlineLarge: 32px, 세미볼드 (600)
-      /// 사용처: 페이지 제목, 주요 헤딩
-      headlineLarge: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 32,
-        fontWeight: FontWeight.w600,
-        height: 1.25,
-        color: AppColors.onSurface,
-      ),
-
-      /// headlineMedium: 28px, 미디엄 (500)
-      /// 사용처: 카드 제목, 서브 헤딩
-      headlineMedium: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 28,
-        fontWeight: FontWeight.w500,
-        height: 1.29,
-        color: AppColors.onSurface,
-      ),
-
-      /// headlineSmall: 24px, 볼드 (700)
-      /// 사용처: 다이얼로그 제목, 리스트 헤더
-      headlineSmall: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 24,
-        fontWeight: FontWeight.w700,
-        height: 1.33,
-        color: AppColors.onSurface,
-      ),
-
-      // ==================== Title Styles (섹션 제목용) ====================
-
-      /// titleLarge: 20px, 세미볼드 (600)
-      /// 사용처: 앱바 제목, 섹션 타이틀
-      titleLarge: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        height: 1.27,
-        color: AppColors.onSurface,
-      ),
-
-      /// titleMedium: 16px, 세미볼드 (600)
-      /// 사용처: 카드 제목, 리스트 아이템 타이틀
-      titleMedium: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        height: 1.50,
-        letterSpacing: 0.15,
-        color: AppColors.onSurface,
-      ),
-
-      /// titleSmall: 14px, 세미볼드 (600)
-      /// 사용처: 작은 카드 제목, 탭 라벨
-      titleSmall: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        height: 1.43,
-        letterSpacing: 0.1,
-        color: AppColors.onSurface,
-      ),
-
-      // ==================== Label Styles (라벨 및 캡션용) ====================
-
-      /// labelLarge: 14px, 세미볼드 (600)
-      /// 사용처: 버튼 텍스트, 폼 라벨
-      labelLarge: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        height: 1.43,
-        letterSpacing: 0.1,
-        color: AppColors.onSurface,
-      ),
-
-      /// labelMedium: 12px, 세미볼드 (600)
-      /// 사용처: 칩, 뱃지, 작은 버튼
-      labelMedium: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        height: 1.33,
-        letterSpacing: 0.5,
-        color: AppColors.onSurface,
-      ),
-
-      /// labelSmall: 11px, 세미볼드 (600)
-      /// 사용처: 오버라인, 작은 라벨
-      labelSmall: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-        height: 1.45,
-        letterSpacing: 0.5,
-        color: AppColors.onSurface,
-      ),
-
-      // ==================== Body Styles (본문용) ====================
-
-      /// bodyLarge: 16px, 레귤러 (400)
-      /// 사용처: 본문 텍스트, 설명 텍스트
-      bodyLarge: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        height: 1.50,
-        letterSpacing: 0.15,
-        color: AppColors.onSurface,
-      ),
-
-      /// bodyMedium: 14px, 레귤러 (400)
-      /// 사용처: 기본 본문, 리스트 아이템 설명
-      bodyMedium: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        height: 1.43,
-        letterSpacing: 0.25,
-        color: AppColors.onSurface,
-      ),
-
-      /// bodySmall: 12px, 레귤러 (400)
-      /// 사용처: 캡션, 작은 설명 텍스트
-      bodySmall: TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        height: 1.33,
-        letterSpacing: 0.4,
-        color: AppColors.onSurfaceVariant,
-      ),
-    );
-  }
-}
-
-// ==================== 커스텀 텍스트 스타일 확장 ====================
-
-/// 커스텀 텍스트 스타일 확장
+/// **디자이너 스펙 기반 폰트 시스템**:
+/// - 각 폰트 패밀리를 직접 지정 (Pretendard-Bold, Pretendard-Medium 등)
+/// - 기능명과 폰트 정보를 함께 제공하여 사용처와 스타일을 동시에 파악
+/// - ScreenUtil(.sp)을 사용하여 반응형 폰트 크기 지원
 ///
-/// Material 3 TextTheme에 포함되지 않는 특별한 용도의 텍스트 스타일들을
-/// extension으로 제공합니다.
-extension CustomTextStyles on TextTheme {
-  /// 버튼 텍스트 스타일 (16px, 볼드)
-  /// 사용처: 모든 버튼의 기본 텍스트
-  TextStyle get buttonText => const TextStyle(
-    fontFamily: AppTextStyles.fontFamily,
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.1,
+/// **사용 예시**:
+/// ```dart
+/// Text('환영합니다', style: AppTextStyles.onboardingTitle)  // Bold 24
+/// Text('안녕하세요!', style: AppTextStyles.greetingBold20)  // Bold 20
+/// ```
+class AppTextStyles {
+  AppTextStyles._();
+
+  // ============================================================================
+  // 제목 스타일 (Titles)
+  // ============================================================================
+
+  /// 온보딩 제목 (Bold, 24px)
+  /// 사용처: 온보딩 화면 메인 제목
+  static TextStyle onboardingTitle = TextStyle(
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 24.sp,
+    color: AppColors.textColor1,
   );
 
-  /// 입력 필드 텍스트 스타일 (16px, 레귤러)
-  /// 사용처: TextField, TextFormField의 입력 텍스트
-  TextStyle get inputText => const TextStyle(
-    fontFamily: AppTextStyles.fontFamily,
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-    color: AppColors.inputTextColor,
+  /// 큰 인사말 (Bold, 20px)
+  /// 사용처: "환영합니다!", 메인 인사 문구
+  static TextStyle greetingBold20 = TextStyle(
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 20.sp,
+    color: AppColors.textColor1,
   );
 
-  /// 에러 메시지 스타일 (12px, 세미볼드, 빨강)
-  /// 사용처: 폼 유효성 검사 에러, 토스트 에러 메시지
-  TextStyle get errorText => const TextStyle(
-    fontFamily: AppTextStyles.fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w600,
-    color: AppColors.error,
+  /// 중간 인사말 (SemiBold, 20px)
+  /// 사용처: 서브 인사 문구, 부제목
+  static TextStyle greetingSemiBold20 = TextStyle(
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 20.sp,
+    color: AppColors.textColor1,
   );
 
-  /// 성공 메시지 스타일 (12px, 세미볼드, 초록)
-  /// 사용처: 성공 토스트, 완료 메시지
-  TextStyle get successText => const TextStyle(
-    fontFamily: AppTextStyles.fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w600,
-    color: AppColors.success,
+  /// 요약 한 줄 (Bold, 18px)
+  /// 사용처: 카드 요약, 중요 정보 한 줄
+  static TextStyle summaryBold18 = TextStyle(
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 18.sp,
+    color: AppColors.textColor1,
   );
 
-  /// 캡션 스타일 (12px, 레귤러, 보조 색상)
-  /// 사용처: 작은 설명 텍스트, 힌트 메시지
-  TextStyle get caption => const TextStyle(
-    fontFamily: AppTextStyles.fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    color: AppColors.textSecondary,
-    height: 1.33,
+  // ============================================================================
+  // 섹션 제목 (Section Headers)
+  // ============================================================================
+
+  /// 섹션 제목 (SemiBold, 16px)
+  /// 사용처: "최근 SNS에서 본 콘텐츠", "저장된 장소" 등
+  static TextStyle sectionTitle = TextStyle(
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 16.sp,
+    color: AppColors.textColor1,
   );
 
-  /// 오버라인 스타일 (10px, 세미볼드, 상단 라벨)
-  /// 사용처: 카드 상단 카테고리, 섹션 라벨
-  TextStyle get overline => const TextStyle(
-    fontFamily: AppTextStyles.fontFamily,
-    fontSize: 10,
-    fontWeight: FontWeight.w600,
-    color: AppColors.textSecondary,
-    letterSpacing: 1.5,
-    height: 1.6,
+  // ============================================================================
+  // 콘텐츠 제목 (Content Titles)
+  // ============================================================================
+
+  /// 장소 이름 / 게시물 작성자 (SemiBold, 14px)
+  /// 사용처: "저장된 장소 이름", "~님의 게시물"
+  static TextStyle contentTitle = TextStyle(
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 14.sp,
+    color: AppColors.textColor1,
   );
 
-  /// 초경량 스타일 (14px, 얇은 굵기, 섬세한 캡션용)
-  /// 사용처: 배경 워터마크, 섬세한 설명
-  TextStyle get ultraLight => const TextStyle(
-    fontFamily: AppTextStyles.fontFamily,
-    fontSize: 14,
-    fontWeight: FontWeight.w200,
-    color: AppColors.textSecondary,
-    height: 1.4,
+  // ============================================================================
+  // 본문 텍스트 (Body Text)
+  // ============================================================================
+
+  /// 설명 텍스트 (Regular, 14px)
+  /// 사용처: 설명, 상세 내용, 일반 본문
+  static TextStyle bodyRegular14 = TextStyle(
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 14.sp,
+    color: AppColors.textColor1,
   );
 
-  /// 볼드 스타일 (16px, 볼드, 강조 텍스트용)
-  /// 사용처: 중요한 정보 강조, 하이라이트
-  TextStyle get bold => const TextStyle(
-    fontFamily: AppTextStyles.fontFamily,
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-    color: AppColors.textPrimary,
-    height: 1.5,
+  /// 큰 본문 텍스트 (Medium, 16px)
+  /// 사용처: 강조된 본문, 중요 설명
+  static TextStyle bodyMedium16 = TextStyle(
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16.sp,
+    color: AppColors.textColor1,
   );
 
-  /// 블랙 스타일 (20px, 최대 굵기, 브랜딩 텍스트용)
-  /// 사용처: 로고 텍스트, 주요 브랜딩 요소
-  TextStyle get black => const TextStyle(
-    fontFamily: AppTextStyles.fontFamily,
-    fontSize: 20,
-    fontWeight: FontWeight.w900,
-    color: AppColors.textPrimary,
-    height: 1.2,
+  /// 작은 보조 텍스트 (Regular, 12px, alpha 0.6)
+  /// 사용처: 캡션, 작은 보조 설명
+  static TextStyle caption12 = TextStyle(
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 12.sp,
+    color: AppColors.textColor1.withValues(alpha: 0.6),
   );
+
+  // ============================================================================
+  // 버튼 텍스트 (Button Text)
+  // ============================================================================
+
+  /// 선택 버튼 (SemiBold, 16px)
+  /// 사용처: 선택지 버튼, 옵션 버튼
+  static TextStyle buttonSelectSemiBold16 = TextStyle(
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 16.sp,
+    color: AppColors.textColor1,
+  );
+
+  /// 큰 버튼 (Medium, 16px)
+  /// 사용처: "계속하기", 주요 액션 버튼
+  static TextStyle buttonLargeMedium16 = TextStyle(
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16.sp,
+    color: AppColors.textColor1,
+  );
+
+  /// 중간 버튼 (Medium, 14px)
+  /// 사용처: "~를 확인하기", 보조 버튼
+  static TextStyle buttonMediumMedium14 = TextStyle(
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 14.sp,
+    color: AppColors.textColor1,
+  );
+
+  /// 작은 버튼 (Bold, 10px)
+  /// 사용처: "닫기", "저장하기", 작은 액션 버튼
+  static TextStyle buttonSmallBold10 = TextStyle(
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 10.sp,
+    color: AppColors.textColor1,
+  );
+
+  // ============================================================================
+  // 부가 정보 (Meta Information)
+  // ============================================================================
+
+  /// 메타 정보 (Medium, 12px)
+  /// 사용처: 저장된 장소 주소, URL, 부가 정보
+  static TextStyle metaMedium12 = TextStyle(
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 12.sp,
+    color: AppColors.textColor1,
+  );
+
+  // ============================================================================
+  // 폰트 패밀리 상수 (Font Family Constants)
+  // ============================================================================
+
+  /// 직접 사용을 위한 폰트 패밀리 상수
+  static const String thin = 'Pretendard-Thin';
+  static const String extraLight = 'Pretendard-ExtraLight';
+  static const String light = 'Pretendard-Light';
+  static const String regular = 'Pretendard-Regular';
+  static const String medium = 'Pretendard-Medium';
+  static const String semiBold = 'Pretendard-SemiBold';
+  static const String bold = 'Pretendard-Bold';
+  static const String extraBold = 'Pretendard-ExtraBold';
+  static const String black = 'Pretendard-Black';
 }

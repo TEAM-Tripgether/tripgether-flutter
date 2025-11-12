@@ -77,7 +77,7 @@ class SocialLoginSection extends StatelessWidget {
         SocialLoginButton(
           text: l10n.signInWithNaver,
           backgroundColor: AppColorPalette.naverButton, // #03C75A
-          textColor: AppColors.onPrimary, // 흰색 텍스트
+          textColor: AppColors.white, // 흰색 텍스트
           onPressed: () => _showComingSoon(context, l10n),
           // 네이버 SVG 아이콘 (AppSizes.iconMedium = 20px)
           icon: SvgPicture.asset(

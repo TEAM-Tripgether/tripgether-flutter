@@ -101,7 +101,7 @@ class MyPageScreen extends ConsumerWidget {
           padding: AppSpacing.only(left: 16, top: 24, right: 16, bottom: 12),
           child: Text(
             l10n.languageSelection,
-            style: AppTextStyles.titleMedium.copyWith(
+            style: AppTextStyles.sectionTitle.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -112,7 +112,7 @@ class MyPageScreen extends ConsumerWidget {
           padding: AppSpacing.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             '${l10n.currentLanguage}: ${_getLanguageName(l10n, currentLocale)}',
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTextStyles.bodyRegular14.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
@@ -163,7 +163,7 @@ class MyPageScreen extends ConsumerWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       title: Text(
         languageName,
-        style: AppTextStyles.bodyLarge.copyWith(
+        style: AppTextStyles.bodyMedium16.copyWith(
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           color: isSelected ? primaryColor : colorScheme.onSurface,
         ),
@@ -182,7 +182,7 @@ class MyPageScreen extends ConsumerWidget {
               content: Text(
                 '${l10n.language}: $languageName',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium.copyWith(
+                style: AppTextStyles.bodyRegular14.copyWith(
                   fontWeight: FontWeight.w500,
                   color: AppColors.primary,
                 ),
@@ -244,7 +244,7 @@ class MyPageScreen extends ConsumerWidget {
               SizedBox(width: 8.w),
               Text(
                 '🧪 테스트 모드',
-                style: AppTextStyles.titleSmall.copyWith(
+                style: AppTextStyles.contentTitle.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.secondary,
                 ),
@@ -262,7 +262,7 @@ class MyPageScreen extends ConsumerWidget {
             icon: Icon(Icons.assignment_outlined, size: 20.w),
             label: Text(
               '온보딩 화면 테스트',
-              style: AppTextStyles.bodyMedium.copyWith(
+              style: AppTextStyles.bodyRegular14.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -282,7 +282,7 @@ class MyPageScreen extends ConsumerWidget {
           // 안내 문구
           Text(
             '※ 개발/테스트 전용 기능입니다',
-            style: AppTextStyles.bodySmall.copyWith(
+            style: AppTextStyles.metaMedium12.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontStyle: FontStyle.italic,
             ),
@@ -338,7 +338,7 @@ class MyPageScreen extends ConsumerWidget {
                 icon: Icon(Icons.logout, size: 20.w, color: colorScheme.error),
                 label: Text(
                   AppLocalizations.of(context).logout,
-                  style: AppTextStyles.bodyLarge.copyWith(
+                  style: AppTextStyles.bodyMedium16.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colorScheme.error,
                   ),
@@ -360,7 +360,7 @@ class MyPageScreen extends ConsumerWidget {
               // 안내 문구
               Text(
                 AppLocalizations.of(context).logoutHint,
-                style: AppTextStyles.bodySmall.copyWith(
+                style: AppTextStyles.metaMedium12.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
@@ -388,13 +388,13 @@ class MyPageScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: Text(
           l10n.logoutConfirmTitle,
-          style: AppTextStyles.titleMedium.copyWith(
+          style: AppTextStyles.sectionTitle.copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),
         content: Text(
           l10n.logoutConfirmMessage,
-          style: AppTextStyles.bodyMedium,
+          style: AppTextStyles.bodyRegular14,
         ),
         actions: [
           // 취소 버튼
@@ -402,7 +402,7 @@ class MyPageScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
               l10n.btnCancel,
-              style: AppTextStyles.labelLarge.copyWith(
+              style: AppTextStyles.buttonSelectSemiBold16.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -414,7 +414,7 @@ class MyPageScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               l10n.logout,
-              style: AppTextStyles.labelLarge.copyWith(
+              style: AppTextStyles.buttonSelectSemiBold16.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.error,
               ),
@@ -443,7 +443,7 @@ class MyPageScreen extends ConsumerWidget {
           content: Text(
             l10nAfter.logoutSuccess,
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTextStyles.bodyRegular14.copyWith(
               fontWeight: FontWeight.w500,
               color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
@@ -467,7 +467,7 @@ class MyPageScreen extends ConsumerWidget {
         SnackBar(
           content: Text(
             l10nError.logoutFailed(e.toString()),
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTextStyles.bodyRegular14.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),

@@ -236,7 +236,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
         // 채널명
         Text(
           content.creatorName,
-          style: AppTextStyles.bodyLarge.copyWith(
+          style: AppTextStyles.bodyMedium16.copyWith(
             fontWeight: FontWeight.w600,
             color: colorScheme.onSurface,
           ),
@@ -257,7 +257,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
               AppSpacing.horizontalSpaceXS,
               Text(
                 l10n.goToOriginalPost,
-                style: AppTextStyles.labelMedium.copyWith(
+                style: AppTextStyles.buttonMediumMedium14.copyWith(
                   fontWeight: FontWeight.w500,
                   color: theme.primaryColor,
                 ),
@@ -284,7 +284,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
     return Text(
       content.title,
-      style: AppTextStyles.headlineSmall.copyWith(
+      style: AppTextStyles.summaryBold18.copyWith(
         fontWeight: FontWeight.w700,
         color: colorScheme.onSurface,
         height: 1.4,
@@ -306,7 +306,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
         SizedBox(width: 4.w),
         Text(
           l10n.aiContentSummary,
-          style: AppTextStyles.labelMedium.copyWith(
+          style: AppTextStyles.buttonMediumMedium14.copyWith(
             fontWeight: FontWeight.w500,
             color: colorScheme.onSurfaceVariant,
           ),
@@ -321,7 +321,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
 
     return Text(
       _getDummyDescription(),
-      style: AppTextStyles.bodyMedium.copyWith(
+      style: AppTextStyles.bodyRegular14.copyWith(
         color: colorScheme.onSurfaceVariant,
         height: 1.7,
       ),
@@ -364,7 +364,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
           // 섹션 제목
           Text(
             '토리토스시 토요히라점',
-            style: AppTextStyles.titleMedium.copyWith(
+            style: AppTextStyles.sectionTitle.copyWith(
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
             ),
@@ -375,7 +375,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
           // 위치 정보
           Text(
             '홋카이도 · 스시',
-            style: AppTextStyles.bodySmall.copyWith(
+            style: AppTextStyles.metaMedium12.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
@@ -385,7 +385,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
           // 주소
           Text(
             '일본 〒062-0904 Hokkaido, Sapporo, Toyohira Ward, Toyohira 4 Jo, 6 Chome-1-10',
-            style: AppTextStyles.bodySmall.copyWith(
+            style: AppTextStyles.metaMedium12.copyWith(
               color: colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
@@ -456,7 +456,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
             SnackBar(
               content: Text(
                 AppLocalizations.of(context).cannotOpenLink,
-                style: AppTextStyles.bodyMedium,
+                style: AppTextStyles.bodyRegular14,
               ),
               behavior: SnackBarBehavior.floating,
             ),
@@ -470,7 +470,7 @@ class _SnsContentDetailScreenState extends State<SnsContentDetailScreen> {
           SnackBar(
             content: Text(
               AppLocalizations.of(context).linkOpenError,
-              style: AppTextStyles.bodyMedium,
+              style: AppTextStyles.bodyRegular14,
             ),
             behavior: SnackBarBehavior.floating,
           ),

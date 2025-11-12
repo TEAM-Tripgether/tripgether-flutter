@@ -137,7 +137,7 @@ class PopularCoursesSection extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: Text(
           l10n.noPopularCoursesYet,
-          style: AppTextStyles.bodyMedium.copyWith(
+          style: AppTextStyles.bodyRegular14.copyWith(
             color: AppColors.textSecondary,
           ),
         ),

@@ -122,18 +122,11 @@ class CourseCard extends StatelessWidget {
               color: AppColors.neutral10.withValues(alpha: 0.6),
               borderRadius: AppRadius.allLarge,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(course.category.emoji, style: AppTextStyles.labelSmall),
-                SizedBox(width: AppSpacing.xs),
-                Text(
-                  course.category.displayName,
-                  style: AppTextStyles.labelSmall.copyWith(
-                    color: AppColors.onPrimary,
-                  ),
-                ),
-              ],
+            child: Text(
+              course.category.displayName,
+              style: AppTextStyles.buttonSmallBold10.copyWith(
+                color: AppColors.white,
+              ),
             ),
           ),
         ),
@@ -180,9 +173,9 @@ class CourseCard extends StatelessWidget {
               ),
               child: Text(
                 course.priceText,
-                style: AppTextStyles.labelSmall.copyWith(
+                style: AppTextStyles.buttonSmallBold10.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppColors.onPrimary,
+                  color: AppColors.white,
                 ),
               ),
             ),
@@ -201,7 +194,7 @@ class CourseCard extends StatelessWidget {
           // 코스 제목
           Text(
             course.title,
-            style: AppTextStyles.titleMedium.copyWith(
+            style: AppTextStyles.sectionTitle.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.onSurface,
               height: 1.3,
@@ -214,7 +207,7 @@ class CourseCard extends StatelessWidget {
           // 코스 설명
           Text(
             course.description,
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTextStyles.bodyRegular14.copyWith(
               color: AppColors.neutral60,
               height: 1.3,
             ),
@@ -252,7 +245,7 @@ class CourseCard extends StatelessWidget {
             AppSpacing.horizontalSpaceXS,
             Text(
               l10n.placesCount(course.placeCount),
-              style: AppTextStyles.bodySmall.copyWith(
+              style: AppTextStyles.metaMedium12.copyWith(
                 color: AppColors.neutral60,
               ),
             ),
@@ -267,7 +260,7 @@ class CourseCard extends StatelessWidget {
             AppSpacing.horizontalSpaceXS,
             Text(
               course.durationText,
-              style: AppTextStyles.bodySmall.copyWith(
+              style: AppTextStyles.metaMedium12.copyWith(
                 color: AppColors.neutral60,
               ),
             ),
@@ -283,7 +276,7 @@ class CourseCard extends StatelessWidget {
               AppSpacing.horizontalSpaceXS,
               Text(
                 course.distanceText,
-                style: AppTextStyles.bodySmall.copyWith(
+                style: AppTextStyles.metaMedium12.copyWith(
                   color: AppColors.neutral60,
                 ),
               ),
@@ -331,7 +324,7 @@ class CourseCard extends StatelessWidget {
             Expanded(
               child: Text(
                 course.authorName,
-                style: AppTextStyles.bodySmall.copyWith(
+                style: AppTextStyles.metaMedium12.copyWith(
                   color: AppColors.neutral50,
                 ),
                 maxLines: 1,
@@ -348,7 +341,7 @@ class CourseCard extends StatelessWidget {
             SizedBox(width: AppSpacing.xs.w / 2),
             Text(
               '${course.likeCount}',
-              style: AppTextStyles.bodySmall.copyWith(
+              style: AppTextStyles.metaMedium12.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppColors.neutral50,
               ),

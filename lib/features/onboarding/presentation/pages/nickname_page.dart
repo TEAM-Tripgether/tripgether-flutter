@@ -91,15 +91,15 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
               children: [
                 Text(
                   l10n.onboardingNicknamePrompt,
-                  style: AppTextStyles.headlineMedium.copyWith(
+                  style: AppTextStyles.greetingSemiBold20.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
+                    color: AppColors.gradient2, // #5325CB - 선명한 보라색
                   ),
                 ),
                 AppSpacing.horizontalSpace(4),
                 Text(
                   '*',
-                  style: AppTextStyles.headlineMedium.copyWith(
+                  style: AppTextStyles.greetingSemiBold20.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.error,
                   ),
@@ -113,7 +113,7 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
             // 설명 (제목 바로 아래)
             Text(
               '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요',
-              style: AppTextStyles.bodySmall.copyWith(
+              style: AppTextStyles.metaMedium12.copyWith(
                 color: AppColors.onboardingDescription, // #130537 - 진한 남보라
               ),
               textAlign: TextAlign.center,
@@ -128,7 +128,7 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
               hintText: '닉네임을 입력하세요',
               maxLength: 10,
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyLarge,
+              style: AppTextStyles.bodyMedium16,
             ),
 
             // 입력-버튼 간격

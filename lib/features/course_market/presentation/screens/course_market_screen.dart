@@ -130,11 +130,14 @@ class _CourseMarketScreenState extends ConsumerState<CourseMarketScreen>
         SliverAppBar(
           title: Text(
             l10n.courseMarket, // 다국어 지원 (한국어: "코스마켓", 영어: "Course Market")
-            style: AppTextStyles.titleLarge, // AppBar 제목용 스타일
+            style: AppTextStyles.greetingBold20, // AppBar 제목용 스타일
           ),
           pinned: true, // 스크롤해도 항상 고정
           floating: false, // 스크롤 동작 비활성화
           snap: false, // 스냅 효과 비활성화
+          backgroundColor: AppColors.white, // 항상 흰색
+          foregroundColor: AppColors.textColor1, // 어두운 텍스트
+          surfaceTintColor: Colors.transparent, // Material 3 색상 변경 방지
           leading: IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () {

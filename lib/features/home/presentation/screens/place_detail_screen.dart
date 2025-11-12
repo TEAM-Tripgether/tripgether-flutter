@@ -204,18 +204,11 @@ class PlaceDetailScreen extends StatelessWidget {
                   color: theme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(place.category.emoji, style: AppTextStyles.labelLarge),
-                    AppSpacing.horizontalSpaceXS,
-                    Text(
-                      place.category.displayName,
-                      style: AppTextStyles.labelLarge.copyWith(
-                        color: theme.primaryColor,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  place.category.displayName,
+                  style: AppTextStyles.buttonSelectSemiBold16.copyWith(
+                    color: theme.primaryColor,
+                  ),
                 ),
               ),
               AppSpacing.horizontalSpaceSM,
@@ -241,7 +234,7 @@ class PlaceDetailScreen extends StatelessWidget {
                       AppSpacing.horizontalSpaceXS,
                       Text(
                         l10n.placeVisited,
-                        style: AppTextStyles.labelSmall.copyWith(
+                        style: AppTextStyles.buttonSmallBold10.copyWith(
                           color: Colors.green[700], // 의미론적 녹색 유지
                         ),
                       ),
@@ -256,7 +249,7 @@ class PlaceDetailScreen extends StatelessWidget {
           // 장소명
           Text(
             place.name,
-            style: AppTextStyles.headlineMedium.copyWith(
+            style: AppTextStyles.greetingSemiBold20.copyWith(
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
               height: 1.3,
@@ -278,13 +271,13 @@ class PlaceDetailScreen extends StatelessWidget {
                               ? Icons.star_half
                               : Icons.star_border),
                     size: 20.w,
-                    color: AppColorPalette.ratingStarFilled,
+                    color: AppColors.mainColor,
                   ),
                 ),
                 AppSpacing.horizontalSpaceSM,
                 Text(
                   place.rating!.toStringAsFixed(1),
-                  style: AppTextStyles.titleMedium.copyWith(
+                  style: AppTextStyles.sectionTitle.copyWith(
                     fontWeight: FontWeight.w700,
                     color: colorScheme.onSurface,
                   ),
@@ -292,7 +285,7 @@ class PlaceDetailScreen extends StatelessWidget {
                 if (place.reviewCount != null)
                   Text(
                     ' (${l10n.reviewCount(place.reviewCount!)})',
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    style: AppTextStyles.bodyRegular14.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
@@ -334,7 +327,7 @@ class PlaceDetailScreen extends StatelessWidget {
               AppSpacing.horizontalSpaceSM,
               Text(
                 l10n.placeInfo,
-                style: AppTextStyles.titleMedium.copyWith(
+                style: AppTextStyles.sectionTitle.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
                 ),
@@ -344,7 +337,7 @@ class PlaceDetailScreen extends StatelessWidget {
           AppSpacing.verticalSpaceMD,
           Text(
             place.description!,
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTextStyles.bodyRegular14.copyWith(
               color: colorScheme.onSurfaceVariant,
               height: 1.6,
             ),
@@ -383,7 +376,7 @@ class PlaceDetailScreen extends StatelessWidget {
               AppSpacing.horizontalSpaceSM,
               Text(
                 l10n.businessInfo,
-                style: AppTextStyles.titleMedium.copyWith(
+                style: AppTextStyles.sectionTitle.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
                 ),
@@ -404,7 +397,7 @@ class PlaceDetailScreen extends StatelessWidget {
                 AppSpacing.horizontalSpaceMD,
                 Text(
                   place.businessHours!,
-                  style: AppTextStyles.bodyMedium.copyWith(
+                  style: AppTextStyles.bodyRegular14.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
@@ -427,7 +420,7 @@ class PlaceDetailScreen extends StatelessWidget {
                   AppSpacing.horizontalSpaceMD,
                   Text(
                     place.phoneNumber!,
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    style: AppTextStyles.bodyRegular14.copyWith(
                       color: theme.primaryColor,
                       decoration: TextDecoration.underline,
                     ),
@@ -469,7 +462,7 @@ class PlaceDetailScreen extends StatelessWidget {
               AppSpacing.horizontalSpaceSM,
               Text(
                 l10n.location,
-                style: AppTextStyles.titleMedium.copyWith(
+                style: AppTextStyles.sectionTitle.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
                 ),
@@ -479,7 +472,7 @@ class PlaceDetailScreen extends StatelessWidget {
           AppSpacing.verticalSpaceMD,
           Text(
             place.address,
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTextStyles.bodyRegular14.copyWith(
               color: colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
@@ -488,7 +481,7 @@ class PlaceDetailScreen extends StatelessWidget {
             AppSpacing.verticalSpaceXS,
             Text(
               place.detailAddress!,
-              style: AppTextStyles.bodySmall.copyWith(
+              style: AppTextStyles.metaMedium12.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
@@ -504,7 +497,7 @@ class PlaceDetailScreen extends StatelessWidget {
               SizedBox(width: 6.w), // 6.w는 AppSpacing 표준값이 아니므로 유지
               Text(
                 place.distanceText,
-                style: AppTextStyles.bodySmall.copyWith(
+                style: AppTextStyles.metaMedium12.copyWith(
                   fontWeight: FontWeight.w500,
                   color: colorScheme.onSurfaceVariant,
                 ),

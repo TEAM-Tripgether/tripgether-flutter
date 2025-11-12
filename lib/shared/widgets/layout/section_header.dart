@@ -63,12 +63,12 @@ class SectionHeader extends StatelessWidget {
     // 기본 제목 스타일
     final effectiveTitleStyle =
         titleStyle ??
-        AppTextStyles.titleLarge.copyWith(color: AppColors.onSurface);
+        AppTextStyles.greetingBold20.copyWith(color: AppColors.onSurface);
 
     // 기본 더보기 버튼 스타일
     final effectiveSeeMoreStyle =
         seeMoreStyle ??
-        AppTextStyles.labelMedium.copyWith(color: AppColors.primary);
+        AppTextStyles.buttonMediumMedium14.copyWith(color: AppColors.primary);
 
     return Padding(
       padding: EdgeInsets.symmetric(

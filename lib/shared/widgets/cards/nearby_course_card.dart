@@ -48,7 +48,7 @@ class NearbyCourseCard extends StatelessWidget {
             // 제목 (2줄)
             Text(
               title,
-              style: AppTextStyles.bodyMedium.copyWith(
+              style: AppTextStyles.bodyRegular14.copyWith(
                 fontWeight: FontWeight.w600,
               ),
               maxLines: 2,
@@ -61,7 +61,7 @@ class NearbyCourseCard extends StatelessWidget {
             if (categories.isNotEmpty)
               Text(
                 categories.join(' '),
-                style: AppTextStyles.bodySmall.copyWith(
+                style: AppTextStyles.metaMedium12.copyWith(
                   color: AppColors.textSecondary,
                 ),
                 maxLines: 1,

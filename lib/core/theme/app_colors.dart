@@ -2,242 +2,145 @@ import 'package:flutter/material.dart';
 
 /// Tripgether 앱의 색상 상수 정의
 ///
-/// Material 3 디자인 시스템에 맞춰 앱 전체에서 사용할 색상들을 정의합니다.
-/// 사용자 요구사항에 따른 브랜드 색상과 시스템 색상을 포함합니다.
+/// 디자이너가 정의한 색상 시스템을 기반으로 합니다.
 class AppColors {
-  // Private constructor to prevent instantiation
   AppColors._();
 
-  /// Primary Colors (주요 브랜드 색상)
-  /// 스플래시 배경, 로그인 버튼, 활성화된 버튼에 사용
-  static const Color primary = Color(0xFF664BAE); // 664BAE - 메인 브랜드 컬러
-  static const Color primaryLight = Color(0xFF8A6BC8); // Primary보다 밝은 톤
-  static const Color primaryDark = Color(0xFF4A3689); // Primary보다 어두운 톤
-  static const Color primaryContainer = Color(0xFFE8DDFF); // Primary 컨테이너 배경
-  static const Color onPrimary = Color(0xFFFFFFFF); // Primary 위의 텍스트 색상
-  static const Color onPrimaryContainer = Color(
-    0xFF21005D,
-  ); // Primary 컨테이너 위의 텍스트
+  // ============================================================================
+  // 기본 색상
+  // ============================================================================
 
-  /// Secondary Colors (보조 색상)
-  /// Primary를 보완하는 보조 색상
-  static const Color secondary = Color(0xFF625B71); // 보조 브랜드 색상
-  static const Color secondaryContainer = Color(0xFFE8DEF8); // Secondary 컨테이너
-  static const Color onSecondary = Color(0xFFFFFFFF); // Secondary 위의 텍스트
-  static const Color onSecondaryContainer = Color(
-    0xFF1D192B,
-  ); // Secondary 컨테이너 텍스트
+  /// Main Color (#5325CB)
+  static const Color mainColor = Color(0xFF5325CB);
 
-  /// Surface Colors (표면 색상)
-  /// 카드, 시트, 메뉴 등의 배경에 사용
-  static const Color surface = Color(0xFFFFFFFF); // 기본 표면 색상 (순수 흰색)
-  static const Color surfaceVariant = Color(0xFFE7E0EC); // 변형 표면 색상
-  static const Color surfaceTint = primary; // 표면 틴트 색상
-  static const Color onSurface = Color(0xFF1C1B1F); // 표면 위의 텍스트
-  static const Color onSurfaceVariant = Color(0xFF49454F); // 표면 변형 위의 텍스트
+  /// Sub Color 2 (#BBBBBB)
+  static const Color subColor2 = Color(0xFFBBBBBB);
 
-  /// Background Colors (배경 색상)
-  /// 전체 화면의 배경에 사용
-  static const Color background = Color(0xFFFFFFFF); // 기본 배경 (순수 흰색)
-  static const Color onBackground = Color(0xFF1C1B1F); // 배경 위의 텍스트
+  /// Text Color 1 (#130537)
+  static const Color textColor1 = Color(0xFF130537);
 
-  /// Error Colors (에러 색상) - 사용자 지정
-  /// 로그인 실패 등 오류 상태를 나타내는 색상
-  static const Color error = Color(0xFFFF1B1B); // FF1B1B - 로그인 실패 타이포
-  static const Color errorContainer = Color(0xFFFFD5D5); // FFD5D5 - 로그인 실패창 배경
-  static const Color onError = Color(0xFFFFFFFF); // 에러 색상 위의 텍스트
-  static const Color onErrorContainer = Color(0xFF8B0000); // 에러 컨테이너 위의 텍스트
+  /// Text Color 1 with alpha 0.6 (주소, 부가 정보용)
+  static Color get textColor1Light => textColor1.withValues(alpha: 0.6);
 
-  /// Outline Colors (테두리 색상) - 사용자 지정
-  /// 입력창, 버튼 등의 테두리에 사용
-  static const Color outline = Color(0xFFBBBBBB); // BBBBBB - 입력창 outline
-  static const Color outlineVariant = Color(0xFFCAC4D0); // 변형 테두리
+  /// White
+  static const Color white = Color(0xFFFFFFFF);
 
-  /// Text Colors (텍스트 색상) - 사용자 지정
-  /// 다양한 텍스트 상황에 사용되는 색상
-  static const Color textPrimary = Color(0xFF333333); // 333333 - 유저입력 타이포
-  static const Color textSecondary = Color(0xFF828693); // 828693 - 닫기 관련 색상
-  static const Color textTertiary = Color(0xFF878787); // 878787 - 다시보내기 버튼
-  static const Color textDisabled = Color(0xFF9E9E9E); // 비활성화된 텍스트
+  /// Background Light (#F8F8F8) - 섹션 구분용 연한 회색
+  static const Color backgroundLight = Color(0xFFF8F8F8);
 
-  /// Button State Colors (버튼 상태 색상) - 사용자 지정
-  /// 버튼의 다양한 상태를 나타내는 색상
-  static const Color buttonEnabled = primary; // 664BAE - 활성화된 버튼
-  static const Color buttonDisabled = Color(0xFFB2A4D6); // B2A4D6 - 비활성화된 버튼
-  static const Color buttonSecondary = Color(
-    0xFF878787,
-  ); // 878787 - 보조 버튼 (다시보내기)
+  // ============================================================================
+  // 그라데이션 팔레트
+  // ============================================================================
 
-  /// Status Colors (상태 색상)
-  /// 성공, 정보, 경고 등의 상태를 나타내는 색상
-  static const Color success = Color(0xFF4CAF50); // 성공 상태
-  static const Color successContainer = Color(0xFFE8F5E8); // 성공 컨테이너
-  static const Color warning = Color(0xFFFF9800); // 경고 상태
-  static const Color warningContainer = Color(0xFFFFF3E0); // 경고 컨테이너
-  static const Color info = Color(0xFF2196F3); // 정보 상태
-  static const Color infoContainer = Color(0xFFE3F2FD); // 정보 컨테이너
+  static const Color gradient1 = Color(0xFF1B0062);
+  static const Color gradient2 = Color(0xFF5325CB);
+  static const Color gradient3 = Color(0xFFB599FF);
+  static const Color gradient4 = Color(0xFFBFB8D1);
+  static const Color gradient5 = Color(0xFFBBBBBB);
+  static const Color gradient6 = Color(0xFFFFFFFF);
 
-  /// Neutral Colors (중성 색상)
-  /// 회색 계열의 중성 색상들
-  static const Color neutral10 = Color(0xFF1A1C1E);
-  static const Color neutral20 = Color(0xFF2F3033);
-  static const Color neutral30 = Color(0xFF46474A);
-  static const Color neutral40 = Color(0xFF5E5E62);
-  static const Color neutral50 = Color(0xFF77777A);
-  static const Color neutral60 = Color(0xFF919094);
-  static const Color neutral70 = Color(0xFFABABAF);
-  static const Color neutral80 = Color(0xFFC6C6CA);
-  static const Color neutral90 = Color(0xFFE2E2E6);
-  static const Color neutral95 = Color(0xFFF1F1F5);
-  static const Color neutral99 = Color(0xFFFFFFFF); // 순수 흰색
+  // ============================================================================
+  // 버튼 (계속하기 등)
+  // ============================================================================
 
-  /// Shadow and Elevation Colors (그림자 및 높이 색상)
-  /// 카드와 요소들의 그림자 효과에 사용
+  /// 활성: 배경 mainColor, 텍스트 white
+  static const Color buttonActive = mainColor;
+  static const Color buttonTextActive = white;
+
+  /// 비활성: 배경 mainColor alpha 0.2, 텍스트 white
+  static Color get buttonInactive => mainColor.withValues(alpha: 0.2);
+  static const Color buttonTextInactive = white;
+
+  // ============================================================================
+  // 선택 버튼 (성별, 관심사 카테고리)
+  // ============================================================================
+
+  /// 선택됨: 테두리/텍스트 mainColor, 배경 mainColor alpha 0.1
+  static const Color selectedBorder = mainColor;
+  static const Color selectedText = mainColor;
+  static Color get selectedBg => mainColor.withValues(alpha: 0.1);
+
+  /// 선택 안 됨: 테두리/배경 subColor2 alpha 0.2, 텍스트 textColor1 alpha 0.4
+  static Color get unselectedBorder => subColor2.withValues(alpha: 0.2);
+  static Color get unselectedBg => subColor2.withValues(alpha: 0.2);
+  static Color get unselectedText => textColor1.withValues(alpha: 0.4);
+
+  // ============================================================================
+  // 세부 칩 (관심사 내부 항목)
+  // ============================================================================
+
+  /// 선택됨: 배경 mainColor, 텍스트 white
+  static const Color chipSelectedBg = mainColor;
+  static const Color chipSelectedText = white;
+
+  /// 선택 안 됨: 테두리 subColor2 alpha 0.4, 배경 white, 텍스트 textColor1 alpha 0.4
+  static Color get chipUnselectedBorder => subColor2.withValues(alpha: 0.4);
+  static const Color chipUnselectedBg = white;
+  static Color get chipUnselectedText => textColor1.withValues(alpha: 0.4);
+
+  // ============================================================================
+  // 시스템 색상
+  // ============================================================================
+
+  static const Color error = Color(0xFFFF1B1B);
+  static const Color errorContainer = Color(0xFFFFD5D5);
+  static const Color background = white;
+  static const Color surface = white;
   static const Color shadow = Color(0xFF000000);
-  static const Color shadowLight = Color(
-    0x0D000000,
-  ); // rgba(0, 0, 0, 0.05) - 밝은 그림자
-  static const Color scrim = Color(0xFF000000);
 
-  /// Splash Screen Colors (스플래시 스크린 색상)
-  /// 앱 시작 시 표시되는 스플래시 화면 전용 색상
-  static const Color splashBackground = primary; // 664BAE - 스플래시 배경색
-  static const Color splashOnBackground = onPrimary; // 스플래시 배경 위의 요소들
+  // ============================================================================
+  // 호환성 색상 (Backward Compatibility)
+  // ============================================================================
 
-  /// Input Field Colors (입력 필드 색상)
-  /// 텍스트 입력 필드와 관련된 색상들
-  static const Color inputFillColor = Color(0xFFF8F8F8); // 입력 필드 배경
-  static const Color inputBorderColor = outline; // BBBBBB - 입력창 테두리
-  static const Color inputFocusedBorderColor = primary; // 포커스된 입력 필드 테두리
-  static const Color inputErrorBorderColor = error; // 에러 상태의 입력 필드 테두리
-  static const Color inputTextColor = textPrimary; // 333333 - 입력 텍스트 색상
-  static const Color inputHintColor = textDisabled; // 힌트 텍스트 (비활성화 텍스트와 동일)
+  static const Color primary = mainColor;
+  static Color get textPrimary => textColor1;
+  static Color get textSecondary => textColor1.withValues(alpha: 0.7);
+  static Color get shimmerBase => subColor2.withValues(alpha: 0.3);
+  static Color get shimmerHighlight => white;
+  static Color get neutral10 => textColor1;
+  static Color get neutral50 => subColor2.withValues(alpha: 0.5);
+  static Color get neutral60 => subColor2.withValues(alpha: 0.6);
+  static Color get neutral70 => subColor2.withValues(alpha: 0.7);
+  static Color get neutral90 => subColor2.withValues(alpha: 0.9);
+  static Color get neutral95 => subColor2.withValues(alpha: 0.95);
+  static const Color success = Color(0xFF4CAF50);
+  static Color get onboardingDescription => textColor1;
+  static Color get primaryContainer => selectedBg;
+  static Color get surfaceVariant => unselectedBg;
+  static Color get onSurface => textColor1;
+  static Color get surfaceTint => mainColor;
+  static Color get shadowLight => shadow.withValues(alpha: 0.05);
+  static Color get gradientMiddle => gradient2;
 
-  /// Chip Colors (칩 색상)
-  /// 선택 가능한 칩 요소들의 색상
-  static const Color chipBackground = Color(0xFFE8DEF8);
-  static const Color chipSelectedBackground = primary;
-  static const Color chipText = Color(0xFF1D192B);
-  static const Color chipSelectedText = onPrimary;
+  // ============================================================================
+  // Widget State Property
+  // ============================================================================
 
-  /// Card Colors (카드 색상)
-  /// 카드 컴포넌트의 색상
-  static const Color cardBackground = surface;
-  static const Color cardElevation = Color(0x1F000000);
-
-  /// Navigation Colors (내비게이션 색상)
-  /// 하단 네비게이션과 앱바 색상
-  static const Color navigationBackground = surface;
-  static const Color navigationSelected = primary;
-  static const Color navigationUnselected = Color(0xFF49454F);
-
-  /// Divider Colors (구분선 색상)
-  /// 요소들을 구분하는 선의 색상
-  static const Color divider = Color(0xFFE0E0E0);
-  static const Color dividerLight = Color(0xFFF5F5F5);
-
-  /// Shimmer Colors (스켈레톤 로딩 색상)
-  /// Shimmer 효과의 기본 색상과 하이라이트 색상
-  static const Color shimmerBase = neutral95; // F1F1F5 - 기본 배경 (grey[300] 대체)
-  static const Color shimmerHighlight =
-      neutral99; // FFFFFF - 하이라이트 순수 흰색 (grey[100] 대체)
-
-  /// Gradient Colors (그라데이션 색상)
-  /// 홈 화면 헤더 그라데이션용 중간 색상
-  static const Color gradientMid = Color(0xB28975C1); // 8975C1B2 (70% opacity)
-
-  /// Diagonal Gradient Colors (대각선 그라데이션 색상)
-  /// 왼쪽 상단 → 오른쪽 하단 방향의 그라데이션에 사용
-  /// 로그인 화면 및 향후 다른 화면으로 확장 가능
-  static const Color gradientStart = Color(
-    0xFF1B0062,
-  ); // #1B0062 - 진한 남보라 (시작점)
-  static const Color gradientMiddle = Color(
-    0xFF5325CB,
-  ); // #5325CB - 선명한 보라 (중간점)
-  static const Color gradientEnd = Color(0xFFB599FF); // #B599FF - 밝은 연보라 (끝점)
-
-  /// Onboarding Description Color (온보딩 설명 텍스트 색상)
-  static const Color onboardingDescription = Color(
-    0xFF130537,
-  ); // #130537 - 진한 남보라
-
-  /// Extension method for Color opacity
-  /// 색상의 투명도를 쉽게 조절할 수 있는 확장 메서드
-  static Color withOpacity(Color color, double opacity) {
-    return color.withValues(alpha: opacity);
-  }
-
-  /// Widget State Colors
-  /// 버튼과 같은 상호작용 요소의 상태별 색상을 제공하는 메서드들
-
-  /// Primary 버튼의 WidgetStateProperty 색상
-  static WidgetStateProperty<Color> primaryButtonColor() {
+  static WidgetStateProperty<Color> continueButtonColor() {
     return WidgetStateProperty.resolveWith<Color>((states) {
-      if (states.contains(WidgetState.disabled)) {
-        return buttonDisabled; // B2A4D6
-      }
-      if (states.contains(WidgetState.pressed)) {
-        return primaryDark;
-      }
-      return buttonEnabled; // 664BAE
+      if (states.contains(WidgetState.disabled)) return buttonInactive;
+      return buttonActive;
     });
   }
 
-  /// Secondary 버튼의 WidgetStateProperty 색상
-  static WidgetStateProperty<Color> secondaryButtonColor() {
-    return WidgetStateProperty.resolveWith<Color>((states) {
-      if (states.contains(WidgetState.disabled)) {
-        return neutral80;
-      }
-      if (states.contains(WidgetState.pressed)) {
-        return Color(0xFF6B6B6B);
-      }
-      return buttonSecondary; // 878787
-    });
-  }
-
-  /// 텍스트 색상의 WidgetStateProperty
-  static WidgetStateProperty<Color> textButtonColor() {
-    return WidgetStateProperty.resolveWith<Color>((states) {
-      if (states.contains(WidgetState.disabled)) {
-        return textDisabled;
-      }
-      if (states.contains(WidgetState.pressed)) {
-        return primaryDark;
-      }
-      return primary;
-    });
+  static WidgetStateProperty<Color> continueButtonTextColor() {
+    return WidgetStateProperty.all(buttonTextActive);
   }
 }
 
 /// 색상 팔레트 확장
-/// 특정 상황에서 사용할 수 있는 추가 색상들
 extension AppColorPalette on AppColors {
-  /// 그라데이션 색상 조합
-  static const List<Color> primaryGradient = [
-    AppColors.primary,
-    AppColors.primaryLight,
-  ];
-
-  static const List<Color> backgroundGradient = [
-    AppColors.background,
-    AppColors.surfaceVariant,
-  ];
-
-  /// 홈 헤더 그라데이션 (위에서 아래로: #664BAE → #8975C1B2 70% → #FFFFFF)
-  static const List<Color> homeHeaderGradient = [
-    AppColors.primary, // #664BAE (0%)
-    AppColors.gradientMid, // #8975C1B2 (70%)
-    Color(0xFFFFFFFF), // #FFFFFF (100%)
-  ];
-
-  /// 대각선 그라데이션 (왼쪽 상단 → 오른쪽 하단: #1B0062 → #5325CB → #B599FF)
-  /// 로그인 화면 및 향후 다른 화면으로 확장 가능
+  /// 대각선 그라데이션 (로그인 화면 등)
   static const List<Color> diagonalGradient = [
-    AppColors.gradientStart, // #1B0062 - 진한 남보라 (시작점)
-    AppColors.gradientMiddle, // #5325CB - 선명한 보라 (중간점)
-    AppColors.gradientEnd, // #B599FF - 밝은 연보라 (끝점)
+    AppColors.gradient1, // #1B0062
+    AppColors.gradient2, // #5325CB
+    AppColors.gradient3, // #B599FF
+  ];
+
+  /// 홈 헤더 그라데이션
+  static const List<Color> homeHeaderGradient = [
+    AppColors.mainColor,
+    AppColors.white,
   ];
 
   /// 소셜 로그인 버튼 색상 (각 플랫폼의 공식 브랜드 색상)
@@ -246,12 +149,4 @@ extension AppColorPalette on AppColors {
   static const Color appleButton = Color(0xFF000000); // 애플 블랙
   static const Color kakaoButton = Color(0xFFFEE500); // 카카오 옐로우
   static const Color naverButton = Color(0xFF03C75A); // 네이버 그린
-
-  /// 평점 및 리뷰 색상
-  static const Color ratingStarFilled = Color(0xFFFFB300);
-  static const Color ratingStarEmpty = Color(0xFFE0E0E0);
-
-  /// 온라인/오프라인 상태 색상
-  static const Color onlineStatus = AppColors.success;
-  static const Color offlineStatus = Color(0xFF757575);
 }

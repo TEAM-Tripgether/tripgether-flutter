@@ -37,19 +37,19 @@ class InterestChip extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           // 선택 시: 보라색 배경 (#5325CB), 미선택 시: 흰색 배경
-          color: isSelected ? AppColors.gradientMiddle : AppColors.surface,
+          color: isSelected ? AppColors.gradient2 : AppColors.surface,
           // 크기 안정화: 항상 border를 유지 (선택 시 투명, 미선택 시 회색)
           border: Border.all(
-            color: isSelected ? Colors.transparent : AppColors.outline,
+            color: isSelected ? Colors.transparent : AppColors.subColor2,
             width: 1.w,
           ),
           borderRadius: BorderRadius.circular(20.r),
         ),
         child: Text(
           label,
-          style: AppTextStyles.labelLarge.copyWith(
+          style: AppTextStyles.buttonSelectSemiBold16.copyWith(
             // 선택 시: 흰색 텍스트, 미선택 시: 회색(BBBBBB) 텍스트
-            color: isSelected ? AppColors.onPrimary : AppColors.outline,
+            color: isSelected ? AppColors.white : AppColors.subColor2,
           ),
         ),
       ),

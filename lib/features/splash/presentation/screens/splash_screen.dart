@@ -202,7 +202,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       style: TextStyle(
                         fontSize: 48.sp,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.onPrimary,
+                        color: AppColors.white,
                         letterSpacing: 2.0,
                       ),
                     ),
@@ -237,7 +237,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     style: TextStyle(
                       fontSize: 48.sp,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.onPrimary,
+                      color: AppColors.white,
                       letterSpacing: 2.0,
                     ),
                   ),
@@ -293,7 +293,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         style: TextStyle(
                           fontSize: 48.sp,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.onPrimary,
+                          color: AppColors.white,
                           letterSpacing: 2.0,
                         ),
                       ),
@@ -313,7 +313,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
-                            color: AppColors.onPrimary.withValues(alpha: 0.8),
+                            color: AppColors.white.withValues(alpha: 0.8),
                             letterSpacing: 0.5,
                           ),
                         ),

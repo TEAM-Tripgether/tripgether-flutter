@@ -89,14 +89,14 @@ class ScheduleScreen extends ConsumerWidget {
             AppSpacing.verticalSpaceLG,
             Text(
               l10n.navSchedule,
-              style: AppTextStyles.headlineSmall.copyWith(
+              style: AppTextStyles.summaryBold18.copyWith(
                 color: Colors.grey[700],
               ),
             ),
             AppSpacing.verticalSpaceSM,
             Text(
               '여행 일정 목록 및 캘린더 뷰 표시 예정',
-              style: AppTextStyles.bodyMedium.copyWith(color: Colors.grey[500]),
+              style: AppTextStyles.bodyRegular14.copyWith(color: Colors.grey[500]),
             ),
           ],
         ),

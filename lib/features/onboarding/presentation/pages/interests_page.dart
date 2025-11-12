@@ -215,15 +215,15 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
             children: [
               Text(
                 l10n.onboardingInterestsPrompt,
-                style: AppTextStyles.headlineMedium.copyWith(
+                style: AppTextStyles.greetingSemiBold20.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
+                  color: AppColors.gradient2, // #5325CB - 선명한 보라색
                 ),
               ),
               AppSpacing.horizontalSpace(4),
               Text(
                 '*',
-                style: AppTextStyles.headlineMedium.copyWith(
+                style: AppTextStyles.greetingSemiBold20.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.error,
                 ),
@@ -237,7 +237,7 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
           // 설명 (제목 바로 아래, 국제화 적용)
           Text(
             l10n.onboardingInterestsDescription,
-            style: AppTextStyles.bodySmall.copyWith(
+            style: AppTextStyles.metaMedium12.copyWith(
               color: AppColors.onboardingDescription, // #130537 - 진한 남보라
             ),
             textAlign: TextAlign.center,
@@ -248,7 +248,7 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
           // 선택 개수 표시
           Text(
             '$selectedCount개 선택',
-            style: AppTextStyles.titleMedium.copyWith(
+            style: AppTextStyles.sectionTitle.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w600,
             ),
@@ -298,7 +298,7 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
           // 안내 문구 (버튼 위, 국제화 적용)
           Text(
             l10n.onboardingInterestsChangeInfo,
-            style: AppTextStyles.bodySmall.copyWith(
+            style: AppTextStyles.metaMedium12.copyWith(
               color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,

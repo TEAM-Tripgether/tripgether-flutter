@@ -88,7 +88,7 @@ class ProfileHeader extends ConsumerWidget {
             // 닉네임 (titleLarge: 20px, 세미볼드)
             Text(
               user.nickname,
-              style: AppTextStyles.titleLarge.copyWith(
+              style: AppTextStyles.greetingBold20.copyWith(
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
               ),
@@ -99,7 +99,7 @@ class ProfileHeader extends ConsumerWidget {
             // 이메일 (bodyMedium: 14px, 레귤러)
             Text(
               user.email,
-              style: AppTextStyles.bodyMedium.copyWith(
+              style: AppTextStyles.bodyRegular14.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),
@@ -156,7 +156,7 @@ class ProfileHeader extends ConsumerWidget {
           AppSpacing.horizontalSpaceXS,
           Text(
             l10n.accountSuffix(platform),
-            style: AppTextStyles.labelMedium.copyWith(
+            style: AppTextStyles.buttonMediumMedium14.copyWith(
               fontWeight: FontWeight.w500,
               color: badgeColor,
             ),
@@ -203,7 +203,7 @@ class ProfileHeader extends ConsumerWidget {
             // 안내 메시지
             Text(
               l10n.profileLoginRequired,
-              style: AppTextStyles.titleMedium.copyWith(
+              style: AppTextStyles.sectionTitle.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
@@ -213,7 +213,7 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               l10n.profileLoginPrompt,
-              style: AppTextStyles.bodyMedium.copyWith(
+              style: AppTextStyles.bodyRegular14.copyWith(
                 color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,
@@ -228,7 +228,7 @@ class ProfileHeader extends ConsumerWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.onPrimary,
+                foregroundColor: AppColors.white,
                 padding: AppSpacing.buttonPaddingLarge,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
@@ -236,7 +236,7 @@ class ProfileHeader extends ConsumerWidget {
               ),
               child: Text(
                 l10n.profileLoginButton,
-                style: AppTextStyles.labelLarge.copyWith(
+                style: AppTextStyles.buttonSelectSemiBold16.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -327,7 +327,7 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               l10n.profileLoadError,
-              style: AppTextStyles.titleMedium.copyWith(
+              style: AppTextStyles.sectionTitle.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
@@ -337,7 +337,7 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               error.toString(),
-              style: AppTextStyles.bodySmall.copyWith(
+              style: AppTextStyles.metaMedium12.copyWith(
                 color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,

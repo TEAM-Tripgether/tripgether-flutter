@@ -149,7 +149,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
     return Text(
       AppRoutes.getTabLabels(context)[index],
-      style: AppTextStyles.labelSmall.copyWith(
+      style: AppTextStyles.buttonSmallBold10.copyWith(
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         color: isSelected
             ? theme

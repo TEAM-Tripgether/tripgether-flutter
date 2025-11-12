@@ -81,7 +81,7 @@ class CategoryDropdownButton extends StatelessWidget {
             // 카테고리 이름 텍스트
             Text(
               categoryName,
-              style: AppTextStyles.bodyMedium.copyWith(
+              style: AppTextStyles.bodyRegular14.copyWith(
                 fontWeight: FontWeight.w500,
                 // 우선순위: 열린 상태 > 선택된 항목 있음 > 기본 상태
                 color: isExpanded
@@ -90,7 +90,7 @@ class CategoryDropdownButton extends StatelessWidget {
                     : selectedCount > 0
                     ? AppColors
                           .gradientMiddle // #5325CB - 선명한 보라색 (선택됨)
-                    : AppColors.outline, // #BBBBBB - 회색 (기본)
+                    : AppColors.subColor2, // #BBBBBB - 회색 (기본)
               ),
             ),
 
