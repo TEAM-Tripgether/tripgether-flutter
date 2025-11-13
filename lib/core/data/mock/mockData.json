@@ -5,7 +5,7 @@
     "status": "PENDING",
     "platformUploader": "travel_lover_kr",
     "caption": "오늘 날씨가 정말 좋네요!",
-    "thumbnailUrl": "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/12345678_n.jpg",
+    "thumbnailUrl": "https://picsum.photos/400/600?random=1",
     "originalUrl": "https://www.instagram.com/p/DEF456ghi/",
     "title": null,
     "summary": null,
@@ -22,7 +22,7 @@
     "status": "COMPLETED",
     "platformUploader": "travel_lover_kr",
     "caption": "부산 여행 첫날! 해운대 해변과 광안리 카페 투어 🏖️☕",
-    "thumbnailUrl": "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/12345678_n.jpg",
+    "thumbnailUrl": "https://picsum.photos/400/600?random=2",
     "originalUrl": "https://www.instagram.com/p/XYZ789abc/",
     "title": "부산 여행 첫날",
     "summary": "부산 해운대 해변과 광안리 카페를 방문했습니다.",
@@ -86,7 +86,7 @@
     "status": "COMPLETED",
     "platformUploader": "food_explorer_seoul",
     "caption": "명동 교자에서 맛있는 칼국수를 먹었어요! 🍜 #명동 #칼국수 #맛집",
-    "thumbnailUrl": "https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/12345678_1234567890123456_1234567890_n.jpg",
+    "thumbnailUrl": "https://picsum.photos/400/600?random=3",
     "originalUrl": "https://www.instagram.com/p/ABC123xyz/",
     "title": "명동 교자 방문기",
     "summary": "명동 교자에서 칼국수를 먹은 후기입니다. 정말 맛있었어요!",
@@ -121,5 +121,22 @@
         "updatedBy": "system"
       }
     ]
+  },
+  {
+    "contentId": "550e8400-e29b-41d4-a716-446655440004",
+    "platform": "YOUTUBE",
+    "status": "COMPLETED",
+    "platformUploader": "travel_vlogger",
+    "caption": "제주도 여행 브이로그",
+    "thumbnailUrl": null,
+    "originalUrl": "https://www.youtube.com/watch?v=example",
+    "title": "제주도 3박 4일 완벽 여행 코스매우매우매우매우매움애ㅜ",
+    "summary": "제주도 여행 완벽 가이드",
+    "lastCheckedAt": "2025-01-15T15:00:00",
+    "createdAt": "2025-01-15T14:00:00",
+    "updatedAt": "2025-01-15T15:00:00",
+    "createdBy": "system",
+    "updatedBy": "system",
+    "places": []
   }
 ]

@@ -338,10 +338,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Tripgether 로고
-                  Image.asset(
-                    'assets/tripgether_text_logo.png',
-                    width: 110.w,
-                    height: 35.h,
+                  SvgPicture.asset(
+                    'assets/tripgether_text_logo.svg',
+                    width: 88.w,
+                    height: 28.h,
                     fit: BoxFit.contain,
                   ),
                   // 알림 아이콘

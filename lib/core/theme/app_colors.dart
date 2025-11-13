@@ -25,6 +25,9 @@ class AppColors {
   /// White
   static const Color white = Color(0xFFFFFFFF);
 
+  /// White with alpha 0.5 (카드 외곽선 등)
+  static Color get whiteBorder => white.withValues(alpha: 0.5);
+
   /// Background Light (#F8F8F8) - 섹션 구분용 연한 회색
   static const Color backgroundLight = Color(0xFFF8F8F8);
 

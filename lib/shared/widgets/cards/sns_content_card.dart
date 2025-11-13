@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/models/content_model.dart';
@@ -25,10 +24,10 @@ class SnsContentCard extends StatelessWidget {
   /// 표시할 콘텐츠 모델
   final ContentModel content;
 
-  /// 카드 너비 (기본값: 100.w)
+  /// 카드 너비 (기본값: AppSizes.snsCardWidth = 100)
   final double? width;
 
-  /// 카드 높이 (기본값: 142.h)
+  /// 카드 높이 (기본값: AppSizes.snsCardHeight = 142)
   final double? height;
 
   /// 카드 클릭 시 콜백
@@ -44,8 +43,8 @@ class SnsContentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardWidth = width ?? 100.w;
-    final cardHeight = height ?? 142.h;
+    final cardWidth = width ?? AppSizes.snsCardWidth;
+    final cardHeight = height ?? AppSizes.snsCardHeight;
 
     return GestureDetector(
       onTap: onTap,
@@ -56,24 +55,26 @@ class SnsContentCard extends StatelessWidget {
           height: cardHeight,
           decoration: BoxDecoration(
             borderRadius: AppRadius.allMedium,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            border: Border.all(
+              color: AppColors.whiteBorder,
+              width: AppSizes.borderThin,
+            ),
           ),
           child: ClipRRect(
-            borderRadius: AppRadius.allMedium,
+            borderRadius: BorderRadius.circular(
+              AppRadius.medium - AppSizes.borderThin,
+            ),
             child: Stack(
               fit: StackFit.expand,
               children: [
                 // 배경 썸네일 이미지
                 _buildThumbnail(),
 
-                // 하단 오버레이 (그라데이션 + 플랫폼 아이콘 + 제목)
-                _buildBottomOverlay(),
+                // 하단 그라데이션 오버레이
+                _buildGradientOverlay(),
+
+                // 플랫폼 아이콘 + 제목 (그라데이션 위)
+                _buildContentInfo(),
               ],
             ),
           ),
@@ -101,9 +102,7 @@ class SnsContentCard extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: AppColors.shimmerBase,
       highlightColor: AppColors.shimmerHighlight,
-      child: Container(
-        color: Colors.white,
-      ),
+      child: Container(color: Colors.white),
     );
   }
 
@@ -114,31 +113,40 @@ class SnsContentCard extends StatelessWidget {
       child: Center(
         child: Icon(
           Icons.image_outlined,
-          size: 32.w,
+          size: AppSizes.iconLarge,
           color: AppColors.subColor2,
         ),
       ),
     );
   }
 
-  /// 하단 오버레이 (그라데이션 + 플랫폼 아이콘 + 제목)
-  Widget _buildBottomOverlay() {
+  /// 하단 그라데이션 오버레이 (배경 어둡게)
+  Widget _buildGradientOverlay() {
     return Positioned(
       left: 0,
       right: 0,
       bottom: 0,
       child: Container(
-        padding: EdgeInsets.all(AppSpacing.sm),
+        height: AppSizes.snsCardOverlayHeight,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.transparent,
-              Colors.black.withValues(alpha: 0.7),
-            ],
+            colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
           ),
         ),
+      ),
+    );
+  }
+
+  /// 콘텐츠 정보 (플랫폼 아이콘 + 제목)
+  Widget _buildContentInfo() {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Padding(
+        padding: EdgeInsets.all(AppSpacing.sm),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,12 +168,8 @@ class SnsContentCard extends StatelessWidget {
   Widget _buildPlatformIcon() {
     return SvgPicture.asset(
       PlatformIconMapper.getIconPath(content.platform),
-      width: 16.w,
-      height: 16.w,
-      colorFilter: const ColorFilter.mode(
-        Colors.white,
-        BlendMode.srcIn,
-      ),
+      width: AppSizes.iconSmall,
+      height: AppSizes.iconSmall,
     );
   }
 
@@ -175,10 +179,7 @@ class SnsContentCard extends StatelessWidget {
 
     return Text(
       title,
-      style: AppTextStyles.caption12.copyWith(
-        color: Colors.white,
-        fontWeight: FontWeight.w600,
-      ),
+      style: AppTextStyles.metaMedium12.copyWith(color: Colors.white),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );

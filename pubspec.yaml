@@ -109,6 +109,7 @@ flutter:
     - assets/platform_icons/
     - assets/icons/
     - .env
+    - lib/core/data/mock/mockData.json
   fonts:
     - family: Pretendard-Thin
       fonts:

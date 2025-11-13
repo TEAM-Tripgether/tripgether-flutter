@@ -350,6 +350,12 @@ class AppSizes {
   /// Progress Indicator 높이: 2
   static double get progressIndicatorHeight => 2.h;
 
+  /// SNS 콘텐츠 카드 높이: 142
+  static double get snsCardHeight => 142.h;
+
+  /// SNS 카드 그라데이션 오버레이 높이: 60
+  static double get snsCardOverlayHeight => 60.h;
+
   // ==================== Component Widths ====================
 
   /// 버튼 최소 너비: 88
@@ -366,4 +372,7 @@ class AppSizes {
 
   /// FAB 큰 크기: 96
   static double get fabLargeSize => 96.w;
+
+  /// SNS 콘텐츠 카드 너비: 100
+  static double get snsCardWidth => 100.w;
 }
