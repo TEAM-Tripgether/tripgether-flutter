@@ -200,12 +200,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     ),
                     child: Text(
                       'Trip',
-                      style: TextStyle(
-                        fontFamily: AppTextStyles.bold,
-                        fontSize: 48.sp,
-                        color: AppColors.white,
-                        letterSpacing: 2.0,
-                      ),
+                      style: AppTextStyles.splashLogoBold48,
                     ),
                   ),
                 )
@@ -235,12 +230,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   offset: Offset(150.w, 0),
                   child: Text(
                     'Together',
-                    style: TextStyle(
-                      fontFamily: AppTextStyles.bold,
-                      fontSize: 48.sp,
-                      color: AppColors.white,
-                      letterSpacing: 2.0,
-                    ),
+                    style: AppTextStyles.splashLogoBold48,
                   ),
                 )
                 .animate(target: _isAnimationStarted ? 1 : 0)
@@ -291,12 +281,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     child: Center(
                       child: Text(
                         'Tripgether',
-                        style: TextStyle(
-                          fontFamily: AppTextStyles.bold,
-                          fontSize: 48.sp,
-                          color: AppColors.white,
-                          letterSpacing: 2.0,
-                        ),
+                        style: AppTextStyles.splashLogoBold48,
                       ),
                     ),
                   ),
@@ -311,12 +296,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         offset: Offset(0, 40.h), // Tripgether 기준 아래쪽으로
                         child: Text(
                           'More than tours. Real local moments',
-                          style: TextStyle(
-                            fontFamily: AppTextStyles.regular,
-                            fontSize: 12.sp,
-                            color: AppColors.white.withValues(alpha: 0.8),
-                            letterSpacing: 0.5,
-                          ),
+                          style: AppTextStyles.splashSloganRegular12,
                         ),
                       ),
                     ),

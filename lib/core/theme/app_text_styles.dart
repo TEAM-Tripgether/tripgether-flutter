@@ -154,6 +154,28 @@ class AppTextStyles {
   );
 
   // ============================================================================
+  // 스플래시 화면 (Splash Screen)
+  // ============================================================================
+
+  /// 스플래시 대형 로고 텍스트 (Bold, 48px)
+  /// 사용처: 스플래시 화면 "Trip", "Together", "Tripgether"
+  static TextStyle splashLogoBold48 = TextStyle(
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 48.sp,
+    color: AppColors.white,
+    letterSpacing: 2.0,
+  );
+
+  /// 스플래시 슬로건 (Regular, 12px)
+  /// 사용처: 스플래시 화면 하단 슬로건
+  static TextStyle splashSloganRegular12 = TextStyle(
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 12.sp,
+    color: AppColors.white.withValues(alpha: 0.8),
+    letterSpacing: 0.5,
+  );
+
+  // ============================================================================
   // 폰트 패밀리 상수 (Font Family Constants)
   // ============================================================================
 
