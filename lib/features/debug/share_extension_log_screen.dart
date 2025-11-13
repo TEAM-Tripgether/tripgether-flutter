@@ -153,8 +153,15 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('URL 복사 완료: $url'),
+          content: Text(
+            'URL 복사 완료: $url',
+            style: AppTextStyles.bodyRegular14.copyWith(
+              color: AppColors.textColor1,
+            ),
+          ),
+          backgroundColor: AppColors.surface,
           duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
         ),
       );
     }

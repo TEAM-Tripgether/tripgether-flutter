@@ -114,8 +114,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       debugPrint('[LoginScreen] ⚠️ 구글 로그인 실패 - 에러 메시지 표시');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context).googleLoginFailed),
-          backgroundColor: Theme.of(context).colorScheme.error,
+          content: Text(
+            AppLocalizations.of(context).googleLoginFailed,
+            style: AppTextStyles.bodyRegular14.copyWith(
+              color: AppColors.white,
+            ),
+          ),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     } else if (!context.mounted) {

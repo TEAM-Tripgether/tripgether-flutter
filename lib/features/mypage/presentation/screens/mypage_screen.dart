@@ -183,8 +183,7 @@ class MyPageScreen extends ConsumerWidget {
                 '${l10n.language}: $languageName',
                 textAlign: TextAlign.center,
                 style: AppTextStyles.bodyRegular14.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.primary,
+                  color: AppColors.mainColor,
                 ),
               ),
               backgroundColor: AppColors.surface,

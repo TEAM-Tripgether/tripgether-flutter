@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/buttons/social_login_button.dart';
 
@@ -96,7 +97,13 @@ class SocialLoginSection extends StatelessWidget {
   void _showComingSoon(BuildContext context, AppLocalizations l10n) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(l10n.comingSoon),
+        content: Text(
+          l10n.comingSoon,
+          style: AppTextStyles.bodyRegular14.copyWith(
+            color: AppColors.textColor1,
+          ),
+        ),
+        backgroundColor: AppColors.surface,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
