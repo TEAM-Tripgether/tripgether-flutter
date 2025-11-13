@@ -81,21 +81,13 @@ class _TripSearchBarState extends State<TripSearchBar> {
           ),
           child: Row(
             children: [
-              // 검색 아이콘 (공간 유지하며 투명도 조절)
-              Opacity(
-                opacity: hasText ? 0.0 : 1.0,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.search,
-                      size: AppSizes.iconMedium,
-                      color: AppColors.subColor2,
-                    ),
-                    SizedBox(width: AppSpacing.md),
-                  ],
-                ),
+              // 검색 아이콘 (항상 표시)
+              Icon(
+                Icons.search,
+                size: AppSizes.iconMedium,
+                color: AppColors.subColor2,
               ),
+              SizedBox(width: AppSpacing.md),
 
               // 텍스트 입력 필드
               Expanded(
