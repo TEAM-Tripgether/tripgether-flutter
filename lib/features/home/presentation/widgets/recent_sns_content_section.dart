@@ -8,6 +8,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cards/sns_content_card.dart';
+import '../../../../shared/widgets/layout/section_header.dart';
 import '../providers/content_provider.dart';
 
 /// 최근 SNS에서 본 콘텐츠 섹션 위젯
@@ -32,30 +33,12 @@ class RecentSnsContentSection extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 섹션 타이틀
-          Padding(
-            padding: EdgeInsets.only(left: AppSpacing.sm),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  l10n.recentSnsContent,
-                  style: AppTextStyles.sectionTitle.copyWith(
-                    color: AppColors.textColor1,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    // SNS 콘텐츠 리스트 화면으로 이동
-                    context.push(AppRoutes.snsContentsList);
-                  },
-                  icon: Icon(
-                    Icons.chevron_right_rounded,
-                    color: AppColors.subColor2,
-                    size: AppSizes.iconLarge,
-                  ),
-                ),
-              ],
-            ),
+          SectionHeader(
+            title: l10n.recentSnsContent,
+            onMoreTap: () {
+              // SNS 콘텐츠 리스트 화면으로 이동
+              context.push(AppRoutes.snsContentsList);
+            },
           ),
 
           // SNS 콘텐츠 리스트
