@@ -145,7 +145,9 @@ class RecentSnsContentSection extends ConsumerWidget {
             child: Padding(
               padding: EdgeInsets.all(AppSizes.borderThin),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppRadius.medium - AppSizes.borderThin),
+                borderRadius: BorderRadius.circular(
+                  AppRadius.medium - AppSizes.borderThin,
+                ),
                 child: Shimmer.fromColors(
                   baseColor: AppColors.shimmerBase,
                   highlightColor: AppColors.shimmerHighlight,

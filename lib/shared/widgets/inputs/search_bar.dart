@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// 홈 화면 검색창 위젯
 ///
@@ -63,64 +61,85 @@ class _TripSearchBarState extends State<TripSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: _effectiveController,
+      builder: (context, value, child) {
+        final hasText = value.text.isNotEmpty;
 
-    return Container(
-      height: AppSizes.fabSmallSize,
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: AppRadius.circular(24),
-        border: Border.all(
-          color: AppColors.subColor2,
-          width: AppSizes.borderThin,
-        ),
-      ),
-      child: TextField(
-        controller: _effectiveController,
-        readOnly: widget.readOnly,
-        autofocus: widget.autofocus,
-        onTap: widget.onTap,
-        onChanged: widget.onChanged,
-        onSubmitted: widget.onSubmitted,
-        textAlign: TextAlign.left,
-        style: AppTextStyles.metaMedium12,
-        decoration: InputDecoration(
-          hintText: widget.hintText,
-          hintStyle: AppTextStyles.metaMedium12.copyWith(
-            color: AppColors.subColor2,
-          ),
-          prefixIcon: Icon(
-            Icons.search,
-            size: AppSizes.iconMedium,
-            color: AppColors.subColor2,
-          ),
-          suffixIcon: ValueListenableBuilder<TextEditingValue>(
-            valueListenable: _effectiveController,
-            builder: (context, value, child) {
-              return value.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(
-                        Icons.clear,
-                        size: AppSizes.iconSmall,
-                        color: AppColors.subColor2,
-                      ),
-                      onPressed: _clearText,
-                      tooltip: l10n.clearInput,
-                    )
-                  : const SizedBox.shrink();
-            },
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
+        return Container(
+          padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
-            vertical: AppSpacing.md.h,
+            vertical: AppSpacing.md,
           ),
-          filled: false,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-        ),
-        textInputAction: TextInputAction.search,
-      ),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(AppRadius.circle),
+            border: Border.all(
+              color: AppColors.subColor2,
+              width: AppSizes.borderThin,
+            ),
+          ),
+          child: Row(
+            children: [
+              // 검색 아이콘 (공간 유지하며 투명도 조절)
+              Opacity(
+                opacity: hasText ? 0.0 : 1.0,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.search,
+                      size: AppSizes.iconMedium,
+                      color: AppColors.subColor2,
+                    ),
+                    SizedBox(width: AppSpacing.md),
+                  ],
+                ),
+              ),
+
+              // 텍스트 입력 필드
+              Expanded(
+                child: TextField(
+                  controller: _effectiveController,
+                  readOnly: widget.readOnly,
+                  autofocus: widget.autofocus,
+                  onTap: widget.onTap,
+                  onChanged: widget.onChanged,
+                  onSubmitted: widget.onSubmitted,
+                  textAlign: TextAlign.start,
+                  style: AppTextStyles.metaMedium12,
+                  decoration: InputDecoration(
+                    hintText: widget.hintText,
+                    hintStyle: AppTextStyles.metaMedium12.copyWith(
+                      color: AppColors.subColor2,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                    filled: false,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    isDense: true,
+                  ),
+                  textInputAction: TextInputAction.search,
+                ),
+              ),
+
+              // 지우기 버튼 (텍스트 있을 때만)
+              if (hasText) ...[
+                SizedBox(width: AppSpacing.xs),
+                GestureDetector(
+                  onTap: _clearText,
+                  child: Icon(
+                    Icons.clear,
+                    size: AppSizes.iconSmall,
+                    color: AppColors.subColor2,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

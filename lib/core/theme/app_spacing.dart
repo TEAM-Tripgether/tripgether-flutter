@@ -204,8 +204,8 @@ class AppRadius {
   /// 큰 반지름: 16 (다이얼로그, 바텀시트)
   static double get xlarge => 16.r;
 
-  /// 완전한 원형: 999 (아바타, FAB 등)
-  static double get circle => 999.r;
+  /// 완전한 원형: 100 (아바타, FAB 등)
+  static double get circle => 100.r;
 
   // ==================== BorderRadius 객체 ====================
 
