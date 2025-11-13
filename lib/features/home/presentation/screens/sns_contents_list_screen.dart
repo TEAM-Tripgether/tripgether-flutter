@@ -35,7 +35,7 @@ class SnsContentsListScreen extends ConsumerWidget {
             // 콘텐츠가 없을 때 빈 상태 표시
             return EmptyStates.noData(
               title: l10n.noSnsContentYet,
-              message: 'SNS에서 콘텐츠를 공유하면\n여기에서 확인할 수 있습니다',
+              message: l10n.noSnsContentMessage,
             );
           }
 
@@ -79,15 +79,15 @@ class SnsContentsListScreen extends ConsumerWidget {
         loading: () => _buildLoadingShimmer(),
         error: (error, stack) => Center(
           child: EmptyStates.networkError(
-            title: '콘텐츠를 불러올 수 없습니다',
-            message: '네트워크 연결을 확인하고\n다시 시도해 주세요',
+            title: l10n.cannotLoadContent,
+            message: l10n.networkError,
             action: TextButton(
               onPressed: () {
                 // Provider를 다시 로드하여 재시도
                 ref.invalidate(completedContentsProvider);
               },
               child: Text(
-                '다시 시도',
+                l10n.retry,
                 style: AppTextStyles.buttonMediumMedium14.copyWith(
                   color: AppColors.primary,
                 ),

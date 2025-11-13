@@ -579,4 +579,40 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get defaultNickname => '여행러버';
+
+  @override
+  String get cannotLoadContent => '콘텐츠를 불러올 수 없습니다';
+
+  @override
+  String get noSnsContentMessage => 'SNS에서 콘텐츠를 공유하면\n여기에서 확인할 수 있습니다';
+
+  @override
+  String get noTitle => '제목 없음';
+
+  @override
+  String get backButtonLabel => '뒤로가기 버튼';
+
+  @override
+  String get backButtonTooltip => '뒤로가기';
+
+  @override
+  String get menuButtonLabel => '메뉴 버튼';
+
+  @override
+  String get menuButtonTooltip => '메뉴';
+
+  @override
+  String get notificationButtonLabel => '알림 버튼';
+
+  @override
+  String get notificationTitle => '알림';
+
+  @override
+  String get noNewNotifications => '현재 새로운 알림이 없습니다.';
+
+  @override
+  String get settingsButtonLabel => '설정 버튼';
+
+  @override
+  String get searchButtonLabel => '검색 버튼';
 }

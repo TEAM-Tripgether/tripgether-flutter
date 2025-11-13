@@ -589,4 +589,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get defaultNickname => 'Traveler';
+
+  @override
+  String get cannotLoadContent => 'Cannot load content';
+
+  @override
+  String get noSnsContentMessage =>
+      'When you share content from SNS,\nyou can check it here';
+
+  @override
+  String get noTitle => 'No title';
+
+  @override
+  String get backButtonLabel => 'Back button';
+
+  @override
+  String get backButtonTooltip => 'Back';
+
+  @override
+  String get menuButtonLabel => 'Menu button';
+
+  @override
+  String get menuButtonTooltip => 'Menu';
+
+  @override
+  String get notificationButtonLabel => 'Notification button';
+
+  @override
+  String get notificationTitle => 'Notifications';
+
+  @override
+  String get noNewNotifications => 'No new notifications.';
+
+  @override
+  String get settingsButtonLabel => 'Settings button';
+
+  @override
+  String get searchButtonLabel => 'Search button';
 }

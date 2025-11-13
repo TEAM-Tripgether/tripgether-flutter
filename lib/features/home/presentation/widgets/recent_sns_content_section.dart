@@ -93,7 +93,7 @@ class RecentSnsContentSection extends ConsumerWidget {
                     ),
                     AppSpacing.verticalSpaceXS,
                     Text(
-                      '콘텐츠를 불러올 수 없습니다',
+                      l10n.cannotLoadContent,
                       style: AppTextStyles.caption12.copyWith(
                         color: AppColors.textSecondary,
                       ),

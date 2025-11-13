@@ -1010,5 +1010,65 @@
   "defaultNickname": "Traveler",
   "@defaultNickname": {
     "description": "Default placeholder before nickname input in onboarding"
+  },
+
+  "cannotLoadContent": "Cannot load content",
+  "@cannotLoadContent": {
+    "description": "Content load failure message"
+  },
+
+  "noSnsContentMessage": "When you share content from SNS,\nyou can check it here",
+  "@noSnsContentMessage": {
+    "description": "SNS content empty state guide message"
+  },
+
+  "noTitle": "No title",
+  "@noTitle": {
+    "description": "Default text when there is no title"
+  },
+
+  "backButtonLabel": "Back button",
+  "@backButtonLabel": {
+    "description": "Back button accessibility label (for screen readers)"
+  },
+
+  "backButtonTooltip": "Back",
+  "@backButtonTooltip": {
+    "description": "Back button tooltip"
+  },
+
+  "menuButtonLabel": "Menu button",
+  "@menuButtonLabel": {
+    "description": "Menu button accessibility label (for screen readers)"
+  },
+
+  "menuButtonTooltip": "Menu",
+  "@menuButtonTooltip": {
+    "description": "Menu button tooltip"
+  },
+
+  "notificationButtonLabel": "Notification button",
+  "@notificationButtonLabel": {
+    "description": "Notification button accessibility label (for screen readers)"
+  },
+
+  "notificationTitle": "Notifications",
+  "@notificationTitle": {
+    "description": "Notification dialog title"
+  },
+
+  "noNewNotifications": "No new notifications.",
+  "@noNewNotifications": {
+    "description": "Message when there are no new notifications"
+  },
+
+  "settingsButtonLabel": "Settings button",
+  "@settingsButtonLabel": {
+    "description": "Settings button accessibility label (for screen readers)"
+  },
+
+  "searchButtonLabel": "Search button",
+  "@searchButtonLabel": {
+    "description": "Search button accessibility label (for screen readers)"
   }
 }

@@ -138,10 +138,11 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     final shouldShowBackButton = showBackButton ?? context.canPop();
 
     if (shouldShowBackButton) {
+      final l10n = AppLocalizations.of(context);
       return Padding(
         padding: EdgeInsets.only(left: AppSpacing.lg),
         child: Semantics(
-          label: '뒤로가기 버튼', // 스크린 리더용 시맨틱 라벨
+          label: l10n.backButtonLabel, // 스크린 리더용 시맨틱 라벨
           button: true,
           child: IconButton(
             icon: Icon(
@@ -156,7 +157,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
                 context.pop();
               }
             },
-            tooltip: '뒤로가기', // 접근성을 위한 툴팁
+            tooltip: l10n.backButtonTooltip, // 접근성을 위한 툴팁
           ),
         ),
       );
@@ -164,10 +165,11 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     // 3. 햄버거 메뉴 버튼 표시 (showMenuButton이 true인 경우)
     if (showMenuButton) {
+      final l10n = AppLocalizations.of(context);
       return Padding(
         padding: EdgeInsets.only(left: AppSpacing.lg),
         child: Semantics(
-          label: '메뉴 버튼', // 스크린 리더용 시맨틱 라벨
+          label: l10n.menuButtonLabel, // 스크린 리더용 시맨틱 라벨
           button: true,
           child: IconButton(
             icon: Icon(
@@ -175,7 +177,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
               size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
             ),
             onPressed: onMenuPressed ?? () => _openDrawer(context),
-            tooltip: '메뉴', // 접근성을 위한 툴팁
+            tooltip: l10n.menuButtonTooltip, // 접근성을 위한 툴팁
           ),
         ),
       );
@@ -193,11 +195,12 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     // 기본 알림 아이콘 표시
     if (showNotificationIcon) {
+      final l10n = AppLocalizations.of(context);
       return [
         Padding(
           padding: EdgeInsets.only(right: AppSpacing.lg),
           child: Semantics(
-            label: '알림 버튼', // 스크린 리더용 시맨틱 라벨
+            label: l10n.notificationButtonLabel, // 스크린 리더용 시맨틱 라벨
             button: true,
             child: GestureDetector(
               onTap:
@@ -231,18 +234,19 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 알림 아이콘의 기본 동작
   /// 현재는 간단한 다이얼로그를 표시 (향후 알림 페이지로 이동하도록 변경 가능)
   void _showNotificationDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('알림'), // AppTheme의 dialogTheme.titleTextStyle 사용
+        title: Text(l10n.notificationTitle), // AppTheme의 dialogTheme.titleTextStyle 사용
         content: Text(
-          '현재 새로운 알림이 없습니다.',
+          l10n.noNewNotifications,
         ), // AppTheme의 dialogTheme.contentTextStyle 사용
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              AppLocalizations.of(context).btnConfirm,
+              l10n.btnConfirm,
             ), // AppTheme의 textButtonTheme.style.textStyle 사용
           ),
         ],
@@ -289,23 +293,25 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 설정 화면용 AppBar 생성
   /// 뒤로가기 버튼과 저장 버튼을 표시
   static CommonAppBar forSettings({
-    String title = '설정',
+    required BuildContext context,
+    String? title,
     VoidCallback? onSavePressed,
   }) {
+    final l10n = AppLocalizations.of(context);
     return CommonAppBar(
-      title: title,
+      title: title ?? l10n.settings,
       showBackButton: true,
       showMenuButton: false,
       showNotificationIcon: false,
       rightActions: onSavePressed != null
           ? [
               Semantics(
-                label: '설정 버튼', // 스크린 리더용 시맨틱 라벨
+                label: l10n.settingsButtonLabel, // 스크린 리더용 시맨틱 라벨
                 button: true,
                 child: IconButton(
                   icon: const Icon(Icons.check),
                   onPressed: onSavePressed,
-                  tooltip: '설정',
+                  tooltip: l10n.settings,
                 ),
               ),
               SizedBox(width: AppSpacing.sm),
@@ -317,23 +323,25 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 검색 화면용 AppBar 생성
   /// 뒤로가기 버튼과 검색 아이콘을 표시
   static CommonAppBar forSearch({
-    String title = '검색',
+    required BuildContext context,
+    String? title,
     VoidCallback? onSearchPressed,
   }) {
+    final l10n = AppLocalizations.of(context);
     return CommonAppBar(
-      title: title,
+      title: title ?? l10n.searchScreen,
       showBackButton: true,
       showMenuButton: false,
       showNotificationIcon: false,
       rightActions: onSearchPressed != null
           ? [
               Semantics(
-                label: '검색 버튼', // 스크린 리더용 시맨틱 라벨
+                label: l10n.searchButtonLabel, // 스크린 리더용 시맨틱 라벨
                 button: true,
                 child: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: onSearchPressed,
-                  tooltip: '검색',
+                  tooltip: l10n.searchScreen,
                 ),
               ),
               SizedBox(width: AppSpacing.sm),

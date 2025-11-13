@@ -1153,6 +1153,78 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'여행러버'**
   String get defaultNickname;
+
+  /// 콘텐츠 로드 실패 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'콘텐츠를 불러올 수 없습니다'**
+  String get cannotLoadContent;
+
+  /// SNS 콘텐츠 빈 상태 안내 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'SNS에서 콘텐츠를 공유하면\n여기에서 확인할 수 있습니다'**
+  String get noSnsContentMessage;
+
+  /// 제목이 없을 때 기본 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'제목 없음'**
+  String get noTitle;
+
+  /// 뒤로가기 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'뒤로가기 버튼'**
+  String get backButtonLabel;
+
+  /// 뒤로가기 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'뒤로가기'**
+  String get backButtonTooltip;
+
+  /// 메뉴 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'메뉴 버튼'**
+  String get menuButtonLabel;
+
+  /// 메뉴 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'메뉴'**
+  String get menuButtonTooltip;
+
+  /// 알림 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 버튼'**
+  String get notificationButtonLabel;
+
+  /// 알림 다이얼로그 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'알림'**
+  String get notificationTitle;
+
+  /// 새로운 알림이 없을 때 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 새로운 알림이 없습니다.'**
+  String get noNewNotifications;
+
+  /// 설정 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'설정 버튼'**
+  String get settingsButtonLabel;
+
+  /// 검색 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'검색 버튼'**
+  String get searchButtonLabel;
 }
 
 class _AppLocalizationsDelegate

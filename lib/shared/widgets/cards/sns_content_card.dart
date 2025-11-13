@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/utils/platform_icon_mapper.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// SNS 콘텐츠 카드 위젯
 ///
@@ -90,7 +91,7 @@ class SnsContentCard extends StatelessWidget {
                 _buildGradientOverlay(),
 
                 // 플랫폼 아이콘 + 제목
-                _buildContentInfo(),
+                _buildContentInfo(context),
               ],
             ),
           ),
@@ -153,7 +154,7 @@ class SnsContentCard extends StatelessWidget {
   }
 
   /// 콘텐츠 정보 (플랫폼 아이콘 + 제목)
-  Widget _buildContentInfo() {
+  Widget _buildContentInfo(BuildContext context) {
     return Positioned(
       left: 0,
       right: 0,
@@ -170,7 +171,7 @@ class SnsContentCard extends StatelessWidget {
             AppSpacing.verticalSpaceXS,
 
             // 제목
-            _buildTitle(),
+            _buildTitle(context),
           ],
         ),
       ),
@@ -189,8 +190,9 @@ class SnsContentCard extends StatelessWidget {
   }
 
   /// 제목 텍스트
-  Widget _buildTitle() {
-    final title = content.title ?? content.caption ?? '제목 없음';
+  Widget _buildTitle(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final title = content.title ?? content.caption ?? l10n.noTitle;
 
     return Text(
       title,
