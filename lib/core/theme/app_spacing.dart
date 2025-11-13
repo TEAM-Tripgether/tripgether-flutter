@@ -356,6 +356,9 @@ class AppSizes {
   /// SNS 카드 그라데이션 오버레이 높이: 60
   static double get snsCardOverlayHeight => 60.h;
 
+  /// SNS 콘텐츠 카드 큰 높이: 256
+  static double get snsCardLargeHeight => 256.h;
+
   // ==================== Component Widths ====================
 
   /// 버튼 최소 너비: 88
@@ -375,4 +378,7 @@ class AppSizes {
 
   /// SNS 콘텐츠 카드 너비: 100
   static double get snsCardWidth => 100.w;
+
+  /// SNS 콘텐츠 카드 큰 너비: 180
+  static double get snsCardLargeWidth => 180.w;
 }

@@ -23,7 +23,7 @@ class RecentSnsContentSection extends ConsumerWidget {
 
     return Padding(
       padding: EdgeInsets.only(
-        left: AppSpacing.xxl,
+        left: AppSpacing.lg,
         right: AppSpacing.md,
         top: AppSpacing.sm,
         bottom: AppSpacing.lg,
@@ -32,27 +32,30 @@ class RecentSnsContentSection extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 섹션 타이틀
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                l10n.recentSnsContent,
-                style: AppTextStyles.sectionTitle.copyWith(
-                  color: AppColors.textColor1,
+          Padding(
+            padding: EdgeInsets.only(left: AppSpacing.sm),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  l10n.recentSnsContent,
+                  style: AppTextStyles.sectionTitle.copyWith(
+                    color: AppColors.textColor1,
+                  ),
                 ),
-              ),
-              IconButton(
-                onPressed: () {
-                  // SNS 콘텐츠 리스트 화면으로 이동
-                  context.push(AppRoutes.snsContentsList);
-                },
-                icon: Icon(
-                  Icons.chevron_right_rounded,
-                  color: AppColors.subColor2,
-                  size: AppSizes.iconLarge,
+                IconButton(
+                  onPressed: () {
+                    // SNS 콘텐츠 리스트 화면으로 이동
+                    context.push(AppRoutes.snsContentsList);
+                  },
+                  icon: Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.subColor2,
+                    size: AppSizes.iconLarge,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           // SNS 콘텐츠 리스트

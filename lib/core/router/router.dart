@@ -9,6 +9,7 @@ import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/course_market/presentation/screens/course_search_screen.dart';
 import '../../features/course_market/presentation/screens/popular_courses_screen.dart';
@@ -146,6 +147,17 @@ class AppRouter {
               path: AppRoutes.home,
               pageBuilder: (context, state) =>
                   NoTransitionPage(child: const HomeScreen()),
+              routes: [
+                // SNS 콘텐츠 리스트 화면
+                GoRoute(
+                  path: 'sns-contents',
+                  pageBuilder: (context, state) {
+                    return NoTransitionPage(
+                      child: const SnsContentsListScreen(),
+                    );
+                  },
+                ),
+              ],
             ), // GoRoute(AppRoutes.home) 닫기
           ], // StatefulShellBranch.routes 닫기
         ), // StatefulShellBranch(홈) 닫기
