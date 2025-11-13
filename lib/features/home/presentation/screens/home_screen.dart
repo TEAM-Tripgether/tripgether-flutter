@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tripgether/core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/services/sharing_service.dart';
-import '../../../../core/utils/url_formatter.dart';
 import '../../../../shared/widgets/common/info_container.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/inputs/search_bar.dart';
@@ -138,17 +137,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     for (final text in texts) {
       debugPrint('[HomeScreen] 텍스트 데이터: $text');
 
-      // URL인지 확인
-      if (UrlFormatter.isValidUrl(text)) {
-        // 🧹 추적 파라미터 제거하여 깔끔한 URL로 정리
-        final cleanedUrl = UrlFormatter.cleanUrl(text);
-        final urlType = UrlFormatter.getUrlType(cleanedUrl);
-        final domain = UrlFormatter.extractDomain(cleanedUrl);
+      // URL인지 확인 (간단한 정규식으로 체크)
+      final isUrl = Uri.tryParse(text)?.hasScheme ?? false;
 
-        debugPrint('[HomeScreen] 🔗 URL 감지: $cleanedUrl');
-        debugPrint('[HomeScreen] 📱 플랫폼: $urlType');
-        debugPrint('[HomeScreen] 🌐 도메인: $domain');
-
+      if (isUrl) {
+        debugPrint('[HomeScreen] 🔗 URL 감지: $text');
         // URL에 따른 처리 (여행 정보 파싱)
       } else {
         debugPrint('[HomeScreen] 📝 일반 텍스트: $text');
