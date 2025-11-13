@@ -8,8 +8,10 @@ import '../../shared/widgets/layout/bottom_navigation.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../../core/models/content_model.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
+import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/course_market/presentation/screens/course_search_screen.dart';
 import '../../features/course_market/presentation/screens/popular_courses_screen.dart';
@@ -156,6 +158,18 @@ class AppRouter {
                       child: const SnsContentsListScreen(),
                     );
                   },
+                  routes: [
+                    // SNS 콘텐츠 상세 화면
+                    GoRoute(
+                      path: 'detail/:contentId',
+                      pageBuilder: (context, state) {
+                        final content = state.extra as ContentModel;
+                        return NoTransitionPage(
+                          child: SnsContentDetailScreen(content: content),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ), // GoRoute(AppRoutes.home) 닫기
