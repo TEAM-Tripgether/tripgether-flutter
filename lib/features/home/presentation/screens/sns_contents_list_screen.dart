@@ -27,6 +27,7 @@ class SnsContentsListScreen extends ConsumerWidget {
       backgroundColor: AppColors.white,
       appBar: CommonAppBar.forSubPage(
         title: l10n.recentSnsContent,
+        rightActions: [], // 알림 아이콘 숨김
       ),
       body: contentListAsync.when(
         data: (contents) {
@@ -48,8 +49,8 @@ class SnsContentsListScreen extends ConsumerWidget {
               padding: EdgeInsets.all(AppSpacing.lg),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: AppSpacing.md,
-                crossAxisSpacing: AppSpacing.md,
+                mainAxisSpacing: AppSpacing.sm,
+                crossAxisSpacing: AppSpacing.sm,
                 childAspectRatio:
                     AppSizes.snsCardLargeWidth / AppSizes.snsCardLargeHeight,
               ),
@@ -100,8 +101,8 @@ class SnsContentsListScreen extends ConsumerWidget {
       padding: EdgeInsets.all(AppSpacing.lg),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: AppSpacing.md,
-        crossAxisSpacing: AppSpacing.md,
+        mainAxisSpacing: AppSpacing.sm,
+        crossAxisSpacing: AppSpacing.sm,
         childAspectRatio:
             AppSizes.snsCardLargeWidth / AppSizes.snsCardLargeHeight,
       ),

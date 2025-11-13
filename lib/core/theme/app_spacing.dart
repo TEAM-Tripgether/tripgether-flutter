@@ -295,7 +295,6 @@ class AppSizes {
   AppSizes._(); // Private constructor to prevent instantiation
 
   // ==================== Icon Sizes ====================
-
   /// 작은 아이콘: 16
   static double get iconSmall => 16.w;
 
@@ -308,7 +307,10 @@ class AppSizes {
   /// 큰 아이콘: 32
   static double get iconLarge => 32.w;
 
-  /// 매우 큰 아이콘: 48
+  /// 매우 큰 아이콘: 40
+  static double get iconExtraLarge => 40.w;
+
+  /// 최대 크기 아이콘: 48
   static double get iconXLarge => 48.w;
 
   // ==================== Border Widths ====================

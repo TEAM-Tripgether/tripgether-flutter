@@ -327,8 +327,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           padding: EdgeInsets.only(
             left: AppSpacing.lg,
             right: AppSpacing.lg,
-            top: AppSpacing.md.h,
-            bottom: AppSpacing.lg.h,
+            top: AppSpacing.sm,
+            bottom: AppSpacing.lg,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,8 +351,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     },
                     child: SvgPicture.asset(
                       'assets/icons/alarm_inactive.svg',
-                      width: AppSizes.iconXLarge,
-                      height: AppSizes.iconXLarge,
+                      width: AppSizes.iconExtraLarge,
+                      height: AppSizes.iconExtraLarge,
                     ),
                   ),
                 ],

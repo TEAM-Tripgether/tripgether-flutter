@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// Tripgether 앱에서 사용하는 공용 AppBar 컴포넌트
@@ -137,38 +138,45 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     final shouldShowBackButton = showBackButton ?? context.canPop();
 
     if (shouldShowBackButton) {
-      return Semantics(
-        label: '뒤로가기 버튼', // 스크린 리더용 시맨틱 라벨
-        button: true,
-        child: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: AppSizes.iconMedium, // ScreenUtil로 반응형 크기
+      return Padding(
+        padding: EdgeInsets.only(left: AppSpacing.lg),
+        child: Semantics(
+          label: '뒤로가기 버튼', // 스크린 리더용 시맨틱 라벨
+          button: true,
+          child: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
+              color: AppColors.subColor2,
+            ),
+            onPressed: () {
+              // GoRouter 사용 시 context.pop() 사용
+              // 안전을 위해 canPop() 체크 후 pop 실행
+              if (context.canPop()) {
+                context.pop();
+              }
+            },
+            tooltip: '뒤로가기', // 접근성을 위한 툴팁
           ),
-          onPressed: () {
-            // GoRouter 사용 시 context.pop() 사용
-            // 안전을 위해 canPop() 체크 후 pop 실행
-            if (context.canPop()) {
-              context.pop();
-            }
-          },
-          tooltip: '뒤로가기', // 접근성을 위한 툴팁
         ),
       );
     }
 
     // 3. 햄버거 메뉴 버튼 표시 (showMenuButton이 true인 경우)
     if (showMenuButton) {
-      return Semantics(
-        label: '메뉴 버튼', // 스크린 리더용 시맨틱 라벨
-        button: true,
-        child: IconButton(
-          icon: Icon(
-            Icons.menu,
-            size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
+      return Padding(
+        padding: EdgeInsets.only(left: AppSpacing.lg),
+        child: Semantics(
+          label: '메뉴 버튼', // 스크린 리더용 시맨틱 라벨
+          button: true,
+          child: IconButton(
+            icon: Icon(
+              Icons.menu,
+              size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
+            ),
+            onPressed: onMenuPressed ?? () => _openDrawer(context),
+            tooltip: '메뉴', // 접근성을 위한 툴팁
           ),
-          onPressed: onMenuPressed ?? () => _openDrawer(context),
-          tooltip: '메뉴', // 접근성을 위한 툴팁
         ),
       );
     }
@@ -186,22 +194,23 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     // 기본 알림 아이콘 표시
     if (showNotificationIcon) {
       return [
-        Semantics(
-          label: '알림 버튼', // 스크린 리더용 시맨틱 라벨
-          button: true,
-          child: IconButton(
-            icon: SvgPicture.asset(
-              'assets/icons/alarm_inactive.svg',
-              width: AppSizes.iconDefault,
-              height: AppSizes.iconDefault,
+        Padding(
+          padding: EdgeInsets.only(right: AppSpacing.lg),
+          child: Semantics(
+            label: '알림 버튼', // 스크린 리더용 시맨틱 라벨
+            button: true,
+            child: GestureDetector(
+              onTap:
+                  onNotificationPressed ??
+                  () => _showNotificationDialog(context),
+              child: SvgPicture.asset(
+                'assets/icons/alarm_inactive.svg',
+                width: AppSizes.iconExtraLarge,
+                height: AppSizes.iconExtraLarge,
+              ),
             ),
-            onPressed:
-                onNotificationPressed ?? () => _showNotificationDialog(context),
-            tooltip: '알림', // 접근성을 위한 툴팁
           ),
         ),
-        // 오른쪽 마진 추가 (Material Design 가이드라인)
-        SizedBox(width: AppSpacing.sm),
       ];
     }
 
@@ -265,6 +274,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     required String title,
     List<Widget>? rightActions,
     VoidCallback? onNotificationPressed,
+    TextStyle? titleStyle,
   }) {
     return CommonAppBar(
       title: title,
@@ -272,6 +282,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       showMenuButton: false,
       rightActions: rightActions,
       onNotificationPressed: onNotificationPressed,
+      titleStyle: titleStyle ?? AppTextStyles.greetingSemiBold20,
     );
   }
 
