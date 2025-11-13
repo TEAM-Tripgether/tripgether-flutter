@@ -10,9 +10,7 @@ class PopularCoursesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(title: const Text('인기 코스')),
-      body: const Center(
-        child: Text('인기 코스 화면'),
-      ),
+      body: const Center(child: Text('인기 코스 화면')),
     );
   }
 }

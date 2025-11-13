@@ -116,9 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         SnackBar(
           content: Text(
             AppLocalizations.of(context).googleLoginFailed,
-            style: AppTextStyles.bodyRegular14.copyWith(
-              color: AppColors.white,
-            ),
+            style: AppTextStyles.bodyRegular14.copyWith(color: AppColors.white),
           ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,

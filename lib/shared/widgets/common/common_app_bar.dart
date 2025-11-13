@@ -238,7 +238,9 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.notificationTitle), // AppTheme의 dialogTheme.titleTextStyle 사용
+        title: Text(
+          l10n.notificationTitle,
+        ), // AppTheme의 dialogTheme.titleTextStyle 사용
         content: Text(
           l10n.noNewNotifications,
         ), // AppTheme의 dialogTheme.contentTextStyle 사용

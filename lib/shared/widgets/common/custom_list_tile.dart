@@ -76,9 +76,7 @@ class CustomListTile extends StatelessWidget {
     // 기본 부제목 스타일
     final effectiveSubtitleStyle =
         subtitleStyle ??
-        AppTextStyles.metaMedium12.copyWith(
-          color: AppColors.neutral60,
-        );
+        AppTextStyles.metaMedium12.copyWith(color: AppColors.neutral60);
 
     return ListTile(
       leading: leading,

@@ -10,9 +10,7 @@ class CourseSearchScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(title: const Text('코스 검색')),
-      body: const Center(
-        child: Text('코스 검색 화면'),
-      ),
+      body: const Center(child: Text('코스 검색 화면')),
     );
   }
 }

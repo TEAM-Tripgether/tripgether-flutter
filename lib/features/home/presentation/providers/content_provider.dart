@@ -42,17 +42,11 @@ class ContentList extends _$ContentList {
     );
 
     // UI 즉시 업데이트
-    state = AsyncValue.data([
-      pendingContent,
-      ...state.value ?? [],
-    ]);
+    state = AsyncValue.data([pendingContent, ...state.value ?? []]);
 
     try {
       // 실제 API 호출
-      await repository.addContent(
-        url: url,
-        platform: platform,
-      );
+      await repository.addContent(url: url, platform: platform);
 
       // 성공 시 실제 데이터로 교체
       await refresh();
@@ -84,10 +78,7 @@ class ContentList extends _$ContentList {
 
 /// 특정 콘텐츠를 제공하는 Provider
 @riverpod
-Future<ContentModel> contentDetail(
-  Ref ref,
-  String contentId,
-) async {
+Future<ContentModel> contentDetail(Ref ref, String contentId) async {
   final repository = ref.read(contentRepositoryProvider);
   return await repository.getContentById(contentId);
 }
@@ -108,10 +99,7 @@ Future<List<ContentModel>> completedContents(Ref ref) async {
 
 /// 특정 플랫폼의 콘텐츠만 제공하는 Provider
 @riverpod
-Future<List<ContentModel>> contentsByPlatform(
-  Ref ref,
-  String platform,
-) async {
+Future<List<ContentModel>> contentsByPlatform(Ref ref, String platform) async {
   final repository = ref.read(contentRepositoryProvider);
   return await repository.getContentsByPlatform(platform);
 }

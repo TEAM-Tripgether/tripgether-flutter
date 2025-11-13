@@ -196,7 +196,9 @@ class SnsContentCard extends StatelessWidget {
 
     return Text(
       title,
-      style: titleStyle ?? AppTextStyles.metaMedium12.copyWith(color: Colors.white),
+      style:
+          titleStyle ??
+          AppTextStyles.metaMedium12.copyWith(color: Colors.white),
       maxLines: titleMaxLines ?? 2,
       overflow: TextOverflow.ellipsis,
     );

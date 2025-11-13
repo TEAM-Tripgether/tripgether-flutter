@@ -25,10 +25,7 @@ class SnsContentDetailScreen extends StatelessWidget {
   /// 표시할 콘텐츠 모델
   final ContentModel content;
 
-  const SnsContentDetailScreen({
-    super.key,
-    required this.content,
-  });
+  const SnsContentDetailScreen({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +66,14 @@ class SnsContentDetailScreen extends StatelessWidget {
         borderRadius: AppRadius.allMedium,
         child: AspectRatio(
           aspectRatio: 16 / 9, // 썸네일 비율
-          child: content.thumbnailUrl != null && content.thumbnailUrl!.isNotEmpty
+          child:
+              content.thumbnailUrl != null && content.thumbnailUrl!.isNotEmpty
               ? CachedNetworkImage(
                   imageUrl: content.thumbnailUrl!,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => _buildShimmerPlaceholder(),
-                  errorWidget: (context, url, error) => _buildErrorPlaceholder(),
+                  errorWidget: (context, url, error) =>
+                      _buildErrorPlaceholder(),
                 )
               : _buildErrorPlaceholder(),
         ),

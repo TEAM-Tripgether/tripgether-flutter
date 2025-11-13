@@ -11,9 +11,7 @@ class CourseMarketScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: const Center(
-        child: Text('코스마켓 화면'),
-      ),
+      body: const Center(child: Text('코스마켓 화면')),
     );
   }
 }

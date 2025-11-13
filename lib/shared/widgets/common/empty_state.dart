@@ -73,9 +73,7 @@ class EmptyState extends StatelessWidget {
     // 기본 메시지 스타일
     final effectiveMessageStyle =
         messageStyle ??
-        AppTextStyles.bodyRegular14.copyWith(
-          color: AppColors.neutral60,
-        );
+        AppTextStyles.bodyRegular14.copyWith(color: AppColors.neutral60);
 
     return Center(
       child: Padding(

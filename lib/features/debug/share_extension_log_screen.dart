@@ -22,11 +22,7 @@ class LogEntry {
   final String message;
   final String? url;
 
-  LogEntry({
-    required this.timestamp,
-    required this.message,
-    this.url,
-  });
+  LogEntry({required this.timestamp, required this.message, this.url});
 }
 
 class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
@@ -114,11 +110,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
         final urlMatch = RegExp(r'https?://[^\s]+').firstMatch(message);
         final url = urlMatch?.group(0);
 
-        entries.add(LogEntry(
-          timestamp: timestamp,
-          message: message,
-          url: url,
-        ));
+        entries.add(LogEntry(timestamp: timestamp, message: message, url: url));
 
         debugPrint('파싱된 로그 - timestamp: $timestamp, url: $url');
       } else {
@@ -228,21 +220,14 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
   }
 
   /// 빈 상태 표시
-  Widget _buildEmptyState({
-    required IconData icon,
-    required String message,
-  }) {
+  Widget _buildEmptyState({required IconData icon, required String message}) {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 64.w,
-              color: AppColors.textSecondary,
-            ),
+            Icon(icon, size: 64.w, color: AppColors.textSecondary),
             AppSpacing.verticalSpaceLG,
             Text(
               message,
@@ -264,9 +249,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
     return Card(
       margin: EdgeInsets.only(bottom: AppSpacing.md),
       elevation: AppElevation.medium,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.allMedium,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
       child: Padding(
         padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -294,27 +277,17 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                 ),
                 AppSpacing.horizontalSpaceSM,
                 Expanded(
-                  child: Text(
-                    entry.timestamp,
-                    style: AppTextStyles.caption12,
-                  ),
+                  child: Text(entry.timestamp, style: AppTextStyles.caption12),
                 ),
                 if (hasUrl)
-                  Icon(
-                    Icons.link,
-                    size: 16.w,
-                    color: AppColors.success,
-                  ),
+                  Icon(Icons.link, size: 16.w, color: AppColors.success),
               ],
             ),
 
             AppSpacing.verticalSpaceMD,
 
             // 메시지 내용
-            Text(
-              entry.message,
-              style: AppTextStyles.bodyRegular14,
-            ),
+            Text(entry.message, style: AppTextStyles.bodyRegular14),
 
             // URL 표시 (있는 경우)
             if (hasUrl) ...[
@@ -331,11 +304,7 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.link,
-                      size: 18.w,
-                      color: AppColors.success,
-                    ),
+                    Icon(Icons.link, size: 18.w, color: AppColors.success),
                     AppSpacing.horizontalSpaceSM,
                     Expanded(
                       child: Text(

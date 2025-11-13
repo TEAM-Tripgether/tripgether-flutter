@@ -96,7 +96,9 @@ class ScheduleScreen extends ConsumerWidget {
             AppSpacing.verticalSpaceSM,
             Text(
               '여행 일정 목록 및 캘린더 뷰 표시 예정',
-              style: AppTextStyles.bodyRegular14.copyWith(color: Colors.grey[500]),
+              style: AppTextStyles.bodyRegular14.copyWith(
+                color: Colors.grey[500],
+              ),
             ),
           ],
         ),

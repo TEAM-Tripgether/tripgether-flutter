@@ -16,9 +16,7 @@ class ContentRepository {
     } else {
       // 환경 변수에 따라 데이터 소스 선택
       const useMock = bool.fromEnvironment('USE_MOCK_API', defaultValue: true);
-      _dataSource = useMock
-          ? MockContentDataSource()
-          : ApiContentDataSource();
+      _dataSource = useMock ? MockContentDataSource() : ApiContentDataSource();
     }
   }
 
@@ -47,10 +45,7 @@ class ContentRepository {
     required String platform,
   }) async {
     try {
-      return await _dataSource.addContent(
-        url: url,
-        platform: platform,
-      );
+      return await _dataSource.addContent(url: url, platform: platform);
     } catch (e) {
       rethrow;
     }

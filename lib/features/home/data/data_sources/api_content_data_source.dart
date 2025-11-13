@@ -10,15 +10,14 @@ class ApiContentDataSource implements ContentDataSource {
   final String baseUrl;
   final Dio dio;
 
-  ApiContentDataSource({
-    String? baseUrl,
-    Dio? dio,
-  })  : baseUrl = baseUrl ??
-            const String.fromEnvironment(
-              'API_BASE_URL',
-              defaultValue: 'https://api.tripgether.suhsaechan.kr',
-            ),
-        dio = dio ?? Dio();
+  ApiContentDataSource({String? baseUrl, Dio? dio})
+    : baseUrl =
+          baseUrl ??
+          const String.fromEnvironment(
+            'API_BASE_URL',
+            defaultValue: 'https://api.tripgether.suhsaechan.kr',
+          ),
+      dio = dio ?? Dio();
 
   @override
   Future<List<ContentModel>> getContents() async {
@@ -51,11 +50,7 @@ class ApiContentDataSource implements ContentDataSource {
     try {
       final response = await dio.get(
         '$baseUrl/api/contents/$contentId',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ),
+        options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       if (response.statusCode == 200) {
@@ -76,15 +71,8 @@ class ApiContentDataSource implements ContentDataSource {
     try {
       final response = await dio.post(
         '$baseUrl/api/contents',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ),
-        data: {
-          'url': url,
-          'platform': platform,
-        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+        data: {'url': url, 'platform': platform},
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
@@ -105,14 +93,8 @@ class ApiContentDataSource implements ContentDataSource {
     try {
       final response = await dio.patch(
         '$baseUrl/api/contents/$contentId',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ),
-        data: {
-          'status': status,
-        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+        data: {'status': status},
       );
 
       if (response.statusCode == 200) {
@@ -130,11 +112,7 @@ class ApiContentDataSource implements ContentDataSource {
     try {
       final response = await dio.delete(
         '$baseUrl/api/contents/$contentId',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ),
+        options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       if (response.statusCode != 204 && response.statusCode != 200) {

@@ -198,10 +198,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           .primary, // 스플래시 배경색과 동일하여 Together를 자연스럽게 가림
                       borderRadius: BorderRadius.circular(6.r),
                     ),
-                    child: Text(
-                      'Trip',
-                      style: AppTextStyles.splashLogoBold48,
-                    ),
+                    child: Text('Trip', style: AppTextStyles.splashLogoBold48),
                   ),
                 )
                 .animate(target: _isAnimationStarted ? 1 : 0)
