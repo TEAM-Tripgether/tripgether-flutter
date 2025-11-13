@@ -55,10 +55,14 @@ class SnsContentCard extends StatelessWidget {
           height: cardHeight,
           decoration: BoxDecoration(
             borderRadius: AppRadius.allMedium,
-            border: Border.all(
-              color: AppColors.whiteBorder,
-              width: AppSizes.borderThin,
-            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.whiteBorder,
+                spreadRadius: 3,
+                blurRadius: 0,
+                offset: Offset.zero,
+              ),
+            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(
@@ -73,7 +77,7 @@ class SnsContentCard extends StatelessWidget {
                 // 하단 그라데이션 오버레이
                 _buildGradientOverlay(),
 
-                // 플랫폼 아이콘 + 제목 (그라데이션 위)
+                // 플랫폼 아이콘 + 제목
                 _buildContentInfo(),
               ],
             ),
@@ -122,17 +126,14 @@ class SnsContentCard extends StatelessWidget {
 
   /// 하단 그라데이션 오버레이 (배경 어둡게)
   Widget _buildGradientOverlay() {
-    return Positioned(
-      left: 0,
-      right: 0,
-      bottom: 0,
+    return Positioned.fill(
       child: Container(
-        height: AppSizes.snsCardOverlayHeight,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
+            stops: const [0.5, 1.0],
           ),
         ),
       ),

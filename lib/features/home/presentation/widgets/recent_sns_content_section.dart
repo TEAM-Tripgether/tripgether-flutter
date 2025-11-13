@@ -58,7 +58,7 @@ class RecentSnsContentSection extends ConsumerWidget {
 
           // SNS 콘텐츠 리스트
           SizedBox(
-            height: 150.h,
+            height: 142.h,
             child: contentListAsync.when(
               data: (contents) {
                 if (contents.isEmpty) {
