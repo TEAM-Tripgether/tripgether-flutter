@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/router/routes.dart';
@@ -58,7 +57,7 @@ class RecentSnsContentSection extends ConsumerWidget {
 
           // SNS 콘텐츠 리스트
           SizedBox(
-            height: 142.h,
+            height: AppSizes.snsCardHeight,
             child: contentListAsync.when(
               data: (contents) {
                 if (contents.isEmpty) {
