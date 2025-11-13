@@ -9,12 +9,6 @@ import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
-import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
-import '../../features/home/presentation/screens/saved_places_list_screen.dart';
-import '../../features/home/presentation/screens/place_detail_screen.dart';
-import '../../features/home/data/models/sns_content_model.dart';
-import '../../features/home/data/models/place_model.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/course_market/presentation/screens/course_search_screen.dart';
 import '../../features/course_market/presentation/screens/popular_courses_screen.dart';
@@ -152,161 +146,6 @@ class AppRouter {
               path: AppRoutes.home,
               pageBuilder: (context, state) =>
                   NoTransitionPage(child: const HomeScreen()),
-              routes: [
-                // SNS 콘텐츠 목록 화면
-                GoRoute(
-                  path: 'sns-contents',
-                  builder: (context, state) => const SnsContentsListScreen(),
-                  routes: [
-                    // SNS 콘텐츠 상세 화면
-                    GoRoute(
-                      path: 'detail/:contentId',
-                      pageBuilder: (context, state) {
-                        final contentId = state.pathParameters['contentId']!;
-                        final extraData = state.extra;
-
-                        Widget detailScreen;
-
-                        // extra가 Map<String, dynamic> 형태로 전달되었는지 확인
-                        if (extraData is Map<String, dynamic>) {
-                          final contents =
-                              extraData['contents'] as List<SnsContent>?;
-                          final initialIndex =
-                              extraData['initialIndex'] as int?;
-
-                          // 리스트와 인덱스가 모두 전달된 경우
-                          if (contents != null && initialIndex != null) {
-                            detailScreen = SnsContentDetailScreen(
-                              contents: contents,
-                              initialIndex: initialIndex,
-                            );
-                          } else {
-                            // Fallback
-                            final dummyContent = _findContentById(contentId);
-                            detailScreen = SnsContentDetailScreen(
-                              contents: [dummyContent],
-                              initialIndex: 0,
-                            );
-                          }
-                        } else {
-                          // Fallback: 더미 데이터로 단일 콘텐츠 표시
-                          // (직접 URL 접근 시나리오)
-                          final dummyContent = _findContentById(contentId);
-                          detailScreen = SnsContentDetailScreen(
-                            contents: [dummyContent],
-                            initialIndex: 0,
-                          );
-                        }
-
-                        // 커스텀 페이지 전환 애니메이션 적용
-                        // Hero 애니메이션과 함께 Fade + Slide 효과 추가
-                        return CustomTransitionPage(
-                          key: state.pageKey,
-                          child: detailScreen,
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                                // Fade 애니메이션 (0.0 → 1.0)
-                                final fadeAnimation =
-                                    Tween<double>(begin: 0.0, end: 1.0).animate(
-                                      CurvedAnimation(
-                                        parent: animation,
-                                        curve: Curves.easeOut,
-                                      ),
-                                    );
-
-                                // Slide 애니메이션 (아래 → 위)
-                                final slideAnimation =
-                                    Tween<Offset>(
-                                      begin: const Offset(
-                                        0.0,
-                                        0.1,
-                                      ), // 아래에서 살짝 올라오는 효과
-                                      end: Offset.zero,
-                                    ).animate(
-                                      CurvedAnimation(
-                                        parent: animation,
-                                        curve: Curves.easeOutCubic,
-                                      ),
-                                    );
-
-                                // Fade와 Slide 애니메이션 결합
-                                return FadeTransition(
-                                  opacity: fadeAnimation,
-                                  child: SlideTransition(
-                                    position: slideAnimation,
-                                    child: child,
-                                  ),
-                                );
-                              },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                // 저장한 장소 목록 화면
-                GoRoute(
-                  path: 'saved-places',
-                  builder: (context, state) => const SavedPlacesListScreen(),
-                  routes: [
-                    // 장소 상세 화면 (nested route)
-                    GoRoute(
-                      path: ':placeId',
-                      pageBuilder: (context, state) {
-                        final placeId = state.pathParameters['placeId']!;
-                        final extraData = state.extra;
-
-                        SavedPlace place;
-
-                        // extra로 전달된 장소 데이터 사용
-                        if (extraData is SavedPlace) {
-                          place = extraData;
-                        } else {
-                          // Fallback: 더미 데이터에서 찾기
-                          place = _findPlaceById(placeId);
-                        }
-
-                        // 커스텀 페이지 전환 애니메이션 적용
-                        // Hero 애니메이션과 함께 Fade + Slide 효과
-                        return CustomTransitionPage(
-                          key: state.pageKey,
-                          child: PlaceDetailScreen(place: place),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                                // Fade 애니메이션
-                                final fadeAnimation =
-                                    Tween<double>(begin: 0.0, end: 1.0).animate(
-                                      CurvedAnimation(
-                                        parent: animation,
-                                        curve: Curves.easeOut,
-                                      ),
-                                    );
-
-                                // Slide 애니메이션 (아래 → 위)
-                                final slideAnimation =
-                                    Tween<Offset>(
-                                      begin: const Offset(0.0, 0.1),
-                                      end: Offset.zero,
-                                    ).animate(
-                                      CurvedAnimation(
-                                        parent: animation,
-                                        curve: Curves.easeOutCubic,
-                                      ),
-                                    );
-
-                                return FadeTransition(
-                                  opacity: fadeAnimation,
-                                  child: SlideTransition(
-                                    position: slideAnimation,
-                                    child: child,
-                                  ),
-                                );
-                              },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ],
             ), // GoRoute(AppRoutes.home) 닫기
           ], // StatefulShellBranch.routes 닫기
         ), // StatefulShellBranch(홈) 닫기
@@ -370,17 +209,6 @@ class AppRouter {
               path: AppRoutes.map,
               pageBuilder: (context, state) =>
                   NoTransitionPage(child: const MapScreen()),
-              routes: [
-                // 장소 상세 화면
-                GoRoute(
-                  path: 'place/:placeId',
-                  builder: (context, state) {
-                    final placeId = state.pathParameters['placeId']!;
-                    final place = _findPlaceById(placeId);
-                    return PlaceDetailScreen(place: place);
-                  },
-                ),
-              ],
             ),
           ],
         ), // StatefulShellBranch(지도) 닫기
@@ -464,51 +292,6 @@ class AppRouter {
   /// [index] 탭 인덱스
   static void unregisterTabRefreshCallback(int index) {
     _tabRefreshCallbacks.remove(index);
-  }
-
-  /// ID로 SNS 콘텐츠 찾기 헬퍼 함수
-  ///
-  /// 실제로는 Riverpod provider나 API에서 가져와야 하지만,
-  /// 현재는 더미 데이터를 사용합니다.
-  ///
-  /// [contentId] 콘텐츠 ID
-  /// Returns: 해당 ID의 SnsContent 객체
-  static SnsContent _findContentById(String contentId) {
-    // 더미 데이터에서 검색
-    final allContents = SnsContentDummyData.getSampleContents();
-    try {
-      return allContents.firstWhere((content) => content.id == contentId);
-    } catch (e) {
-      // 찾지 못한 경우 기본 더미 데이터 반환
-      return SnsContent.dummy(
-        id: contentId,
-        title: '콘텐츠를 찾을 수 없습니다',
-        source: SnsSource.youtube,
-      );
-    }
-  }
-
-  /// ID로 저장한 장소 찾기 헬퍼 함수
-  ///
-  /// 실제로는 Riverpod provider나 API에서 가져와야 하지만,
-  /// 현재는 더미 데이터를 사용합니다.
-  ///
-  /// [placeId] 장소 ID
-  /// Returns: 해당 ID의 SavedPlace 객체
-  static SavedPlace _findPlaceById(String placeId) {
-    // 더미 데이터에서 검색
-    final allPlaces = SavedPlaceDummyData.getSamplePlaces();
-    try {
-      return allPlaces.firstWhere((place) => place.id == placeId);
-    } catch (e) {
-      // 찾지 못한 경우 기본 더미 데이터 반환
-      return SavedPlace.dummy(
-        id: placeId,
-        name: '장소를 찾을 수 없습니다',
-        category: PlaceCategory.restaurant,
-        address: '주소 정보 없음',
-      );
-    }
   }
 }
 
