@@ -361,19 +361,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               AppSpacing.verticalSpaceLG,
 
               // 인사말
-              Text(
-                l10n.greeting(nickname),
-                style: AppTextStyles.greetingBold20.copyWith(
-                  color: AppColors.mainColor,
-                ),
-              ),
+              Padding(
+                padding: EdgeInsets.only(left: AppSpacing.sm),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 인사말
+                    Text(
+                      l10n.greeting(nickname),
+                      style: AppTextStyles.greetingBold20.copyWith(
+                        color: AppColors.mainColor,
+                      ),
+                    ),
 
-              AppSpacing.verticalSpaceXS,
-              // 부제목
-              Text(
-                l10n.greetingSubtitle,
-                style: AppTextStyles.greetingBold20.copyWith(
-                  color: AppColors.mainColor,
+                    AppSpacing.verticalSpaceXS,
+
+                    // 부제목
+                    Text(
+                      l10n.greetingSubtitle,
+                      style: AppTextStyles.greetingBold20.copyWith(
+                        color: AppColors.mainColor,
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
