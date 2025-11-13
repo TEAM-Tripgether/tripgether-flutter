@@ -33,12 +33,24 @@ class SnsContentCard extends StatelessWidget {
   /// 카드 클릭 시 콜백
   final VoidCallback? onTap;
 
+  /// 플랫폼 아이콘 크기 (기본값: AppSizes.iconSmall)
+  final double? iconSize;
+
+  /// 제목 텍스트 스타일 (기본값: AppTextStyles.metaMedium12 with white color)
+  final TextStyle? titleStyle;
+
+  /// 제목 최대 줄 수 (기본값: 2)
+  final int? titleMaxLines;
+
   const SnsContentCard({
     super.key,
     required this.content,
     this.width,
     this.height,
     this.onTap,
+    this.iconSize,
+    this.titleStyle,
+    this.titleMaxLines,
   });
 
   @override
@@ -167,10 +179,12 @@ class SnsContentCard extends StatelessWidget {
 
   /// 플랫폼 아이콘
   Widget _buildPlatformIcon() {
+    final size = iconSize ?? AppSizes.iconSmall;
+
     return SvgPicture.asset(
       PlatformIconMapper.getIconPath(content.platform),
-      width: AppSizes.iconSmall,
-      height: AppSizes.iconSmall,
+      width: size,
+      height: size,
     );
   }
 
@@ -180,8 +194,8 @@ class SnsContentCard extends StatelessWidget {
 
     return Text(
       title,
-      style: AppTextStyles.metaMedium12.copyWith(color: Colors.white),
-      maxLines: 2,
+      style: titleStyle ?? AppTextStyles.metaMedium12.copyWith(color: Colors.white),
+      maxLines: titleMaxLines ?? 2,
       overflow: TextOverflow.ellipsis,
     );
   }

@@ -61,6 +61,10 @@ class SnsContentsListScreen extends ConsumerWidget {
                   content: content,
                   width: AppSizes.snsCardLargeWidth,
                   height: AppSizes.snsCardLargeHeight,
+                  iconSize: AppSizes.iconLarge,
+                  titleStyle: AppTextStyles.summaryBold18.copyWith(
+                    color: Colors.white,
+                  ),
                   onTap: () {
                     // SNS 콘텐츠 상세 화면으로 이동
                     context.push(

@@ -69,7 +69,8 @@ class SectionHeader extends StatelessWidget {
           // 섹션 제목
           Text(
             title,
-            style: titleStyle ??
+            style:
+                titleStyle ??
                 AppTextStyles.sectionTitle.copyWith(
                   color: AppColors.textColor1,
                 ),
