@@ -216,7 +216,6 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
               Text(
                 l10n.onboardingInterestsPrompt,
                 style: AppTextStyles.greetingSemiBold20.copyWith(
-                  fontWeight: FontWeight.w600,
                   color: AppColors.gradient2, // #5325CB - 선명한 보라색
                 ),
               ),
@@ -224,7 +223,6 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
               Text(
                 '*',
                 style: AppTextStyles.greetingSemiBold20.copyWith(
-                  fontWeight: FontWeight.w600,
                   color: AppColors.error,
                 ),
               ),
@@ -250,7 +248,6 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
             '$selectedCount개 선택',
             style: AppTextStyles.sectionTitle.copyWith(
               color: AppColors.primary,
-              fontWeight: FontWeight.w600,
             ),
           ),
 

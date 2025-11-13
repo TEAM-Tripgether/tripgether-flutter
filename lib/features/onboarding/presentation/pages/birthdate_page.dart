@@ -193,7 +193,6 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
                 Text(
                   l10n.onboardingBirthdatePrompt,
                   style: AppTextStyles.greetingSemiBold20.copyWith(
-                    fontWeight: FontWeight.w600,
                     color: AppColors.gradient2, // #5325CB - 선명한 보라색
                   ),
                 ),
@@ -201,7 +200,6 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
                 Text(
                   '*',
                   style: AppTextStyles.greetingSemiBold20.copyWith(
-                    fontWeight: FontWeight.w600,
                     color: AppColors.error,
                   ),
                 ),
@@ -234,7 +232,6 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
                 textAlign: TextAlign.center,
                 maxLength: 14, // "YYYY / MM / DD" = 14자
                 style: AppTextStyles.greetingSemiBold20.copyWith(
-                  fontWeight: FontWeight.w400,
                   color: AppColors.textPrimary,
                   letterSpacing: 2.0, // 가독성을 위한 자간 조정
                 ),
@@ -257,7 +254,6 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
               l10n.onboardingBirthdateAgeLimit,
               style: AppTextStyles.metaMedium12.copyWith(
                 color: AppColors.error,
-                fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
             ),

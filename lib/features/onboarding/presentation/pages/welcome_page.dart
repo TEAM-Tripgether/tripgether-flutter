@@ -72,7 +72,6 @@ class WelcomePage extends ConsumerWidget {
                     ) // "{nickname}님,\n환영해요!"
                   : l10n.onboardingWelcomeTitleFallback, // "환영해요!"
               style: AppTextStyles.greetingBold20.copyWith(
-                fontWeight: FontWeight.w700,
                 color: AppColors.white,
               ),
               textAlign: TextAlign.center,
@@ -116,7 +115,6 @@ class WelcomePage extends ConsumerWidget {
                       l10n.snsPlaceExtractionTutorial,
                       style: AppTextStyles.bodyMedium16.copyWith(
                         color: AppColors.gradient2, // #5325CB - 선명한 보라 텍스트
-                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),

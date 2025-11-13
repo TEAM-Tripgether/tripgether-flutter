@@ -59,7 +59,6 @@ class _GenderPageState extends ConsumerState<GenderPage> {
           Text(
             l10n.onboardingGenderPrompt,
             style: AppTextStyles.greetingSemiBold20.copyWith(
-              fontWeight: FontWeight.w600,
               color: AppColors.gradient2, // #5325CB - 선명한 보라색
             ),
           ),

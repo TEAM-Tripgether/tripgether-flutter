@@ -89,7 +89,6 @@ class ProfileHeader extends ConsumerWidget {
             Text(
               user.nickname,
               style: AppTextStyles.greetingBold20.copyWith(
-                fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
               ),
             ),
@@ -157,7 +156,6 @@ class ProfileHeader extends ConsumerWidget {
           Text(
             l10n.accountSuffix(platform),
             style: AppTextStyles.buttonMediumMedium14.copyWith(
-              fontWeight: FontWeight.w500,
               color: badgeColor,
             ),
           ),
@@ -204,7 +202,6 @@ class ProfileHeader extends ConsumerWidget {
             Text(
               l10n.profileLoginRequired,
               style: AppTextStyles.sectionTitle.copyWith(
-                fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
             ),
@@ -236,9 +233,7 @@ class ProfileHeader extends ConsumerWidget {
               ),
               child: Text(
                 l10n.profileLoginButton,
-                style: AppTextStyles.buttonSelectSemiBold16.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTextStyles.buttonSelectSemiBold16,
               ),
             ),
           ],
@@ -328,7 +323,6 @@ class ProfileHeader extends ConsumerWidget {
             Text(
               l10n.profileLoadError,
               style: AppTextStyles.sectionTitle.copyWith(
-                fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
             ),

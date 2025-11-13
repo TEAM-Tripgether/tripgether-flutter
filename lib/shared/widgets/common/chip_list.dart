@@ -70,7 +70,7 @@ class ChipList extends StatelessWidget {
     // 기본 텍스트 스타일
     final effectiveTextStyle =
         textStyle ??
-        AppTextStyles.buttonMediumMedium14.copyWith(fontWeight: FontWeight.w500);
+        AppTextStyles.buttonMediumMedium14;
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -198,7 +198,7 @@ class SelectableChipList extends StatelessWidget {
     // 기본 텍스트 스타일
     final effectiveTextStyle =
         textStyle ??
-        AppTextStyles.buttonMediumMedium14.copyWith(fontWeight: FontWeight.w500);
+        AppTextStyles.buttonMediumMedium14;
 
     return Padding(
       padding: EdgeInsets.symmetric(

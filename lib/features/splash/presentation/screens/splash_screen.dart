@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/router/routes.dart';
 import '../../../auth/providers/user_provider.dart';
 
@@ -200,8 +201,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     child: Text(
                       'Trip',
                       style: TextStyle(
+                        fontFamily: AppTextStyles.bold,
                         fontSize: 48.sp,
-                        fontWeight: FontWeight.w700,
                         color: AppColors.white,
                         letterSpacing: 2.0,
                       ),
@@ -235,8 +236,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   child: Text(
                     'Together',
                     style: TextStyle(
+                      fontFamily: AppTextStyles.bold,
                       fontSize: 48.sp,
-                      fontWeight: FontWeight.w700,
                       color: AppColors.white,
                       letterSpacing: 2.0,
                     ),
@@ -291,8 +292,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       child: Text(
                         'Tripgether',
                         style: TextStyle(
+                          fontFamily: AppTextStyles.bold,
                           fontSize: 48.sp,
-                          fontWeight: FontWeight.w700,
                           color: AppColors.white,
                           letterSpacing: 2.0,
                         ),
@@ -311,8 +312,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         child: Text(
                           'More than tours. Real local moments',
                           style: TextStyle(
+                            fontFamily: AppTextStyles.regular,
                             fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
                             color: AppColors.white.withValues(alpha: 0.8),
                             letterSpacing: 0.5,
                           ),

@@ -74,7 +74,6 @@ class EmptyState extends StatelessWidget {
     final effectiveMessageStyle =
         messageStyle ??
         AppTextStyles.bodyRegular14.copyWith(
-          fontWeight: FontWeight.w400,
           color: AppColors.neutral60,
         );
 

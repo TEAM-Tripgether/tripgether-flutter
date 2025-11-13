@@ -77,7 +77,6 @@ class CustomListTile extends StatelessWidget {
     final effectiveSubtitleStyle =
         subtitleStyle ??
         AppTextStyles.metaMedium12.copyWith(
-          fontWeight: FontWeight.w400,
           color: AppColors.neutral60,
         );
 

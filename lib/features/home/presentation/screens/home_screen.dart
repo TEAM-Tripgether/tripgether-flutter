@@ -220,9 +220,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           if (_currentSharedData!.hasTextData) ...[
             Text(
               '텍스트 (${_currentSharedData!.sharedTexts.length}개):',
-              style: AppTextStyles.bodyRegular14.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppTextStyles.bodyRegular14,
             ),
             SizedBox(height: AppSpacing.xs),
             ..._currentSharedData!.sharedTexts.map(
@@ -246,9 +244,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           if (_currentSharedData!.hasMediaData) ...[
             Text(
               '미디어 파일 (${_currentSharedData!.sharedFiles.length}개):',
-              style: AppTextStyles.bodyRegular14.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppTextStyles.bodyRegular14,
             ),
             SizedBox(height: AppSpacing.xs),
             Wrap(

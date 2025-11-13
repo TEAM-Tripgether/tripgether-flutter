@@ -92,7 +92,6 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
                 Text(
                   l10n.onboardingNicknamePrompt,
                   style: AppTextStyles.greetingSemiBold20.copyWith(
-                    fontWeight: FontWeight.w600,
                     color: AppColors.gradient2, // #5325CB - 선명한 보라색
                   ),
                 ),
@@ -100,7 +99,6 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
                 Text(
                   '*',
                   style: AppTextStyles.greetingSemiBold20.copyWith(
-                    fontWeight: FontWeight.w600,
                     color: AppColors.error,
                   ),
                 ),

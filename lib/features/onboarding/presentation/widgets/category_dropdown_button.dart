@@ -82,7 +82,6 @@ class CategoryDropdownButton extends StatelessWidget {
             Text(
               categoryName,
               style: AppTextStyles.bodyRegular14.copyWith(
-                fontWeight: FontWeight.w500,
                 // 우선순위: 열린 상태 > 선택된 항목 있음 > 기본 상태
                 color: isExpanded
                     ? AppColors

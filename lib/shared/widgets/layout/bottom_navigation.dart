@@ -150,7 +150,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Text(
       AppRoutes.getTabLabels(context)[index],
       style: AppTextStyles.buttonSmallBold10.copyWith(
-        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         color: isSelected
             ? theme
                   .primaryColor // 선택된 상태 색상
