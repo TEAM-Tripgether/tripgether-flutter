@@ -227,12 +227,12 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 64.w, color: AppColors.textSecondary),
+            Icon(icon, size: 64.w, color: AppColors.textColor1.withValues(alpha: 0.7)),
             AppSpacing.verticalSpaceLG,
             Text(
               message,
               style: AppTextStyles.bodyRegular14.copyWith(
-                color: AppColors.textSecondary,
+                color: AppColors.textColor1.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -264,13 +264,13 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                     vertical: 4.h,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
+                    color: AppColors.mainColor.withValues(alpha: 0.1),
                     borderRadius: AppRadius.allSmall,
                   ),
                   child: Text(
                     '#${_logEntries.length - index}',
                     style: AppTextStyles.buttonMediumMedium14.copyWith(
-                      color: AppColors.primary,
+                      color: AppColors.mainColor,
                       fontWeight: FontWeight.w700,
                     ),
                   ),

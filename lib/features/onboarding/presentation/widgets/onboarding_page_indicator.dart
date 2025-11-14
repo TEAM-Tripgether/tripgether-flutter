@@ -50,8 +50,8 @@ class OnboardingPageIndicator extends StatelessWidget {
                 // 세그먼트 간격 (양쪽 2픽셀씩, 총 4픽셀 간격)
                 margin: EdgeInsets.symmetric(horizontal: 2.w),
                 decoration: BoxDecoration(
-                  // 완료된 세그먼트: primary 색상, 미완료: neutral90 색상
-                  color: isCompleted ? AppColors.primary : AppColors.neutral90,
+                  // 완료된 세그먼트: mainColor, 미완료: subColor2 alpha 0.9
+                  color: isCompleted ? AppColors.mainColor : AppColors.subColor2.withValues(alpha: 0.9),
                   // 모서리 둥글게 처리 (반경 2픽셀)
                   borderRadius: BorderRadius.circular(2.r),
                 ),

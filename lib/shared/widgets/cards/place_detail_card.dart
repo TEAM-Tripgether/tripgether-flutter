@@ -190,7 +190,7 @@ class PlaceDetailCard extends StatelessWidget {
   /// Shimmer 로딩 플레이스홀더
   Widget _buildShimmerPlaceholder() {
     return Shimmer.fromColors(
-      baseColor: AppColors.shimmerBase,
+      baseColor: AppColors.subColor2.withValues(alpha: 0.3),
       highlightColor: AppColors.shimmerHighlight,
       child: Container(width: 100.w, height: 80.h, color: Colors.white),
     );

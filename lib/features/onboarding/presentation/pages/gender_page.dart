@@ -58,8 +58,8 @@ class _GenderPageState extends ConsumerState<GenderPage> {
           // 제목 (국제화 적용)
           Text(
             l10n.onboardingGenderPrompt,
-            style: AppTextStyles.greetingSemiBold20.copyWith(
-              color: AppColors.gradient2, // #5325CB - 선명한 보라색
+            style: AppTextStyles.onboardingTitle.copyWith(
+              color: AppColors.mainColor,
             ),
           ),
 
@@ -69,8 +69,8 @@ class _GenderPageState extends ConsumerState<GenderPage> {
           // 설명 (제목 바로 아래, 국제화 적용)
           Text(
             l10n.onboardingGenderDescription,
-            style: AppTextStyles.metaMedium12.copyWith(
-              color: AppColors.onboardingDescription, // #130537 - 진한 남보라
+            style: AppTextStyles.buttonMediumMedium14.copyWith(
+              color: AppColors.textColor1.withValues(alpha: 0.5),
             ),
             textAlign: TextAlign.center,
           ),

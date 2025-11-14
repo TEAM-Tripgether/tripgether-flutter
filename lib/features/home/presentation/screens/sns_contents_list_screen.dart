@@ -90,7 +90,7 @@ class SnsContentsListScreen extends ConsumerWidget {
               child: Text(
                 l10n.retry,
                 style: AppTextStyles.buttonMediumMedium14.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.mainColor,
                 ),
               ),
             ),
@@ -119,7 +119,7 @@ class SnsContentsListScreen extends ConsumerWidget {
           decoration: BoxDecoration(
             borderRadius: AppRadius.allMedium,
             border: Border.all(
-              color: AppColors.whiteBorder,
+              color: AppColors.white.withValues(alpha: 0.5),
               width: AppSizes.borderThin,
             ),
           ),
@@ -130,7 +130,7 @@ class SnsContentsListScreen extends ConsumerWidget {
                 AppRadius.medium - AppSizes.borderThin,
               ),
               child: Shimmer.fromColors(
-                baseColor: AppColors.shimmerBase,
+                baseColor: AppColors.subColor2.withValues(alpha: 0.3),
                 highlightColor: AppColors.shimmerHighlight,
                 child: Container(color: Colors.white),
               ),

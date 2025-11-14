@@ -96,7 +96,7 @@ class RecentSnsContentSection extends ConsumerWidget {
                     Text(
                       l10n.cannotLoadContent,
                       style: AppTextStyles.caption12.copyWith(
-                        color: AppColors.textSecondary,
+                        color: AppColors.textColor1.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -124,7 +124,7 @@ class RecentSnsContentSection extends ConsumerWidget {
             decoration: BoxDecoration(
               borderRadius: AppRadius.allMedium,
               border: Border.all(
-                color: AppColors.whiteBorder,
+                color: AppColors.white.withValues(alpha: 0.5),
                 width: AppSizes.borderThin,
               ),
             ),
@@ -135,7 +135,7 @@ class RecentSnsContentSection extends ConsumerWidget {
                   AppRadius.medium - AppSizes.borderThin,
                 ),
                 child: Shimmer.fromColors(
-                  baseColor: AppColors.shimmerBase,
+                  baseColor: AppColors.subColor2.withValues(alpha: 0.3),
                   highlightColor: AppColors.shimmerHighlight,
                   child: Container(color: Colors.white),
                 ),

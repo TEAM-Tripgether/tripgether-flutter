@@ -98,7 +98,7 @@ class OnboardingTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: AppTextStyles.bodyMedium16.copyWith(
-          color: AppColors.textSecondary.withValues(alpha: 0.5),
+          color: AppColors.textColor1.withValues(alpha: 0.35), // 중첩 alpha: 0.7 × 0.5 = 0.35
         ),
         counterText: '', // 글자 수 카운터 숨김
         filled: false, // 배경 투명
@@ -113,7 +113,7 @@ class OnboardingTextField extends StatelessWidget {
         // 포커스 상태
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: AppColors.primary.withValues(alpha: 0.6), // Primary 색상 사용
+            color: AppColors.mainColor.withValues(alpha: 0.6), // Primary 색상 사용
             width: 2.w,
           ),
         ),

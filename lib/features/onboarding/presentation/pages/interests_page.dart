@@ -160,7 +160,7 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
                     borderRadius: AppRadius.allLarge,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.shadowLight,
+                        color: AppColors.shadow.withValues(alpha: 0.05),
                         blurRadius: AppSpacing.sm,
                         offset: const Offset(0, 2),
                       ),
@@ -215,8 +215,8 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
             children: [
               Text(
                 l10n.onboardingInterestsPrompt,
-                style: AppTextStyles.greetingSemiBold20.copyWith(
-                  color: AppColors.gradient2, // #5325CB - 선명한 보라색
+                style: AppTextStyles.onboardingTitle.copyWith(
+                  color: AppColors.mainColor,
                 ),
               ),
               AppSpacing.horizontalSpace(4),
@@ -235,8 +235,8 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
           // 설명 (제목 바로 아래, 국제화 적용)
           Text(
             l10n.onboardingInterestsDescription,
-            style: AppTextStyles.metaMedium12.copyWith(
-              color: AppColors.onboardingDescription, // #130537 - 진한 남보라
+            style: AppTextStyles.buttonMediumMedium14.copyWith(
+              color: AppColors.textColor1.withValues(alpha: 0.5),
             ),
             textAlign: TextAlign.center,
           ),
@@ -247,7 +247,7 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
           Text(
             '$selectedCount개 선택',
             style: AppTextStyles.sectionTitle.copyWith(
-              color: AppColors.primary,
+              color: AppColors.mainColor,
             ),
           ),
 
@@ -296,7 +296,7 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
           Text(
             l10n.onboardingInterestsChangeInfo,
             style: AppTextStyles.metaMedium12.copyWith(
-              color: AppColors.textSecondary,
+              color: AppColors.textColor1.withValues(alpha: 0.7),
             ),
             textAlign: TextAlign.center,
           ),

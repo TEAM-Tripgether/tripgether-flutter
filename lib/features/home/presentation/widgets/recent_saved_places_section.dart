@@ -98,7 +98,7 @@ class RecentSavedPlacesSection extends ConsumerWidget {
                       Text(
                         '데이터를 불러올 수 없습니다',
                         style: AppTextStyles.caption12.copyWith(
-                          color: AppColors.textSecondary,
+                          color: AppColors.textColor1.withValues(alpha: 0.7),
                         ),
                       ),
                     ],

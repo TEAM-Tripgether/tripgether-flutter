@@ -156,7 +156,7 @@ class SnsContentDetailScreen extends StatelessWidget {
   /// Shimmer 로딩 플레이스홀더
   Widget _buildShimmerPlaceholder() {
     return Shimmer.fromColors(
-      baseColor: AppColors.shimmerBase,
+      baseColor: AppColors.subColor2.withValues(alpha: 0.3),
       highlightColor: AppColors.shimmerHighlight,
       child: Container(color: Colors.white),
     );

@@ -41,7 +41,7 @@ class SocialLoginSection extends StatelessWidget {
         SocialLoginButton(
           text: l10n.signInWithGoogle,
           backgroundColor: AppColorPalette.googleButton, // #F1F1F1
-          textColor: AppColors.neutral10, // 검정에 가까운 어두운 회색
+          textColor: AppColors.textColor1, // 검정에 가까운 어두운 회색
           onPressed: onGoogleLogin,
           isLoading: isGoogleLoading,
           // 구글 SVG 아이콘 (AppSizes.iconMedium = 20px)
@@ -60,7 +60,7 @@ class SocialLoginSection extends StatelessWidget {
         SocialLoginButton(
           text: l10n.signInWithKakao,
           backgroundColor: AppColorPalette.kakaoButton, // #FEE500
-          textColor: AppColors.neutral10, // 검정 텍스트
+          textColor: AppColors.textColor1, // 검정 텍스트
           onPressed: () => _showComingSoon(context, l10n),
           // 카카오 SVG 아이콘 (AppSizes.iconMedium = 20px)
           icon: SvgPicture.asset(

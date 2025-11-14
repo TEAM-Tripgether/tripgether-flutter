@@ -157,8 +157,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
 
     return Scaffold(
-      // 배경색: AppColors.primary (664BAE)
-      backgroundColor: AppColors.primary,
+      // 배경색: AppColors.mainColor (664BAE)
+      backgroundColor: AppColors.mainColor,
       body: SafeArea(
         child: SizedBox(
           width: double.infinity,
@@ -194,8 +194,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   offset: Offset(-150.w, 0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors
-                          .primary, // 스플래시 배경색과 동일하여 Together를 자연스럽게 가림
+                      color: AppColors.mainColor, // 스플래시 배경색과 동일하여 Together를 자연스럽게 가림
                       borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text('Trip', style: AppTextStyles.splashLogoBold48),

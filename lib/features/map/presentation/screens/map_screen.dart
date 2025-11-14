@@ -39,7 +39,7 @@ class MapScreen extends ConsumerWidget {
             icon: Icon(
               Icons.my_location_outlined,
               size: 24.w,
-              color: AppColors.neutral70,
+              color: AppColors.subColor2.withValues(alpha: 0.7),
             ),
             onPressed: () {
               debugPrint("임시 디버그 메시지");
@@ -54,19 +54,19 @@ class MapScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.map_outlined, size: 64.w, color: AppColors.neutral60),
+            Icon(Icons.map_outlined, size: 64.w, color: AppColors.subColor2.withValues(alpha: 0.6)),
             AppSpacing.verticalSpaceLG,
             Text(
               l10n.navMap,
               style: AppTextStyles.summaryBold18.copyWith(
-                color: AppColors.neutral70,
+                color: AppColors.subColor2.withValues(alpha: 0.7),
               ),
             ),
             AppSpacing.verticalSpaceSM,
             Text(
               l10n.mapPlaceholder,
               style: AppTextStyles.bodyRegular14.copyWith(
-                color: AppColors.neutral50,
+                color: AppColors.subColor2.withValues(alpha: 0.5),
               ),
             ),
           ],

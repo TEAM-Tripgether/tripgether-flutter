@@ -97,7 +97,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             );
                           },
                           iconSize: 24.w,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textColor1,
                           padding: EdgeInsets.zero,
                         )
                       : null, // 첫 페이지에서는 뒤로가기 버튼 없음

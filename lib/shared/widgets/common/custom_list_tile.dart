@@ -71,12 +71,12 @@ class CustomListTile extends StatelessWidget {
     // 기본 제목 스타일
     final effectiveTitleStyle =
         titleStyle ??
-        AppTextStyles.bodyRegular14.copyWith(color: AppColors.onSurface);
+        AppTextStyles.bodyRegular14.copyWith(color: AppColors.textColor1);
 
     // 기본 부제목 스타일
     final effectiveSubtitleStyle =
         subtitleStyle ??
-        AppTextStyles.metaMedium12.copyWith(color: AppColors.neutral60);
+        AppTextStyles.metaMedium12.copyWith(color: AppColors.subColor2.withValues(alpha: 0.6));
 
     return ListTile(
       leading: leading,
@@ -123,7 +123,7 @@ class IconListTile extends StatelessWidget {
   /// 아이콘 크기 (기본값: 20.w)
   final double? iconSize;
 
-  /// 아이콘 색상 (기본값: AppColors.neutral60)
+  /// 아이콘 색상 (기본값: subColor2 alpha 0.6)
   final Color? iconColor;
 
   /// 주요 텍스트 (제목)
@@ -171,7 +171,7 @@ class IconListTile extends StatelessWidget {
       leading: Icon(
         icon,
         size: iconSize ?? AppSizes.iconMedium,
-        color: iconColor ?? AppColors.neutral60,
+        color: iconColor ?? AppColors.subColor2.withValues(alpha: 0.6),
       ),
       title: title,
       titleStyle: titleStyle,
@@ -222,7 +222,7 @@ class ActionListTile extends StatelessWidget {
   /// 액션 버튼 크기 (기본값: 20.w)
   final double? actionIconSize;
 
-  /// 액션 버튼 색상 (기본값: AppColors.neutral60)
+  /// 액션 버튼 색상 (기본값: subColor2 alpha 0.6)
   final Color? actionIconColor;
 
   /// 액션 버튼 탭 시 실행될 콜백
@@ -266,7 +266,7 @@ class ActionListTile extends StatelessWidget {
               icon: Icon(
                 actionIcon,
                 size: actionIconSize ?? AppSizes.iconMedium,
-                color: actionIconColor ?? AppColors.neutral60,
+                color: actionIconColor ?? AppColors.subColor2.withValues(alpha: 0.6),
               ),
               onPressed: onActionTap,
             )

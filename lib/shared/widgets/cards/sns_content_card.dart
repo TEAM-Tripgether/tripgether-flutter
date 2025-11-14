@@ -118,7 +118,7 @@ class SnsContentCard extends StatelessWidget {
   /// 썸네일 로딩 중 Shimmer 효과
   Widget _buildShimmerPlaceholder() {
     return Shimmer.fromColors(
-      baseColor: AppColors.shimmerBase,
+      baseColor: AppColors.subColor2.withValues(alpha: 0.3),
       highlightColor: AppColors.shimmerHighlight,
       child: Container(color: Colors.white),
     );

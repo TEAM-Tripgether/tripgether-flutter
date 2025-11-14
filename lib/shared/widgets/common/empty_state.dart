@@ -68,12 +68,12 @@ class EmptyState extends StatelessWidget {
     // 기본 제목 스타일
     final effectiveTitleStyle =
         titleStyle ??
-        AppTextStyles.sectionTitle.copyWith(color: AppColors.neutral50);
+        AppTextStyles.sectionTitle.copyWith(color: AppColors.subColor2.withValues(alpha: 0.5));
 
     // 기본 메시지 스타일
     final effectiveMessageStyle =
         messageStyle ??
-        AppTextStyles.bodyRegular14.copyWith(color: AppColors.neutral60);
+        AppTextStyles.bodyRegular14.copyWith(color: AppColors.subColor2.withValues(alpha: 0.6));
 
     return Center(
       child: Padding(
@@ -86,7 +86,7 @@ class EmptyState extends StatelessWidget {
             Icon(
               icon,
               size: iconSize ?? 64.w,
-              color: iconColor ?? AppColors.neutral70,
+              color: iconColor ?? AppColors.subColor2.withValues(alpha: 0.7),
             ),
 
             SizedBox(height: AppSpacing.lg.h),
@@ -175,7 +175,7 @@ class EmptyStates {
   }) {
     return EmptyState(
       icon: Icons.lock_outline,
-      iconColor: AppColors.neutral60,
+      iconColor: AppColors.subColor2.withValues(alpha: 0.6),
       title: title,
       message: message,
       action: action,
@@ -190,7 +190,7 @@ class EmptyStates {
   }) {
     return EmptyState(
       icon: Icons.add_circle_outline,
-      iconColor: AppColors.primary,
+      iconColor: AppColors.mainColor,
       title: title,
       message: message,
       action: action,

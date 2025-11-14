@@ -89,7 +89,7 @@ class ProfileHeader extends ConsumerWidget {
             Text(
               user.nickname,
               style: AppTextStyles.greetingBold20.copyWith(
-                color: AppColors.textPrimary,
+                color: AppColors.textColor1,
               ),
             ),
 
@@ -99,7 +99,7 @@ class ProfileHeader extends ConsumerWidget {
             Text(
               user.email,
               style: AppTextStyles.bodyRegular14.copyWith(
-                color: AppColors.textSecondary,
+                color: AppColors.textColor1.withValues(alpha: 0.7),
               ),
             ),
 
@@ -134,7 +134,7 @@ class ProfileHeader extends ConsumerWidget {
         icon = Icons.chat_bubble;
         break;
       default:
-        badgeColor = AppColors.primary;
+        badgeColor = AppColors.mainColor;
         icon = Icons.person;
     }
 
@@ -202,7 +202,7 @@ class ProfileHeader extends ConsumerWidget {
             Text(
               l10n.profileLoginRequired,
               style: AppTextStyles.sectionTitle.copyWith(
-                color: AppColors.textPrimary,
+                color: AppColors.textColor1,
               ),
             ),
 
@@ -211,7 +211,7 @@ class ProfileHeader extends ConsumerWidget {
             Text(
               l10n.profileLoginPrompt,
               style: AppTextStyles.bodyRegular14.copyWith(
-                color: AppColors.textSecondary,
+                color: AppColors.textColor1.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -224,7 +224,7 @@ class ProfileHeader extends ConsumerWidget {
                 context.push(AppRoutes.login);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: AppColors.mainColor,
                 foregroundColor: AppColors.white,
                 padding: AppSpacing.buttonPaddingLarge,
                 shape: RoundedRectangleBorder(
@@ -256,7 +256,7 @@ class ProfileHeader extends ConsumerWidget {
       child: Padding(
         padding: AppSpacing.cardPadding,
         child: Shimmer.fromColors(
-          baseColor: AppColors.shimmerBase,
+          baseColor: AppColors.subColor2.withValues(alpha: 0.3),
           highlightColor: AppColors.shimmerHighlight,
           child: Column(
             children: [
@@ -323,7 +323,7 @@ class ProfileHeader extends ConsumerWidget {
             Text(
               l10n.profileLoadError,
               style: AppTextStyles.sectionTitle.copyWith(
-                color: AppColors.textPrimary,
+                color: AppColors.textColor1,
               ),
             ),
 
@@ -332,7 +332,7 @@ class ProfileHeader extends ConsumerWidget {
             Text(
               error.toString(),
               style: AppTextStyles.metaMedium12.copyWith(
-                color: AppColors.textSecondary,
+                color: AppColors.textColor1.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),

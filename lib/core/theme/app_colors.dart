@@ -19,14 +19,8 @@ class AppColors {
   /// Text Color 1 (#130537)
   static const Color textColor1 = Color(0xFF130537);
 
-  /// Text Color 1 with alpha 0.6 (주소, 부가 정보용)
-  static Color get textColor1Light => textColor1.withValues(alpha: 0.6);
-
   /// White
   static const Color white = Color(0xFFFFFFFF);
-
-  /// White with alpha 0.5 (카드 외곽선 등)
-  static Color get whiteBorder => white.withValues(alpha: 0.5);
 
   /// Background Light (#F8F8F8) - 섹션 구분용 연한 회색
   static const Color backgroundLight = Color(0xFFF8F8F8);
@@ -53,23 +47,16 @@ class AppColors {
   static const Color buttonActive = mainColor;
   static const Color buttonTextActive = white;
 
-  /// 비활성: 배경 mainColor alpha 0.2, 텍스트 white
-  static Color get buttonInactive => mainColor.withValues(alpha: 0.2);
+  /// 비활성: 텍스트 white
   static const Color buttonTextInactive = white;
 
   // ============================================================================
   // 선택 버튼 (성별, 관심사 카테고리)
   // ============================================================================
 
-  /// 선택됨: 테두리/텍스트 mainColor, 배경 mainColor alpha 0.1
+  /// 선택됨: 테두리/텍스트 mainColor
   static const Color selectedBorder = mainColor;
   static const Color selectedText = mainColor;
-  static Color get selectedBg => mainColor.withValues(alpha: 0.1);
-
-  /// 선택 안 됨: 테두리/배경 subColor2 alpha 0.2, 텍스트 textColor1 alpha 0.4
-  static Color get unselectedBorder => subColor2.withValues(alpha: 0.2);
-  static Color get unselectedBg => subColor2.withValues(alpha: 0.2);
-  static Color get unselectedText => textColor1.withValues(alpha: 0.4);
 
   // ============================================================================
   // 세부 칩 (관심사 내부 항목)
@@ -79,10 +66,8 @@ class AppColors {
   static const Color chipSelectedBg = mainColor;
   static const Color chipSelectedText = white;
 
-  /// 선택 안 됨: 테두리 subColor2 alpha 0.4, 배경 white, 텍스트 textColor1 alpha 0.4
-  static Color get chipUnselectedBorder => subColor2.withValues(alpha: 0.4);
+  /// 선택 안 됨: 배경 white
   static const Color chipUnselectedBg = white;
-  static Color get chipUnselectedText => textColor1.withValues(alpha: 0.4);
 
   // ============================================================================
   // 시스템 색상
@@ -98,25 +83,8 @@ class AppColors {
   // 호환성 색상 (Backward Compatibility)
   // ============================================================================
 
-  static const Color primary = mainColor;
-  static Color get textPrimary => textColor1;
-  static Color get textSecondary => textColor1.withValues(alpha: 0.7);
-  static Color get shimmerBase => subColor2.withValues(alpha: 0.3);
   static Color get shimmerHighlight => white;
-  static Color get neutral10 => textColor1;
-  static Color get neutral50 => subColor2.withValues(alpha: 0.5);
-  static Color get neutral60 => subColor2.withValues(alpha: 0.6);
-  static Color get neutral70 => subColor2.withValues(alpha: 0.7);
-  static Color get neutral90 => subColor2.withValues(alpha: 0.9);
-  static Color get neutral95 => subColor2.withValues(alpha: 0.95);
   static const Color success = Color(0xFF4CAF50);
-  static Color get onboardingDescription => textColor1;
-  static Color get primaryContainer => selectedBg;
-  static Color get surfaceVariant => unselectedBg;
-  static Color get onSurface => textColor1;
-  static Color get surfaceTint => mainColor;
-  static Color get shadowLight => shadow.withValues(alpha: 0.05);
-  static Color get gradientMiddle => gradient2;
 
   // ============================================================================
   // Widget State Property
@@ -124,7 +92,7 @@ class AppColors {
 
   static WidgetStateProperty<Color> continueButtonColor() {
     return WidgetStateProperty.resolveWith<Color>((states) {
-      if (states.contains(WidgetState.disabled)) return buttonInactive;
+      if (states.contains(WidgetState.disabled)) return mainColor.withValues(alpha: 0.2);
       return buttonActive;
     });
   }

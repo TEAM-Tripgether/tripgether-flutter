@@ -29,13 +29,13 @@ class ChipList extends StatelessWidget {
   /// 칩 간 세로 간격 (기본값: 8.h)
   final double? verticalSpacing;
 
-  /// 칩 배경색 (기본값: AppColors.neutral95)
+  /// 칩 배경색 (기본값: subColor2 alpha 0.95)
   final Color? backgroundColor;
 
-  /// 칩 테두리 색상 (기본값: AppColors.neutral90)
+  /// 칩 테두리 색상 (기본값: subColor2 alpha 0.9)
   final Color? borderColor;
 
-  /// 칩 텍스트 색상 (기본값: AppColors.onSurface)
+  /// 칩 텍스트 색상 (기본값: textColor1)
   final Color? textColor;
 
   /// 칩 텍스트 스타일 (색상 제외)
@@ -96,13 +96,13 @@ class ChipList extends StatelessWidget {
         label: Text(
           item,
           style: baseTextStyle.copyWith(
-            color: textColor ?? AppColors.onSurface,
+            color: textColor ?? AppColors.textColor1,
           ),
         ),
-        backgroundColor: backgroundColor ?? AppColors.neutral95,
+        backgroundColor: backgroundColor ?? AppColors.subColor2.withValues(alpha: 0.95),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.large),
-          side: BorderSide(color: borderColor ?? AppColors.neutral90, width: 1),
+          side: BorderSide(color: borderColor ?? AppColors.subColor2.withValues(alpha: 0.9), width: 1),
         ),
         padding:
             chipPadding ??
@@ -231,18 +231,18 @@ class SelectableChipList extends StatelessWidget {
           style: baseTextStyle.copyWith(
             color: isSelected
                 ? (selectedTextColor ?? AppColors.white)
-                : (unselectedTextColor ?? AppColors.onSurface),
+                : (unselectedTextColor ?? AppColors.textColor1),
           ),
         ),
         backgroundColor: isSelected
-            ? (selectedBackgroundColor ?? AppColors.primary)
-            : (unselectedBackgroundColor ?? AppColors.neutral95),
+            ? (selectedBackgroundColor ?? AppColors.mainColor)
+            : (unselectedBackgroundColor ?? AppColors.subColor2.withValues(alpha: 0.95)),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.large),
           side: BorderSide(
             color: isSelected
-                ? (selectedBackgroundColor ?? AppColors.primary)
-                : AppColors.neutral90,
+                ? (selectedBackgroundColor ?? AppColors.mainColor)
+                : AppColors.subColor2.withValues(alpha: 0.9),
             width: 1,
           ),
         ),

@@ -91,8 +91,8 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
               children: [
                 Text(
                   l10n.onboardingNicknamePrompt,
-                  style: AppTextStyles.greetingSemiBold20.copyWith(
-                    color: AppColors.gradient2, // #5325CB - 선명한 보라색
+                  style: AppTextStyles.onboardingTitle.copyWith(
+                    color: AppColors.mainColor,
                   ),
                 ),
                 AppSpacing.horizontalSpace(4),
@@ -111,8 +111,8 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
             // 설명 (제목 바로 아래)
             Text(
               '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요',
-              style: AppTextStyles.metaMedium12.copyWith(
-                color: AppColors.onboardingDescription, // #130537 - 진한 남보라
+              style: AppTextStyles.buttonMediumMedium14.copyWith(
+                color: AppColors.textColor1.withValues(alpha: 0.5),
               ),
               textAlign: TextAlign.center,
             ),
