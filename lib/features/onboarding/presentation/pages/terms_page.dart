@@ -8,7 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
 import '../widgets/onboarding_layout.dart';
 
-/// 약관 동의 페이지 (STEP 1/5)
+/// 약관 동의 페이지 (STEP 1/6)
 ///
 /// **필수 약관**:
 /// - 서비스 이용약관

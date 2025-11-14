@@ -67,13 +67,17 @@ class SectionHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // 섹션 제목
-          Text(
-            title,
-            style:
-                titleStyle ??
-                AppTextStyles.titleSemiBold16.copyWith(
-                  color: AppColors.textColor1,
-                ),
+          Expanded(
+            child: Text(
+              title,
+              style:
+                  titleStyle ??
+                  AppTextStyles.titleSemiBold16.copyWith(
+                    color: AppColors.textColor1,
+                  ),
+              overflow: TextOverflow.ellipsis, // 추가
+              maxLines: 1, // 추가
+            ),
           ),
 
           // 더보기 버튼 또는 커스텀 trailing

@@ -92,8 +92,9 @@ class AppColors {
 
   static WidgetStateProperty<Color> continueButtonColor() {
     return WidgetStateProperty.resolveWith<Color>((states) {
-      if (states.contains(WidgetState.disabled))
+      if (states.contains(WidgetState.disabled)) {
         return mainColor.withValues(alpha: 0.2);
+      }
       return buttonActive;
     });
   }

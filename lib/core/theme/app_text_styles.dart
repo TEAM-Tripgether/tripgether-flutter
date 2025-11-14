@@ -8,11 +8,12 @@ import 'app_colors.dart';
 /// - 각 폰트 패밀리를 직접 지정 (Pretendard-Bold, Pretendard-Medium 등)
 /// - 기능명과 폰트 정보를 함께 제공하여 사용처와 스타일을 동시에 파악
 /// - ScreenUtil(.sp)을 사용하여 반응형 폰트 크기 지원
-///
 /// **사용 예시**:
 /// ```dart
-/// Text('환영합니다', style: AppTextStyles.onboardingTitle)  // Bold 24
-/// Text('안녕하세요!', style: AppTextStyles.greetingBold20)  // Bold 20
+/// Text(
+///   '환영합니다!',
+///   style: AppTextStyles.greetingBold20,
+/// )
 /// ```
 class AppTextStyles {
   AppTextStyles._();

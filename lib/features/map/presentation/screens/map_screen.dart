@@ -21,7 +21,7 @@ class MapScreen extends ConsumerWidget {
       // 제목 없이 미니멀하게 구성하여 지도 공간을 극대화
       appBar: CommonAppBar(
         title: '', // 제목 없음으로 지도 공간 극대화
-        backgroundColor: AppColors.surface, // 반투명 배경으로 지도 일부가 보이도록
+        backgroundColor: AppColors.surface, // AppBar 배경색
         elevation: 0, // 그림자 없음
         showMenuButton: true, // 햄버거 메뉴는 유지 (다른 화면 접근용)
         showNotificationIcon: false, // 알림 아이콘 제거로 공간 확보
