@@ -129,7 +129,7 @@ class OnboardingLayout extends StatelessWidget {
           button,
 
           // 9. 하단 고정 간격
-          AppSpacing.verticalSpace60,
+          AppSpacing.verticalSpace80,
         ],
       ),
     );

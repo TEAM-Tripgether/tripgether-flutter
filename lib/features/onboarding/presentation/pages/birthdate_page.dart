@@ -218,7 +218,7 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
             Text(
               l10n.onboardingBirthdateAgeLimit,
               style: AppTextStyles.metaMedium12.copyWith(
-                color: AppColors.error,
+                color: AppColors.subColor2,
               ),
               textAlign: TextAlign.center,
             ),

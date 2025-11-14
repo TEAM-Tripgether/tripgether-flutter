@@ -98,7 +98,7 @@ class OnboardingTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: AppTextStyles.bodyMedium16.copyWith(
-          color: AppColors.textColor1.withValues(alpha: 0.35), // 중첩 alpha: 0.7 × 0.5 = 0.35
+          color: AppColors.subColor2, // 힌트 텍스트: medium16 + subColor2
         ),
         counterText: '', // 글자 수 카운터 숨김
         filled: false, // 배경 투명

@@ -109,7 +109,14 @@ class PrimaryButton extends StatelessWidget {
                     Icon(icon, size: AppSizes.iconMedium),
                     SizedBox(width: AppSpacing.sm),
                   ],
-                  Text(text),
+                  Text(
+                    text,
+                    style: AppTextStyles.buttonLargeMedium16.copyWith(
+                      color: onPressed != null
+                          ? AppColors.buttonTextActive
+                          : AppColors.buttonTextInactive,
+                    ),
+                  ),
                 ],
               ),
       ),

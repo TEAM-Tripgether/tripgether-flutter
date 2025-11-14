@@ -263,12 +263,12 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
           Text(
             l10n.onboardingInterestsChangeInfo,
             style: AppTextStyles.metaMedium12.copyWith(
-              color: AppColors.textColor1.withValues(alpha: 0.7),
+              color: AppColors.subColor2,
             ),
             textAlign: TextAlign.center,
           ),
 
-          AppSpacing.verticalSpaceMD,
+          AppSpacing.verticalSpaceLG,
         ],
       ),
       button: PrimaryButton(

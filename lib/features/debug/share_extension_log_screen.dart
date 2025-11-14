@@ -169,7 +169,9 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
             const Text('Share Extension 로그'),
             Text(
               '최신 5개만 자동 유지 (현재: ${_logEntries.length}개)',
-              style: AppTextStyles.caption12,
+              style: AppTextStyles.caption12.copyWith(
+                color: AppColors.textColor1.withValues(alpha: 0.6),
+              ),
             ),
           ],
         ),
@@ -277,7 +279,12 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                 ),
                 AppSpacing.horizontalSpaceSM,
                 Expanded(
-                  child: Text(entry.timestamp, style: AppTextStyles.caption12),
+                  child: Text(
+                    entry.timestamp,
+                    style: AppTextStyles.caption12.copyWith(
+                      color: AppColors.textColor1.withValues(alpha: 0.6),
+                    ),
+                  ),
                 ),
                 if (hasUrl)
                   Icon(Icons.link, size: 16.w, color: AppColors.success),

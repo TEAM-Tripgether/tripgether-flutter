@@ -103,12 +103,12 @@ class AppTextStyles {
     color: AppColors.textColor1,
   );
 
-  /// 작은 보조 텍스트 (Regular, 12px, alpha 0.6)
+  /// 작은 보조 텍스트 (Regular, 12px)
   /// 사용처: 캡션, 작은 보조 설명
   static TextStyle caption12 = TextStyle(
     fontFamily: 'Pretendard-Regular',
     fontSize: 12.sp,
-    color: AppColors.textColor1.withValues(alpha: 0.6),
+    color: AppColors.textColor1,
   );
 
   // ============================================================================
@@ -177,7 +177,7 @@ class AppTextStyles {
   static TextStyle splashSloganRegular12 = TextStyle(
     fontFamily: 'Pretendard-Regular',
     fontSize: 12.sp,
-    color: AppColors.white.withValues(alpha: 0.8),
+    color: AppColors.white,
     letterSpacing: 0.5,
   );
 

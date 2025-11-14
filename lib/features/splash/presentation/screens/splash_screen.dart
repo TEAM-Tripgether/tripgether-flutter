@@ -292,7 +292,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         offset: Offset(0, 40.h), // Tripgether 기준 아래쪽으로
                         child: Text(
                           'More than tours. Real local moments',
-                          style: AppTextStyles.splashSloganRegular12,
+                          style: AppTextStyles.splashSloganRegular12.copyWith(
+                            color: AppColors.white.withValues(alpha: 0.8),
+                          ),
                         ),
                       ),
                     ),
