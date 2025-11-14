@@ -12,8 +12,14 @@ class AppSpacing {
   /// 최소 간격: 4
   static double get xs => 4.w;
 
+  /// 최소 중간 간격: 6
+  static double get xsm => 6.w;
+
   /// 아주 작은 간격: 8
   static double get sm => 8.w;
+
+  /// 작은 중간 간격: 10
+  static double get smd => 10.w;
 
   /// 작은 간격: 12
   static double get md => 12.w;
@@ -79,8 +85,14 @@ class AppSpacing {
   /// 최소 수직 간격: 4
   static SizedBox get verticalSpaceXS => SizedBox(height: xs);
 
+  /// 최소 중간 수직 간격: 6
+  static SizedBox get verticalSpaceXSM => SizedBox(height: xsm);
+
   /// 아주 작은 수직 간격: 8
   static SizedBox get verticalSpaceSM => SizedBox(height: sm);
+
+  /// 작은 중간 수직 간격: 10
+  static SizedBox get verticalSpaceSMD => SizedBox(height: smd);
 
   /// 작은 수직 간격: 12
   static SizedBox get verticalSpaceMD => SizedBox(height: md);
@@ -113,8 +125,14 @@ class AppSpacing {
   /// 최소 수평 간격: 4
   static SizedBox get horizontalSpaceXS => SizedBox(width: xs);
 
+  /// 최소 중간 수평 간격: 6
+  static SizedBox get horizontalSpaceXSM => SizedBox(width: xsm);
+
   /// 아주 작은 수평 간격: 8
   static SizedBox get horizontalSpaceSM => SizedBox(width: sm);
+
+  /// 작은 중간 수평 간격: 10
+  static SizedBox get horizontalSpaceSMD => SizedBox(width: smd);
 
   /// 작은 수평 간격: 12
   static SizedBox get horizontalSpaceMD => SizedBox(width: md);

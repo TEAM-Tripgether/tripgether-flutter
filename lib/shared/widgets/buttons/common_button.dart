@@ -482,8 +482,8 @@ class LinkButton extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm, // 8.w
-          vertical: AppSpacing.sm, // 8.h
+          horizontal: AppSpacing.sm, // 8
+          vertical: AppSpacing.smd, // 10
         ),
         decoration: BoxDecoration(
           color: backgroundColor ?? AppColors.white,

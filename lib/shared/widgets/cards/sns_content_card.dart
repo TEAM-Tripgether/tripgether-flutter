@@ -70,8 +70,9 @@ class SnsContentCard extends StatelessWidget {
             borderRadius: AppRadius.allMedium,
             boxShadow: [
               BoxShadow(
-                color: AppColors.whiteBorder,
-                spreadRadius: 3,
+                color: AppColors.shadow.withValues(alpha: 0.1),
+                // color: AppColors.whiteBorder,
+                spreadRadius: 1,
                 blurRadius: 0,
                 offset: Offset.zero,
               ),
@@ -168,7 +169,7 @@ class SnsContentCard extends StatelessWidget {
             // 플랫폼 아이콘
             _buildPlatformIcon(),
 
-            AppSpacing.verticalSpaceXS,
+            AppSpacing.verticalSpaceXSM,
 
             // 제목
             _buildTitle(context),

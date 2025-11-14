@@ -55,6 +55,9 @@ class SnsContentDetailScreen extends StatelessWidget {
 
               AppSpacing.verticalSpaceSM,
 
+              // AI 콘텐츠 요약 섹션
+              _buildContentDescription(context, content),
+
               // 설명 텍스트
             ],
           ),
@@ -117,6 +120,68 @@ class SnsContentDetailScreen extends StatelessWidget {
           size: AppSizes.iconLarge,
           color: AppColors.subColor2,
         ),
+      ),
+    );
+  }
+
+  /// AI 콘텐츠 요약 섹션
+  Widget _buildContentDescription(BuildContext context, ContentModel content) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.backgroundLight,
+        borderRadius: AppRadius.allMedium,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // 콘텐츠 크기에 맞춤
+        children: [
+          // AI 아이콘 + "AI 콘텐츠 요약" 헤더
+          Container(
+            padding: EdgeInsets.all(AppSpacing.smd),
+            decoration: BoxDecoration(
+              color: AppColors.subColor2.withValues(alpha: 0.2),
+              borderRadius: AppRadius.allSmall,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/Ai.svg',
+                  width: AppSizes.iconSmall, // 16
+                  height: AppSizes.iconSmall,
+                ),
+                AppSpacing.horizontalSpaceXS, // 4
+
+                Text(
+                  'AI 콘텐츠 요약',
+                  style: AppTextStyles.metaMedium12.copyWith(
+                    color: AppColors.textColor1.withValues(alpha: 0.5),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          AppSpacing.verticalSpaceSMD, // 10
+          // 제목 텍스트 (임시)
+          Text(
+            '개당 1200원의 가성비 초밥',
+            style: AppTextStyles.summaryBold16.copyWith(
+              color: AppColors.mainColor,
+            ),
+          ),
+
+          AppSpacing.verticalSpaceSMD, // 10
+          // 본문 설명 텍스트 (임시)
+          Text(
+            '샷포로 3대 스시 맛집 \'토리톤\' — 북해도 살았던 친한 동생이 추천해준 개당 1200원대의 가성비 초밥 맛집으로 두툼하고 신선한 네타에 비해 가격이 합리적인 가성비가 강점입니다.',
+            style: AppTextStyles.bodyRegular14,
+          ),
+        ],
       ),
     );
   }

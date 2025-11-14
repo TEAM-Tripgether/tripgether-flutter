@@ -53,6 +53,12 @@ class AppTextStyles {
     color: AppColors.textColor1,
   );
 
+  static TextStyle summaryBold16 = TextStyle(
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16.sp,
+    color: AppColors.textColor1,
+  );
+
   // ============================================================================
   // 섹션 제목 (Section Headers)
   // ============================================================================

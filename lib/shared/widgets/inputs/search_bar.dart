@@ -87,7 +87,7 @@ class _TripSearchBarState extends State<TripSearchBar> {
                 size: AppSizes.iconMedium,
                 color: AppColors.subColor2,
               ),
-              SizedBox(width: AppSpacing.md),
+              SizedBox(width: AppSpacing.smd),
 
               // 텍스트 입력 필드
               Expanded(
