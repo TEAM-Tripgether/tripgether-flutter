@@ -1067,7 +1067,7 @@ abstract class AppLocalizations {
   /// 온보딩 성별 선택 안내 제목
   ///
   /// In ko, this message translates to:
-  /// **'성별을 선택해주세요. (선택)'**
+  /// **'성별을 선택해주세요'**
   String get onboardingGenderPrompt;
 
   /// 성별 선택 - 남성

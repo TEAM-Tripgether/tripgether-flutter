@@ -925,7 +925,7 @@
     "description": "Onboarding nickname input prompt title"
   },
 
-  "onboardingGenderPrompt": "Select your gender. (Optional)",
+  "onboardingGenderPrompt": "Select your gender",
   "@onboardingGenderPrompt": {
     "description": "Onboarding gender selection prompt title"
   },

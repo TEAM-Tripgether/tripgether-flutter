@@ -925,7 +925,7 @@
     "description": "온보딩 닉네임 입력 안내 제목"
   },
 
-  "onboardingGenderPrompt": "성별을 선택해주세요. (선택)",
+  "onboardingGenderPrompt": "성별을 선택해주세요",
   "@onboardingGenderPrompt": {
     "description": "온보딩 성별 선택 안내 제목"
   },

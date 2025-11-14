@@ -79,7 +79,7 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
       child: OnboardingLayout(
         stepNumber: 2,
         title: l10n.onboardingNicknamePrompt,
-        showRequiredMark: true,
+        showRequiredMark: false,
         description: '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요',
         content: Column(
           children: [

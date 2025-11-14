@@ -539,7 +539,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingNicknamePrompt => 'Please set your name';
 
   @override
-  String get onboardingGenderPrompt => 'Select your gender. (Optional)';
+  String get onboardingGenderPrompt => 'Select your gender';
 
   @override
   String get genderMale => 'Male';

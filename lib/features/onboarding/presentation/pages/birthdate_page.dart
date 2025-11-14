@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -181,17 +180,17 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
       child: OnboardingLayout(
         stepNumber: 3,
         title: l10n.onboardingBirthdatePrompt,
-        showRequiredMark: true,
+        showRequiredMark: false,
         description: l10n.onboardingBirthdateDescription,
         content: Column(
           children: [
-            // 입력 필드를 중앙에 배치
-            const Spacer(),
+            // 설명과 입력 필드 사이 간격 (닉네임 페이지와 동일)
+            AppSpacing.verticalSpace72,
 
             // YYYY / MM / DD 입력 (단일 TextField)
-            Center(
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl),
               child: OnboardingTextField(
-                width: 240.w, // 충분한 너비 확보 (YYYY / MM / DD 표시)
                 controller: _birthdateController,
                 focusNode: _focusNode,
                 hintText: '2001 / 01 / 01', // 입력 형식 안내
@@ -224,7 +223,7 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
               textAlign: TextAlign.center,
             ),
 
-            AppSpacing.verticalSpaceMD,
+            AppSpacing.verticalSpaceLG,
           ],
         ),
         button: PrimaryButton(

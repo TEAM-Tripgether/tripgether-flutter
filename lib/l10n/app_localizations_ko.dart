@@ -531,7 +531,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingNicknamePrompt => '이름을 설정해주세요';
 
   @override
-  String get onboardingGenderPrompt => '성별을 선택해주세요. (선택)';
+  String get onboardingGenderPrompt => '성별을 선택해주세요';
 
   @override
   String get genderMale => '남성';

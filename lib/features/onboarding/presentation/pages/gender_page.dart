@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../widgets/gender_selection_card.dart';
 import '../widgets/onboarding_layout.dart';
@@ -53,10 +55,10 @@ class _GenderPageState extends ConsumerState<GenderPage> {
       description: l10n.onboardingGenderDescription,
       content: Column(
         children: [
-          // 선택 카드를 중앙에 배치
-          const Spacer(),
+          // 설명과 선택 카드 사이 간격 (닉네임 페이지와 동일)
+          AppSpacing.verticalSpace72,
 
-          // 성별 선택 카드들 (국제화 적용)
+          // 성별 선택 카드들 (남성/여성만)
           Column(
             children: [
               GenderSelectionCard(
@@ -64,17 +66,11 @@ class _GenderPageState extends ConsumerState<GenderPage> {
                 isSelected: _selectedGender == 'male',
                 onTap: () => setState(() => _selectedGender = 'male'),
               ),
-              AppSpacing.verticalSpaceMD,
+              AppSpacing.verticalSpaceLG,
               GenderSelectionCard(
                 label: l10n.genderFemale,
                 isSelected: _selectedGender == 'female',
                 onTap: () => setState(() => _selectedGender = 'female'),
-              ),
-              AppSpacing.verticalSpaceMD,
-              GenderSelectionCard(
-                label: l10n.genderSkip,
-                isSelected: _selectedGender == 'notSelected',
-                onTap: () => setState(() => _selectedGender = 'notSelected'),
               ),
             ],
           ),
@@ -82,33 +78,59 @@ class _GenderPageState extends ConsumerState<GenderPage> {
           const Spacer(),
         ],
       ),
-      button: PrimaryButton(
-        text: l10n.btnContinue,
-        // 성별을 선택해야만 활성화 (null이 아닐 때만)
-        onPressed: _selectedGender != null
-            ? () {
-                // onboardingProvider에 성별 저장
-                final genderValue = _selectedGender == 'male'
-                    ? 'MALE'
-                    : _selectedGender == 'female'
-                    ? 'FEMALE'
-                    : 'NONE';
-                ref
-                    .read(onboardingProvider.notifier)
-                    .updateGender(genderValue);
-
-                // 다음 페이지로 이동
-                widget.onNext();
-              }
-            : null,
-        isFullWidth: true,
-        style: ButtonStyle(
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.circle),
+      button: Column(
+        children: [
+          // 건너뛰기 텍스트 버튼 (언더라인 포함)
+          TextButton(
+            onPressed: () {
+              // 성별 선택 없이 건너뛰기
+              ref.read(onboardingProvider.notifier).updateGender('NONE');
+              widget.onNext();
+            },
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              l10n.genderSkip,
+              style: AppTextStyles.buttonMediumMedium14.copyWith(
+                color: AppColors.mainColor,
+                decoration: TextDecoration.underline,
+                decorationColor: AppColors.mainColor,
+              ),
             ),
           ),
-        ),
+          AppSpacing.verticalSpaceLG,
+          // 계속하기 버튼 (성별 선택 시에만 활성화)
+          PrimaryButton(
+            text: l10n.btnContinue,
+            onPressed: _selectedGender != null
+                ? () {
+                    // onboardingProvider에 성별 저장
+                    final genderValue = _selectedGender == 'male'
+                        ? 'MALE'
+                        : _selectedGender == 'female'
+                        ? 'FEMALE'
+                        : 'NONE';
+                    ref
+                        .read(onboardingProvider.notifier)
+                        .updateGender(genderValue);
+
+                    // 다음 페이지로 이동
+                    widget.onNext();
+                  }
+                : null,
+            isFullWidth: true,
+            style: ButtonStyle(
+              shape: WidgetStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.circle),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
