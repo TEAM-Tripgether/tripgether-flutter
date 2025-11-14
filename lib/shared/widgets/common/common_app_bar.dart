@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../features/onboarding/presentation/widgets/onboarding_page_indicator.dart';
 
 /// Tripgether 앱에서 사용하는 공용 AppBar 컴포넌트
 ///
@@ -19,9 +20,14 @@ import '../../../l10n/app_localizations.dart';
 /// - ScreenUtil을 활용한 반응형 사이즈 적용
 /// - 접근성 및 시맨틱 라벨 지원
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
-  /// AppBar에 표시될 제목
-  /// 기본값은 "Tripgether"이며, 다른 화면에서는 해당 화면의 제목을 사용
-  final String title;
+  /// AppBar에 표시될 제목 (String)
+  /// titleWidget과 함께 사용할 수 없음
+  final String? title;
+
+  /// AppBar에 표시될 커스텀 제목 위젯
+  /// title과 함께 사용할 수 없음
+  /// 예: OnboardingPageIndicator, 커스텀 로고 등
+  final Widget? titleWidget;
 
   /// 왼쪽에 표시될 액션 위젯
   /// null일 경우 자동으로 햄버거 메뉴 또는 뒤로가기 버튼을 표시
@@ -69,7 +75,8 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const CommonAppBar({
     super.key,
-    this.title = 'Tripgether',
+    this.title,
+    this.titleWidget,
     this.leftAction,
     this.rightActions,
     this.titleStyle,
@@ -81,16 +88,26 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showBackButton,
     this.showMenuButton = true,
     this.showNotificationIcon = true,
-  });
+  }) : assert(
+         title != null || titleWidget != null,
+         'title 또는 titleWidget 중 하나는 필수입니다.',
+       ),
+       assert(
+         title == null || titleWidget == null,
+         'title과 titleWidget을 동시에 사용할 수 없습니다.',
+       );
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      // 제목 설정
-      title: Text(
-        title,
-        style: titleStyle, // AppTheme에서 이미 AppBar 제목 스타일이 정의되어 있음
-      ),
+      // 제목 설정 (String 또는 Widget)
+      title: titleWidget ??
+          (title != null
+              ? Text(
+                  title!,
+                  style: titleStyle, // AppTheme에서 이미 AppBar 제목 스타일이 정의되어 있음
+                )
+              : null),
 
       // 제목을 중앙에 정렬
       centerTitle: true,
@@ -264,11 +281,12 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 홈 화면용 AppBar 생성
   /// 기본 설정으로 "Tripgether" 제목과 햄버거 메뉴, 알림 아이콘을 표시
   static CommonAppBar forHome({
+    String? title,
     VoidCallback? onMenuPressed,
     VoidCallback? onNotificationPressed,
   }) {
     return CommonAppBar(
-      title: 'Tripgether',
+      title: title ?? 'Tripgether',
       onMenuPressed: onMenuPressed,
       onNotificationPressed: onNotificationPressed,
     );
@@ -349,6 +367,38 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
               SizedBox(width: AppSpacing.sm),
             ]
           : null,
+    );
+  }
+
+  /// 온보딩 화면용 AppBar 생성
+  /// OnboardingPageIndicator를 제목으로 표시하며, 조건부 뒤로가기 버튼 제공
+  static CommonAppBar forOnboarding({
+    required PageController pageController,
+    required int count,
+    required int currentPage,
+    VoidCallback? onBackPressed,
+  }) {
+    return CommonAppBar(
+      titleWidget: SizedBox(
+        width: 200.w, // Progress Bar 최대 너비 제한
+        child: OnboardingPageIndicator(
+          controller: pageController,
+          count: count,
+        ),
+      ),
+      leftAction: currentPage > 0
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: onBackPressed,
+              iconSize: 24.w,
+              color: AppColors.textColor1,
+              padding: EdgeInsets.zero,
+            )
+          : null,
+      showMenuButton: false,
+      showNotificationIcon: false,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
     );
   }
 }

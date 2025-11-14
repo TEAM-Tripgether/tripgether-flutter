@@ -84,15 +84,18 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
         content: Column(
           children: [
             // 입력 필드를 중앙에 배치
-            const Spacer(),
+            AppSpacing.verticalSpace72,
 
             // 입력 필드
-            OnboardingTextField(
-              controller: _controller,
-              hintText: '닉네임을 입력하세요',
-              maxLength: 10,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium16,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl),
+              child: OnboardingTextField(
+                controller: _controller,
+                hintText: '닉네임을 입력하세요',
+                maxLength: 10,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodyMedium16,
+              ),
             ),
 
             const Spacer(),

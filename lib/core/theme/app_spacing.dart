@@ -121,6 +121,9 @@ class AppSpacing {
   /// 특대 수직 간격: 60 (Divider 패딩 등)
   static SizedBox get verticalSpace60 => SizedBox(height: 60.h);
 
+  /// 특대 수직 간격: 72 (온보딩 설명-입력필드 간격)
+  static SizedBox get verticalSpace72 => SizedBox(height: 72.h);
+
   /// 특대 수직 간격: 80 (로고-버튼 간격)
   static SizedBox get verticalSpace80 => SizedBox(height: 80.h);
 

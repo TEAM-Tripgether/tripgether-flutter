@@ -63,12 +63,12 @@ class OnboardingLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // 1. 프로그레스바 아래 고정 간격
-          AppSpacing.verticalSpace36,
+          AppSpacing.verticalSpaceLG,
 
           // 2. STEP 라벨 (hardcoded, 국제화 불필요)
           Text(
@@ -123,9 +123,7 @@ class OnboardingLayout extends StatelessWidget {
           ),
 
           // 7. 페이지별 콘텐츠 영역 (남은 공간 차지)
-          Expanded(
-            child: content,
-          ),
+          Expanded(child: content),
 
           // 8. 하단 버튼
           button,
