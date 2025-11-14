@@ -1273,6 +1273,36 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'자세히 보기'**
   String get viewDetails;
+
+  /// 온보딩 닉네임 페이지 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요'**
+  String get onboardingNicknameDescription;
+
+  /// 온보딩 닉네임 입력 힌트
+  ///
+  /// In ko, this message translates to:
+  /// **'닉네임을 입력하세요'**
+  String get onboardingNicknameHint;
+
+  /// 선택된 관심사 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 선택'**
+  String onboardingInterestsSelectedCount(int count);
+
+  /// 온보딩 완료 후 시작 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'바로 시작하기'**
+  String get startNow;
+
+  /// 환영 페이지 통합 메시지 (닉네임 포함)
+  ///
+  /// In ko, this message translates to:
+  /// **'모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 {nickname}님'**
+  String onboardingWelcomeUnified(String nickname);
 }
 
 class _AppLocalizationsDelegate

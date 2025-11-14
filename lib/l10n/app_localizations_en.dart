@@ -651,4 +651,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewDetails => 'View details';
+
+  @override
+  String get onboardingNicknameDescription =>
+      'This is the name other users will see\nProfanity and advertising are restricted';
+
+  @override
+  String get onboardingNicknameHint => 'Enter your nickname';
+
+  @override
+  String onboardingInterestsSelectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get startNow => 'Get Started';
+
+  @override
+  String onboardingWelcomeUnified(String nickname) {
+    return 'All set! 🎉\nLet\'s dive into the local day, $nickname!';
+  }
 }

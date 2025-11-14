@@ -1110,5 +1110,42 @@
   "viewDetails": "View details",
   "@viewDetails": {
     "description": "View term details button"
+  },
+
+  "onboardingNicknameDescription": "This is the name other users will see\nProfanity and advertising are restricted",
+  "@onboardingNicknameDescription": {
+    "description": "Onboarding nickname page description"
+  },
+
+  "onboardingNicknameHint": "Enter your nickname",
+  "@onboardingNicknameHint": {
+    "description": "Onboarding nickname input hint"
+  },
+
+  "onboardingInterestsSelectedCount": "{count} selected",
+  "@onboardingInterestsSelectedCount": {
+    "description": "Selected interests count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "startNow": "Get Started",
+  "@startNow": {
+    "description": "Onboarding completion start button text"
+  },
+
+  "onboardingWelcomeUnified": "All set! 🎉\nLet's dive into the local day, {nickname}!",
+  "@onboardingWelcomeUnified": {
+    "description": "Welcome page unified message (with nickname)",
+    "placeholders": {
+      "nickname": {
+        "type": "String",
+        "example": "TravelLover"
+      }
+    }
   }
 }

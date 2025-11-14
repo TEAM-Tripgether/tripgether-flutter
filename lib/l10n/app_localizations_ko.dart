@@ -639,4 +639,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get viewDetails => '자세히 보기';
+
+  @override
+  String get onboardingNicknameDescription =>
+      '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요';
+
+  @override
+  String get onboardingNicknameHint => '닉네임을 입력하세요';
+
+  @override
+  String onboardingInterestsSelectedCount(int count) {
+    return '$count개 선택';
+  }
+
+  @override
+  String get startNow => '바로 시작하기';
+
+  @override
+  String onboardingWelcomeUnified(String nickname) {
+    return '모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 $nickname님';
+  }
 }

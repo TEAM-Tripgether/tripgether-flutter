@@ -148,8 +148,8 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
                   buttonPosition.dy +
                   buttonSize.height +
                   AppSpacing.sm, // 버튼 아래 8.h
-              left: AppSpacing.xxl, // 화면 좌측 패딩 24.w
-              right: AppSpacing.xxl, // 화면 우측 패딩 24.w
+              left: AppSpacing.lg, // 카테고리 영역과 동일한 패딩 16.w
+              right: AppSpacing.lg, // 카테고리 영역과 동일한 패딩 16.w
               child: Material(
                 elevation: 4,
                 borderRadius: AppRadius.allLarge,
@@ -161,9 +161,9 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
                     borderRadius: AppRadius.allLarge,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.shadow.withValues(alpha: 0.05),
-                        blurRadius: AppSpacing.sm,
-                        offset: const Offset(0, 2),
+                        color: AppColors.shadow.withValues(alpha: 0.01),
+                        blurRadius: 10,
+                        offset: const Offset(0, 0),
                       ),
                     ],
                   ),
@@ -204,15 +204,17 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
     return OnboardingLayout(
       stepNumber: 5,
       title: l10n.onboardingInterestsPrompt,
-      showRequiredMark: true,
+      showRequiredMark: false,
       description: l10n.onboardingInterestsDescription,
+      // 카테고리 버튼 영역만 16px 패딩 (버튼은 32px 유지)
+      contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       content: Column(
         children: [
           AppSpacing.verticalSpaceMD,
 
           // 선택 개수 표시
           Text(
-            '$selectedCount개 선택',
+            l10n.onboardingInterestsSelectedCount(selectedCount),
             style: AppTextStyles.titleSemiBold16.copyWith(
               color: AppColors.mainColor,
             ),

@@ -80,7 +80,7 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
         stepNumber: 2,
         title: l10n.onboardingNicknamePrompt,
         showRequiredMark: false,
-        description: '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요',
+        description: l10n.onboardingNicknameDescription,
         content: Column(
           children: [
             // 입력 필드를 중앙에 배치
@@ -91,7 +91,7 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl),
               child: OnboardingTextField(
                 controller: _controller,
-                hintText: '닉네임을 입력하세요',
+                hintText: l10n.onboardingNicknameHint,
                 maxLength: 10,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.bodyMedium16,
