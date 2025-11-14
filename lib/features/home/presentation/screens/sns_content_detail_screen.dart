@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:tripgether/shared/widgets/common/section_divider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/models/content_model.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -40,27 +41,38 @@ class SnsContentDetailScreen extends StatelessWidget {
       ),
       backgroundColor: AppColors.white,
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 썸네일 이미지 (Hero 애니메이션)
-              _buildThumbnail(content),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 썸네일 이미지 (Hero 애니메이션) - 좌우 패딩 포함
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: _buildThumbnail(content),
+            ),
 
-              AppSpacing.verticalSpaceLG,
+            AppSpacing.verticalSpaceLG,
 
-              // 플랫폼 정보 + 제목 컨테이너
-              _buildContentInfo(context, content),
+            // 플랫폼 정보 + 제목 컨테이너 - 좌우 패딩 포함
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: _buildContentInfo(context, content),
+            ),
 
-              AppSpacing.verticalSpaceSM,
+            AppSpacing.verticalSpaceSM,
 
-              // AI 콘텐츠 요약 섹션
-              _buildContentDescription(context, content),
+            // AI 콘텐츠 요약 섹션 - 좌우 패딩 포함
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: _buildContentDescription(context, content),
+            ),
 
-              // 설명 텍스트
-            ],
-          ),
+            AppSpacing.verticalSpaceLG,
+
+            // Divider - 패딩 없음 (화면 전체 너비)
+            const SectionDivider.thick(),
+
+            // 설명 텍스트
+          ],
         ),
       ),
     );
@@ -129,7 +141,7 @@ class SnsContentDetailScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
-        vertical: AppSpacing.sm,
+        vertical: AppSpacing.md,
       ),
       decoration: BoxDecoration(
         color: AppColors.backgroundLight,
