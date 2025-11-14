@@ -147,6 +147,22 @@ class AppTextStyles {
     color: AppColors.textColor1,
   );
 
+  /// 작은 버튼 (Medium, 10px)
+  /// 사용처: 바텀 네비게이션 비활성 상태
+  static TextStyle buttonSmallMedium10 = TextStyle(
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 10.sp,
+    color: AppColors.textColor1,
+  );
+
+  /// 작은 버튼 (SemiBold, 10px)
+  /// 사용처: 바텀 네비게이션 활성 상태
+  static TextStyle buttonSmallSemiBold10 = TextStyle(
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 10.sp,
+    color: AppColors.textColor1,
+  );
+
   // ============================================================================
   // 부가 정보 (Meta Information)
   // ============================================================================
