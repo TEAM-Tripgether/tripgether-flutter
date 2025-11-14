@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -126,7 +125,7 @@ class SnsContentDetailScreen extends StatelessWidget {
             height: AppSizes.iconMedium,
           ),
 
-          SizedBox(width: 8.w),
+          AppSpacing.horizontalSpaceSM,
 
           // 업로더명 또는 제목 (한 줄)
           Expanded(
@@ -138,7 +137,7 @@ class SnsContentDetailScreen extends StatelessWidget {
             ),
           ),
 
-          SizedBox(width: 12.w),
+          AppSpacing.horizontalSpaceMD,
 
           // "링크 바로가기" 버튼
           LinkButton(
