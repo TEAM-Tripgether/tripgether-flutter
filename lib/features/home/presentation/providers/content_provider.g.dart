@@ -335,6 +335,29 @@ class _ContentsByPlatformProviderElement
   String get platform => (origin as ContentsByPlatformProvider).platform;
 }
 
+String _$recentSavedPlacesHash() => r'a8fac3b9da238d2c58d795e93015054cf00a97bb';
+
+/// 최근 저장한 장소를 제공하는 Provider
+///
+/// COMPLETED 상태인 콘텐츠에서 장소를 추출하여 최근 3개만 반환합니다.
+/// USE_MOCK_API 플래그에 따라 Mock 또는 실제 API 데이터를 사용합니다.
+///
+/// Copied from [recentSavedPlaces].
+@ProviderFor(recentSavedPlaces)
+final recentSavedPlacesProvider =
+    AutoDisposeFutureProvider<List<PlaceModel>>.internal(
+      recentSavedPlaces,
+      name: r'recentSavedPlacesProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$recentSavedPlacesHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RecentSavedPlacesRef = AutoDisposeFutureProviderRef<List<PlaceModel>>;
 String _$contentListHash() => r'36f3f018fb16b6c8a6ec9b1d04607ff18e84e25a';
 
 /// 모든 콘텐츠 목록을 제공하는 Provider

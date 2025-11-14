@@ -34,6 +34,9 @@ class PlaceModel with _$PlaceModel {
     /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
     String? businessType,
 
+    /// 카테고리 (한국어, 예: "카페", "음식점", "해변")
+    String? category,
+
     /// 전화번호
     String? phone,
 

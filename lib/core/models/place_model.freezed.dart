@@ -45,6 +45,9 @@ mixin _$PlaceModel {
   /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
   String? get businessType => throw _privateConstructorUsedError;
 
+  /// 카테고리 (한국어, 예: "카페", "음식점", "해변")
+  String? get category => throw _privateConstructorUsedError;
+
   /// 전화번호
   String? get phone => throw _privateConstructorUsedError;
 
@@ -107,6 +110,7 @@ abstract class $PlaceModelCopyWith<$Res> {
     double latitude,
     double longitude,
     String? businessType,
+    String? category,
     String? phone,
     String? description,
     List<String> types,
@@ -145,6 +149,7 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
     Object? latitude = null,
     Object? longitude = null,
     Object? businessType = freezed,
+    Object? category = freezed,
     Object? phone = freezed,
     Object? description = freezed,
     Object? types = null,
@@ -191,6 +196,10 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
             businessType: freezed == businessType
                 ? _value.businessType
                 : businessType // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            category: freezed == category
+                ? _value.category
+                : category // ignore: cast_nullable_to_non_nullable
                       as String?,
             phone: freezed == phone
                 ? _value.phone
@@ -264,6 +273,7 @@ abstract class _$$PlaceModelImplCopyWith<$Res>
     double latitude,
     double longitude,
     String? businessType,
+    String? category,
     String? phone,
     String? description,
     List<String> types,
@@ -301,6 +311,7 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
     Object? latitude = null,
     Object? longitude = null,
     Object? businessType = freezed,
+    Object? category = freezed,
     Object? phone = freezed,
     Object? description = freezed,
     Object? types = null,
@@ -347,6 +358,10 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
         businessType: freezed == businessType
             ? _value.businessType
             : businessType // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        category: freezed == category
+            ? _value.category
+            : category // ignore: cast_nullable_to_non_nullable
                   as String?,
         phone: freezed == phone
             ? _value.phone
@@ -413,6 +428,7 @@ class _$PlaceModelImpl implements _PlaceModel {
     required this.latitude,
     required this.longitude,
     this.businessType,
+    this.category,
     this.phone,
     this.description,
     final List<String> types = const [],
@@ -463,6 +479,10 @@ class _$PlaceModelImpl implements _PlaceModel {
   /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
   @override
   final String? businessType;
+
+  /// 카테고리 (한국어, 예: "카페", "음식점", "해변")
+  @override
+  final String? category;
 
   /// 전화번호
   @override
@@ -533,7 +553,7 @@ class _$PlaceModelImpl implements _PlaceModel {
 
   @override
   String toString() {
-    return 'PlaceModel(placeId: $placeId, position: $position, name: $name, address: $address, country: $country, latitude: $latitude, longitude: $longitude, businessType: $businessType, phone: $phone, description: $description, types: $types, businessStatus: $businessStatus, iconUrl: $iconUrl, rating: $rating, userRatingsTotal: $userRatingsTotal, photoUrls: $photoUrls, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy, updatedBy: $updatedBy)';
+    return 'PlaceModel(placeId: $placeId, position: $position, name: $name, address: $address, country: $country, latitude: $latitude, longitude: $longitude, businessType: $businessType, category: $category, phone: $phone, description: $description, types: $types, businessStatus: $businessStatus, iconUrl: $iconUrl, rating: $rating, userRatingsTotal: $userRatingsTotal, photoUrls: $photoUrls, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy, updatedBy: $updatedBy)';
   }
 
   @override
@@ -553,6 +573,8 @@ class _$PlaceModelImpl implements _PlaceModel {
                 other.longitude == longitude) &&
             (identical(other.businessType, businessType) ||
                 other.businessType == businessType) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -589,6 +611,7 @@ class _$PlaceModelImpl implements _PlaceModel {
     latitude,
     longitude,
     businessType,
+    category,
     phone,
     description,
     const DeepCollectionEquality().hash(_types),
@@ -627,6 +650,7 @@ abstract class _PlaceModel implements PlaceModel {
     required final double latitude,
     required final double longitude,
     final String? businessType,
+    final String? category,
     final String? phone,
     final String? description,
     final List<String> types,
@@ -675,6 +699,10 @@ abstract class _PlaceModel implements PlaceModel {
   /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
   @override
   String? get businessType;
+
+  /// 카테고리 (한국어, 예: "카페", "음식점", "해변")
+  @override
+  String? get category;
 
   /// 전화번호
   @override

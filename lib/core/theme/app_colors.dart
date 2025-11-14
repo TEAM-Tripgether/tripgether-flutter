@@ -42,6 +42,9 @@ class AppColors {
   static const Color gradient5 = Color(0xFFBBBBBB);
   static const Color gradient6 = Color(0xFFFFFFFF);
 
+  /// 이미지 플레이스홀더 배경색 (#C4C4C4)
+  static const Color imagePlaceholder = Color(0xFFC4C4C4);
+
   // ============================================================================
   // 버튼 (계속하기 등)
   // ============================================================================

@@ -11,7 +11,9 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/platform_icon_mapper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
+import '../../../../shared/widgets/cards/place_detail_card.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
+import '../../../../shared/widgets/layout/section_header.dart';
 
 /// SNS 콘텐츠 상세 화면
 ///
@@ -71,10 +73,48 @@ class SnsContentDetailScreen extends StatelessWidget {
             // Divider - 패딩 없음 (화면 전체 너비)
             const SectionDivider.thick(),
 
-            // 설명 텍스트
+            // 링크에 포함된 장소 - 좌우 패딩 포함
+            if (content.places.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: _buildPlacesSection(context, content),
+              ),
           ],
         ),
       ),
+    );
+  }
+
+  /// 링크에 포함된 장소 섹션
+  Widget _buildPlacesSection(BuildContext context, ContentModel content) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppSpacing.verticalSpaceLG,
+
+        // 섹션 헤더
+        SectionHeader(title: '링크에 포함된 장소', showMoreButton: false),
+
+        AppSpacing.verticalSpaceMD,
+
+        // 장소 카드 리스트
+        ...content.places.map((place) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: AppSpacing.md),
+            child: PlaceDetailCard(
+              category: place.category ?? '장소',
+              placeName: place.name,
+              address: place.address,
+              rating: place.rating ?? 0.0,
+              reviewCount: place.userRatingsTotal ?? 0,
+              imageUrls: place.photoUrls,
+              onTap: () {
+                debugPrint('장소 상세 화면으로 이동: ${place.placeId}');
+              },
+            ),
+          );
+        }),
+      ],
     );
   }
 
@@ -125,12 +165,12 @@ class SnsContentDetailScreen extends StatelessWidget {
   /// 에러 플레이스홀더
   Widget _buildErrorPlaceholder() {
     return Container(
-      color: AppColors.backgroundLight,
+      color: AppColors.imagePlaceholder,
       child: Center(
         child: Icon(
           Icons.image_outlined,
           size: AppSizes.iconLarge,
-          color: AppColors.subColor2,
+          color: AppColors.white,
         ),
       ),
     );

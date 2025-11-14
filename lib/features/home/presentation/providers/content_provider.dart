@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/models/content_model.dart';
+import '../../../../core/models/place_model.dart';
 import '../../data/repositories/content_repository.dart';
 
 part 'content_provider.g.dart';
@@ -102,4 +103,25 @@ Future<List<ContentModel>> completedContents(Ref ref) async {
 Future<List<ContentModel>> contentsByPlatform(Ref ref, String platform) async {
   final repository = ref.read(contentRepositoryProvider);
   return await repository.getContentsByPlatform(platform);
+}
+
+/// 최근 저장한 장소를 제공하는 Provider
+///
+/// COMPLETED 상태인 콘텐츠에서 장소를 추출하여 최근 3개만 반환합니다.
+/// USE_MOCK_API 플래그에 따라 Mock 또는 실제 API 데이터를 사용합니다.
+@riverpod
+Future<List<PlaceModel>> recentSavedPlaces(Ref ref) async {
+  final repository = ref.read(contentRepositoryProvider);
+  final contents = await repository.getCompletedContents();
+
+  // COMPLETED 상태이고 places가 있는 콘텐츠에서 장소 추출
+  final List<PlaceModel> allPlaces = [];
+  for (final content in contents) {
+    if (content.places.isNotEmpty) {
+      allPlaces.addAll(content.places);
+    }
+  }
+
+  // 최근 3개만 반환
+  return allPlaces.take(3).toList();
 }

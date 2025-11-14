@@ -16,6 +16,7 @@ _$PlaceModelImpl _$$PlaceModelImplFromJson(Map<String, dynamic> json) =>
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
       businessType: json['businessType'] as String?,
+      category: json['category'] as String?,
       phone: json['phone'] as String?,
       description: json['description'] as String?,
       types:
@@ -50,6 +51,7 @@ Map<String, dynamic> _$$PlaceModelImplToJson(_$PlaceModelImpl instance) =>
       'latitude': instance.latitude,
       'longitude': instance.longitude,
       'businessType': instance.businessType,
+      'category': instance.category,
       'phone': instance.phone,
       'description': instance.description,
       'types': instance.types,
