@@ -21,9 +21,9 @@ class AppTextStyles {
   // 제목 스타일 (Titles)
   // ============================================================================
 
-  /// 온보딩 제목 (Bold, 24px)
-  /// 사용처: 온보딩 화면 메인 제목
-  static TextStyle onboardingTitle = TextStyle(
+  /// 큰 제목 (Bold, 24px)
+  /// 사용처: 온보딩 화면, 중요 제목
+  static TextStyle titleBold24 = TextStyle(
     fontFamily: 'Pretendard-Bold',
     fontSize: 24.sp,
     color: AppColors.textColor1,
@@ -63,9 +63,9 @@ class AppTextStyles {
   // 섹션 제목 (Section Headers)
   // ============================================================================
 
-  /// 섹션 제목 (SemiBold, 16px)
-  /// 사용처: "최근 SNS에서 본 콘텐츠", "저장된 장소" 등
-  static TextStyle sectionTitle = TextStyle(
+  /// 중간 제목 (SemiBold, 16px)
+  /// 사용처: 섹션 제목, "최근 SNS에서 본 콘텐츠", "저장된 장소" 등
+  static TextStyle titleSemiBold16 = TextStyle(
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 16.sp,
     color: AppColors.textColor1,
@@ -75,9 +75,9 @@ class AppTextStyles {
   // 콘텐츠 제목 (Content Titles)
   // ============================================================================
 
-  /// 장소 이름 / 게시물 작성자 (SemiBold, 14px)
-  /// 사용처: "저장된 장소 이름", "~님의 게시물"
-  static TextStyle contentTitle = TextStyle(
+  /// 작은 제목 (SemiBold, 14px)
+  /// 사용처: 콘텐츠 제목, 장소 이름, 게시물 작성자
+  static TextStyle titleSemiBold14 = TextStyle(
     fontFamily: 'Pretendard-SemiBold',
     fontSize: 14.sp,
     color: AppColors.textColor1,

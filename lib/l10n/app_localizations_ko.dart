@@ -615,4 +615,28 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get searchButtonLabel => '검색 버튼';
+
+  @override
+  String get onboardingTermsPrompt => '약관에 동의해주세요';
+
+  @override
+  String get onboardingTermsDescription => '서비스 이용을 위해 약관 동의가 필요해요';
+
+  @override
+  String get termsOfService => '서비스 이용약관';
+
+  @override
+  String get privacyPolicy => '개인정보 처리방침';
+
+  @override
+  String get ageConfirmation => '만 14세 이상입니다';
+
+  @override
+  String get marketingConsent => '마케팅 정보 수신 동의 (선택)';
+
+  @override
+  String get agreeToAll => '전체 동의';
+
+  @override
+  String get viewDetails => '자세히 보기';
 }

@@ -1070,5 +1070,45 @@
   "searchButtonLabel": "검색 버튼",
   "@searchButtonLabel": {
     "description": "검색 버튼 접근성 라벨 (스크린 리더용)"
+  },
+
+  "onboardingTermsPrompt": "약관에 동의해주세요",
+  "@onboardingTermsPrompt": {
+    "description": "온보딩 약관 동의 페이지 제목"
+  },
+
+  "onboardingTermsDescription": "서비스 이용을 위해 약관 동의가 필요해요",
+  "@onboardingTermsDescription": {
+    "description": "온보딩 약관 동의 페이지 설명"
+  },
+
+  "termsOfService": "서비스 이용약관",
+  "@termsOfService": {
+    "description": "서비스 이용약관 체크박스 라벨"
+  },
+
+  "privacyPolicy": "개인정보 처리방침",
+  "@privacyPolicy": {
+    "description": "개인정보 처리방침 체크박스 라벨"
+  },
+
+  "ageConfirmation": "만 14세 이상입니다",
+  "@ageConfirmation": {
+    "description": "만 14세 이상 확인 체크박스 라벨"
+  },
+
+  "marketingConsent": "마케팅 정보 수신 동의 (선택)",
+  "@marketingConsent": {
+    "description": "마케팅 정보 수신 동의 체크박스 라벨"
+  },
+
+  "agreeToAll": "전체 동의",
+  "@agreeToAll": {
+    "description": "약관 전체 동의 체크박스 라벨"
+  },
+
+  "viewDetails": "자세히 보기",
+  "@viewDetails": {
+    "description": "약관 상세 내용 보기 버튼"
   }
 }

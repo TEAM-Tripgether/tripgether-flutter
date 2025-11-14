@@ -101,7 +101,7 @@ class MyPageScreen extends ConsumerWidget {
           padding: AppSpacing.only(left: 16, top: 24, right: 16, bottom: 12),
           child: Text(
             l10n.languageSelection,
-            style: AppTextStyles.sectionTitle.copyWith(
+            style: AppTextStyles.titleSemiBold16.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -243,7 +243,7 @@ class MyPageScreen extends ConsumerWidget {
               SizedBox(width: 8.w),
               Text(
                 '🧪 테스트 모드',
-                style: AppTextStyles.contentTitle.copyWith(
+                style: AppTextStyles.titleSemiBold14.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.secondary,
                 ),
@@ -387,7 +387,7 @@ class MyPageScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: Text(
           l10n.logoutConfirmTitle,
-          style: AppTextStyles.sectionTitle.copyWith(
+          style: AppTextStyles.titleSemiBold16.copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),

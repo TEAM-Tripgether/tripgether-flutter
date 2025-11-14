@@ -269,7 +269,7 @@ class SnsContentDetailScreen extends StatelessWidget {
           Expanded(
             child: Text(
               content.platformUploader ?? content.title ?? l10n.noTitle,
-              style: AppTextStyles.contentTitle,
+              style: AppTextStyles.titleSemiBold14,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

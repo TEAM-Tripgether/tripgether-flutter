@@ -1070,5 +1070,45 @@
   "searchButtonLabel": "Search button",
   "@searchButtonLabel": {
     "description": "Search button accessibility label (for screen readers)"
+  },
+
+  "onboardingTermsPrompt": "Please agree to the terms",
+  "@onboardingTermsPrompt": {
+    "description": "Onboarding terms agreement page title"
+  },
+
+  "onboardingTermsDescription": "You need to agree to the terms to use the service",
+  "@onboardingTermsDescription": {
+    "description": "Onboarding terms agreement page description"
+  },
+
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Terms of service checkbox label"
+  },
+
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Privacy policy checkbox label"
+  },
+
+  "ageConfirmation": "I am 14 years or older",
+  "@ageConfirmation": {
+    "description": "Age confirmation checkbox label"
+  },
+
+  "marketingConsent": "Marketing consent (optional)",
+  "@marketingConsent": {
+    "description": "Marketing consent checkbox label"
+  },
+
+  "agreeToAll": "Agree to all",
+  "@agreeToAll": {
+    "description": "Agree to all terms checkbox label"
+  },
+
+  "viewDetails": "View details",
+  "@viewDetails": {
+    "description": "View term details button"
   }
 }

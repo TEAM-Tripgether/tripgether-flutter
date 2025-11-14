@@ -89,7 +89,7 @@ class PlaceDetailCard extends StatelessWidget {
                   // 장소 이름
                   Text(
                     placeName,
-                    style: AppTextStyles.contentTitle,
+                    style: AppTextStyles.titleSemiBold14,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

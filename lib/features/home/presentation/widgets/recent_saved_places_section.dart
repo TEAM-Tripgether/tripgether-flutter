@@ -50,7 +50,7 @@ class RecentSavedPlacesSection extends ConsumerWidget {
                   child: Center(
                     child: Text(
                       l10n.noSavedPlacesYet,
-                      style: AppTextStyles.contentTitle.copyWith(
+                      style: AppTextStyles.titleSemiBold14.copyWith(
                         color: AppColors.subColor2,
                       ),
                     ),

@@ -82,7 +82,7 @@ class WelcomePage extends ConsumerWidget {
             // 설명 메시지 (국제화 적용)
             Text(
               l10n.onboardingWelcomeMessage,
-              style: AppTextStyles.sectionTitle.copyWith(
+              style: AppTextStyles.titleSemiBold16.copyWith(
                 color: AppColors.white.withValues(alpha: 0.9),
               ),
               textAlign: TextAlign.center,

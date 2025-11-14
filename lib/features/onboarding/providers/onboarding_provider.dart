@@ -7,11 +7,12 @@ part 'onboarding_provider.g.dart';
 /// 온보딩 데이터 상태 관리 Provider
 ///
 /// **역할**:
-/// - 온보딩 5단계(닉네임, 성별, 생년월일, 관심사, 환영)에서 입력받은 데이터를 중앙 관리
+/// - 온보딩 6단계(약관, 닉네임, 성별, 생년월일, 관심사, 환영)에서 입력받은 데이터를 중앙 관리
 /// - 페이지 간 데이터 전달 및 최종 welcome_page에서 개인화된 메시지 표시
 /// - 백엔드 API 연동 시 한 번에 모든 데이터 전송 가능
 ///
 /// **사용 위치**:
+/// - TermsPage: 약관 동의 시 `updateTermsAgreement()` 호출
 /// - NicknamePage: 닉네임 입력 시 `updateNickname()` 호출
 /// - GenderPage: 성별 선택 시 `updateGender()` 호출
 /// - BirthdatePage: 생년월일 입력 시 `updateBirthdate()` 호출
@@ -38,6 +39,49 @@ class Onboarding extends _$Onboarding {
   OnboardingData build() {
     debugPrint('[OnboardingProvider] 🎯 Provider 초기화');
     return const OnboardingData();
+  }
+
+  /// 약관 동의 업데이트
+  ///
+  /// **호출 위치**: TermsPage
+  ///
+  /// **필수 약관**:
+  /// - 서비스 이용약관 (termsOfService)
+  /// - 개인정보 처리방침 (privacyPolicy)
+  /// - 만 14세 이상 확인 (ageConfirmation)
+  ///
+  /// **선택 약관**:
+  /// - 마케팅 정보 수신 동의 (marketingConsent)
+  ///
+  /// **사용 예시**:
+  /// ```dart
+  /// ref.read(onboardingProvider.notifier).updateTermsAgreement(
+  ///   termsOfService: true,
+  ///   privacyPolicy: true,
+  ///   ageConfirmation: true,
+  ///   marketingConsent: false,
+  /// );
+  /// ```
+  void updateTermsAgreement({
+    required bool termsOfService,
+    required bool privacyPolicy,
+    required bool ageConfirmation,
+    required bool marketingConsent,
+  }) {
+    debugPrint('[OnboardingProvider] 📜 약관 동의 업데이트');
+    debugPrint('  - 서비스 이용약관: $termsOfService');
+    debugPrint('  - 개인정보 처리방침: $privacyPolicy');
+    debugPrint('  - 만 14세 이상: $ageConfirmation');
+    debugPrint('  - 마케팅 동의: $marketingConsent');
+
+    state = state.copyWith(
+      termsOfService: termsOfService,
+      privacyPolicy: privacyPolicy,
+      ageConfirmation: ageConfirmation,
+      marketingConsent: marketingConsent,
+    );
+
+    debugPrint('[OnboardingProvider] ✅ 약관 동의 업데이트 완료');
   }
 
   /// 닉네임 업데이트

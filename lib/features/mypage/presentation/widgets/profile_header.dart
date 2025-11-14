@@ -201,7 +201,7 @@ class ProfileHeader extends ConsumerWidget {
             // 안내 메시지
             Text(
               l10n.profileLoginRequired,
-              style: AppTextStyles.sectionTitle.copyWith(
+              style: AppTextStyles.titleSemiBold16.copyWith(
                 color: AppColors.textColor1,
               ),
             ),
@@ -322,7 +322,7 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               l10n.profileLoadError,
-              style: AppTextStyles.sectionTitle.copyWith(
+              style: AppTextStyles.titleSemiBold16.copyWith(
                 color: AppColors.textColor1,
               ),
             ),

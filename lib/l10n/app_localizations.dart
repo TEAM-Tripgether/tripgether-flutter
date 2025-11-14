@@ -1225,6 +1225,54 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'검색 버튼'**
   String get searchButtonLabel;
+
+  /// 온보딩 약관 동의 페이지 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'약관에 동의해주세요'**
+  String get onboardingTermsPrompt;
+
+  /// 온보딩 약관 동의 페이지 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'서비스 이용을 위해 약관 동의가 필요해요'**
+  String get onboardingTermsDescription;
+
+  /// 서비스 이용약관 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'서비스 이용약관'**
+  String get termsOfService;
+
+  /// 개인정보 처리방침 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'개인정보 처리방침'**
+  String get privacyPolicy;
+
+  /// 만 14세 이상 확인 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'만 14세 이상입니다'**
+  String get ageConfirmation;
+
+  /// 마케팅 정보 수신 동의 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'마케팅 정보 수신 동의 (선택)'**
+  String get marketingConsent;
+
+  /// 약관 전체 동의 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 동의'**
+  String get agreeToAll;
+
+  /// 약관 상세 내용 보기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'자세히 보기'**
+  String get viewDetails;
 }
 
 class _AppLocalizationsDelegate

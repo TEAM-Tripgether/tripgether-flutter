@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../widgets/gender_selection_card.dart';
+import '../widgets/onboarding_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
 
-/// 성별 선택 페이지 (페이지 3/5)
+/// 성별 선택 페이지 (STEP 4/5)
 ///
 /// 남성, 여성, 선택 안 함 중 선택할 수 있습니다.
 /// 선택 사항이므로 선택하지 않아도 다음으로 진행 가능합니다.
@@ -47,35 +46,14 @@ class _GenderPageState extends ConsumerState<GenderPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return OnboardingLayout(
+      stepNumber: 4,
+      title: l10n.onboardingGenderPrompt,
+      showRequiredMark: false,
+      description: l10n.onboardingGenderDescription,
+      content: Column(
         children: [
-          // 상단 여백 (위로 올림)
-          AppSpacing.verticalSpaceHuge,
-
-          // 제목 (국제화 적용)
-          Text(
-            l10n.onboardingGenderPrompt,
-            style: AppTextStyles.onboardingTitle.copyWith(
-              color: AppColors.mainColor,
-            ),
-          ),
-
-          // 제목-설명 간격
-          AppSpacing.verticalSpaceSM,
-
-          // 설명 (제목 바로 아래, 국제화 적용)
-          Text(
-            l10n.onboardingGenderDescription,
-            style: AppTextStyles.buttonMediumMedium14.copyWith(
-              color: AppColors.textColor1.withValues(alpha: 0.5),
-            ),
-            textAlign: TextAlign.center,
-          ),
-
-          // 선택 카드를 중앙에 배치하기 위한 여백
+          // 선택 카드를 중앙에 배치
           const Spacer(),
 
           // 성별 선택 카드들 (국제화 적용)
@@ -101,43 +79,36 @@ class _GenderPageState extends ConsumerState<GenderPage> {
             ],
           ),
 
-          // 선택-버튼 간격
           const Spacer(),
+        ],
+      ),
+      button: PrimaryButton(
+        text: l10n.btnContinue,
+        // 성별을 선택해야만 활성화 (null이 아닐 때만)
+        onPressed: _selectedGender != null
+            ? () {
+                // onboardingProvider에 성별 저장
+                final genderValue = _selectedGender == 'male'
+                    ? 'MALE'
+                    : _selectedGender == 'female'
+                    ? 'FEMALE'
+                    : 'NONE';
+                ref
+                    .read(onboardingProvider.notifier)
+                    .updateGender(genderValue);
 
-          // 계속하기 버튼 (국제화 적용)
-          PrimaryButton(
-            text: l10n.btnContinue,
-            // 성별을 선택해야만 활성화 (null이 아닐 때만)
-            onPressed: _selectedGender != null
-                ? () {
-                    // onboardingProvider에 성별 저장
-                    final genderValue = _selectedGender == 'male'
-                        ? 'MALE'
-                        : _selectedGender == 'female'
-                        ? 'FEMALE'
-                        : 'NONE';
-                    ref
-                        .read(onboardingProvider.notifier)
-                        .updateGender(genderValue);
-
-                    // 다음 페이지로 이동
-                    widget.onNext();
-                  }
-                : null,
-            isFullWidth: true,
-            // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
-            style: ButtonStyle(
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.circle),
-                ),
-              ),
+                // 다음 페이지로 이동
+                widget.onNext();
+              }
+            : null,
+        isFullWidth: true,
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.circle),
             ),
           ),
-
-          // 하단 여백 (버튼을 조금 위로)
-          AppSpacing.verticalSpace60,
-        ],
+        ),
       ),
     );
   }

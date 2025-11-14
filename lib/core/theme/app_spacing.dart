@@ -36,6 +36,9 @@ class AppSpacing {
   /// 매우 큰 간격: 32
   static double get xxxl => 32.w;
 
+  /// 특대 간격: 36
+  static double get huge36 => 36.w;
+
   /// 초대형 간격: 40
   static double get huge => 40.w;
 
@@ -109,6 +112,9 @@ class AppSpacing {
   /// 매우 큰 수직 간격: 32
   static SizedBox get verticalSpaceXXXL => SizedBox(height: xxxl);
 
+  /// 특대 수직 간격: 36
+  static SizedBox get verticalSpace36 => SizedBox(height: huge36);
+
   /// 초대형 수직 간격: 40
   static SizedBox get verticalSpaceHuge => SizedBox(height: huge);
 
@@ -148,6 +154,9 @@ class AppSpacing {
 
   /// 매우 큰 수평 간격: 32
   static SizedBox get horizontalSpaceXXXL => SizedBox(width: xxxl);
+
+  /// 특대 수평 간격: 36
+  static SizedBox get horizontalSpace36 => SizedBox(width: huge36);
 
   // ==================== 모달/다이얼로그 패딩 ====================
   /// 모달 내부 패딩: 24

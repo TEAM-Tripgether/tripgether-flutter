@@ -51,7 +51,7 @@ class RecentSnsContentSection extends ConsumerWidget {
                   return Center(
                     child: Text(
                       l10n.noSnsContentYet,
-                      style: AppTextStyles.contentTitle.copyWith(
+                      style: AppTextStyles.titleSemiBold14.copyWith(
                         color: AppColors.subColor2,
                       ),
                     ),

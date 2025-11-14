@@ -43,7 +43,7 @@ class SectionHeader extends StatelessWidget {
   /// 커스텀 trailing 위젯 (showMoreButton이 true일 때 무시됨)
   final Widget? trailing;
 
-  /// 제목 텍스트 스타일 (기본값: AppTextStyles.sectionTitle)
+  /// 제목 텍스트 스타일 (기본값: AppTextStyles.titleSemiBold16)
   final TextStyle? titleStyle;
 
   /// 왼쪽 패딩 (기본값: AppSpacing.sm)
@@ -71,7 +71,7 @@ class SectionHeader extends StatelessWidget {
             title,
             style:
                 titleStyle ??
-                AppTextStyles.sectionTitle.copyWith(
+                AppTextStyles.titleSemiBold16.copyWith(
                   color: AppColors.textColor1,
                 ),
           ),

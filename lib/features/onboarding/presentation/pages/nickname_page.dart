@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/inputs/onboarding_text_field.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../widgets/onboarding_layout.dart';
 
-/// 닉네임 설정 페이지 (페이지 1/5)
+/// 닉네임 설정 페이지 (STEP 2/5)
 ///
 /// 소셜 로그인에서 가져온 닉네임을 기본값으로 제공하며,
 /// 사용자가 수정할 수 있습니다 (2-10자).
@@ -76,48 +76,14 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
         // 빈 공간 클릭 시 키보드 포커스 해제
         FocusScope.of(context).unfocus();
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+      child: OnboardingLayout(
+        stepNumber: 2,
+        title: l10n.onboardingNicknamePrompt,
+        showRequiredMark: true,
+        description: '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요',
+        content: Column(
           children: [
-            // 상단 여백 (위로 올림)
-            AppSpacing.verticalSpaceHuge,
-
-            // 제목 (국제화 적용)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.onboardingNicknamePrompt,
-                  style: AppTextStyles.onboardingTitle.copyWith(
-                    color: AppColors.mainColor,
-                  ),
-                ),
-                AppSpacing.horizontalSpace(4),
-                Text(
-                  '*',
-                  style: AppTextStyles.greetingSemiBold20.copyWith(
-                    color: AppColors.error,
-                  ),
-                ),
-              ],
-            ),
-
-            // 제목-설명 간격
-            AppSpacing.verticalSpaceSM,
-
-            // 설명 (제목 바로 아래)
-            Text(
-              '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요',
-              style: AppTextStyles.buttonMediumMedium14.copyWith(
-                color: AppColors.textColor1.withValues(alpha: 0.5),
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            // 입력 필드를 중앙에 배치하기 위한 여백
+            // 입력 필드를 중앙에 배치
             const Spacer(),
 
             // 입력 필드
@@ -129,27 +95,20 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
               style: AppTextStyles.bodyMedium16,
             ),
 
-            // 입력-버튼 간격
             const Spacer(),
-
-            // 계속하기 버튼 (국제화 적용)
-            PrimaryButton(
-              text: l10n.btnContinue,
-              onPressed: isValid ? _handleNext : null,
-              isFullWidth: true,
-              // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
-              style: ButtonStyle(
-                shape: WidgetStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.circle),
-                  ),
-                ),
+          ],
+        ),
+        button: PrimaryButton(
+          text: l10n.btnContinue,
+          onPressed: isValid ? _handleNext : null,
+          isFullWidth: true,
+          style: ButtonStyle(
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.circle),
               ),
             ),
-
-            // 하단 여백 (버튼을 조금 위로)
-            AppSpacing.verticalSpace60,
-          ],
+          ),
         ),
       ),
     );

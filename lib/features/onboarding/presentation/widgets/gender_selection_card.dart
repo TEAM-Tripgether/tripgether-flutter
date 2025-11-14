@@ -50,7 +50,7 @@ class GenderSelectionCard extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            style: AppTextStyles.sectionTitle.copyWith(
+            style: AppTextStyles.titleSemiBold16.copyWith(
               // 선택 시: 보라색 텍스트, 미선택 시: 기본 텍스트 색상
               color: isSelected ? AppColors.mainColor : AppColors.textColor1,
             ),

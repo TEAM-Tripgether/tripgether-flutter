@@ -626,4 +626,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchButtonLabel => 'Search button';
+
+  @override
+  String get onboardingTermsPrompt => 'Please agree to the terms';
+
+  @override
+  String get onboardingTermsDescription =>
+      'You need to agree to the terms to use the service';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get ageConfirmation => 'I am 14 years or older';
+
+  @override
+  String get marketingConsent => 'Marketing consent (optional)';
+
+  @override
+  String get agreeToAll => 'Agree to all';
+
+  @override
+  String get viewDetails => 'View details';
 }

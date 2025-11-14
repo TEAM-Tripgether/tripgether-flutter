@@ -93,7 +93,7 @@ class InfoContainer extends StatelessWidget {
                 ],
                 Text(
                   title!,
-                  style: AppTextStyles.sectionTitle.copyWith(
+                  style: AppTextStyles.titleSemiBold16.copyWith(
                     color: titleColor ?? defaultTitleColor,
                   ),
                 ),
