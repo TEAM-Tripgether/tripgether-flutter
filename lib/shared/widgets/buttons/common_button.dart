@@ -483,7 +483,7 @@ class LinkButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: AppSpacing.sm, // 8.w
-          vertical: AppSpacing.xs, // 4.h
+          vertical: AppSpacing.sm, // 8.h
         ),
         decoration: BoxDecoration(
           color: backgroundColor ?? AppColors.white,

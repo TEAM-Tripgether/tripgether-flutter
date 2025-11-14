@@ -52,6 +52,10 @@ class SnsContentDetailScreen extends StatelessWidget {
 
               // 플랫폼 정보 + 제목 컨테이너
               _buildContentInfo(context, content),
+
+              AppSpacing.verticalSpaceSM,
+
+              // 설명 텍스트
             ],
           ),
         ),
@@ -59,24 +63,36 @@ class SnsContentDetailScreen extends StatelessWidget {
     );
   }
 
-  /// 썸네일 이미지 위젯 (Hero 애니메이션)
+  /// 썸네일 이미지 위젯 (Hero 애니메이션 + 그림자)
   Widget _buildThumbnail(ContentModel content) {
     return Hero(
       tag: 'sns-content-${content.contentId}',
-      child: ClipRRect(
-        borderRadius: AppRadius.allMedium,
-        child: AspectRatio(
-          aspectRatio: 16 / 9, // 썸네일 비율
-          child:
-              content.thumbnailUrl != null && content.thumbnailUrl!.isNotEmpty
-              ? CachedNetworkImage(
-                  imageUrl: content.thumbnailUrl!,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => _buildShimmerPlaceholder(),
-                  errorWidget: (context, url, error) =>
-                      _buildErrorPlaceholder(),
-                )
-              : _buildErrorPlaceholder(),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: AppRadius.allMedium,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              // offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: AppRadius.allMedium,
+          child: AspectRatio(
+            aspectRatio: 16 / 9, // 썸네일 비율
+            child:
+                content.thumbnailUrl != null && content.thumbnailUrl!.isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: content.thumbnailUrl!,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => _buildShimmerPlaceholder(),
+                    errorWidget: (context, url, error) =>
+                        _buildErrorPlaceholder(),
+                  )
+                : _buildErrorPlaceholder(),
+          ),
         ),
       ),
     );
@@ -110,7 +126,12 @@ class SnsContentDetailScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Container(
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.only(
+        left: AppSpacing.lg,
+        right: AppSpacing.sm,
+        bottom: AppSpacing.sm,
+        top: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         color: AppColors.backgroundLight,
         borderRadius: AppRadius.allMedium,
