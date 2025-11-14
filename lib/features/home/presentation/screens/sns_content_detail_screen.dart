@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/models/content_model.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/platform_icon_mapper.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 
 /// SNS 콘텐츠 상세 화면
@@ -104,8 +106,10 @@ class SnsContentDetailScreen extends StatelessWidget {
     );
   }
 
-  /// 콘텐츠 정보 컨테이너 (플랫폼 아이콘 + 제목)
+  /// 콘텐츠 정보 컨테이너 (플랫폼 아이콘 + 업로더명 + 링크 버튼)
   Widget _buildContentInfo(BuildContext context, ContentModel content) {
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -113,7 +117,7 @@ class SnsContentDetailScreen extends StatelessWidget {
         borderRadius: AppRadius.allMedium,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // 플랫폼 아이콘
           SvgPicture.asset(
@@ -124,32 +128,54 @@ class SnsContentDetailScreen extends StatelessWidget {
 
           SizedBox(width: 8.w),
 
-          // 제목 및 설명 (추후 사용자가 수정 예정)
+          // 업로더명 또는 제목 (한 줄)
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 플랫폼 업로더 이름
-                if (content.platformUploader != null)
-                  Text(
-                    content.platformUploader!,
-                    style: AppTextStyles.contentTitle,
-                  ),
-
-                SizedBox(height: 4.h),
-
-                // 제목
-                Text(
-                  content.title ?? '제목 없음',
-                  style: AppTextStyles.summaryBold18,
-                ),
-
-                // TODO: 추가 정보 (캡션, AI 요약 등)는 사용자가 차차 추가 예정
-              ],
+            child: Text(
+              content.platformUploader ?? content.title ?? l10n.noTitle,
+              style: AppTextStyles.contentTitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
+          ),
+
+          SizedBox(width: 12.w),
+
+          // "링크 바로가기" 버튼
+          LinkButton(
+            text: '링크 바로가기',
+            onPressed: () => _launchUrl(context, content.originalUrl),
           ),
         ],
       ),
+    );
+  }
+
+  /// 원본 콘텐츠 URL 열기
+  Future<void> _launchUrl(BuildContext context, String? url) async {
+    if (url == null || url.isEmpty) {
+      if (!context.mounted) return;
+      _showErrorSnackBar(context, '링크 정보가 없습니다.');
+      return;
+    }
+
+    try {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        if (!context.mounted) return;
+        _showErrorSnackBar(context, '링크를 열 수 없습니다.');
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+      _showErrorSnackBar(context, '링크 열기에 실패했습니다.');
+    }
+  }
+
+  /// 에러 메시지 SnackBar 표시
+  void _showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
     );
   }
 }

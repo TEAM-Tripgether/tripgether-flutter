@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// Tripgether 앱의 공용 버튼 컴포넌트
 ///
@@ -415,5 +417,95 @@ class ButtonGroup extends StatelessWidget {
         ],
       );
     }
+  }
+}
+
+// ==================== Link Button ====================
+
+/// 링크 바로가기 버튼
+///
+/// 외부 URL이나 콘텐츠로 이동하는 링크 버튼입니다.
+/// SVG 아이콘과 텍스트를 포함하며, 작고 가벼운 스타일입니다.
+///
+/// 사용 예시:
+/// ```dart
+/// LinkButton(
+///   text: '링크 바로가기',
+///   onPressed: () => _openUrl(),
+/// )
+/// ```
+///
+/// 커스텀 아이콘 예시:
+/// ```dart
+/// LinkButton(
+///   text: '상세보기',
+///   iconPath: 'assets/icons/open.svg',
+///   textStyle: AppTextStyles.labelMedium,
+///   backgroundColor: AppColors.primary,
+///   foregroundColor: AppColors.white,
+///   onPressed: () => _openDetail(),
+/// )
+/// ```
+class LinkButton extends StatelessWidget {
+  /// 버튼에 표시될 텍스트
+  final String text;
+
+  /// 버튼 탭 시 실행될 콜백 함수
+  final VoidCallback? onPressed;
+
+  /// SVG 아이콘 경로 (기본값: 'assets/icons/link.svg')
+  final String? iconPath;
+
+  /// 배경색 (기본값: AppColors.white)
+  final Color? backgroundColor;
+
+  /// 아이콘 및 텍스트 색상 (기본값: AppColors.subColor2)
+  final Color? foregroundColor;
+
+  /// 텍스트 스타일 (기본값: AppTextStyles.metaMedium12)
+  /// 버튼마다 다른 스타일이 필요할 때 커스텀 가능
+  final TextStyle? textStyle;
+
+  const LinkButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.iconPath,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.textStyle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm, // 8.w
+          vertical: AppSpacing.xs, // 4.h
+        ),
+        decoration: BoxDecoration(
+          color: backgroundColor ?? AppColors.white,
+          borderRadius: AppRadius.allSmall, // 4.r
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              iconPath ?? 'assets/icons/link.svg',
+              width: AppSizes.iconSmall, // 16.w
+              height: AppSizes.iconSmall,
+              colorFilter: ColorFilter.mode(
+                foregroundColor ?? AppColors.subColor2,
+                BlendMode.srcIn,
+              ),
+            ),
+            SizedBox(width: AppSpacing.xs), // 4.w
+            Text(text, style: textStyle ?? AppTextStyles.metaMedium12),
+          ],
+        ),
+      ),
+    );
   }
 }

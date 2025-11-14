@@ -119,7 +119,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
       // 아이콘 테마
       iconTheme: IconThemeData(
-        color: AppColors.onSurface,
+        color: Colors.black, // #000000
         size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
       ),
     );
@@ -148,7 +148,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
             icon: Icon(
               Icons.arrow_back_ios,
               size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
-              color: AppColors.subColor2,
+              color: Colors.black, // #000000
             ),
             onPressed: () {
               // GoRouter 사용 시 context.pop() 사용
