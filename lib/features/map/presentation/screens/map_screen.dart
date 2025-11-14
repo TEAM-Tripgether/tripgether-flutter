@@ -54,7 +54,11 @@ class MapScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.map_outlined, size: 64.w, color: AppColors.subColor2.withValues(alpha: 0.6)),
+            Icon(
+              Icons.map_outlined,
+              size: 64.w,
+              color: AppColors.subColor2.withValues(alpha: 0.6),
+            ),
             AppSpacing.verticalSpaceLG,
             Text(
               l10n.navMap,

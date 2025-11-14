@@ -58,7 +58,10 @@ class _TermsPageState extends ConsumerState<TermsPage> {
 
   /// 전체 동의 상태 확인
   bool get _isAllAgreed =>
-      _termsOfService && _privacyPolicy && _ageConfirmation && _marketingConsent;
+      _termsOfService &&
+      _privacyPolicy &&
+      _ageConfirmation &&
+      _marketingConsent;
 
   /// 필수 약관 동의 상태 확인 (버튼 활성화 조건)
   bool get _isRequiredAgreed =>
@@ -80,9 +83,7 @@ class _TermsPageState extends ConsumerState<TermsPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(title),
-        content: SingleChildScrollView(
-          child: Text(content),
-        ),
+        content: SingleChildScrollView(child: Text(content)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -173,7 +174,9 @@ class _TermsPageState extends ConsumerState<TermsPage> {
         onPressed: _isRequiredAgreed
             ? () {
                 // onboardingProvider에 약관 동의 상태 저장
-                ref.read(onboardingProvider.notifier).updateTermsAgreement(
+                ref
+                    .read(onboardingProvider.notifier)
+                    .updateTermsAgreement(
                       termsOfService: _termsOfService,
                       privacyPolicy: _privacyPolicy,
                       ageConfirmation: _ageConfirmation,

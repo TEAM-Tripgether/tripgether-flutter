@@ -229,7 +229,11 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 64.w, color: AppColors.textColor1.withValues(alpha: 0.7)),
+            Icon(
+              icon,
+              size: 64.w,
+              color: AppColors.textColor1.withValues(alpha: 0.7),
+            ),
             AppSpacing.verticalSpaceLG,
             Text(
               message,

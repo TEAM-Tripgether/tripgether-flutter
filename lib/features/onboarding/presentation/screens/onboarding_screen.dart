@@ -101,10 +101,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           },
           children: [
             // 페이지 1: 약관 동의 (STEP 1)
-            TermsPage(
-              onNext: _goToNextPage,
-              pageController: _pageController,
-            ),
+            TermsPage(onNext: _goToNextPage, pageController: _pageController),
 
             // 페이지 2: 닉네임 설정 (STEP 2)
             NicknamePage(

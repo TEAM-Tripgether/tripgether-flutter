@@ -76,7 +76,9 @@ class CustomListTile extends StatelessWidget {
     // 기본 부제목 스타일
     final effectiveSubtitleStyle =
         subtitleStyle ??
-        AppTextStyles.metaMedium12.copyWith(color: AppColors.subColor2.withValues(alpha: 0.6));
+        AppTextStyles.metaMedium12.copyWith(
+          color: AppColors.subColor2.withValues(alpha: 0.6),
+        );
 
     return ListTile(
       leading: leading,
@@ -266,7 +268,9 @@ class ActionListTile extends StatelessWidget {
               icon: Icon(
                 actionIcon,
                 size: actionIconSize ?? AppSizes.iconMedium,
-                color: actionIconColor ?? AppColors.subColor2.withValues(alpha: 0.6),
+                color:
+                    actionIconColor ??
+                    AppColors.subColor2.withValues(alpha: 0.6),
               ),
               onPressed: onActionTap,
             )

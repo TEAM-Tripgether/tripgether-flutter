@@ -70,7 +70,9 @@ class PrimaryButton extends StatelessWidget {
     return ElevatedButton.styleFrom(
       backgroundColor: AppColors.buttonActive, // #5325CB
       foregroundColor: AppColors.buttonTextActive, // white
-      disabledBackgroundColor: AppColors.mainColor.withValues(alpha: 0.2), // #5325CB alpha 0.2
+      disabledBackgroundColor: AppColors.mainColor.withValues(
+        alpha: 0.2,
+      ), // #5325CB alpha 0.2
       disabledForegroundColor: AppColors.buttonTextInactive, // white
       elevation: AppElevation.medium,
       shadowColor: AppColors.shadow.withValues(alpha: 0.15),
@@ -174,7 +176,9 @@ class SecondaryButton extends StatelessWidget {
   ButtonStyle _buildBaseStyle() {
     return OutlinedButton.styleFrom(
       foregroundColor: AppColors.mainColor, // #5325CB 텍스트
-      disabledForegroundColor: AppColors.textColor1.withValues(alpha: 0.4), // alpha 0.4
+      disabledForegroundColor: AppColors.textColor1.withValues(
+        alpha: 0.4,
+      ), // alpha 0.4
       side: BorderSide(
         color: AppColors.subColor2, // #BBBBBB 테두리
         width: AppSizes.borderThin,
@@ -270,7 +274,9 @@ class TertiaryButton extends StatelessWidget {
   ButtonStyle _buildBaseStyle() {
     return TextButton.styleFrom(
       foregroundColor: AppColors.subColor2, // #BBBBBB
-      disabledForegroundColor: AppColors.textColor1.withValues(alpha: 0.4), // alpha 0.4
+      disabledForegroundColor: AppColors.textColor1.withValues(
+        alpha: 0.4,
+      ), // alpha 0.4
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(100), // 완전한 pill 모양
       ),
@@ -362,7 +368,9 @@ class CommonIconButton extends StatelessWidget {
     // 배경이 있는 경우 Container로 감싸기
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.subColor2.withValues(alpha: 0.2), // subColor2 alpha 0.2
+        color:
+            backgroundColor ??
+            AppColors.subColor2.withValues(alpha: 0.2), // subColor2 alpha 0.2
         borderRadius: AppRadius.allMedium,
       ),
       child: iconButton,

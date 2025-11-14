@@ -46,7 +46,9 @@ class WelcomePage extends ConsumerWidget {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl), // 32px (OnboardingLayout과 동일)
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.xxxl,
+        ), // 32px (OnboardingLayout과 동일)
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

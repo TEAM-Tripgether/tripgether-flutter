@@ -99,10 +99,14 @@ class ChipList extends StatelessWidget {
             color: textColor ?? AppColors.textColor1,
           ),
         ),
-        backgroundColor: backgroundColor ?? AppColors.subColor2.withValues(alpha: 0.95),
+        backgroundColor:
+            backgroundColor ?? AppColors.subColor2.withValues(alpha: 0.95),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.large),
-          side: BorderSide(color: borderColor ?? AppColors.subColor2.withValues(alpha: 0.9), width: 1),
+          side: BorderSide(
+            color: borderColor ?? AppColors.subColor2.withValues(alpha: 0.9),
+            width: 1,
+          ),
         ),
         padding:
             chipPadding ??
@@ -236,7 +240,8 @@ class SelectableChipList extends StatelessWidget {
         ),
         backgroundColor: isSelected
             ? (selectedBackgroundColor ?? AppColors.mainColor)
-            : (unselectedBackgroundColor ?? AppColors.subColor2.withValues(alpha: 0.95)),
+            : (unselectedBackgroundColor ??
+                  AppColors.subColor2.withValues(alpha: 0.95)),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.large),
           side: BorderSide(

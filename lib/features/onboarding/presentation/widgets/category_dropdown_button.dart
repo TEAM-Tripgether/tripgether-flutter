@@ -59,14 +59,19 @@ class CategoryDropdownButton extends StatelessWidget {
         decoration: BoxDecoration(
           // 우선순위: 열린 상태 > 선택된 항목 있음 > 기본 상태
           color: isExpanded
-              ? AppColors.mainColor.withValues(alpha: 0.1) // #E8DDFF - 연한 보라색 (열린 상태)
+              ? AppColors.mainColor.withValues(
+                  alpha: 0.1,
+                ) // #E8DDFF - 연한 보라색 (열린 상태)
               : selectedCount > 0
-              ? AppColors.mainColor.withValues(alpha: 0.1) // #E8DDFF - 연한 보라색 (선택됨)
+              ? AppColors.mainColor.withValues(
+                  alpha: 0.1,
+                ) // #E8DDFF - 연한 보라색 (선택됨)
               : Colors.grey.withValues(alpha: 0.1), // 연한 회색 (기본)
           // 테두리를 항상 유지하여 크기 변화 방지 (색상만 변경)
           border: Border.all(
             color: (isExpanded || selectedCount > 0)
-                ? AppColors.mainColor // #664BAE - 보라색 (활성)
+                ? AppColors
+                      .mainColor // #664BAE - 보라색 (활성)
                 : Colors.transparent, // 투명 (비활성)
             width: 2,
           ),
@@ -82,9 +87,11 @@ class CategoryDropdownButton extends StatelessWidget {
               style: AppTextStyles.bodyRegular14.copyWith(
                 // 우선순위: 열린 상태 > 선택된 항목 있음 > 기본 상태
                 color: isExpanded
-                    ? AppColors.gradient2 // #5325CB - 선명한 보라색 (열린 상태)
+                    ? AppColors
+                          .gradient2 // #5325CB - 선명한 보라색 (열린 상태)
                     : selectedCount > 0
-                    ? AppColors.gradient2 // #5325CB - 선명한 보라색 (선택됨)
+                    ? AppColors
+                          .gradient2 // #5325CB - 선명한 보라색 (선택됨)
                     : AppColors.subColor2, // #BBBBBB - 회색 (기본)
               ),
             ),

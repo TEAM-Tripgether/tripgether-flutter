@@ -38,7 +38,9 @@ class GenderSelectionCard extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           // 선택 시: 연한 보라색 배경, 미선택 시: 흰색 배경
-          color: isSelected ? AppColors.mainColor.withValues(alpha: 0.1) : AppColors.surface,
+          color: isSelected
+              ? AppColors.mainColor.withValues(alpha: 0.1)
+              : AppColors.surface,
           // 테두리를 항상 유지하여 크기 변화 방지 (색상만 변경)
           border: Border.all(
             color: isSelected ? AppColors.mainColor : AppColors.subColor2,

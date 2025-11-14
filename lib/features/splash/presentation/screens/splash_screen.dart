@@ -194,7 +194,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   offset: Offset(-150.w, 0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.mainColor, // 스플래시 배경색과 동일하여 Together를 자연스럽게 가림
+                      color: AppColors
+                          .mainColor, // 스플래시 배경색과 동일하여 Together를 자연스럽게 가림
                       borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text('Trip', style: AppTextStyles.splashLogoBold48),
