@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tripgether/l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// 외부 앱에서 공유된 데이터 파싱 유틸리티
 ///
