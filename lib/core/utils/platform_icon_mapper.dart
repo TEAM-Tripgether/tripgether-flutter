@@ -9,7 +9,7 @@ class PlatformIconMapper {
   /// 지원되는 플랫폼:
   /// - INSTAGRAM
   /// - YOUTUBE
-  /// - TIKTOK
+  /// - TIKTOK (추후 지원 예정)
   ///
   /// 지원되지 않는 플랫폼의 경우 기본 아이콘을 반환합니다.
   static String getIconPath(String platform) {
@@ -18,8 +18,8 @@ class PlatformIconMapper {
         return 'assets/platform_icons/instagram.svg';
       case 'YOUTUBE':
         return 'assets/platform_icons/youtube.svg';
-      case 'TIKTOK':
-        return 'assets/platform_icons/tiktok.svg';
+      // case 'TIKTOK':
+      //   return 'assets/platform_icons/tiktok.svg';
       default:
         return 'assets/platform_icons/default.svg';
     }
@@ -32,8 +32,8 @@ class PlatformIconMapper {
         return 'Instagram';
       case 'YOUTUBE':
         return 'YouTube';
-      case 'TIKTOK':
-        return 'TikTok';
+      // case 'TIKTOK':
+      //   return 'TikTok';
       default:
         return 'SNS';
     }

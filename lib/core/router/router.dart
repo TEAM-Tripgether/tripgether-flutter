@@ -8,6 +8,7 @@ import '../../shared/widgets/layout/bottom_navigation.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../../features/notifications/presentation/screens/notification_screen.dart';
 import '../../core/models/content_model.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
@@ -117,6 +118,16 @@ class AppRouter {
       path: AppRoutes.onboarding,
       pageBuilder: (context, state) =>
           NoTransitionPage(child: const OnboardingScreen()),
+    ),
+
+    /// 알림 화면 라우트
+    ///
+    /// 외부 앱에서 공유된 링크 및 데이터를 표시하는 전용 페이지입니다.
+    /// 모든 탭에서 접근 가능하며, 백엔드 처리 대기 중인 공유 데이터를 표시합니다.
+    GoRoute(
+      path: AppRoutes.notifications,
+      pageBuilder: (context, state) =>
+          NoTransitionPage(child: const NotificationScreen()),
     ),
 
     /// StatefulShellRoute: 상태를 유지하는 바텀 네비게이션 레이아웃

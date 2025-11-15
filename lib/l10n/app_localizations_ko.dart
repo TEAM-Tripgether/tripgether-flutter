@@ -659,4 +659,56 @@ class AppLocalizationsKo extends AppLocalizations {
   String onboardingWelcomeUnified(String nickname) {
     return '모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 $nickname님';
   }
+
+  @override
+  String get notifications => '알림';
+
+  @override
+  String get notificationSectionToday => '오늘';
+
+  @override
+  String get noNotifications => '새로운 알림이 없습니다';
+
+  @override
+  String get sharedContentMessage => '외부 앱에서 공유된 링크가 여기에 표시됩니다';
+
+  @override
+  String get aiAnalyzingLocation => 'AI가 위치정보를 파악하고 있습니다';
+
+  @override
+  String aiAnalyzedLocations(String count) {
+    return 'AI가 $count곳의 위치정보를 파악했습니다';
+  }
+
+  @override
+  String authorPost(String author) {
+    return '$author님의 게시물';
+  }
+
+  @override
+  String get notificationStatusProcessing => '진행 중';
+
+  @override
+  String get notificationStatusCheckButton => '확인하기';
+
+  @override
+  String get timestampJustNow => '방금';
+
+  @override
+  String timestampMinutesAgo(int minutes) {
+    return '$minutes분 전';
+  }
+
+  @override
+  String timestampHoursAgo(int hours) {
+    return '$hours시간 전';
+  }
+
+  @override
+  String timestampDaysAgo(int days) {
+    return '$days일 전';
+  }
+
+  @override
+  String get defaultAuthor => '사용자';
 }

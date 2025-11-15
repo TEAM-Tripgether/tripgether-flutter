@@ -1303,6 +1303,90 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 {nickname}님'**
   String onboardingWelcomeUnified(String nickname);
+
+  /// 알림 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'알림'**
+  String get notifications;
+
+  /// 알림 섹션 헤더 - 오늘
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘'**
+  String get notificationSectionToday;
+
+  /// 알림이 없을 때 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'새로운 알림이 없습니다'**
+  String get noNotifications;
+
+  /// 알림 빈 상태 설명 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'외부 앱에서 공유된 링크가 여기에 표시됩니다'**
+  String get sharedContentMessage;
+
+  /// 알림 진행 중 상태 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 위치정보를 파악하고 있습니다'**
+  String get aiAnalyzingLocation;
+
+  /// 알림 완료 상태 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 {count}곳의 위치정보를 파악했습니다'**
+  String aiAnalyzedLocations(String count);
+
+  /// 작성자 게시물 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{author}님의 게시물'**
+  String authorPost(String author);
+
+  /// 알림 진행 중 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'진행 중'**
+  String get notificationStatusProcessing;
+
+  /// 알림 완료 확인 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'확인하기'**
+  String get notificationStatusCheckButton;
+
+  /// 방금 전 타임스탬프
+  ///
+  /// In ko, this message translates to:
+  /// **'방금'**
+  String get timestampJustNow;
+
+  /// N분 전 타임스탬프
+  ///
+  /// In ko, this message translates to:
+  /// **'{minutes}분 전'**
+  String timestampMinutesAgo(int minutes);
+
+  /// N시간 전 타임스탬프
+  ///
+  /// In ko, this message translates to:
+  /// **'{hours}시간 전'**
+  String timestampHoursAgo(int hours);
+
+  /// N일 전 타임스탬프
+  ///
+  /// In ko, this message translates to:
+  /// **'{days}일 전'**
+  String timestampDaysAgo(int days);
+
+  /// 기본 작성자명 (파싱 실패 시)
+  ///
+  /// In ko, this message translates to:
+  /// **'사용자'**
+  String get defaultAuthor;
 }
 
 class _AppLocalizationsDelegate

@@ -6,16 +6,17 @@ part of 'onboarding_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$onboardingHash() => r'f7be84859140a4d8cfa3ba9da9b8b14aa3cd8528';
+String _$onboardingHash() => r'a2540393dfc10a6a3a859ed6be5ffab3a435acc1';
 
 /// 온보딩 데이터 상태 관리 Provider
 ///
 /// **역할**:
-/// - 온보딩 5단계(닉네임, 성별, 생년월일, 관심사, 환영)에서 입력받은 데이터를 중앙 관리
+/// - 온보딩 6단계(약관, 닉네임, 성별, 생년월일, 관심사, 환영)에서 입력받은 데이터를 중앙 관리
 /// - 페이지 간 데이터 전달 및 최종 welcome_page에서 개인화된 메시지 표시
 /// - 백엔드 API 연동 시 한 번에 모든 데이터 전송 가능
 ///
 /// **사용 위치**:
+/// - TermsPage: 약관 동의 시 `updateTermsAgreement()` 호출
 /// - NicknamePage: 닉네임 입력 시 `updateNickname()` 호출
 /// - GenderPage: 성별 선택 시 `updateGender()` 호출
 /// - BirthdatePage: 생년월일 입력 시 `updateBirthdate()` 호출

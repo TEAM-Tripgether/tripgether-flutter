@@ -1147,5 +1147,105 @@
         "example": "여행러버"
       }
     }
+  },
+
+  "notifications": "알림",
+  "@notifications": {
+    "description": "알림 화면 제목"
+  },
+
+  "notificationSectionToday": "오늘",
+  "@notificationSectionToday": {
+    "description": "알림 섹션 헤더 - 오늘"
+  },
+
+  "noNotifications": "새로운 알림이 없습니다",
+  "@noNotifications": {
+    "description": "알림이 없을 때 메시지"
+  },
+
+  "sharedContentMessage": "외부 앱에서 공유된 링크가 여기에 표시됩니다",
+  "@sharedContentMessage": {
+    "description": "알림 빈 상태 설명 메시지"
+  },
+
+  "aiAnalyzingLocation": "AI가 위치정보를 파악하고 있습니다",
+  "@aiAnalyzingLocation": {
+    "description": "알림 진행 중 상태 메시지"
+  },
+
+  "aiAnalyzedLocations": "AI가 {count}곳의 위치정보를 파악했습니다",
+  "@aiAnalyzedLocations": {
+    "description": "알림 완료 상태 메시지",
+    "placeholders": {
+      "count": {
+        "type": "String",
+        "example": "N"
+      }
+    }
+  },
+
+  "authorPost": "{author}님의 게시물",
+  "@authorPost": {
+    "description": "작성자 게시물 표시",
+    "placeholders": {
+      "author": {
+        "type": "String",
+        "example": "sejong_student"
+      }
+    }
+  },
+
+  "notificationStatusProcessing": "진행 중",
+  "@notificationStatusProcessing": {
+    "description": "알림 진행 중 버튼 텍스트"
+  },
+
+  "notificationStatusCheckButton": "확인하기",
+  "@notificationStatusCheckButton": {
+    "description": "알림 완료 확인 버튼 텍스트"
+  },
+
+  "timestampJustNow": "방금",
+  "@timestampJustNow": {
+    "description": "방금 전 타임스탬프"
+  },
+
+  "timestampMinutesAgo": "{minutes}분 전",
+  "@timestampMinutesAgo": {
+    "description": "N분 전 타임스탬프",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "timestampHoursAgo": "{hours}시간 전",
+  "@timestampHoursAgo": {
+    "description": "N시간 전 타임스탬프",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "timestampDaysAgo": "{days}일 전",
+  "@timestampDaysAgo": {
+    "description": "N일 전 타임스탬프",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "defaultAuthor": "사용자",
+  "@defaultAuthor": {
+    "description": "기본 작성자명 (파싱 실패 시)"
   }
 }

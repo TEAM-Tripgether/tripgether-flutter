@@ -1147,5 +1147,105 @@
         "example": "TravelLover"
       }
     }
+  },
+
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications screen title"
+  },
+
+  "notificationSectionToday": "Today",
+  "@notificationSectionToday": {
+    "description": "Notification section header - Today"
+  },
+
+  "noNotifications": "No new notifications",
+  "@noNotifications": {
+    "description": "No notifications message"
+  },
+
+  "sharedContentMessage": "Shared links from external apps will appear here",
+  "@sharedContentMessage": {
+    "description": "Notification empty state description message"
+  },
+
+  "aiAnalyzingLocation": "AI is analyzing location information",
+  "@aiAnalyzingLocation": {
+    "description": "Notification processing status message"
+  },
+
+  "aiAnalyzedLocations": "AI analyzed {count} location(s)",
+  "@aiAnalyzedLocations": {
+    "description": "Notification completed status message",
+    "placeholders": {
+      "count": {
+        "type": "String",
+        "example": "N"
+      }
+    }
+  },
+
+  "authorPost": "{author}'s post",
+  "@authorPost": {
+    "description": "Author post display",
+    "placeholders": {
+      "author": {
+        "type": "String",
+        "example": "sejong_student"
+      }
+    }
+  },
+
+  "notificationStatusProcessing": "Processing",
+  "@notificationStatusProcessing": {
+    "description": "Notification processing button text"
+  },
+
+  "notificationStatusCheckButton": "View",
+  "@notificationStatusCheckButton": {
+    "description": "Notification completed check button text"
+  },
+
+  "timestampJustNow": "Just now",
+  "@timestampJustNow": {
+    "description": "Just now timestamp"
+  },
+
+  "timestampMinutesAgo": "{minutes}m ago",
+  "@timestampMinutesAgo": {
+    "description": "N minutes ago timestamp",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "timestampHoursAgo": "{hours}h ago",
+  "@timestampHoursAgo": {
+    "description": "N hours ago timestamp",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "timestampDaysAgo": "{days}d ago",
+  "@timestampDaysAgo": {
+    "description": "N days ago timestamp",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "defaultAuthor": "User",
+  "@defaultAuthor": {
+    "description": "Default author name (when parsing fails)"
   }
 }

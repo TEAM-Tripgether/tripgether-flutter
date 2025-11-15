@@ -30,6 +30,9 @@ class AppRoutes {
   static const String schedule = '/schedule';
   static const String myPage = '/my-page';
 
+  /// 알림 화면 경로 (모든 탭에서 접근 가능)
+  static const String notifications = '/notifications';
+
   /// 홈 탭 하위 경로들
   static const String snsContentsList = '/home/sns-contents';
   static const String snsContentDetail = '/home/sns-contents/detail/:contentId';

@@ -671,4 +671,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String onboardingWelcomeUnified(String nickname) {
     return 'All set! 🎉\nLet\'s dive into the local day, $nickname!';
   }
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notificationSectionToday => 'Today';
+
+  @override
+  String get noNotifications => 'No new notifications';
+
+  @override
+  String get sharedContentMessage =>
+      'Shared links from external apps will appear here';
+
+  @override
+  String get aiAnalyzingLocation => 'AI is analyzing location information';
+
+  @override
+  String aiAnalyzedLocations(String count) {
+    return 'AI analyzed $count location(s)';
+  }
+
+  @override
+  String authorPost(String author) {
+    return '$author\'s post';
+  }
+
+  @override
+  String get notificationStatusProcessing => 'Processing';
+
+  @override
+  String get notificationStatusCheckButton => 'View';
+
+  @override
+  String get timestampJustNow => 'Just now';
+
+  @override
+  String timestampMinutesAgo(int minutes) {
+    return '${minutes}m ago';
+  }
+
+  @override
+  String timestampHoursAgo(int hours) {
+    return '${hours}h ago';
+  }
+
+  @override
+  String timestampDaysAgo(int days) {
+    return '${days}d ago';
+  }
+
+  @override
+  String get defaultAuthor => 'User';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -250,28 +251,9 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   /// 알림 아이콘의 기본 동작
-  /// 현재는 간단한 다이얼로그를 표시 (향후 알림 페이지로 이동하도록 변경 가능)
+  /// 알림 페이지로 이동
   void _showNotificationDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          l10n.notificationTitle,
-        ), // AppTheme의 dialogTheme.titleTextStyle 사용
-        content: Text(
-          l10n.noNewNotifications,
-        ), // AppTheme의 dialogTheme.contentTextStyle 사용
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              l10n.btnConfirm,
-            ), // AppTheme의 textButtonTheme.style.textStyle 사용
-          ),
-        ],
-      ),
-    );
+    context.push(AppRoutes.notifications);
   }
 
   /// PreferredSizeWidget 인터페이스 구현
@@ -300,6 +282,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     List<Widget>? rightActions,
     VoidCallback? onNotificationPressed,
     TextStyle? titleStyle,
+    Color? backgroundColor,
   }) {
     return CommonAppBar(
       title: title,
@@ -308,6 +291,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       rightActions: rightActions,
       onNotificationPressed: onNotificationPressed,
       titleStyle: titleStyle ?? AppTextStyles.greetingSemiBold20,
+      backgroundColor: backgroundColor,
     );
   }
 
