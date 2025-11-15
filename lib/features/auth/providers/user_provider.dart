@@ -32,6 +32,10 @@ class UserNotifier extends _$UserNotifier {
   /// 사용자 정보와 토큰을 안전하게 저장하는 보안 저장소입니다.
   /// - Android: EncryptedSharedPreferences
   /// - iOS: Keychain (앱 삭제 시 데이터 자동 삭제)
+  ///
+  /// **중요**: `first_unlock_this_device`를 사용하여
+  /// 앱 삭제 시 Keychain 데이터가 자동으로 삭제되도록 설정
+  /// (기본값과 동일하지만 명시적으로 설정)
   static const _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
     iOptions: IOSOptions(

@@ -34,6 +34,7 @@ class TripSearchBar extends StatefulWidget {
 
 class _TripSearchBarState extends State<TripSearchBar> {
   late TextEditingController _internalController;
+  late FocusNode _focusNode;
 
   TextEditingController get _effectiveController =>
       widget.controller ?? _internalController;
@@ -41,6 +42,7 @@ class _TripSearchBarState extends State<TripSearchBar> {
   @override
   void initState() {
     super.initState();
+    _focusNode = FocusNode();
     if (widget.controller == null) {
       _internalController = TextEditingController();
     }
@@ -48,6 +50,7 @@ class _TripSearchBarState extends State<TripSearchBar> {
 
   @override
   void dispose() {
+    _focusNode.dispose();
     if (widget.controller == null) {
       _internalController.dispose();
     }
@@ -66,69 +69,81 @@ class _TripSearchBarState extends State<TripSearchBar> {
       builder: (context, value, child) {
         final hasText = value.text.isNotEmpty;
 
-        return Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.md,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(AppRadius.circle),
-            border: Border.all(
-              color: AppColors.subColor2,
-              width: AppSizes.borderThin,
+        return GestureDetector(
+          onTap: () {
+            // readOnly가 아닐 때만 포커스 주기
+            if (!widget.readOnly) {
+              _focusNode.requestFocus();
+            } else {
+              // readOnly일 때는 onTap 콜백 실행 (검색 화면 이동)
+              widget.onTap?.call();
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.md,
             ),
-          ),
-          child: Row(
-            children: [
-              // 검색 아이콘 (항상 표시)
-              Icon(
-                Icons.search,
-                size: AppSizes.iconMedium,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(AppRadius.circle),
+              border: Border.all(
                 color: AppColors.subColor2,
+                width: AppSizes.borderThin,
               ),
-              SizedBox(width: AppSpacing.smd),
+            ),
+            child: Row(
+              children: [
+                // 검색 아이콘 (항상 표시)
+                Icon(
+                  Icons.search,
+                  size: AppSizes.iconMedium,
+                  color: AppColors.subColor2,
+                ),
+                SizedBox(width: AppSpacing.smd),
 
-              // 텍스트 입력 필드
-              Expanded(
-                child: TextField(
-                  controller: _effectiveController,
-                  readOnly: widget.readOnly,
-                  autofocus: widget.autofocus,
-                  onTap: widget.onTap,
-                  onChanged: widget.onChanged,
-                  onSubmitted: widget.onSubmitted,
-                  textAlign: TextAlign.start,
-                  style: AppTextStyles.metaMedium12,
-                  decoration: InputDecoration(
-                    hintText: widget.hintText,
-                    hintStyle: AppTextStyles.metaMedium12.copyWith(
+                // 텍스트 입력 필드
+                Expanded(
+                  child: TextField(
+                    controller: _effectiveController,
+                    focusNode: _focusNode,
+                    readOnly: widget.readOnly,
+                    autofocus: widget.autofocus,
+                    onTap: widget.onTap,
+                    onChanged: widget.onChanged,
+                    onSubmitted: widget.onSubmitted,
+                    textAlign: TextAlign.start,
+                    style: AppTextStyles.metaMedium12,
+                    decoration: InputDecoration(
+                      hintText: widget.hintText,
+                      hintStyle: AppTextStyles.metaMedium12.copyWith(
+                        color: AppColors.subColor2,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                      filled: false,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      isDense: true,
+                    ),
+                    textInputAction: TextInputAction.search,
+                  ),
+                ),
+
+                // 지우기 버튼 (텍스트 있을 때만)
+                if (hasText) ...[
+                  SizedBox(width: AppSpacing.xs),
+                  GestureDetector(
+                    onTap: _clearText,
+                    child: Icon(
+                      Icons.clear,
+                      size: AppSizes.iconSmall,
                       color: AppColors.subColor2,
                     ),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                    filled: false,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    isDense: true,
                   ),
-                  textInputAction: TextInputAction.search,
-                ),
-              ),
-
-              // 지우기 버튼 (텍스트 있을 때만)
-              if (hasText) ...[
-                SizedBox(width: AppSpacing.xs),
-                GestureDetector(
-                  onTap: _clearText,
-                  child: Icon(
-                    Icons.clear,
-                    size: AppSizes.iconSmall,
-                    color: AppColors.subColor2,
-                  ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         );
       },

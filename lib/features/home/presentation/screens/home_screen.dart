@@ -77,8 +77,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   // Tripgether 로고
                   SvgPicture.asset(
                     'assets/tripgether_text_logo.svg',
-                    width: 88.w,
-                    height: 28.h,
+                    width: 66.w,
+                    height: 24.h,
                     fit: BoxFit.contain,
                   ),
                   // 알림 아이콘
@@ -88,14 +88,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     },
                     child: SvgPicture.asset(
                       'assets/icons/alarm_inactive.svg',
-                      width: AppSizes.iconExtraLarge,
-                      height: AppSizes.iconExtraLarge,
+                      width: AppSizes.iconXLarge,
+                      height: AppSizes.iconXLarge,
                     ),
                   ),
                 ],
               ),
 
-              AppSpacing.verticalSpaceLG,
+              AppSpacing.verticalSpaceSMD,
 
               // 인사말
               Padding(
@@ -110,9 +110,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         color: AppColors.mainColor,
                       ),
                     ),
-
-                    AppSpacing.verticalSpaceXS,
-
                     // 부제목
                     Text(
                       l10n.greetingSubtitle,
@@ -152,60 +149,67 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget build(BuildContext context) {
     super.build(context); // AutomaticKeepAliveClientMixin 필수 호출
 
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Column(
-        children: [
-          // 상단 헤더 영역 (배경색 있음)
-          Consumer(
-            builder: (context, ref, child) {
-              final userAsync = ref.watch(userNotifierProvider);
-              final nickname = userAsync.when(
-                loading: () => '사용자',
-                error: (_, _) => '사용자',
-                data: (user) => user?.nickname ?? '사용자',
-              );
-              return _buildHeader(context, nickname);
-            },
-          ),
-          // 하단 콘텐츠 영역 (흰색 배경)
-          Expanded(
-            child: CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                CupertinoSliverRefreshControl(onRefresh: onRefresh),
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    // 최근 SNS에서 본 콘텐츠 섹션
-                    RecentSnsContentSection(),
-
-                    // 섹션 구분선
-                    const SectionDivider.thick(),
-
-                    // 최근 저장한 장소 섹션
-                    RecentSavedPlacesSection(),
-
-                    // 하단 여백
-                    AppSpacing.verticalSpaceXL,
-                  ]),
-                ),
-              ],
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        // 빈 공간 클릭 시 키보드 포커스 해제
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: Column(
+          children: [
+            // 상단 헤더 영역 (배경색 있음)
+            Consumer(
+              builder: (context, ref, child) {
+                final userAsync = ref.watch(userNotifierProvider);
+                final nickname = userAsync.when(
+                  loading: () => '사용자',
+                  error: (_, _) => '사용자',
+                  data: (user) => user?.nickname ?? '사용자',
+                );
+                return _buildHeader(context, nickname);
+              },
             ),
-          ),
-        ],
-      ),
-      // 디버그용 FloatingActionButton (Share Extension 로그 확인)
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ShareExtensionLogScreen(),
+            // 하단 콘텐츠 영역 (흰색 배경)
+            Expanded(
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  CupertinoSliverRefreshControl(onRefresh: onRefresh),
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      // 최근 SNS에서 본 콘텐츠 섹션
+                      RecentSnsContentSection(),
+
+                      // 섹션 구분선
+                      const SectionDivider.thick(),
+
+                      // 최근 저장한 장소 섹션
+                      RecentSavedPlacesSection(),
+
+                      // 하단 여백
+                      AppSpacing.verticalSpaceXL,
+                    ]),
+                  ),
+                ],
+              ),
             ),
-          );
-        },
-        tooltip: 'Share Extension 로그',
-        child: const Icon(Icons.bug_report),
+          ],
+        ),
+        // 디버그용 FloatingActionButton (Share Extension 로그 확인)
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ShareExtensionLogScreen(),
+              ),
+            );
+          },
+          tooltip: 'Share Extension 로그',
+          child: const Icon(Icons.bug_report),
+        ),
       ),
     );
   }
