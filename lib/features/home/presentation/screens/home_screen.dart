@@ -80,13 +80,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
                 return SliverAppBar(
                   expandedHeight: 190.h, // 전체 확장 높이
-                  // collapsedHeight: 116.h, // 축소 시 높이 (로고 + 검색바만, 여백 최소화)
                   pinned: true, // 스크롤 시에도 최소 높이 유지
                   backgroundColor: AppColors.backgroundLight,
                   elevation: 0,
                   surfaceTintColor: Colors.transparent,
                   automaticallyImplyLeading: false, // 뒤로가기 버튼 제거
-                  toolbarHeight: 56.h,
+                  toolbarHeight: AppSizes.appBarHeight,
                   centerTitle: false, // 로고를 왼쪽으로 정렬
                   // 항상 보이는 로고 + 알림
                   title: SvgPicture.asset(
@@ -117,11 +116,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       final currentHeight = constraints.biggest.height;
 
                       // 최소 높이 (툴바 + 검색바)
-                      final minHeight = 56.h + 52.h;
+                      final minHeight = AppSizes.appBarHeight + 52.h;
 
                       // 확장 비율 계산 (0.0 = 완전 축소, 1.0 = 완전 확장)
                       final expandRatio =
-                          ((currentHeight - minHeight) / (210.h - minHeight))
+                          ((currentHeight - minHeight) / (190.h - minHeight))
                               .clamp(0.0, 1.0);
 
                       return FlexibleSpaceBar(
@@ -132,7 +131,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // 상단 여백 (로고 + 알림 영역) - 동적 축소
-                              SizedBox(height: 50.h + (10.h * expandRatio)),
+                              SizedBox(
+                                height:
+                                    AppSpacing.huge +
+                                    (AppSpacing.smd * expandRatio),
+                              ),
 
                               // 인사말 + 부제목 (점진적으로 축소되며 사라짐)
                               Opacity(
@@ -144,7 +147,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   child: Padding(
                                     padding: EdgeInsets.only(
                                       left: AppSpacing.lg + AppSpacing.sm,
-                                      bottom: 4.h, // 검색바와의 간격
+                                      bottom: AppSpacing.xs, // 검색바와의 간격
                                     ),
                                     child: Column(
                                       crossAxisAlignment:
