@@ -75,7 +75,7 @@ class PlaceDetailCard extends StatelessWidget {
                     ),
                     padding: EdgeInsets.symmetric(
                       horizontal: AppSpacing.smd,
-                      vertical: AppSpacing.xs,
+                      vertical: AppSpacing.xxs,
                     ),
                     child: Text(
                       category,
@@ -85,7 +85,7 @@ class PlaceDetailCard extends StatelessWidget {
                     ),
                   ),
 
-                  AppSpacing.verticalSpaceSM, // 8
+                  AppSpacing.verticalSpaceXSM, // 6
                   // 장소 이름
                   Text(
                     placeName,
@@ -94,7 +94,7 @@ class PlaceDetailCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
 
-                  AppSpacing.verticalSpaceSM, // 8
+                  AppSpacing.verticalSpaceXS, // 4
                   // 주소
                   Row(
                     children: [
@@ -107,7 +107,7 @@ class PlaceDetailCard extends StatelessWidget {
                           BlendMode.srcIn,
                         ),
                       ),
-                      SizedBox(width: AppSpacing.xs),
+                      AppSpacing.horizontalSpaceXS,
                       Expanded(
                         child: Text(
                           address,
@@ -121,7 +121,7 @@ class PlaceDetailCard extends StatelessWidget {
                     ],
                   ),
 
-                  AppSpacing.verticalSpaceSM, // 8
+                  AppSpacing.verticalSpaceXS, // 4
                   // 평점 및 리뷰 수
                   Row(
                     children: [
@@ -178,8 +178,8 @@ class PlaceDetailCard extends StatelessWidget {
       borderRadius: AppRadius.allMedium,
       child: CachedNetworkImage(
         imageUrl: imageUrl,
-        width: 100.w,
-        height: 80.h,
+        width: 104.w,
+        height: 84.h,
         fit: BoxFit.cover,
         placeholder: (context, url) => _buildShimmerPlaceholder(),
         errorWidget: (context, url, error) => _buildErrorPlaceholder(),
@@ -199,8 +199,8 @@ class PlaceDetailCard extends StatelessWidget {
   /// 에러 플레이스홀더
   Widget _buildErrorPlaceholder() {
     return Container(
-      width: 100.w,
-      height: 80.h,
+      width: 104.w,
+      height: 84.h,
       color: AppColors.imagePlaceholder,
       child: Center(
         child: Icon(

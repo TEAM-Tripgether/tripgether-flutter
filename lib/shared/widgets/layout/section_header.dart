@@ -79,7 +79,6 @@ class SectionHeader extends StatelessWidget {
               maxLines: 1, // 추가
             ),
           ),
-
           // 더보기 버튼 또는 커스텀 trailing
           if (showMoreButton)
             IconButton(
