@@ -105,67 +105,71 @@ class _TermsPageState extends ConsumerState<TermsPage> {
       description: l10n.onboardingTermsDescription,
       content: Column(
         children: [
-          // 약관 목록 영역을 중앙에 배치
-          const Spacer(),
+          // 상단 고정 간격
+          AppSpacing.verticalSpace72,
 
-          // 전체 동의 체크박스
+          // 전체 동의 (강조 컨테이너)
           _buildCheckboxTile(
             value: _isAllAgreed,
             onChanged: _handleAgreeAll,
             title: l10n.agreeToAll,
-            isBold: true,
             showViewDetails: false,
+            backgroundColor: AppColors.subColor2.withValues(alpha: 0.2),
           ),
 
-          AppSpacing.verticalSpaceSM,
-
-          // 구분선
-          Divider(color: AppColors.subColor2, height: 1),
-
-          AppSpacing.verticalSpaceSM,
-
-          // 필수 약관 목록
+          AppSpacing.verticalSpaceSM, // 8px
+          // 필수 약관 1
           _buildCheckboxTile(
             value: _termsOfService,
             onChanged: (value) =>
                 setState(() => _termsOfService = value ?? false),
-            title: '${l10n.termsOfService} (필수)',
+            title: '${l10n.termsOfService}*',
             onViewDetails: () => _showTermsDialog(
               l10n.termsOfService,
               '서비스 이용약관 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
             ),
           ),
 
+          AppSpacing.verticalSpaceSM, // 8px
+          // 필수 약관 2
           _buildCheckboxTile(
             value: _privacyPolicy,
             onChanged: (value) =>
                 setState(() => _privacyPolicy = value ?? false),
-            title: '${l10n.privacyPolicy} (필수)',
+            title: '[필수] ${l10n.privacyPolicy}',
             onViewDetails: () => _showTermsDialog(
               l10n.privacyPolicy,
               '개인정보 처리방침 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
             ),
           ),
 
+          AppSpacing.verticalSpaceSM, // 8px
+          // 필수 약관 3
           _buildCheckboxTile(
             value: _ageConfirmation,
             onChanged: (value) =>
                 setState(() => _ageConfirmation = value ?? false),
-            title: '${l10n.ageConfirmation} (필수)',
-            showViewDetails: false,
+            title: '[필수] ${l10n.ageConfirmation}',
+            onViewDetails: () => _showTermsDialog(
+              l10n.ageConfirmation,
+              '만 14세 이상 확인 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
+            ),
           ),
 
-          AppSpacing.verticalSpaceMD,
-
+          AppSpacing.verticalSpaceSM, // 8px
           // 선택 약관
           _buildCheckboxTile(
             value: _marketingConsent,
             onChanged: (value) =>
                 setState(() => _marketingConsent = value ?? false),
-            title: l10n.marketingConsent,
-            showViewDetails: false,
+            title: '[선택] ${l10n.marketingConsent}',
+            onViewDetails: () => _showTermsDialog(
+              l10n.marketingConsent,
+              '마케팅 정보 수신 동의 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
+            ),
           ),
 
+          // 하단 동적 간격
           const Spacer(),
         ],
       ),
@@ -204,46 +208,79 @@ class _TermsPageState extends ConsumerState<TermsPage> {
     required bool value,
     required ValueChanged<bool?> onChanged,
     required String title,
-    bool isBold = false,
+    TextStyle? textStyle,
     bool showViewDetails = true,
     VoidCallback? onViewDetails,
+    Color? backgroundColor,
+    BorderRadius? borderRadius,
+    EdgeInsets? padding,
   }) {
-    final l10n = AppLocalizations.of(context);
-
-    return Row(
-      children: [
-        // 체크박스
-        Checkbox(
-          value: value,
-          onChanged: onChanged,
-          activeColor: AppColors.mainColor,
-        ),
-
-        // 제목
-        Expanded(
-          child: GestureDetector(
-            onTap: () => onChanged(!value),
-            child: Text(
-              title,
-              style: isBold
-                  ? AppTextStyles.titleSemiBold16
-                  : AppTextStyles.bodyRegular14,
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        color: backgroundColor ?? Colors.transparent,
+        borderRadius: borderRadius ?? AppRadius.allMedium,
+      ),
+      padding:
+          padding ??
+          EdgeInsets.symmetric(
+            vertical: AppSpacing.xs,
+            horizontal: AppSpacing.xs,
           ),
-        ),
-
-        // 자세히 보기 버튼
-        if (showViewDetails)
-          TextButton(
-            onPressed: onViewDetails,
-            child: Text(
-              l10n.viewDetails,
-              style: AppTextStyles.buttonMediumMedium14.copyWith(
-                color: AppColors.subColor2,
+      child: Row(
+        children: [
+          // 터치 영역 확대: 체크박스부터 아이콘 버튼 전까지
+          Expanded(
+            child: InkWell(
+              onTap: () => onChanged(!value),
+              borderRadius: borderRadius ?? AppRadius.allSmall,
+              child: Row(
+                children: [
+                  // 체크박스 (IgnorePointer로 감싸서 활성 스타일 유지)
+                  IgnorePointer(
+                    child: Transform.scale(
+                      scale: 1.2, // 체크박스 크기 확대
+                      child: Checkbox(
+                        value: value,
+                        onChanged: onChanged, // 활성 상태 유지 (스타일 적용)
+                        activeColor: AppColors.mainColor, // 체크 시 mainColor
+                        checkColor: AppColors.white, // 체크 아이콘 흰색
+                        shape: RoundedRectangleBorder(
+                          borderRadius: AppRadius.allSmall, // 4px radius
+                        ),
+                        side: BorderSide(
+                          color: AppColors.subColor2,
+                          width: AppSizes.borderMedium,
+                        ),
+                      ),
+                    ),
+                  ),
+                  // 제목
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: textStyle ?? AppTextStyles.bodyMedium16,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-      ],
+
+          // 자세히 보기 아이콘
+          if (showViewDetails)
+            IconButton(
+              onPressed: onViewDetails,
+              icon: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppSizes.iconSmall, // 16px
+                color: AppColors.textColor1.withValues(alpha: 0.4),
+              ),
+              constraints: const BoxConstraints(),
+            ),
+        ],
+      ),
     );
   }
 }

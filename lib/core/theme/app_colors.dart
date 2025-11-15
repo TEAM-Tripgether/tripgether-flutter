@@ -25,6 +25,12 @@ class AppColors {
   /// Background Light (#F8F8F8) - 섹션 구분용 연한 회색
   static const Color backgroundLight = Color(0xFFF8F8F8);
 
+  /// Red Accent (#F94C4F) - 강조 색상
+  static const Color redAccent = Color(0xFFF94C4F);
+
+  /// Gray Purple (#A5A3AA) - 회색 보라
+  static const Color grayPurple = Color(0xFFA5A3AA);
+
   // ============================================================================
   // 그라데이션 팔레트
   // ============================================================================

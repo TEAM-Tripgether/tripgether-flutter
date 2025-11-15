@@ -157,7 +157,7 @@ class OnboardingLayout extends StatelessWidget {
             headerSection,
             Expanded(child: content),
             button,
-            AppSpacing.verticalSpace80,
+            AppSpacing.verticalSpace90,
           ],
         ),
       );
@@ -175,7 +175,7 @@ class OnboardingLayout extends StatelessWidget {
           child: Padding(padding: contentPadding!, child: content),
         ),
 
-        // 8. 하단 버튼 (32px 패딩)
+        // 8. 하단 버튼 (좌우 32px 패딩)
         Padding(padding: defaultPadding, child: button),
 
         // 9. 하단 고정 간격

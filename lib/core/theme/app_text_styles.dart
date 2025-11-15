@@ -60,6 +60,14 @@ class AppTextStyles {
     color: AppColors.textColor1,
   );
 
+  /// 다이얼로그 제목 (SemiBold, 18px)
+  /// 사용처: 다이얼로그 메인 텍스트, 중요 알림 제목
+  static TextStyle titleSemiBold18 = TextStyle(
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 18.sp,
+    color: AppColors.textColor1,
+  );
+
   // ============================================================================
   // 섹션 제목 (Section Headers)
   // ============================================================================

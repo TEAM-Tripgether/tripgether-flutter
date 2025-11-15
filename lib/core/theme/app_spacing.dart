@@ -127,6 +127,9 @@ class AppSpacing {
   /// 특대 수직 간격: 80 (로고-버튼 간격)
   static SizedBox get verticalSpace80 => SizedBox(height: 80.h);
 
+  /// 특대 수직 간격: 90 (로고-버튼 간격)
+  static SizedBox get verticalSpace90 => SizedBox(height: 90.h);
+
   /// 초특대 수직 간격: 120 (상단 여백)
   static SizedBox get verticalSpace120 => SizedBox(height: 120.h);
 
@@ -364,8 +367,8 @@ class AppSizes {
 
   // ==================== Component Heights ====================
 
-  /// 버튼 최소 높이: 54
-  static double get buttonHeight => 54.h;
+  /// 버튼 최소 높이: 58
+  static double get buttonHeight => 58.h;
 
   /// 텍스트 버튼 최소 높이: 40
   static double get textButtonHeight => 40.h;

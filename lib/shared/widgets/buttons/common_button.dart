@@ -113,9 +113,9 @@ class PrimaryButton extends StatelessWidget {
                   ],
                   Text(
                     text,
-                    style: AppTextStyles.buttonLargeMedium16.copyWith(
+                    style: AppTextStyles.bodyMedium16.copyWith(
                       color: onPressed != null
-                          ? AppColors.buttonTextActive
+                          ? AppColors.white
                           : AppColors.buttonTextInactive,
                     ),
                   ),
