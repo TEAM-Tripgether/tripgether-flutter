@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../shared/widgets/common/app_snackbar.dart';
 
 /// Share Extension 로그 확인 화면
 ///
@@ -143,18 +144,10 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
   Future<void> _copyUrl(String url) async {
     await Clipboard.setData(ClipboardData(text: url));
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'URL 복사 완료: $url',
-            style: AppTextStyles.bodyRegular14.copyWith(
-              color: AppColors.textColor1,
-            ),
-          ),
-          backgroundColor: AppColors.surface,
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
+      AppSnackBar.showInfo(
+        context,
+        'URL 복사 완료: $url',
+        duration: const Duration(seconds: 2),
       );
     }
   }

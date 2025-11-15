@@ -174,7 +174,12 @@ class AppRouter {
                     GoRoute(
                       path: 'detail/:contentId',
                       pageBuilder: (context, state) {
-                        final content = state.extra as ContentModel;
+                        // state.extra가 Map일 경우 ContentModel로 변환
+                        final content = state.extra is Map<String, dynamic>
+                            ? ContentModel.fromJson(
+                                state.extra as Map<String, dynamic>,
+                              )
+                            : state.extra as ContentModel;
                         return NoTransitionPage(
                           child: SnsContentDetailScreen(content: content),
                         );

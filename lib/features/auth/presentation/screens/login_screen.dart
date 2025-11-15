@@ -7,6 +7,7 @@ import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../shared/widgets/common/app_snackbar.dart';
 import '../../providers/login_provider.dart';
 // import '../widgets/login_form.dart'; // 주석 처리: 이메일 로그인 임시 비활성화
 import '../widgets/social_login_section.dart';
@@ -64,11 +65,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } else if (context.mounted) {
       // 로그인 실패 시 에러 메시지 표시
       debugPrint('[LoginScreen] ⚠️ 로그인 실패 - 에러 메시지 표시');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context).loginFailedTryAgain),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
+      AppSnackBar.showError(
+        context,
+        AppLocalizations.of(context).loginFailedTryAgain,
       );
     }
   }
@@ -112,15 +111,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } else if (!success && context.mounted) {
       // 로그인 실패 시 에러 메시지 표시
       debugPrint('[LoginScreen] ⚠️ 구글 로그인 실패 - 에러 메시지 표시');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context).googleLoginFailed,
-            style: AppTextStyles.bodyRegular14.copyWith(color: AppColors.white),
-          ),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-        ),
+      AppSnackBar.showError(
+        context,
+        AppLocalizations.of(context).googleLoginFailed,
       );
     } else if (!context.mounted) {
       debugPrint('[LoginScreen] ⚠️ context가 unmounted됨 - 화면 전환 불가');

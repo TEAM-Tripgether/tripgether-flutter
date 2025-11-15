@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/buttons/social_login_button.dart';
+import '../../../../shared/widgets/common/app_snackbar.dart';
 
 /// 소셜 로그인 섹션 위젯
 ///
@@ -95,18 +95,10 @@ class SocialLoginSection extends StatelessWidget {
   ///
   /// 카카오, 네이버 로그인 버튼 클릭 시 호출됩니다.
   void _showComingSoon(BuildContext context, AppLocalizations l10n) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          l10n.comingSoon,
-          style: AppTextStyles.bodyRegular14.copyWith(
-            color: AppColors.textColor1,
-          ),
-        ),
-        backgroundColor: AppColors.surface,
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
+    AppSnackBar.showInfo(
+      context,
+      l10n.comingSoon,
+      duration: const Duration(seconds: 2),
     );
   }
 }

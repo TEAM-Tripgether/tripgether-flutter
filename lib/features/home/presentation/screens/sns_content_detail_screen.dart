@@ -13,6 +13,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/cards/place_detail_card.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
+import '../../../../shared/widgets/common/app_snackbar.dart';
 import '../../../../shared/widgets/layout/section_header.dart';
 
 /// SNS 콘텐츠 상세 화면
@@ -291,7 +292,11 @@ class SnsContentDetailScreen extends StatelessWidget {
   Future<void> _launchUrl(BuildContext context, String? url) async {
     if (url == null || url.isEmpty) {
       if (!context.mounted) return;
-      _showErrorSnackBar(context, '링크 정보가 없습니다.');
+      AppSnackBar.showError(
+        context,
+        '링크 정보가 없습니다.',
+        duration: const Duration(seconds: 2),
+      );
       return;
     }
 
@@ -301,18 +306,19 @@ class SnsContentDetailScreen extends StatelessWidget {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
         if (!context.mounted) return;
-        _showErrorSnackBar(context, '링크를 열 수 없습니다.');
+        AppSnackBar.showError(
+          context,
+          '링크를 열 수 없습니다.',
+          duration: const Duration(seconds: 2),
+        );
       }
     } catch (e) {
       if (!context.mounted) return;
-      _showErrorSnackBar(context, '링크 열기에 실패했습니다.');
+      AppSnackBar.showError(
+        context,
+        '링크 열기에 실패했습니다.',
+        duration: const Duration(seconds: 2),
+      );
     }
-  }
-
-  /// 에러 메시지 SnackBar 표시
-  void _showErrorSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
-    );
   }
 }

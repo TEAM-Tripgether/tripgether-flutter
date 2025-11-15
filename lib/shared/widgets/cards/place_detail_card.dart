@@ -59,11 +59,7 @@ class PlaceDetailCard extends StatelessWidget {
           children: [
             // 텍스트 영역 (카테고리, 장소명, 주소, 리뷰)
             Padding(
-              padding: EdgeInsets.only(
-                left: AppSpacing.sm,
-                right: AppSpacing.sm,
-                top: AppSpacing.xs,
-              ),
+              padding: EdgeInsets.all(AppSpacing.xsm),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

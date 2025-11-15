@@ -24,7 +24,7 @@ class RecentSavedPlacesSection extends ConsumerWidget {
     return Padding(
       padding: EdgeInsets.only(
         left: AppSpacing.lg,
-        right: AppSpacing.md,
+        right: AppSpacing.lg,
         top: AppSpacing.sm,
         bottom: AppSpacing.lg,
       ),
@@ -61,7 +61,7 @@ class RecentSavedPlacesSection extends ConsumerWidget {
               return Column(
                 children: places.map((place) {
                   return Padding(
-                    padding: EdgeInsets.only(bottom: AppSpacing.md),
+                    padding: EdgeInsets.only(bottom: AppSpacing.sm),
                     child: PlaceDetailCard(
                       category: place.category ?? '장소',
                       placeName: place.name,

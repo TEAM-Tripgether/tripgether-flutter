@@ -7,8 +7,8 @@ import '../../../core/theme/app_text_styles.dart';
 /// Tripgether 앱의 공용 다이얼로그 컴포넌트
 ///
 /// **디자인 스펙**:
-/// - 크기: 306w × 184h
-/// - 패딩: 16, radius: 8
+/// - 크기: 340w × 184h
+/// - 패딩: top만 24, 16, radius: 8
 /// - 배경: 흰색
 ///
 /// **콘텐츠 구조**:
@@ -281,18 +281,31 @@ class CommonDialog extends StatelessWidget {
       ),
       backgroundColor: AppColors.white,
       child: Container(
-        width: 306.w,
-        padding: EdgeInsets.all(AppSpacing.lg), // 16
+        width: 340.w,
+        padding: EdgeInsets.only(
+          top: AppSpacing.xxl,
+          left: AppSpacing.lg,
+          right: AppSpacing.lg,
+          bottom: AppSpacing.lg,
+        ), // 16
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // 제목
-            Text(title, style: AppTextStyles.titleSemiBold18),
+            Text(
+              title,
+              style: AppTextStyles.titleSemiBold18,
+              textAlign: TextAlign.center,
+            ),
 
             AppSpacing.verticalSpaceXXL, // 24px
             // 메인 설명
-            Text(description, style: AppTextStyles.bodyMedium14),
+            Text(
+              description,
+              style: AppTextStyles.bodyMedium14,
+              textAlign: TextAlign.center,
+            ),
 
             // 서브 설명 (선택 사항)
             if (subtitle != null) ...[
@@ -302,6 +315,7 @@ class CommonDialog extends StatelessWidget {
                 style: AppTextStyles.bodyMedium12.copyWith(
                   color: AppColors.subColor2,
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
 
