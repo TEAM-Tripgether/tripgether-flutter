@@ -39,7 +39,7 @@ class RecentSavedPlacesSection extends ConsumerWidget {
             },
           ),
 
-          AppSpacing.verticalSpaceMD,
+          AppSpacing.verticalSpaceXS,
 
           // 저장한 장소 리스트 (Riverpod AsyncValue 패턴)
           placesAsync.when(

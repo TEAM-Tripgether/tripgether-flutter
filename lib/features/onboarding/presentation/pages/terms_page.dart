@@ -123,7 +123,7 @@ class _TermsPageState extends ConsumerState<TermsPage> {
             value: _termsOfService,
             onChanged: (value) =>
                 setState(() => _termsOfService = value ?? false),
-            title: '${l10n.termsOfService}*',
+            title: '${l10n.termsOfService} *',
             onViewDetails: () => _showTermsDialog(
               l10n.termsOfService,
               '서비스 이용약관 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
@@ -136,7 +136,7 @@ class _TermsPageState extends ConsumerState<TermsPage> {
             value: _privacyPolicy,
             onChanged: (value) =>
                 setState(() => _privacyPolicy = value ?? false),
-            title: '[필수] ${l10n.privacyPolicy}',
+            title: '${l10n.privacyPolicy} *',
             onViewDetails: () => _showTermsDialog(
               l10n.privacyPolicy,
               '개인정보 처리방침 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
@@ -149,7 +149,7 @@ class _TermsPageState extends ConsumerState<TermsPage> {
             value: _ageConfirmation,
             onChanged: (value) =>
                 setState(() => _ageConfirmation = value ?? false),
-            title: '[필수] ${l10n.ageConfirmation}',
+            title: '${l10n.ageConfirmation} *',
             onViewDetails: () => _showTermsDialog(
               l10n.ageConfirmation,
               '만 14세 이상 확인 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
