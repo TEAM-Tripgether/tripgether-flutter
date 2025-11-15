@@ -7,8 +7,10 @@ import '../../../core/theme/app_text_styles.dart';
 /// Tripgether 앱의 공용 다이얼로그 컴포넌트
 ///
 /// **디자인 스펙**:
-/// - 크기: 340w × 184h
-/// - 패딩: top만 24, 16, radius: 8
+/// - 크기: 콘텐츠 + 패딩 기반 자동 조정
+/// - 마진: 좌우/상하 40px (insetPadding, huge)
+/// - 패딩: top 24, left/right/bottom 16
+/// - Radius: 8px (medium)
 /// - 배경: 흰색
 ///
 /// **콘텐츠 구조**:
@@ -280,14 +282,17 @@ class CommonDialog extends StatelessWidget {
         borderRadius: AppRadius.allMedium, // 8px
       ),
       backgroundColor: AppColors.white,
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.huge, // 40
+        vertical: AppSpacing.huge, // 40
+      ),
       child: Container(
-        width: 340.w,
         padding: EdgeInsets.only(
           top: AppSpacing.xxl,
           left: AppSpacing.lg,
           right: AppSpacing.lg,
           bottom: AppSpacing.lg,
-        ), // 16
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -335,7 +340,8 @@ class CommonDialog extends StatelessWidget {
       return _buildButton(
         context: context,
         text: leftButtonText!,
-        backgroundColor: leftButtonColor ?? AppColors.subColor2,
+        backgroundColor:
+            leftButtonColor ?? AppColors.subColor2.withValues(alpha: 0.2),
         textColor: leftButtonTextColor ?? AppColors.textColor1,
         onPressed: onLeftPressed,
         isExpanded: true,
@@ -363,7 +369,8 @@ class CommonDialog extends StatelessWidget {
             child: _buildButton(
               context: context,
               text: leftButtonText!,
-              backgroundColor: leftButtonColor ?? AppColors.subColor2,
+              backgroundColor:
+                  leftButtonColor ?? AppColors.subColor2.withValues(alpha: 0.2),
               textColor: leftButtonTextColor ?? AppColors.textColor1,
               onPressed: onLeftPressed,
             ),

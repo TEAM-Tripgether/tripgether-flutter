@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tripgether/core/theme/app_colors.dart';
 import 'package:tripgether/core/theme/app_spacing.dart';
 import 'package:tripgether/core/theme/app_text_styles.dart';
@@ -9,8 +8,9 @@ import 'package:tripgether/core/theme/app_text_styles.dart';
 /// **디자인 스펙**:
 /// - 배경색: AppColors.grayPurple (#A5A3AA)
 /// - 텍스트: AppTextStyles.titleSemiBold16, 흰색
-/// - 크기: 376w × 64h
-/// - 패딩: 좌우 20, 상하 24
+/// - 크기: 콘텐츠 + 패딩 기반 자동 조정
+/// - 마진: 좌우/상하 20px (xl)
+/// - 패딩: 20px (xl)
 /// - 정렬: start (왼쪽 정렬)
 ///
 /// **사용 예시**:
@@ -55,14 +55,13 @@ class AppSnackBar {
         backgroundColor: backgroundColor ?? AppColors.grayPurple,
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.allLarge),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.allSmall),
         margin: EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.lg,
-        ),
-        padding: EdgeInsets.symmetric(
           horizontal: AppSpacing.xl, // 20
-          vertical: AppSpacing.xxl, // 24
+          vertical: AppSpacing.xl, // 20
+        ),
+        padding: EdgeInsets.all(
+          AppSpacing.xl, // 20
         ),
         // 크기 제약 (376w × 64h)
         // floating behavior에서는 constraints로 제어
@@ -73,18 +72,14 @@ class AppSnackBar {
 
   /// SnackBar 콘텐츠 빌드
   static Widget _buildContent(String message) {
-    return SizedBox(
-      width: 376.w,
-      height: 64.h,
-      child: Align(
-        alignment: Alignment.centerLeft, // start 정렬
-        child: Text(
-          message,
-          style: AppTextStyles.titleSemiBold16.copyWith(color: AppColors.white),
-          textAlign: TextAlign.start,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
+    return Align(
+      alignment: Alignment.centerLeft, // start 정렬
+      child: Text(
+        message,
+        style: AppTextStyles.titleSemiBold16.copyWith(color: AppColors.white),
+        textAlign: TextAlign.start,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
