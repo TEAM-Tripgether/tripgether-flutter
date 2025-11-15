@@ -74,7 +74,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 final userAsync = ref.watch(userNotifierProvider);
                 final nickname = userAsync.when(
                   loading: () => '사용자',
-                  error: (_, __) => '사용자',
+                  error: (error, _) => '사용자',
                   data: (user) => user?.nickname ?? '사용자',
                 );
 
@@ -109,22 +109,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                   ],
 
-                  // LayoutBuilder로 스크롤 정도에 따라 점진적 축소
-                  flexibleSpace: LayoutBuilder(
-                    builder: (context, constraints) {
-                      // 현재 AppBar 높이
-                      final currentHeight = constraints.biggest.height;
+                  // FlexibleSpaceBar로 스크롤 정도에 따라 점진적 축소
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    background: Builder(
+                      builder: (context) {
+                        // Flutter가 자동 계산한 축소 비율 가져오기
+                        final settings = context
+                            .dependOnInheritedWidgetOfExactType<
+                              FlexibleSpaceBarSettings
+                            >();
+                        final currentExtent = settings?.currentExtent ?? 190.h;
+                        final minExtent =
+                            settings?.minExtent ??
+                            (AppSizes.appBarHeight + AppSizes.searchBarHeight);
+                        final maxExtent = settings?.maxExtent ?? 190.h;
 
-                      // 최소 높이 (툴바 + 검색바)
-                      final minHeight = AppSizes.appBarHeight + 52.h;
+                        // 확장 비율 계산 (0.0 = 완전 축소, 1.0 = 완전 확장)
+                        final expandRatio =
+                            ((currentExtent - minExtent) /
+                                    (maxExtent - minExtent))
+                                .clamp(0.0, 1.0);
 
-                      // 확장 비율 계산 (0.0 = 완전 축소, 1.0 = 완전 확장)
-                      final expandRatio =
-                          ((currentHeight - minHeight) / (190.h - minHeight))
-                              .clamp(0.0, 1.0);
-
-                      return FlexibleSpaceBar(
-                        background: SafeArea(
+                        return SafeArea(
                           bottom: false,
                           child: Column(
                             mainAxisSize: MainAxisSize.min, // 최소 크기로 축소
@@ -134,7 +141,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               SizedBox(
                                 height:
                                     AppSpacing.huge +
-                                    (AppSpacing.smd * expandRatio),
+                                    (AppSpacing.lg * expandRatio),
                               ),
 
                               // 인사말 + 부제목 (점진적으로 축소되며 사라짐)
@@ -174,14 +181,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               ),
                             ],
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
 
                   // 항상 보이는 검색바
                   bottom: PreferredSize(
-                    preferredSize: Size.fromHeight(52.h),
+                    preferredSize: Size.fromHeight(AppSizes.searchBarHeight),
                     child: Container(
                       color: AppColors.backgroundLight,
                       padding: EdgeInsets.only(

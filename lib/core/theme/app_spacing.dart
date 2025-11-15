@@ -382,6 +382,9 @@ class AppSizes {
   /// App Bar 높이: 56 (Material Design 기본)
   static double get appBarHeight => 56.h;
 
+  /// 검색바 높이: 52 (홈 화면 SliverAppBar bottom)
+  static double get searchBarHeight => 52.h;
+
   /// Bottom Sheet 핸들 높이: 4
   static double get bottomSheetHandleHeight => 4.h;
 
