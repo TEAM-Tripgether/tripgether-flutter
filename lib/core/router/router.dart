@@ -189,9 +189,7 @@ class AppRouter {
                             );
                           } catch (e) {
                             // JSON 파싱 실패 시 에러 페이지 표시
-                            debugPrint(
-                              '[Router] ContentModel 파싱 실패: $e',
-                            );
+                            debugPrint('[Router] ContentModel 파싱 실패: $e');
                             content = null;
                           }
                         } else if (state.extra is ContentModel) {

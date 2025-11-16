@@ -174,7 +174,11 @@ class MyPageScreen extends ConsumerWidget {
         ),
       ),
       trailing: isSelected
-          ? Icon(Icons.check_circle, color: primaryColor, size: AppSizes.iconDefault)
+          ? Icon(
+              Icons.check_circle,
+              color: primaryColor,
+              size: AppSizes.iconDefault,
+            )
           : null,
       onTap: () async {
         // 언어 변경
@@ -266,9 +270,7 @@ class MyPageScreen extends ConsumerWidget {
               foregroundColor: colorScheme.onSecondaryContainer,
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.allMedium,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
             ),
           ),
 
@@ -312,9 +314,7 @@ class MyPageScreen extends ConsumerWidget {
               foregroundColor: colorScheme.onErrorContainer,
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.allMedium,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
             ),
           ),
 
@@ -344,9 +344,7 @@ class MyPageScreen extends ConsumerWidget {
               foregroundColor: colorScheme.onSecondaryContainer,
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.allMedium,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
             ),
           ),
 
@@ -378,9 +376,7 @@ class MyPageScreen extends ConsumerWidget {
               foregroundColor: colorScheme.onPrimaryContainer,
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.allMedium,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
             ),
           ),
 
@@ -409,9 +405,7 @@ class MyPageScreen extends ConsumerWidget {
               foregroundColor: colorScheme.onTertiaryContainer,
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.allMedium,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
             ),
           ),
 
@@ -473,7 +467,11 @@ class MyPageScreen extends ConsumerWidget {
               // 로그아웃 버튼
               OutlinedButton.icon(
                 onPressed: () => _handleLogout(context, ref),
-                icon: Icon(Icons.logout, size: AppSizes.iconMedium, color: colorScheme.error),
+                icon: Icon(
+                  Icons.logout,
+                  size: AppSizes.iconMedium,
+                  color: colorScheme.error,
+                ),
                 label: Text(
                   AppLocalizations.of(context).logout,
                   style: AppTextStyles.bodyMedium16.copyWith(
