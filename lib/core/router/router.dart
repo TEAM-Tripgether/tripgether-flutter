@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import 'routes.dart';
 import 'route_guards.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
+import '../theme/app_spacing.dart';
 import '../../shared/widgets/layout/bottom_navigation.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
@@ -195,23 +198,21 @@ class AppRouter {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.error_outline,
-                                      size: 64,
-                                      color: Colors.grey,
+                                      size: AppSizes.iconError,
+                                      color: AppColors.subColor2,
                                     ),
-                                    const SizedBox(height: 16),
-                                    const Text(
+                                    AppSpacing.verticalSpaceLG,
+                                    Text(
                                       '콘텐츠를 찾을 수 없습니다',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: AppTextStyles.summaryBold18,
                                     ),
-                                    const SizedBox(height: 8),
+                                    AppSpacing.verticalSpaceSM,
                                     Text(
                                       'Content ID: $contentId',
-                                      style: const TextStyle(color: Colors.grey),
+                                      style: AppTextStyles.bodyRegular14
+                                          .copyWith(color: AppColors.subColor2),
                                     ),
                                   ],
                                 ),

@@ -349,6 +349,9 @@ class AppSizes {
   /// 최대 크기 아이콘: 48
   static double get iconXLarge => 48.w;
 
+  /// 에러 아이콘: 64 (에러 화면 등)
+  static double get iconError => 64.w;
+
   // ==================== Border Widths ====================
 
   /// 얇은 테두리: 1 (기본)
