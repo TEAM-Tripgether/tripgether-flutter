@@ -166,7 +166,9 @@ class GoogleAuthService {
       await GoogleSignIn.instance.disconnect();
       debugPrint('[GoogleAuthService] ✅ Google 계정 연결 해제 성공 (토큰 폐기)');
     } catch (error) {
-      debugPrint('[GoogleAuthService] ⚠️ disconnect 실패, signOut으로 fallback: $error');
+      debugPrint(
+        '[GoogleAuthService] ⚠️ disconnect 실패, signOut으로 fallback: $error',
+      );
       // disconnect 실패 시 최소한 로컬 세션은 삭제
       await signOut();
     }

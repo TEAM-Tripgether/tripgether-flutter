@@ -125,8 +125,9 @@ class AppRouter {
 
     /// 알림 화면 라우트
     ///
-    /// 외부 앱에서 공유된 링크 및 데이터를 표시하는 전용 페이지입니다.
-    /// 모든 탭에서 접근 가능하며, 백엔드 처리 대기 중인 공유 데이터를 표시합니다.
+    /// 앱 내 알림을 통합 관리하는 화면입니다.
+    /// - 외부 앱에서 공유된 링크/데이터 (현재 구현)
+    /// - 판매 알림, 활동 알림 등 (향후 추가 예정)
     GoRoute(
       path: AppRoutes.notifications,
       pageBuilder: (context, state) =>
@@ -182,9 +183,17 @@ class AppRouter {
 
                         // state.extra 타입 안전성 체크
                         if (state.extra is Map<String, dynamic>) {
-                          content = ContentModel.fromJson(
-                            state.extra as Map<String, dynamic>,
-                          );
+                          try {
+                            content = ContentModel.fromJson(
+                              state.extra as Map<String, dynamic>,
+                            );
+                          } catch (e) {
+                            // JSON 파싱 실패 시 에러 페이지 표시
+                            debugPrint(
+                              '[Router] ContentModel 파싱 실패: $e',
+                            );
+                            content = null;
+                          }
                         } else if (state.extra is ContentModel) {
                           content = state.extra as ContentModel;
                         }

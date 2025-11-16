@@ -344,7 +344,6 @@ class CommonDialog extends StatelessWidget {
             leftButtonColor ?? AppColors.subColor2.withValues(alpha: 0.2),
         textColor: leftButtonTextColor ?? AppColors.textColor1,
         onPressed: onLeftPressed,
-        isExpanded: true,
       );
     }
 
@@ -356,7 +355,6 @@ class CommonDialog extends StatelessWidget {
         backgroundColor: rightButtonColor ?? AppColors.redAccent,
         textColor: rightButtonTextColor ?? AppColors.white,
         onPressed: onRightPressed,
-        isExpanded: true,
       );
     }
 
@@ -396,15 +394,18 @@ class CommonDialog extends StatelessWidget {
   }
 
   /// 개별 버튼 빌드
+  ///
+  /// **레이아웃**:
+  /// - 단독 사용: 자연스럽게 전체 너비 차지 (Column의 crossAxisAlignment: stretch)
+  /// - Row 내부: 외부에서 Expanded로 감싸져 균등 분할
   Widget _buildButton({
     required BuildContext context,
     required String text,
     required Color backgroundColor,
     required Color textColor,
     required VoidCallback? onPressed,
-    bool isExpanded = false,
   }) {
-    final button = ElevatedButton(
+    return ElevatedButton(
       onPressed: () {
         // 콜백 실행
         onPressed?.call();
@@ -429,7 +430,5 @@ class CommonDialog extends StatelessWidget {
         style: AppTextStyles.bodyMedium16.copyWith(color: textColor),
       ),
     );
-
-    return isExpanded ? button : Expanded(child: button);
   }
 }

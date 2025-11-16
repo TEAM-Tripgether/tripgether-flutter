@@ -28,6 +28,8 @@ class MyPageScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final currentLocale = ref.watch(localeNotifierProvider);
     return Scaffold(
+      /// 화이트 배경 (일관성: AppBar와 동일)
+      backgroundColor: AppColors.white,
       // 마이페이지에 최적화된 AppBar
       // 개인 계정 관리 중심으로 설정 기능을 강조
       appBar: CommonAppBar(
@@ -163,7 +165,7 @@ class MyPageScreen extends ConsumerWidget {
     final primaryColor = Theme.of(context).primaryColor;
 
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      contentPadding: AppSpacing.symmetric(horizontal: 16, vertical: 4),
       title: Text(
         languageName,
         style: AppTextStyles.bodyMedium16.copyWith(
@@ -172,7 +174,7 @@ class MyPageScreen extends ConsumerWidget {
         ),
       ),
       trailing: isSelected
-          ? Icon(Icons.check_circle, color: primaryColor, size: 24.w)
+          ? Icon(Icons.check_circle, color: primaryColor, size: AppSizes.iconDefault)
           : null,
       onTap: () async {
         // 언어 변경
@@ -213,15 +215,15 @@ class MyPageScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      padding: EdgeInsets.all(16.w),
+      margin: AppSpacing.symmetric(horizontal: 16),
+      padding: AppSpacing.all(16),
       decoration: BoxDecoration(
         color: colorScheme.secondaryContainer.withValues(alpha: 0.3),
         border: Border.all(
           color: colorScheme.secondary.withValues(alpha: 0.5),
-          width: 1.w,
+          width: AppSizes.borderThin,
         ),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: AppRadius.allLarge,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -231,10 +233,10 @@ class MyPageScreen extends ConsumerWidget {
             children: [
               Icon(
                 Icons.science_outlined,
-                size: 20.w,
+                size: AppSizes.iconMedium,
                 color: colorScheme.secondary,
               ),
-              SizedBox(width: 8.w),
+              AppSpacing.horizontalSpaceSM,
               Text(
                 '🧪 테스트 모드',
                 style: AppTextStyles.titleSemiBold14.copyWith(
@@ -245,14 +247,14 @@ class MyPageScreen extends ConsumerWidget {
             ],
           ),
 
-          SizedBox(height: 12.h),
+          AppSpacing.verticalSpaceMD,
 
           // 온보딩 화면 이동 버튼
           ElevatedButton.icon(
             onPressed: () {
               context.push(AppRoutes.onboarding);
             },
-            icon: Icon(Icons.assignment_outlined, size: 20.w),
+            icon: Icon(Icons.assignment_outlined, size: AppSizes.iconMedium),
             label: Text(
               '온보딩 화면 테스트',
               style: AppTextStyles.bodyRegular14.copyWith(
@@ -265,12 +267,12 @@ class MyPageScreen extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: AppRadius.allMedium,
               ),
             ),
           ),
 
-          SizedBox(height: 12.h),
+          AppSpacing.verticalSpaceMD,
 
           // CommonDialog 테스트 제목
           Text(
@@ -281,7 +283,7 @@ class MyPageScreen extends ConsumerWidget {
             ),
           ),
 
-          SizedBox(height: 8.h),
+          AppSpacing.verticalSpaceSM,
 
           // 삭제 확인 다이얼로그 테스트
           ElevatedButton.icon(
@@ -298,7 +300,7 @@ class MyPageScreen extends ConsumerWidget {
                 ),
               );
             },
-            icon: Icon(Icons.delete_outline, size: 20.w),
+            icon: Icon(Icons.delete_outline, size: AppSizes.iconMedium),
             label: Text(
               '삭제 확인 다이얼로그',
               style: AppTextStyles.bodyRegular14.copyWith(
@@ -311,12 +313,12 @@ class MyPageScreen extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: AppRadius.allMedium,
               ),
             ),
           ),
 
-          SizedBox(height: 8.h),
+          AppSpacing.verticalSpaceSM,
 
           // 오류 다이얼로그 테스트
           ElevatedButton.icon(
@@ -330,7 +332,7 @@ class MyPageScreen extends ConsumerWidget {
                 ),
               );
             },
-            icon: Icon(Icons.error_outline, size: 20.w),
+            icon: Icon(Icons.error_outline, size: AppSizes.iconMedium),
             label: Text(
               '오류 다이얼로그',
               style: AppTextStyles.bodyRegular14.copyWith(
@@ -343,12 +345,12 @@ class MyPageScreen extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: AppRadius.allMedium,
               ),
             ),
           ),
 
-          SizedBox(height: 8.h),
+          AppSpacing.verticalSpaceSM,
 
           // 일반 확인 다이얼로그 테스트
           ElevatedButton.icon(
@@ -364,7 +366,7 @@ class MyPageScreen extends ConsumerWidget {
                 ),
               );
             },
-            icon: Icon(Icons.help_outline, size: 20.w),
+            icon: Icon(Icons.help_outline, size: AppSizes.iconMedium),
             label: Text(
               '일반 확인 다이얼로그',
               style: AppTextStyles.bodyRegular14.copyWith(
@@ -377,7 +379,7 @@ class MyPageScreen extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: AppRadius.allMedium,
               ),
             ),
           ),
@@ -395,7 +397,7 @@ class MyPageScreen extends ConsumerWidget {
                 ),
               );
             },
-            icon: Icon(Icons.check_circle_outline, size: 20.w),
+            icon: Icon(Icons.check_circle_outline, size: AppSizes.iconMedium),
             label: Text(
               '성공 알림 다이얼로그',
               style: AppTextStyles.bodyRegular14.copyWith(
@@ -408,12 +410,12 @@ class MyPageScreen extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 12.h),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: AppRadius.allMedium,
               ),
             ),
           ),
 
-          SizedBox(height: 8.h),
+          AppSpacing.verticalSpaceSM,
 
           // 안내 문구
           Text(
@@ -455,14 +457,14 @@ class MyPageScreen extends ConsumerWidget {
         final colorScheme = Theme.of(context).colorScheme;
 
         return Container(
-          margin: EdgeInsets.symmetric(horizontal: 16.w),
+          margin: AppSpacing.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // 구분선
               Divider(
                 height: 1.h,
-                thickness: 1.w,
+                thickness: AppSizes.dividerThin,
                 color: colorScheme.outlineVariant,
               ),
 
@@ -471,7 +473,7 @@ class MyPageScreen extends ConsumerWidget {
               // 로그아웃 버튼
               OutlinedButton.icon(
                 onPressed: () => _handleLogout(context, ref),
-                icon: Icon(Icons.logout, size: 20.w, color: colorScheme.error),
+                icon: Icon(Icons.logout, size: AppSizes.iconMedium, color: colorScheme.error),
                 label: Text(
                   AppLocalizations.of(context).logout,
                   style: AppTextStyles.bodyMedium16.copyWith(
@@ -480,18 +482,18 @@ class MyPageScreen extends ConsumerWidget {
                   ),
                 ),
                 style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                  padding: AppSpacing.symmetric(vertical: 14),
                   side: BorderSide(
                     color: colorScheme.error.withValues(alpha: 0.5),
                     width: 1.5.w,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: AppRadius.allMedium,
                   ),
                 ),
               ),
 
-              SizedBox(height: 8.h),
+              AppSpacing.verticalSpaceSM,
 
               // 안내 문구
               Text(
