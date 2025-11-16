@@ -174,12 +174,52 @@ class AppRouter {
                     GoRoute(
                       path: 'detail/:contentId',
                       pageBuilder: (context, state) {
-                        // state.extra가 Map일 경우 ContentModel로 변환
-                        final content = state.extra is Map<String, dynamic>
-                            ? ContentModel.fromJson(
-                                state.extra as Map<String, dynamic>,
-                              )
-                            : state.extra as ContentModel;
+                        final contentId = state.pathParameters['contentId']!;
+                        ContentModel? content;
+
+                        // state.extra 타입 안전성 체크
+                        if (state.extra is Map<String, dynamic>) {
+                          content = ContentModel.fromJson(
+                            state.extra as Map<String, dynamic>,
+                          );
+                        } else if (state.extra is ContentModel) {
+                          content = state.extra as ContentModel;
+                        }
+
+                        // state.extra가 null이거나 잘못된 타입일 경우 에러 페이지 표시
+                        if (content == null) {
+                          return NoTransitionPage(
+                            child: Scaffold(
+                              appBar: AppBar(title: const Text('오류')),
+                              body: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.error_outline,
+                                      size: 64,
+                                      color: Colors.grey,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    const Text(
+                                      '콘텐츠를 찾을 수 없습니다',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Content ID: $contentId',
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
                         return NoTransitionPage(
                           child: SnsContentDetailScreen(content: content),
                         );

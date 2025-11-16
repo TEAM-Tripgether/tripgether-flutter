@@ -35,8 +35,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // 바텀 네비게이션 바의 전체 높이 (반응형)
-      height: AppSizes.navigationBarHeight,
       decoration: BoxDecoration(
         color: AppColors.white,
         // 상단에만 그림자 효과 추가
@@ -50,13 +48,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
         ],
       ),
       child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(top: AppSpacing.sm), // 상단에 추가 패딩 적용
+        bottom: false, // 하단 SafeArea 패딩 제거 - 터치 영역을 화면 끝까지 확장
+        child: SizedBox(
+          height: AppSizes.navigationBarHeight, // SafeArea 내부에서 높이 제한
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(
               AppRoutes.getTabLabels(context).length,
-              (index) => _buildNavItem(context, index),
+              (index) => Expanded(child: _buildNavItem(context, index)),
             ),
           ),
         ),
@@ -72,35 +70,30 @@ class CustomBottomNavigationBar extends StatelessWidget {
     // 현재 탭이 선택되어 있는지 확인
     final bool isSelected = currentIndex == index;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          // 현재 선택된 탭을 다시 클릭한 경우
-          if (currentIndex == index) {
-            onTabReselected?.call(index);
-          } else {
-            // 다른 탭을 선택한 경우
-            onTap(index);
-          }
-        },
-        borderRadius: BorderRadius.circular(16.r),
-        child: SizedBox(
-          width: AppSizes.fabSize, // 각 탭의 최소 너비 보장
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // SVG 아이콘 표시
-              _buildIcon(context, index, isSelected),
+    return InkWell(
+      onTap: () {
+        // 현재 선택된 탭을 다시 클릭한 경우
+        if (currentIndex == index) {
+          onTabReselected?.call(index);
+        } else {
+          // 다른 탭을 선택한 경우
+          onTap(index);
+        }
+      },
+      borderRadius: BorderRadius.circular(16.r),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center, // 중앙 정렬로 복원
+        children: [
+          // SVG 아이콘 표시
+          _buildIcon(context, index, isSelected),
 
-              SizedBox(height: AppSpacing.xs.h),
+          AppSpacing.verticalSpaceXS,
 
-              // 탭 라벨 텍스트
-              _buildLabel(context, index, isSelected),
-            ],
-          ),
-        ),
+          // 탭 라벨 텍스트
+          _buildLabel(context, index, isSelected),
+          AppSpacing.verticalSpaceLG,
+        ],
       ),
     );
   }

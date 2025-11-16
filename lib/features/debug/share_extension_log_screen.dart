@@ -48,6 +48,9 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
     try {
       final result = await _channel.invokeMethod<String>('getShareLog');
 
+      // 비동기 작업 완료 후 위젯이 dispose 되었는지 체크
+      if (!mounted) return;
+
       debugPrint('==== [로그 파일 읽기] ====');
       debugPrint('원본 로그 길이: ${result?.length ?? 0}자');
       debugPrint('원본 로그 내용:\n$result');
@@ -81,6 +84,10 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
       });
     } catch (e) {
       debugPrint('로그 읽기 실패: $e');
+
+      // 에러 발생 시에도 mounted 체크
+      if (!mounted) return;
+
       setState(() {
         _logEntries = [];
         _errorMessage = '로그 읽기 실패: $e';
