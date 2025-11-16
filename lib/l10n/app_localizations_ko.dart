@@ -422,6 +422,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get signUpWithEmail => '이메일로 가입하기';
 
   @override
+  String get snsLoginDivider => 'SNS 계정으로 로그인/회원가입';
+
+  @override
   String get logout => '로그아웃';
 
   @override

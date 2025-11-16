@@ -423,6 +423,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signUpWithEmail => 'Sign up with Email';
 
   @override
+  String get snsLoginDivider => 'Sign in/Sign up with SNS';
+
+  @override
   String get logout => 'Logout';
 
   @override

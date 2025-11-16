@@ -737,6 +737,11 @@
     "description": "Email sign up button"
   },
 
+  "snsLoginDivider": "Sign in/Sign up with SNS",
+  "@snsLoginDivider": {
+    "description": "SNS login divider text"
+  },
+
   "logout": "Logout",
   "@logout": {
     "description": "Logout button"

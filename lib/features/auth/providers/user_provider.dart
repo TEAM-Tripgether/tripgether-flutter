@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tripgether/core/services/auth/google_auth_service.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';
 
 part 'user_provider.g.dart';
@@ -34,13 +35,13 @@ class UserNotifier extends _$UserNotifier {
   /// - iOS: Keychain
   ///
   /// **iOS Keychain 동작**:
-  /// - `first_unlock_this_device`: 기기 최초 잠금 해제 후 접근 가능
-  /// - **앱 삭제 후에도 데이터가 유지됨** (앱 재설치 시 이전 데이터 접근 가능)
-  /// - 앱 삭제 시 자동 삭제를 원한다면 `whenUnlockedThisDeviceOnly` 사용 필요
+  /// - `unlocked_this_device`: 기기 잠금 해제 시에만 접근 가능
+  /// - **앱 삭제 시 자동으로 데이터가 삭제됨** (재설치 시 이전 데이터 없음)
+  /// - 보안성과 사용자 프라이버시를 위한 권장 설정
   static const _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
     iOptions: IOSOptions(
-      accessibility: KeychainAccessibility.first_unlock_this_device,
+      accessibility: KeychainAccessibility.unlocked_this_device,
     ),
   );
 
@@ -144,32 +145,37 @@ class UserNotifier extends _$UserNotifier {
   /// **호출 위치**: LoginProvider.logout()
   ///
   /// **삭제 내용**:
+  /// - Google 계정 연결 해제 (서버 토큰 폐기)
   /// - 사용자 정보 (User 객체)
   /// - Access Token
   /// - Refresh Token
   /// - **모든 FlutterSecureStorage 데이터** (완전 초기화)
   ///
   /// **흐름**:
-  /// 1. Secure Storage의 모든 데이터 삭제 (deleteAll)
-  /// 2. Provider 상태를 AsyncValue.data(null)로 업데이트
-  /// 3. UI는 자동으로 "로그인 필요" 상태로 전환
+  /// 1. Google Sign-In 연결 해제 (disconnect)
+  /// 2. Secure Storage의 모든 데이터 삭제 (deleteAll)
+  /// 3. Provider 상태를 AsyncValue.data(null)로 업데이트
+  /// 4. UI는 자동으로 "로그인 필요" 상태로 전환
   Future<void> clearUser() async {
-    debugPrint('[UserNotifier] 🗑️ 사용자 정보 삭제 시작');
+    debugPrint('[UserNotifier] 🗑️ 완전 로그아웃 시작');
 
     try {
-      // ⭐ 모든 Secure Storage 데이터 완전 삭제
+      // 1. ⭐ Google 계정 연결 해제 (서버 토큰까지 폐기)
+      await GoogleAuthService.disconnect();
+      debugPrint('[UserNotifier] 🚪 Google 세션 연결 해제 완료');
+
+      // 2. ⭐ 모든 Secure Storage 데이터 완전 삭제
       // iOS Keychain과 Android EncryptedSharedPreferences의
       // 모든 키-값 쌍을 삭제하여 완전 초기화
       await _storage.deleteAll();
-
       debugPrint('[UserNotifier] 🗑️ 모든 Storage 데이터 삭제 완료');
 
-      // Provider 상태 업데이트 (로그아웃 상태)
+      // 3. Provider 상태 업데이트 (로그아웃 상태)
       state = const AsyncValue.data(null);
 
-      debugPrint('[UserNotifier] ✅ 사용자 정보 삭제 완료');
+      debugPrint('[UserNotifier] ✅ 완전 로그아웃 완료');
     } catch (e, stackTrace) {
-      debugPrint('[UserNotifier] ❌ 사용자 정보 삭제 실패: $e');
+      debugPrint('[UserNotifier] ❌ 로그아웃 실패: $e');
       debugPrint('[UserNotifier] Stack trace: $stackTrace');
 
       // 에러가 발생해도 상태는 null로 설정 (로그아웃은 항상 성공해야 함)

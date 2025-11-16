@@ -148,4 +148,27 @@ class GoogleAuthService {
       rethrow;
     }
   }
+
+  /// Google 계정 연결을 완전히 해제합니다
+  ///
+  /// **차이점**:
+  /// - `signOut()`: 로컬 세션만 제거 (Google 서버 토큰 유지)
+  /// - `disconnect()`: 서버 토큰까지 폐기 (완전 연결 해제)
+  ///
+  /// **사용 시나리오**:
+  /// - 회원탈퇴
+  /// - 완전한 로그아웃 (앱 삭제 대비)
+  /// - 계정 연결 해제
+  ///
+  /// **주의**: disconnect() 실패 시 signOut()으로 fallback
+  static Future<void> disconnect() async {
+    try {
+      await GoogleSignIn.instance.disconnect();
+      debugPrint('[GoogleAuthService] ✅ Google 계정 연결 해제 성공 (토큰 폐기)');
+    } catch (error) {
+      debugPrint('[GoogleAuthService] ⚠️ disconnect 실패, signOut으로 fallback: $error');
+      // disconnect 실패 시 최소한 로컬 세션은 삭제
+      await signOut();
+    }
+  }
 }

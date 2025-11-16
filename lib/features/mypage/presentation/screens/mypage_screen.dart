@@ -574,20 +574,10 @@ class MyPageScreen extends ConsumerWidget {
       final l10nAfter = AppLocalizations.of(context);
 
       // 성공 스낵바 표시
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10nAfter.logoutSuccess,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodyRegular14.copyWith(
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-            ),
-          ),
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
+      AppSnackBar.showSuccess(
+        context,
+        l10nAfter.logoutSuccess,
+        duration: const Duration(seconds: 2),
       );
 
       // 로그인 화면으로 이동
@@ -596,21 +586,12 @@ class MyPageScreen extends ConsumerWidget {
       if (!context.mounted) return;
 
       final l10nError = AppLocalizations.of(context);
-      final colorSchemeError = Theme.of(context).colorScheme;
 
       // 에러 발생 시 스낵바 표시
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10nError.logoutFailed(e.toString()),
-            style: AppTextStyles.bodyRegular14.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          backgroundColor: colorSchemeError.error,
-          duration: const Duration(seconds: 3),
-          behavior: SnackBarBehavior.floating,
-        ),
+      AppSnackBar.showError(
+        context,
+        l10nError.logoutFailed(e.toString()),
+        duration: const Duration(seconds: 3),
       );
     }
   }

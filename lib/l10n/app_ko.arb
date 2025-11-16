@@ -737,6 +737,11 @@
     "description": "이메일 회원가입 버튼"
   },
 
+  "snsLoginDivider": "SNS 계정으로 로그인/회원가입",
+  "@snsLoginDivider": {
+    "description": "SNS 로그인 구분선 텍스트"
+  },
+
   "logout": "로그아웃",
   "@logout": {
     "description": "로그아웃 버튼"

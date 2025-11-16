@@ -860,6 +860,12 @@ abstract class AppLocalizations {
   /// **'이메일로 가입하기'**
   String get signUpWithEmail;
 
+  /// SNS 로그인 구분선 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'SNS 계정으로 로그인/회원가입'**
+  String get snsLoginDivider;
+
   /// 로그아웃 버튼
   ///
   /// In ko, this message translates to:

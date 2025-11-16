@@ -391,7 +391,7 @@ class AppSizes {
   /// Progress Indicator 높이: 2
   static double get progressIndicatorHeight => 2.h;
 
-  /// SNS 콘텐츠 카드 높이: 142
+  /// SNS 콘텐츠 카드 높이: 146
   static double get snsCardHeight => 146.h;
 
   /// SNS 카드 그라데이션 오버레이 높이: 60
