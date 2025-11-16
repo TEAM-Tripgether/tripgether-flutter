@@ -13,12 +13,8 @@ output-localization-file: app_localizations.dart
 # 생성될 클래스명 (기본값: AppLocalizations)
 output-class: AppLocalizations
 
-# 생성될 파일 위치 (기본값: arb-dir과 동일)
-output-dir: lib/l10n
-
 # nullable getter 사용 여부 (AppLocalizations.of(context)!.title 형태)
 nullable-getter: false
-
 
 # 지연 로딩 사용 여부 (앱 시작 시간 단축)
 use-deferred-loading: false

@@ -8,9 +8,10 @@ import '../../../../l10n/app_localizations.dart';
 import '../constants/interest_categories.dart';
 import '../widgets/category_dropdown_button.dart';
 import '../widgets/interest_chip.dart';
+import '../widgets/onboarding_layout.dart';
 import '../../providers/onboarding_provider.dart';
 
-/// 관심사 선택 페이지 (페이지 4/5)
+/// 관심사 선택 페이지 (STEP 5/5)
 ///
 /// 14개 카테고리에서 최소 3개, 최대 10개의 관심사를 선택할 수 있습니다.
 /// Wrap 레이아웃으로 카테고리 버튼을 배치하고, 탭 시 바텀시트로 세부 항목 선택합니다.
@@ -147,8 +148,8 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
                   buttonPosition.dy +
                   buttonSize.height +
                   AppSpacing.sm, // 버튼 아래 8.h
-              left: AppSpacing.xxl, // 화면 좌측 패딩 24.w
-              right: AppSpacing.xxl, // 화면 우측 패딩 24.w
+              left: AppSpacing.lg, // 카테고리 영역과 동일한 패딩 16.w
+              right: AppSpacing.lg, // 카테고리 영역과 동일한 패딩 16.w
               child: Material(
                 elevation: 4,
                 borderRadius: AppRadius.allLarge,
@@ -160,9 +161,9 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
                     borderRadius: AppRadius.allLarge,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.shadowLight,
-                        blurRadius: AppSpacing.sm,
-                        offset: const Offset(0, 2),
+                        color: AppColors.shadow.withValues(alpha: 0.01),
+                        blurRadius: 10,
+                        offset: const Offset(0, 0),
                       ),
                     ],
                   ),
@@ -175,12 +176,10 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
                         label: item,
                         isSelected: isSelected,
                         onTap: () {
-                          // Overlay 내부 상태 업데이트
-                          overlaySetState(() {
-                            _handleInterestTap(item);
-                          });
-                          // 부모 위젯도 함께 업데이트 (선택 개수 표시용)
-                          setState(() {});
+                          // 부모 위젯 상태 업데이트 (selectedCount 및 버튼 표시)
+                          _handleInterestTap(item);
+                          // Overlay 내부만 재빌드 (칩 선택 상태 시각적 업데이트)
+                          overlaySetState(() {});
                         },
                       );
                     }).toList(),
@@ -202,57 +201,22 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
     final selectedCount = _selectedInterests.length;
     final isValid = selectedCount >= 3 && selectedCount <= 10;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return OnboardingLayout(
+      stepNumber: 5,
+      title: l10n.onboardingInterestsPrompt,
+      showRequiredMark: false,
+      description: l10n.onboardingInterestsDescription,
+      // 카테고리 버튼 영역만 16px 패딩 (버튼은 32px 유지)
+      contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      content: Column(
         children: [
-          // 상단 여백 (위로 올림)
-          AppSpacing.verticalSpaceHuge,
-
-          // 제목 (고정)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.onboardingInterestsPrompt,
-                style: AppTextStyles.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
-                ),
-              ),
-              AppSpacing.horizontalSpace(4),
-              Text(
-                '*',
-                style: AppTextStyles.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.error,
-                ),
-              ),
-            ],
-          ),
-
-          // 제목-설명 간격
-          AppSpacing.verticalSpaceSM,
-
-          // 설명 (제목 바로 아래, 국제화 적용)
-          Text(
-            l10n.onboardingInterestsDescription,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.onboardingDescription, // #130537 - 진한 남보라
-            ),
-            textAlign: TextAlign.center,
-          ),
-
           AppSpacing.verticalSpaceMD,
 
           // 선택 개수 표시
           Text(
-            '$selectedCount개 선택',
-            style: AppTextStyles.titleMedium.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
+            l10n.onboardingInterestsSelectedCount(selectedCount),
+            style: AppTextStyles.titleSemiBold16.copyWith(
+              color: AppColors.mainColor,
             ),
           ),
 
@@ -300,42 +264,36 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
           // 안내 문구 (버튼 위, 국제화 적용)
           Text(
             l10n.onboardingInterestsChangeInfo,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+            style: AppTextStyles.metaMedium12.copyWith(
+              color: AppColors.subColor2,
             ),
             textAlign: TextAlign.center,
           ),
 
-          AppSpacing.verticalSpaceMD,
+          AppSpacing.verticalSpaceLG,
+        ],
+      ),
+      button: PrimaryButton(
+        text: l10n.btnComplete,
+        onPressed: isValid
+            ? () {
+                // onboardingProvider에 관심사 저장
+                ref
+                    .read(onboardingProvider.notifier)
+                    .updateInterests(_selectedInterests.toList());
 
-          // 완료하기 버튼 (국제화 적용)
-          PrimaryButton(
-            text: l10n.btnComplete,
-            onPressed: isValid
-                ? () {
-                    // onboardingProvider에 관심사 저장
-                    ref
-                        .read(onboardingProvider.notifier)
-                        .updateInterests(_selectedInterests.toList());
-
-                    // 다음 페이지로 이동 (welcome_page)
-                    widget.onNext();
-                  }
-                : null,
-            isFullWidth: true,
-            // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
-            style: ButtonStyle(
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.circle),
-                ),
-              ),
+                // 다음 페이지로 이동 (welcome_page)
+                widget.onNext();
+              }
+            : null,
+        isFullWidth: true,
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.circle),
             ),
           ),
-
-          // 하단 여백 (버튼을 조금 위로)
-          AppSpacing.verticalSpace60,
-        ],
+        ),
       ),
     );
   }

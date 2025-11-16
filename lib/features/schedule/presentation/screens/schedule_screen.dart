@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/providers/user_provider.dart';
 
@@ -77,30 +75,7 @@ class ScheduleScreen extends ConsumerWidget {
           SizedBox(width: 8.w), // Material Design 가이드라인에 따른 오른쪽 마진
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.event_note_outlined,
-              size: 64.w,
-              color: Colors.grey[400],
-            ),
-            AppSpacing.verticalSpaceLG,
-            Text(
-              l10n.navSchedule,
-              style: AppTextStyles.headlineSmall.copyWith(
-                color: Colors.grey[700],
-              ),
-            ),
-            AppSpacing.verticalSpaceSM,
-            Text(
-              '여행 일정 목록 및 캘린더 뷰 표시 예정',
-              style: AppTextStyles.bodyMedium.copyWith(color: Colors.grey[500]),
-            ),
-          ],
-        ),
-      ),
+      body: Container(color: Colors.white),
     );
   }
 }

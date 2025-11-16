@@ -10,10 +10,7 @@
 
 import UIKit
 import Social
-import MobileCoreServices
-import Photos
-import AVFoundation
-import UserNotifications
+import UniformTypeIdentifiers
 
 /// Share Extension의 메인 뷰 컨트롤러
 /// @objc 어노테이션: Swift-Objective-C 브릿징을 명확하게 하여
@@ -23,13 +20,11 @@ class ShareViewController: UIViewController {
     // IMPORTANT: 메인 앱의 Bundle Identifier와 동일하게 설정 (App Group ID 접두사로도 사용)
     let hostAppBundleIdentifier = "com.tripgether.alom"
     let sharedKey = "ShareKey"
-    var sharedMedia: [SharedMediaFile] = []
     var sharedText: [String] = []
-    let imageContentType = kUTTypeImage as String
-    let videoContentType = kUTTypeMovie as String
-    let textContentType = kUTTypeText as String
-    let urlContentType = kUTTypeURL as String
-    let fileURLType = kUTTypeFileURL as String
+
+    // ✅ iOS 14.0+ UniformTypeIdentifiers 사용 (URL과 텍스트만 처리)
+    let textContentType = UTType.text.identifier
+    let urlContentType = UTType.url.identifier
 
     // MARK: - Constants
     private enum UIConstants {
@@ -336,7 +331,7 @@ class ShareViewController: UIViewController {
         for (index, attachment) in attachments.enumerated() {
             dispatchGroup.enter()
 
-            // 우선순위: URL > 텍스트 > 이미지 > 비디오 > 파일
+            // ✅ URL과 텍스트만 처리 (이미지/비디오/파일은 지원하지 않음)
             if attachment.hasItemConformingToTypeIdentifier(urlContentType) {
                 print("[ShareExtension] 🔗 URL 타입 감지 (index: \(index))")
                 processUrlImmediately(attachment: attachment) { success in
@@ -349,26 +344,8 @@ class ShareViewController: UIViewController {
                     if success { hasProcessedAnyItem = true }
                     dispatchGroup.leave()
                 }
-            } else if attachment.hasItemConformingToTypeIdentifier(imageContentType) {
-                print("[ShareExtension] 🖼️ 이미지 타입 감지 (index: \(index))")
-                processImageImmediately(attachment: attachment) { success in
-                    if success { hasProcessedAnyItem = true }
-                    dispatchGroup.leave()
-                }
-            } else if attachment.hasItemConformingToTypeIdentifier(videoContentType) {
-                print("[ShareExtension] 🎥 비디오 타입 감지 (index: \(index))")
-                processVideoImmediately(attachment: attachment) { success in
-                    if success { hasProcessedAnyItem = true }
-                    dispatchGroup.leave()
-                }
-            } else if attachment.hasItemConformingToTypeIdentifier(fileURLType) {
-                print("[ShareExtension] 📄 파일 타입 감지 (index: \(index))")
-                processFileImmediately(attachment: attachment) { success in
-                    if success { hasProcessedAnyItem = true }
-                    dispatchGroup.leave()
-                }
             } else {
-                print("[ShareExtension] ⚠️ 알 수 없는 타입 (index: \(index))")
+                print("[ShareExtension] ⚠️ 지원하지 않는 타입 (index: \(index)) - URL과 텍스트만 지원")
                 dispatchGroup.leave()
             }
         }
@@ -379,7 +356,7 @@ class ShareViewController: UIViewController {
                 print("[ShareExtension] ✅ 데이터 처리 완료 - 저장 및 앱 실행")
                 self.saveAndLaunchApp()
             } else {
-                print("[ShareExtension] ⚠️ 처리된 데이터 없음 - Extension 종료")
+                print("[ShareExtension] ⚠️ 처리된 ��이터 없음 - Extension 종료")
                 self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
             }
         }
@@ -435,283 +412,23 @@ class ShareViewController: UIViewController {
         }
     }
 
-    /// 이미지를 즉시 처리 (비동기)
-    private func processImageImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
-        attachment.loadFileRepresentation(forTypeIdentifier: imageContentType) { [weak self] url, error in
-            guard let self = self else {
-                completion(false)
-                return
-            }
+    // ✅ 이미지/비디오/파일 처리 메서드 제거됨 (URL과 텍스트만 처리)
 
-            if let error = error {
-                print("[ShareExtension] ❌ 이미지 파일 로드 실패: \(error)")
-                completion(false)
-                return
-            }
-
-            guard let sourceURL = url else {
-                print("[ShareExtension] ⚠️ loadFileRepresentation에서 이미지 URL을 받지 못해 legacy API로 재시도합니다")
-                self.processImageUsingLegacyLoader(attachment: attachment, completion: completion)
-                return
-            }
-
-            let fileName = self.getFileName(from: sourceURL, type: .image)
-            guard let containerURL = self.appGroupContainerURL() else {
-                completion(false)
-                return
-            }
-
-            let destinationURL = containerURL.appendingPathComponent(fileName)
-
-            if self.copyFile(at: sourceURL, to: destinationURL) {
-                self.sharedMedia.append(
-                    SharedMediaFile(path: destinationURL.absoluteString, thumbnail: nil, duration: nil, type: .image)
-                )
-                completion(true)
-            } else {
-                completion(false)
-            }
-        }
-    }
-
-    /// 비디오를 즉시 처리 (비동기)
-    private func processVideoImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
-        attachment.loadFileRepresentation(forTypeIdentifier: videoContentType) { [weak self] url, error in
-            guard let self = self else {
-                completion(false)
-                return
-            }
-
-            if let error = error {
-                print("[ShareExtension] ❌ 비디오 파일 로드 실패: \(error)")
-                completion(false)
-                return
-            }
-
-            guard let sourceURL = url else {
-                print("[ShareExtension] ⚠️ loadFileRepresentation에서 비디오 URL을 받지 못해 legacy API로 재시도합니다")
-                self.processVideoUsingLegacyLoader(attachment: attachment, completion: completion)
-                return
-            }
-
-            let fileName = self.getFileName(from: sourceURL, type: .video)
-            guard let containerURL = self.appGroupContainerURL() else {
-                completion(false)
-                return
-            }
-
-            let destinationURL = containerURL.appendingPathComponent(fileName)
-
-            if self.copyFile(at: sourceURL, to: destinationURL) {
-                if let sharedFile = self.getSharedMediaFile(forVideo: destinationURL) {
-                    self.sharedMedia.append(sharedFile)
-                    completion(true)
-                } else {
-                    completion(false)
-                }
-            } else {
-                completion(false)
-            }
-        }
-    }
-
-    /// 파일을 즉시 처리 (비동기)
-    private func processFileImmediately(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
-        attachment.loadFileRepresentation(forTypeIdentifier: fileURLType) { [weak self] url, error in
-            guard let self = self else {
-                completion(false)
-                return
-            }
-
-            if let error = error {
-                print("[ShareExtension] ❌ 파일 로드 실패: \(error)")
-                completion(false)
-                return
-            }
-
-            guard let sourceURL = url else {
-                print("[ShareExtension] ⚠️ loadFileRepresentation에서 파일 URL을 받지 못해 legacy API로 재시도합니다")
-                self.processFileUsingLegacyLoader(attachment: attachment, completion: completion)
-                return
-            }
-
-            let fileName = self.getFileName(from: sourceURL, type: .file)
-            guard let containerURL = self.appGroupContainerURL() else {
-                completion(false)
-                return
-            }
-
-            let destinationURL = containerURL.appendingPathComponent(fileName)
-
-            if self.copyFile(at: sourceURL, to: destinationURL) {
-                self.sharedMedia.append(SharedMediaFile(path: destinationURL.absoluteString, thumbnail: nil, duration: nil, type: .file))
-                completion(true)
-            } else {
-                completion(false)
-            }
-        }
-    }
-
-    private func processImageUsingLegacyLoader(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
-        attachment.loadItem(forTypeIdentifier: imageContentType, options: nil) { [weak self] data, error in
-            guard let self = self else {
-                completion(false)
-                return
-            }
-
-            if let error = error {
-                print("[ShareExtension] ❌ (Legacy) 이미지 로드 실패: \(error)")
-                completion(false)
-                return
-            }
-
-            if let url = data as? URL {
-                self.handleLegacyURL(url, type: .image, completion: completion)
-            } else if let image = data as? UIImage,
-                      let imageData = image.jpegData(compressionQuality: 0.95) {
-                self.handleLegacyData(imageData, type: .image, completion: completion)
-            } else {
-                print("[ShareExtension] ⚠️ (Legacy) 이미지 데이터를 처리할 수 없습니다")
-                completion(false)
-            }
-        }
-    }
-
-    private func processVideoUsingLegacyLoader(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
-        attachment.loadItem(forTypeIdentifier: videoContentType, options: nil) { [weak self] data, error in
-            guard let self = self else {
-                completion(false)
-                return
-            }
-
-            if let error = error {
-                print("[ShareExtension] ❌ (Legacy) 비디오 로드 실패: \(error)")
-                completion(false)
-                return
-            }
-
-            if let url = data as? URL {
-                self.handleLegacyURL(url, type: .video, completion: completion)
-            } else if let asset = data as? AVURLAsset {
-                self.handleLegacyURL(asset.url, type: .video, completion: completion)
-            } else {
-                print("[ShareExtension] ⚠️ (Legacy) 비디오 데이터를 처리할 수 없습니다")
-                completion(false)
-            }
-        }
-    }
-
-    private func processFileUsingLegacyLoader(attachment: NSItemProvider, completion: @escaping (Bool) -> Void) {
-        attachment.loadItem(forTypeIdentifier: fileURLType, options: nil) { [weak self] data, error in
-            guard let self = self else {
-                completion(false)
-                return
-            }
-
-            if let error = error {
-                print("[ShareExtension] ❌ (Legacy) 파일 로드 실패: \(error)")
-                completion(false)
-                return
-            }
-
-            if let url = data as? URL {
-                self.handleLegacyURL(url, type: .file, completion: completion)
-            } else if let text = data as? String,
-                      let textData = text.data(using: .utf8) {
-                self.handleLegacyData(textData, type: .file, completion: completion)
-            } else {
-                print("[ShareExtension] ⚠️ (Legacy) 파일 데이터를 처리할 수 없습니다")
-                completion(false)
-            }
-        }
-    }
-
-    private func handleLegacyURL(_ url: URL, type: SharedMediaType, completion: @escaping (Bool) -> Void) {
-        guard let containerURL = appGroupContainerURL() else {
-            completion(false)
-            return
-        }
-
-        let fileName = getFileName(from: url, type: type)
-        let destinationURL = containerURL.appendingPathComponent(fileName)
-
-        switch type {
-        case .image, .file:
-            if copyFile(at: url, to: destinationURL) {
-                sharedMedia.append(SharedMediaFile(path: destinationURL.absoluteString, thumbnail: nil, duration: nil, type: type))
-                completion(true)
-            } else {
-                completion(false)
-            }
-        case .video:
-            if copyFile(at: url, to: destinationURL),
-               let sharedFile = getSharedMediaFile(forVideo: destinationURL) {
-                sharedMedia.append(sharedFile)
-                completion(true)
-            } else {
-                completion(false)
-            }
-        }
-    }
-
-    private func handleLegacyData(_ data: Data, type: SharedMediaType, completion: @escaping (Bool) -> Void) {
-        guard let containerURL = appGroupContainerURL() else {
-            completion(false)
-            return
-        }
-
-        let extensionName: String
-        switch type {
-        case .image:
-            extensionName = "jpg"
-        case .video:
-            extensionName = "mp4"
-        case .file:
-            extensionName = "dat"
-        }
-
-        let fileName = UUID().uuidString + ".\(extensionName)"
-        let destinationURL = containerURL.appendingPathComponent(fileName)
-
-        do {
-            try data.write(to: destinationURL)
-            switch type {
-            case .image, .file:
-                sharedMedia.append(SharedMediaFile(path: destinationURL.absoluteString, thumbnail: nil, duration: nil, type: type))
-            case .video:
-                if let sharedFile = getSharedMediaFile(forVideo: destinationURL) {
-                    sharedMedia.append(sharedFile)
-                } else {
-                    completion(false)
-                    return
-                }
-            }
-            completion(true)
-        } catch {
-            print("[ShareExtension] ❌ (Legacy) 데이터 파일 저장 실패: \(error)")
-            completion(false)
-        }
-    }
-
-    /// UserDefaults에 저장하고 앱 실행
+    /// UserDefaults에 저장하고 앱 실행 (URL과 텍스트만 처리)
     private func saveAndLaunchApp() {
         guard let userDefaults = appGroupUserDefaults() else {
             print("[ShareExtension] ❌ App Group UserDefaults를 사용할 수 없습니다")
             return
         }
 
-        // 텍스트 데이터가 있으면 저장
+        // ✅ URL/텍스트 데이터 저장
         if !sharedText.isEmpty {
             logSecure("💾 텍스트 데이터 저장", sensitiveData: sharedText.joined(separator: ", "))
             userDefaults.set(sharedText, forKey: sharedKey)
-            saveDebugLog(message: "텍스트 저장 완료: \(sharedText.count)개 항목")
-        }
 
-        // 미디어 파일이 있으면 저장
-        if !sharedMedia.isEmpty {
-            print("[ShareExtension] 💾 미디어 데이터 저장: \(sharedMedia.count)개")
-            userDefaults.set(toData(data: sharedMedia), forKey: sharedKey)
-            saveDebugLog(message: "미디어 저장 완료: \(sharedMedia.count)개")
+            // 📝 로그에 실제 URL 내용 저장
+            let urlsToLog = sharedText.joined(separator: "\n")
+            saveDebugLog(message: "URL 저장: \(urlsToLog)")
         }
 
         // 동기화
@@ -787,102 +504,7 @@ class ShareViewController: UIViewController {
         }
     }
 
-    private func handleImages(content: NSExtensionItem, attachment: NSItemProvider, index: Int) {
-        attachment.loadItem(forTypeIdentifier: imageContentType, options: nil) { [weak self] data, error in
-            if error == nil, let url = data as? URL, let this = self {
-                let fileName = this.getFileName(from: url, type: .image)
-                guard let containerURL = this.appGroupContainerURL() else {
-                    return
-                }
-                let newPath = containerURL.appendingPathComponent(fileName)
-                let copied = this.copyFile(at: url, to: newPath)
-                if copied {
-                    this.sharedMedia.append(SharedMediaFile(path: newPath.absoluteString, thumbnail: nil, duration: nil, type: .image))
-                }
-                if index == (content.attachments?.count ?? 1) - 1 {
-                    guard let userDefaults = this.appGroupUserDefaults() else {
-                        return
-                    }
-                    userDefaults.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
-                    userDefaults.synchronize()
-
-                    // UI 업데이트는 메인 스레드에서 실행
-                    DispatchQueue.main.async {
-                        this.showSuccessAndDismiss()
-                    }
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self?.dismissWithError()
-                }
-            }
-        }
-    }
-
-    private func handleVideos(content: NSExtensionItem, attachment: NSItemProvider, index: Int) {
-        attachment.loadItem(forTypeIdentifier: videoContentType, options: nil) { [weak self] data, error in
-            if error == nil, let url = data as? URL, let this = self {
-                let fileName = this.getFileName(from: url, type: .video)
-                guard let containerURL = this.appGroupContainerURL() else {
-                    return
-                }
-                let newPath = containerURL.appendingPathComponent(fileName)
-                let copied = this.copyFile(at: url, to: newPath)
-                if copied {
-                    guard let sharedFile = this.getSharedMediaFile(forVideo: newPath) else { return }
-                    this.sharedMedia.append(sharedFile)
-                }
-                if index == (content.attachments?.count ?? 1) - 1 {
-                    guard let userDefaults = this.appGroupUserDefaults() else {
-                        return
-                    }
-                    userDefaults.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
-                    userDefaults.synchronize()
-
-                    // UI 업데이트는 메인 스레드에서 실행
-                    DispatchQueue.main.async {
-                        this.showSuccessAndDismiss()
-                    }
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self?.dismissWithError()
-                }
-            }
-        }
-    }
-
-    private func handleFiles(content: NSExtensionItem, attachment: NSItemProvider, index: Int) {
-        attachment.loadItem(forTypeIdentifier: fileURLType, options: nil) { [weak self] data, error in
-            if error == nil, let url = data as? URL, let this = self {
-                let fileName = this.getFileName(from: url, type: .file)
-                guard let containerURL = this.appGroupContainerURL() else {
-                    return
-                }
-                let newPath = containerURL.appendingPathComponent(fileName)
-                let copied = this.copyFile(at: url, to: newPath)
-                if copied {
-                    this.sharedMedia.append(SharedMediaFile(path: newPath.absoluteString, thumbnail: nil, duration: nil, type: .file))
-                }
-                if index == (content.attachments?.count ?? 1) - 1 {
-                    guard let userDefaults = this.appGroupUserDefaults() else {
-                        return
-                    }
-                    userDefaults.set(this.toData(data: this.sharedMedia), forKey: this.sharedKey)
-                    userDefaults.synchronize()
-
-                    // UI 업데이트는 메인 스레드에서 실행
-                    DispatchQueue.main.async {
-                        this.showSuccessAndDismiss()
-                    }
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self?.dismissWithError()
-                }
-            }
-        }
-    }
+    // ✅ Legacy 핸들러 메서드 제거됨 (handleImages, handleVideos, handleFiles)
 
     private func dismissWithError() {
         print("[ERROR] Error loading data!")
@@ -1016,104 +638,10 @@ class ShareViewController: UIViewController {
         // 실제 URL 열기는 UIResponder 체인의 상위 객체(ExtensionContext)가 처리
     }
 
-    func getExtension(from url: URL, type: SharedMediaType) -> String {
-        let parts = url.lastPathComponent.components(separatedBy: ".")
-        var ex: String? = parts.count > 1 ? parts.last : nil
-        if ex == nil {
-            switch type {
-            case .image: ex = "PNG"
-            case .video: ex = "MP4"
-            case .file: ex = "TXT"
-            }
-        }
-        return ex ?? "Unknown"
-    }
-
-    func getFileName(from url: URL, type: SharedMediaType) -> String {
-        var name = url.lastPathComponent
-        if name.isEmpty {
-            name = UUID().uuidString + "." + getExtension(from: url, type: type)
-        }
-        return name
-    }
-
-    func copyFile(at srcURL: URL, to dstURL: URL) -> Bool {
-        let shouldStopAccessing = srcURL.startAccessingSecurityScopedResource()
-        defer {
-            if shouldStopAccessing {
-                srcURL.stopAccessingSecurityScopedResource()
-            }
-        }
-
-        do {
-            if FileManager.default.fileExists(atPath: dstURL.path) {
-                try FileManager.default.removeItem(at: dstURL)
-            }
-            try FileManager.default.copyItem(at: srcURL, to: dstURL)
-        } catch {
-            print("Cannot copy item at \(srcURL) to \(dstURL): \(error)")
-            return false
-        }
-        return true
-    }
-
-    private func getSharedMediaFile(forVideo: URL) -> SharedMediaFile? {
-        let asset = AVAsset(url: forVideo)
-        let duration = (CMTimeGetSeconds(asset.duration) * 1000).rounded()
-        let thumbnailPath = getThumbnailPath(for: forVideo)
-        if FileManager.default.fileExists(atPath: thumbnailPath.path) {
-            return SharedMediaFile(path: forVideo.absoluteString, thumbnail: thumbnailPath.absoluteString, duration: duration, type: .video)
-        }
-        var saved = false
-        let generator = AVAssetImageGenerator(asset: asset)
-        generator.appliesPreferredTrackTransform = true
-        generator.maximumSize = CGSize(width: 360, height: 360)
-        do {
-            let img = try generator.copyCGImage(at: CMTimeMakeWithSeconds(600, preferredTimescale: Int32(1.0)), actualTime: nil)
-            try UIImage(cgImage: img).pngData()?.write(to: thumbnailPath)
-            saved = true
-        } catch {
-            saved = false
-        }
-        return saved ? SharedMediaFile(path: forVideo.absoluteString, thumbnail: thumbnailPath.absoluteString, duration: duration, type: .video) : nil
-    }
-
-    private func getThumbnailPath(for url: URL) -> URL {
-        let fileName = Data(url.lastPathComponent.utf8).base64EncodedString().replacingOccurrences(of: "==", with: "")
-        guard let containerURL = appGroupContainerURL() else {
-            return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(fileName).jpg")
-        }
-        return containerURL.appendingPathComponent("\(fileName).jpg")
-    }
-
-    class SharedMediaFile: Codable {
-        var path: String
-        var thumbnail: String?
-        var duration: Double?
-        var type: SharedMediaType
-
-        init(path: String, thumbnail: String?, duration: Double?, type: SharedMediaType) {
-            self.path = path
-            self.thumbnail = thumbnail
-            self.duration = duration
-            self.type = type
-        }
-
-        func toString() {
-            print("[SharedMediaFile]\n\tpath: \(self.path)\n\tthumbnail: \(String(describing: self.thumbnail))\n\tduration: \(String(describing: self.duration))\n\ttype: \(self.type)")
-        }
-    }
-
-    enum SharedMediaType: Int, Codable {
-        case image
-        case video
-        case file
-    }
-
-    func toData(data: [SharedMediaFile]) -> Data {
-        let encodedData = try? JSONEncoder().encode(data)
-        return encodedData ?? Data()
-    }
+    // ✅ 미디어 처리 관련 유틸리티 메서드 및 데이터 모델 제거됨
+    // getExtension, getFileName, copyFile, getSharedMediaFile, getThumbnailPath
+    // SharedMediaFile, SharedMediaType, toData
+    // URL과 텍스트만 처리하므로 불필요
 
     /// 백그라운드 저장 확인용 디버그 로그 파일 생성
     /// App Groups 컨테이너에 로그 파일을 저장하여 앱에서 확인 가능

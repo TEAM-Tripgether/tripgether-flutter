@@ -7,6 +7,7 @@ import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../shared/widgets/common/app_snackbar.dart';
 import '../../providers/login_provider.dart';
 // import '../widgets/login_form.dart'; // 주석 처리: 이메일 로그인 임시 비활성화
 import '../widgets/social_login_section.dart';
@@ -64,11 +65,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } else if (context.mounted) {
       // 로그인 실패 시 에러 메시지 표시
       debugPrint('[LoginScreen] ⚠️ 로그인 실패 - 에러 메시지 표시');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context).loginFailedTryAgain),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
+      AppSnackBar.showError(
+        context,
+        AppLocalizations.of(context).loginFailedTryAgain,
       );
     }
   }
@@ -112,11 +111,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } else if (!success && context.mounted) {
       // 로그인 실패 시 에러 메시지 표시
       debugPrint('[LoginScreen] ⚠️ 구글 로그인 실패 - 에러 메시지 표시');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context).googleLoginFailed),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
+      AppSnackBar.showError(
+        context,
+        AppLocalizations.of(context).googleLoginFailed,
       );
     } else if (!context.mounted) {
       debugPrint('[LoginScreen] ⚠️ context가 unmounted됨 - 화면 전환 불가');
@@ -158,7 +155,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         color: AppColors.surface, // 흰색 배경
         borderRadius: BorderRadius.circular(AppRadius.circle), // pill 모양
         border: Border.all(
-          color: AppColors.gradientEnd, // #B599FF 밝은 연보라 테두리
+          color: AppColors.gradient3, // #B599FF 밝은 연보라 테두리
           width: AppSizes.borderMedium, // 2px 테두리
         ),
       ),
@@ -175,8 +172,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           // 텍스트
           Text(
             '10초만에 빠르게 회원가입!',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.gradientEnd, // #B599FF 밝은 연보라 텍스트
+            style: AppTextStyles.bodyRegular14.copyWith(
+              color: AppColors.gradient3, // #B599FF 밝은 연보라 텍스트
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -233,7 +230,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     Expanded(
                       child: Divider(
-                        color: AppColors.outline,
+                        color: AppColors.subColor2,
                         thickness: AppSizes.dividerThin,
                       ),
                     ),
@@ -241,14 +238,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
                       child: Text(
                         'SNS 계정으로 로그인/회원가입',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.outline,
+                        style: AppTextStyles.metaMedium12.copyWith(
+                          color: AppColors.subColor2,
                         ),
                       ),
                     ),
                     Expanded(
                       child: Divider(
-                        color: AppColors.outline,
+                        color: AppColors.subColor2,
                         thickness: AppSizes.dividerThin,
                       ),
                     ),

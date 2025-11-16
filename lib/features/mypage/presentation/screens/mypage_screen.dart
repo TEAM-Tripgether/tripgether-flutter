@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
+import 'package:tripgether/shared/widgets/common/app_snackbar.dart';
+import 'package:tripgether/shared/widgets/dialogs/common_dialog.dart';
 import 'package:tripgether/core/providers/locale_provider.dart';
 import 'package:tripgether/core/router/routes.dart';
 import 'package:tripgether/core/theme/app_colors.dart';
@@ -29,6 +32,7 @@ class MyPageScreen extends ConsumerWidget {
       // 개인 계정 관리 중심으로 설정 기능을 강조
       appBar: CommonAppBar(
         title: l10n.navMyPage,
+        backgroundColor: AppColors.white, // 다른 페이지와 동일한 흰색 배경
         showMenuButton: false, // 마이페이지에서는 메뉴 버튼 제거 (개인 공간)
         showNotificationIcon: true, // 개인 알림 확인을 위해 알림 아이콘 유지
         onNotificationPressed: () {
@@ -40,17 +44,16 @@ class MyPageScreen extends ConsumerWidget {
           Semantics(
             label: '설정 버튼',
             button: true,
-            child: IconButton(
-              icon: Icon(
-                Icons.settings_outlined,
-                size: 24.w,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-              onPressed: () {
+            child: GestureDetector(
+              onTap: () {
                 debugPrint('마이페이지 설정 버튼 클릭');
                 // TODO: 설정 화면으로 이동
               },
-              tooltip: l10n.settings,
+              child: SvgPicture.asset(
+                'assets/icons/setting.svg',
+                width: AppSizes.iconXLarge,
+                height: AppSizes.iconXLarge,
+              ),
             ),
           ),
           // 알림 아이콘은 showNotificationIcon으로 처리됨
@@ -101,7 +104,7 @@ class MyPageScreen extends ConsumerWidget {
           padding: AppSpacing.only(left: 16, top: 24, right: 16, bottom: 12),
           child: Text(
             l10n.languageSelection,
-            style: AppTextStyles.titleMedium.copyWith(
+            style: AppTextStyles.titleSemiBold16.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -112,7 +115,7 @@ class MyPageScreen extends ConsumerWidget {
           padding: AppSpacing.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             '${l10n.currentLanguage}: ${_getLanguageName(l10n, currentLocale)}',
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTextStyles.bodyRegular14.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
@@ -163,7 +166,7 @@ class MyPageScreen extends ConsumerWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       title: Text(
         languageName,
-        style: AppTextStyles.bodyLarge.copyWith(
+        style: AppTextStyles.bodyMedium16.copyWith(
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           color: isSelected ? primaryColor : colorScheme.onSurface,
         ),
@@ -177,20 +180,10 @@ class MyPageScreen extends ConsumerWidget {
 
         // 스낵바로 알림
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '${l10n.language}: $languageName',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.primary,
-                ),
-              ),
-              backgroundColor: AppColors.surface,
-              duration: const Duration(seconds: 2),
-              behavior: SnackBarBehavior.floating,
-            ),
+          AppSnackBar.showInfo(
+            context,
+            '${l10n.language}: $languageName',
+            duration: const Duration(seconds: 2),
           );
         }
       },
@@ -212,9 +205,9 @@ class MyPageScreen extends ConsumerWidget {
     }
   }
 
-  /// 🧪 테스트 섹션: 온보딩 화면 테스트용 버튼
+  /// 🧪 테스트 섹션: 온보딩 화면 및 다이얼로그 테스트용 버튼
   ///
-  /// **목적**: 개발/테스트 중 온보딩 화면으로 쉽게 이동할 수 있도록 함
+  /// **목적**: 개발/테스트 중 온보딩 화면 및 CommonDialog를 쉽게 테스트할 수 있도록 함
   /// **주의**: 프로덕션 배포 전에 제거 필요
   Widget _buildTestSection(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -244,7 +237,7 @@ class MyPageScreen extends ConsumerWidget {
               SizedBox(width: 8.w),
               Text(
                 '🧪 테스트 모드',
-                style: AppTextStyles.titleSmall.copyWith(
+                style: AppTextStyles.titleSemiBold14.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.secondary,
                 ),
@@ -262,7 +255,85 @@ class MyPageScreen extends ConsumerWidget {
             icon: Icon(Icons.assignment_outlined, size: 20.w),
             label: Text(
               '온보딩 화면 테스트',
-              style: AppTextStyles.bodyMedium.copyWith(
+              style: AppTextStyles.bodyRegular14.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorScheme.secondaryContainer,
+              foregroundColor: colorScheme.onSecondaryContainer,
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 12.h),
+
+          // CommonDialog 테스트 제목
+          Text(
+            'CommonDialog 테스트',
+            style: AppTextStyles.titleSemiBold14.copyWith(
+              fontWeight: FontWeight.w600,
+              color: colorScheme.secondary,
+            ),
+          ),
+
+          SizedBox(height: 8.h),
+
+          // 삭제 확인 다이얼로그 테스트
+          ElevatedButton.icon(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => CommonDialog.forDelete(
+                  title: '장소를 삭제하시겠습니까?',
+                  description: '삭제된 장소는 복구할 수 없습니다.',
+                  subtitle: '연관된 코스도 함께 삭제됩니다.',
+                  onConfirm: () {
+                    debugPrint('삭제 확인됨');
+                  },
+                ),
+              );
+            },
+            icon: Icon(Icons.delete_outline, size: 20.w),
+            label: Text(
+              '삭제 확인 다이얼로그',
+              style: AppTextStyles.bodyRegular14.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorScheme.errorContainer,
+              foregroundColor: colorScheme.onErrorContainer,
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 8.h),
+
+          // 오류 다이얼로그 테스트
+          ElevatedButton.icon(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => CommonDialog.forError(
+                  title: '오류가 발생했습니다',
+                  description: '네트워크 연결을 확인해주세요.',
+                  subtitle: '오류 코드: 500',
+                ),
+              );
+            },
+            icon: Icon(Icons.error_outline, size: 20.w),
+            label: Text(
+              '오류 다이얼로그',
+              style: AppTextStyles.bodyRegular14.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -279,10 +350,75 @@ class MyPageScreen extends ConsumerWidget {
 
           SizedBox(height: 8.h),
 
+          // 일반 확인 다이얼로그 테스트
+          ElevatedButton.icon(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => CommonDialog.forConfirm(
+                  title: '변경사항을 저장하시겠습니까?',
+                  description: '저장하지 않으면 변경사항이 사라집니다.',
+                  onConfirm: () {
+                    debugPrint('저장 확인됨');
+                  },
+                ),
+              );
+            },
+            icon: Icon(Icons.help_outline, size: 20.w),
+            label: Text(
+              '일반 확인 다이얼로그',
+              style: AppTextStyles.bodyRegular14.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorScheme.primaryContainer,
+              foregroundColor: colorScheme.onPrimaryContainer,
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 8.h),
+
+          // 성공 알림 다이얼로그 테스트
+          ElevatedButton.icon(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => CommonDialog.forSuccess(
+                  title: '저장 완료',
+                  description: '변경사항이 성공적으로 저장되었습니다.',
+                ),
+              );
+            },
+            icon: Icon(Icons.check_circle_outline, size: 20.w),
+            label: Text(
+              '성공 알림 다이얼로그',
+              style: AppTextStyles.bodyRegular14.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorScheme.tertiaryContainer,
+              foregroundColor: colorScheme.onTertiaryContainer,
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 8.h),
+
           // 안내 문구
           Text(
             '※ 개발/테스트 전용 기능입니다',
-            style: AppTextStyles.bodySmall.copyWith(
+            style: AppTextStyles.metaMedium12.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontStyle: FontStyle.italic,
             ),
@@ -338,7 +474,7 @@ class MyPageScreen extends ConsumerWidget {
                 icon: Icon(Icons.logout, size: 20.w, color: colorScheme.error),
                 label: Text(
                   AppLocalizations.of(context).logout,
-                  style: AppTextStyles.bodyLarge.copyWith(
+                  style: AppTextStyles.bodyMedium16.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colorScheme.error,
                   ),
@@ -360,7 +496,7 @@ class MyPageScreen extends ConsumerWidget {
               // 안내 문구
               Text(
                 AppLocalizations.of(context).logoutHint,
-                style: AppTextStyles.bodySmall.copyWith(
+                style: AppTextStyles.metaMedium12.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
@@ -388,13 +524,13 @@ class MyPageScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: Text(
           l10n.logoutConfirmTitle,
-          style: AppTextStyles.titleMedium.copyWith(
+          style: AppTextStyles.titleSemiBold16.copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),
         content: Text(
           l10n.logoutConfirmMessage,
-          style: AppTextStyles.bodyMedium,
+          style: AppTextStyles.bodyRegular14,
         ),
         actions: [
           // 취소 버튼
@@ -402,7 +538,7 @@ class MyPageScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
               l10n.btnCancel,
-              style: AppTextStyles.labelLarge.copyWith(
+              style: AppTextStyles.buttonSelectSemiBold16.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -414,7 +550,7 @@ class MyPageScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               l10n.logout,
-              style: AppTextStyles.labelLarge.copyWith(
+              style: AppTextStyles.buttonSelectSemiBold16.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.error,
               ),
@@ -443,7 +579,7 @@ class MyPageScreen extends ConsumerWidget {
           content: Text(
             l10nAfter.logoutSuccess,
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTextStyles.bodyRegular14.copyWith(
               fontWeight: FontWeight.w500,
               color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
@@ -467,7 +603,7 @@ class MyPageScreen extends ConsumerWidget {
         SnackBar(
           content: Text(
             l10nError.logoutFailed(e.toString()),
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTextStyles.bodyRegular14.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),

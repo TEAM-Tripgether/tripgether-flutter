@@ -27,6 +27,18 @@ class OnboardingData with _$OnboardingData {
   const OnboardingData._();
 
   const factory OnboardingData({
+    /// 서비스 이용약관 동의 (필수)
+    @Default(false) bool termsOfService,
+
+    /// 개인정보 처리방침 동의 (필수)
+    @Default(false) bool privacyPolicy,
+
+    /// 만 14세 이상 확인 (필수)
+    @Default(false) bool ageConfirmation,
+
+    /// 마케팅 정보 수신 동의 (선택)
+    @Default(false) bool marketingConsent,
+
     /// 닉네임 (필수, 2-10자)
     ///
     /// **검증 규칙**:
@@ -80,6 +92,18 @@ class OnboardingData with _$OnboardingData {
 /// - 각 페이지에서 입력 데이터 유효성 검증
 /// - 온보딩 완료 버튼 활성화 조건 판단
 extension OnboardingDataValidation on OnboardingData {
+  /// 약관 동의 유효성 검증
+  ///
+  /// **검증 규칙**: 필수 약관 3개 모두 동의해야 함
+  /// - 서비스 이용약관
+  /// - 개인정보 처리방침
+  /// - 만 14세 이상 확인
+  ///
+  /// Returns: true if 필수 약관 모두 동의
+  bool get isTermsValid {
+    return termsOfService && privacyPolicy && ageConfirmation;
+  }
+
   /// 닉네임 유효성 검증
   ///
   /// **검증 규칙**: 2-10자
@@ -101,23 +125,26 @@ extension OnboardingDataValidation on OnboardingData {
   /// 온보딩 완료 가능 여부 (필수 항목 검증)
   ///
   /// **필수 항목**:
+  /// - 약관 동의: 필수 약관 3개 동의 (필수)
   /// - 닉네임: 2-10자 (필수)
   /// - 관심사: 3-10개 (필수)
   ///
   /// **선택 항목**:
   /// - 성별: 선택 안 해도 완료 가능
   /// - 생년월일: 입력 안 해도 완료 가능
+  /// - 마케팅 동의: 선택 사항
   ///
   /// Returns: true if 필수 항목이 모두 유효
   bool get canComplete {
-    return isNicknameValid && isInterestsValid;
+    return isTermsValid && isNicknameValid && isInterestsValid;
   }
 
   /// 현재 완료된 단계 개수 (진행률 계산용)
   ///
-  /// Returns: 0-4 (닉네임, 성별, 생년월일, 관심사)
+  /// Returns: 0-5 (약관, 닉네임, 성별, 생년월일, 관심사)
   int get completedSteps {
     int count = 0;
+    if (isTermsValid) count++;
     if (isNicknameValid) count++;
     if (gender != 'NONE') count++;
     if (birthdate != null) count++;
@@ -129,6 +156,6 @@ extension OnboardingDataValidation on OnboardingData {
   ///
   /// Returns: 0-100 (완료된 단계 / 전체 단계 * 100)
   double get progressPercent {
-    return (completedSteps / 4 * 100).roundToDouble();
+    return (completedSteps / 5 * 100).roundToDouble();
   }
 }

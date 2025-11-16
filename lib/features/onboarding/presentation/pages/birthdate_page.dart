@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -10,8 +9,9 @@ import '../../../../shared/widgets/inputs/onboarding_text_field.dart';
 import '../../../../shared/utils/date_input_formatter.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../widgets/onboarding_layout.dart';
 
-/// 생년월일 입력 페이지 (페이지 2/5)
+/// 생년월일 입력 페이지 (STEP 3/5)
 ///
 /// **개선된 입력 방식**:
 /// - 단일 TextField로 YYYY / MM / DD 형식 자동 포맷팅
@@ -177,65 +177,28 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
         // 빈 공간 클릭 시 키보드 포커스 해제
         FocusScope.of(context).unfocus();
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+      child: OnboardingLayout(
+        stepNumber: 3,
+        title: l10n.onboardingBirthdatePrompt,
+        showRequiredMark: false,
+        description: l10n.onboardingBirthdateDescription,
+        content: Column(
           children: [
-            // 상단 여백 (위로 올림)
-            AppSpacing.verticalSpaceHuge,
-
-            // 제목
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.onboardingBirthdatePrompt,
-                  style: AppTextStyles.headlineMedium.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.gradientMiddle, // #5325CB - 선명한 보라색
-                  ),
-                ),
-                AppSpacing.horizontalSpace(4),
-                Text(
-                  '*',
-                  style: AppTextStyles.headlineMedium.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.error,
-                  ),
-                ),
-              ],
-            ),
-
-            // 제목-설명 간격
-            AppSpacing.verticalSpaceSM,
-
-            // 설명 (제목 바로 아래, 국제화 적용)
-            Text(
-              l10n.onboardingBirthdateDescription,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.onboardingDescription, // #130537 - 진한 남보라
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            // 입력 필드를 중앙에 배치하기 위한 여백
-            const Spacer(),
+            // 설명과 입력 필드 사이 간격 (닉네임 페이지와 동일)
+            AppSpacing.verticalSpace72,
 
             // YYYY / MM / DD 입력 (단일 TextField)
-            Center(
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl),
               child: OnboardingTextField(
-                width: 240.w, // 충분한 너비 확보 (YYYY / MM / DD 표시)
                 controller: _birthdateController,
                 focusNode: _focusNode,
                 hintText: '2001 / 01 / 01', // 입력 형식 안내
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
                 maxLength: 14, // "YYYY / MM / DD" = 14자
-                style: AppTextStyles.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textPrimary,
+                style: AppTextStyles.greetingSemiBold20.copyWith(
+                  color: AppColors.textColor1,
                   letterSpacing: 2.0, // 가독성을 위한 자간 조정
                 ),
                 inputFormatters: [
@@ -249,39 +212,31 @@ class _BirthdatePageState extends ConsumerState<BirthdatePage> {
               ),
             ),
 
-            // 입력-버튼 간격
             const Spacer(),
 
             // 만 14세 이상 안내 문구
             Text(
               l10n.onboardingBirthdateAgeLimit,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.error,
-                fontWeight: FontWeight.w600,
+              style: AppTextStyles.metaMedium12.copyWith(
+                color: AppColors.subColor2,
               ),
               textAlign: TextAlign.center,
             ),
 
-            AppSpacing.verticalSpaceMD,
-
-            // 계속하기 버튼 (국제화 적용)
-            PrimaryButton(
-              text: l10n.btnContinue,
-              onPressed: isValid ? _handleNext : null,
-              isFullWidth: true,
-              // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
-              style: ButtonStyle(
-                shape: WidgetStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.circle),
-                  ),
-                ),
+            AppSpacing.verticalSpaceLG,
+          ],
+        ),
+        button: PrimaryButton(
+          text: l10n.btnContinue,
+          onPressed: isValid ? _handleNext : null,
+          isFullWidth: true,
+          style: ButtonStyle(
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.circle),
               ),
             ),
-
-            // 하단 여백 (버튼을 조금 위로)
-            AppSpacing.verticalSpace60,
-          ],
+          ),
         ),
       ),
     );

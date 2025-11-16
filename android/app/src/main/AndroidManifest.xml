@@ -5,7 +5,9 @@
     <application
         android:label="Tripgether"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupContent="false">
         <!-- [CRITICAL CHANGE]: launchMode를 singleTask로 설정하여
              앱이 이미 실행 중일 때 새로운 Activity 인스턴스 생성 없이
              공유 인텐트를 현재 Activity로 전달하도록 합니다. -->

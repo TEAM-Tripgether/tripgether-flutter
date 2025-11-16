@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/common/common_app_bar.dart';
+import '../pages/terms_page.dart';
 import '../pages/nickname_page.dart';
 import '../pages/birthdate_page.dart';
 import '../pages/gender_page.dart';
 import '../pages/interests_page.dart';
 import '../pages/welcome_page.dart';
-import '../widgets/onboarding_page_indicator.dart';
 
 /// 온보딩 메인 화면
 ///
-/// 5개의 페이지를 PageView로 관리하며, 단계별로 사용자 정보를 입력받습니다.
-/// - 페이지 1: 닉네임 설정
-/// - 페이지 2: 생년월일 입력
-/// - 페이지 3: 성별 선택
-/// - 페이지 4: 관심사 선택
-/// - 페이지 5: 완료 화면
+/// 6개의 페이지를 PageView로 관리하며, 단계별로 사용자 정보를 입력받습니다.
+/// - 페이지 1: 약관 동의 (STEP 1)
+/// - 페이지 2: 닉네임 설정 (STEP 2)
+/// - 페이지 3: 생년월일 입력 (STEP 3)
+/// - 페이지 4: 성별 선택 (STEP 4)
+/// - 페이지 5: 관심사 선택 (STEP 5)
+/// - 페이지 6: 완료 화면
 ///
 /// **스와이프 제한**:
 /// - 모든 스와이프 제스처 차단 (NeverScrollableScrollPhysics)
@@ -32,7 +33,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   /// 페이지 컨트롤러
   late final PageController _pageController;
 
-  /// 현재 페이지 인덱스 (0-4)
+  /// 현재 페이지 인덱스 (0-5)
   int _currentPage = 0;
 
   @override
@@ -49,7 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   /// 다음 페이지로 이동
   void _goToNextPage() {
-    if (_currentPage < 4) {
+    if (_currentPage < 5) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -77,40 +78,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: Scaffold(
         backgroundColor: AppColors.surface,
         // AppBar: Welcome 페이지(마지막 페이지)에서는 숨김
-        appBar: _currentPage == 4
+        appBar: _currentPage == 5
             ? null // Welcome 페이지에서는 AppBar 없음
-            : PreferredSize(
-                preferredSize: Size.fromHeight(60.h),
-                child: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  // 왼쪽: 뒤로가기 버튼 (첫 페이지에서는 숨김)
-                  // 첫 페이지에서 뒤로가기 시 Navigator.pop()이 호출되면
-                  // GoRouter 스택이 비어서 에러 발생 (context.go()로 진입했기 때문)
-                  leading: _currentPage > 0
-                      ? IconButton(
-                          icon: const Icon(Icons.arrow_back_ios),
-                          onPressed: () {
-                            _pageController.previousPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
-                          iconSize: 24.w,
-                          color: AppColors.textPrimary,
-                          padding: EdgeInsets.zero,
-                        )
-                      : null, // 첫 페이지에서는 뒤로가기 버튼 없음
-                  // 중앙: 페이지 인디케이터 (너비 제한)
-                  title: SizedBox(
-                    width: 200.w, // Progress Bar 최대 너비 제한
-                    child: OnboardingPageIndicator(
-                      controller: _pageController,
-                      count: 5,
-                    ),
-                  ),
-                  centerTitle: true,
-                ),
+            : CommonAppBar.forOnboarding(
+                pageController: _pageController,
+                count: 6,
+                currentPage: _currentPage,
+                onBackPressed: () {
+                  _pageController.previousPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
               ),
         // PageView: SafeArea 제거 (AppBar가 자동으로 Safe Area 처리)
         body: PageView(
@@ -121,28 +100,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             setState(() => _currentPage = index);
           },
           children: [
-            // 페이지 1: 닉네임 설정
+            // 페이지 1: 약관 동의 (STEP 1)
+            TermsPage(onNext: _goToNextPage, pageController: _pageController),
+
+            // 페이지 2: 닉네임 설정 (STEP 2)
             NicknamePage(
               onNext: _goToNextPage,
               pageController: _pageController,
             ),
 
-            // 페이지 2: 생년월일 입력
+            // 페이지 3: 생년월일 입력 (STEP 3)
             BirthdatePage(
               onNext: _goToNextPage,
               pageController: _pageController,
             ),
 
-            // 페이지 3: 성별 선택
+            // 페이지 4: 성별 선택 (STEP 4)
             GenderPage(onNext: _goToNextPage, pageController: _pageController),
 
-            // 페이지 4: 관심사 선택
+            // 페이지 5: 관심사 선택 (STEP 5)
             InterestsPage(
               onNext: _goToNextPage,
               pageController: _pageController,
             ),
 
-            // 페이지 5: 완료 화면
+            // 페이지 6: 완료 화면
             const WelcomePage(),
           ],
         ),

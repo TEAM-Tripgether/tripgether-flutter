@@ -59,19 +59,22 @@ class CategoryDropdownButton extends StatelessWidget {
         decoration: BoxDecoration(
           // 우선순위: 열린 상태 > 선택된 항목 있음 > 기본 상태
           color: isExpanded
-              ? AppColors
-                    .primaryContainer // #E8DDFF - 연한 보라색 (열린 상태)
+              ? AppColors.mainColor.withValues(
+                  alpha: 0.1,
+                ) // #E8DDFF - 연한 보라색 (열린 상태)
               : selectedCount > 0
-              ? AppColors
-                    .primaryContainer // #E8DDFF - 연한 보라색 (선택됨)
+              ? AppColors.mainColor.withValues(
+                  alpha: 0.1,
+                ) // #E8DDFF - 연한 보라색 (선택됨)
               : Colors.grey.withValues(alpha: 0.1), // 연한 회색 (기본)
-          // 열린 상태 또는 선택된 항목 있음: 보라색 테두리
-          border: (isExpanded || selectedCount > 0)
-              ? Border.all(
-                  color: AppColors.primary, // #664BAE - 보라색
-                  width: 2,
-                )
-              : null,
+          // 테두리를 항상 유지하여 크기 변화 방지 (색상만 변경)
+          border: Border.all(
+            color: (isExpanded || selectedCount > 0)
+                ? AppColors
+                      .mainColor // #664BAE - 보라색 (활성)
+                : Colors.transparent, // 투명 (비활성)
+            width: 2,
+          ),
           // 완전한 pill 모양
           borderRadius: BorderRadius.circular(AppRadius.circle),
         ),
@@ -81,16 +84,15 @@ class CategoryDropdownButton extends StatelessWidget {
             // 카테고리 이름 텍스트
             Text(
               categoryName,
-              style: AppTextStyles.bodyMedium.copyWith(
-                fontWeight: FontWeight.w500,
+              style: AppTextStyles.bodyRegular14.copyWith(
                 // 우선순위: 열린 상태 > 선택된 항목 있음 > 기본 상태
                 color: isExpanded
                     ? AppColors
-                          .gradientMiddle // #5325CB - 선명한 보라색 (열린 상태)
+                          .gradient2 // #5325CB - 선명한 보라색 (열린 상태)
                     : selectedCount > 0
                     ? AppColors
-                          .gradientMiddle // #5325CB - 선명한 보라색 (선택됨)
-                    : AppColors.outline, // #BBBBBB - 회색 (기본)
+                          .gradient2 // #5325CB - 선명한 보라색 (선택됨)
+                    : AppColors.subColor2, // #BBBBBB - 회색 (기본)
               ),
             ),
 
@@ -104,7 +106,7 @@ class CategoryDropdownButton extends StatelessWidget {
                         .keyboard_arrow_up // 열린 상태: ▲
                   : Icons.keyboard_arrow_down, // 닫힌 상태: ▼
               size: AppSizes.iconSmall, // 18px
-              color: AppColors.textSecondary,
+              color: AppColors.textColor1.withValues(alpha: 0.7),
             ),
           ],
         ),

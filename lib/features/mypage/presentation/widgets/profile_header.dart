@@ -88,9 +88,8 @@ class ProfileHeader extends ConsumerWidget {
             // 닉네임 (titleLarge: 20px, 세미볼드)
             Text(
               user.nickname,
-              style: AppTextStyles.titleLarge.copyWith(
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+              style: AppTextStyles.greetingBold20.copyWith(
+                color: AppColors.textColor1,
               ),
             ),
 
@@ -99,8 +98,8 @@ class ProfileHeader extends ConsumerWidget {
             // 이메일 (bodyMedium: 14px, 레귤러)
             Text(
               user.email,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+              style: AppTextStyles.bodyRegular14.copyWith(
+                color: AppColors.textColor1.withValues(alpha: 0.7),
               ),
             ),
 
@@ -135,7 +134,7 @@ class ProfileHeader extends ConsumerWidget {
         icon = Icons.chat_bubble;
         break;
       default:
-        badgeColor = AppColors.primary;
+        badgeColor = AppColors.mainColor;
         icon = Icons.person;
     }
 
@@ -156,8 +155,7 @@ class ProfileHeader extends ConsumerWidget {
           AppSpacing.horizontalSpaceXS,
           Text(
             l10n.accountSuffix(platform),
-            style: AppTextStyles.labelMedium.copyWith(
-              fontWeight: FontWeight.w500,
+            style: AppTextStyles.buttonMediumMedium14.copyWith(
               color: badgeColor,
             ),
           ),
@@ -203,9 +201,8 @@ class ProfileHeader extends ConsumerWidget {
             // 안내 메시지
             Text(
               l10n.profileLoginRequired,
-              style: AppTextStyles.titleMedium.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+              style: AppTextStyles.titleSemiBold16.copyWith(
+                color: AppColors.textColor1,
               ),
             ),
 
@@ -213,8 +210,8 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               l10n.profileLoginPrompt,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+              style: AppTextStyles.bodyRegular14.copyWith(
+                color: AppColors.textColor1.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -227,8 +224,8 @@ class ProfileHeader extends ConsumerWidget {
                 context.push(AppRoutes.login);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.onPrimary,
+                backgroundColor: AppColors.mainColor,
+                foregroundColor: AppColors.white,
                 padding: AppSpacing.buttonPaddingLarge,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
@@ -236,9 +233,7 @@ class ProfileHeader extends ConsumerWidget {
               ),
               child: Text(
                 l10n.profileLoginButton,
-                style: AppTextStyles.labelLarge.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTextStyles.buttonSelectSemiBold16,
               ),
             ),
           ],
@@ -261,7 +256,7 @@ class ProfileHeader extends ConsumerWidget {
       child: Padding(
         padding: AppSpacing.cardPadding,
         child: Shimmer.fromColors(
-          baseColor: AppColors.shimmerBase,
+          baseColor: AppColors.subColor2.withValues(alpha: 0.3),
           highlightColor: AppColors.shimmerHighlight,
           child: Column(
             children: [
@@ -327,9 +322,8 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               l10n.profileLoadError,
-              style: AppTextStyles.titleMedium.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+              style: AppTextStyles.titleSemiBold16.copyWith(
+                color: AppColors.textColor1,
               ),
             ),
 
@@ -337,8 +331,8 @@ class ProfileHeader extends ConsumerWidget {
 
             Text(
               error.toString(),
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+              style: AppTextStyles.metaMedium12.copyWith(
+                color: AppColors.textColor1.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),

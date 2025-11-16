@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/app_colors.dart';
 
 /// PRD.md 구조에 따른 공유 바텀 네비게이션 바 위젯
 ///
@@ -33,32 +34,27 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Container(
-      // 바텀 네비게이션 바의 전체 높이 (반응형)
-      height: AppSizes.navigationBarHeight,
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        color: AppColors.white,
         // 상단에만 그림자 효과 추가
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.1),
+            color: AppColors.textColor1.withValues(alpha: 0.1),
             spreadRadius: 1,
-            blurRadius: 10,
+            blurRadius: 8,
             offset: const Offset(0, -2),
           ),
         ],
       ),
       child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(top: AppSpacing.sm.h), // 상단에 추가 패딩 적용
+        bottom: false, // 하단 SafeArea 패딩 제거 - 터치 영역을 화면 끝까지 확장
+        child: SizedBox(
+          height: AppSizes.navigationBarHeight, // SafeArea 내부에서 높이 제한
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(
               AppRoutes.getTabLabels(context).length,
-              (index) => _buildNavItem(context, index),
+              (index) => Expanded(child: _buildNavItem(context, index)),
             ),
           ),
         ),
@@ -74,35 +70,30 @@ class CustomBottomNavigationBar extends StatelessWidget {
     // 현재 탭이 선택되어 있는지 확인
     final bool isSelected = currentIndex == index;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          // 현재 선택된 탭을 다시 클릭한 경우
-          if (currentIndex == index) {
-            onTabReselected?.call(index);
-          } else {
-            // 다른 탭을 선택한 경우
-            onTap(index);
-          }
-        },
-        borderRadius: BorderRadius.circular(16.r),
-        child: SizedBox(
-          width: AppSizes.fabSize, // 각 탭의 최소 너비 보장
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // SVG 아이콘 표시
-              _buildIcon(context, index, isSelected),
+    return InkWell(
+      onTap: () {
+        // 현재 선택된 탭을 다시 클릭한 경우
+        if (currentIndex == index) {
+          onTabReselected?.call(index);
+        } else {
+          // 다른 탭을 선택한 경우
+          onTap(index);
+        }
+      },
+      borderRadius: BorderRadius.circular(16.r),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center, // 중앙 정렬로 복원
+        children: [
+          // SVG 아이콘 표시
+          _buildIcon(context, index, isSelected),
 
-              SizedBox(height: AppSpacing.xs.h),
+          AppSpacing.verticalSpaceXS,
 
-              // 탭 라벨 텍스트
-              _buildLabel(context, index, isSelected),
-            ],
-          ),
-        ),
+          // 탭 라벨 텍스트
+          _buildLabel(context, index, isSelected),
+          AppSpacing.verticalSpaceLG,
+        ],
       ),
     );
   }
@@ -113,9 +104,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
   /// [index] 탭 인덱스
   /// [isSelected] 선택 여부 (active/inactive 아이콘 결정)
   Widget _buildIcon(BuildContext context, int index, bool isSelected) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     // 선택 상태에 따른 아이콘 경로 결정
     final String iconPath = isSelected
         ? NavigationIcons.getActiveIcon(index)
@@ -125,16 +113,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
       iconPath,
       width: AppSizes.iconDefault, // 반응형 아이콘 크기
       height: AppSizes.iconDefault.h,
-      // SVG 색상 필터링 (필요한 경우)
-      colorFilter: isSelected
-          ? ColorFilter.mode(
-              theme.primaryColor, // 선택된 상태 - 테마의 기본 색상
-              BlendMode.srcIn,
-            )
-          : ColorFilter.mode(
-              colorScheme.onSurfaceVariant, // 비선택 상태 - 보조 색상
-              BlendMode.srcIn,
-            ),
+      // SVG 파일 자체에 색상이 포함되어 있으므로 ColorFilter 사용 안 함
+      // active: fill="#5325CB" (mainColor), inactive: stroke="#BBBBBB" (subColor2)
     );
   }
 
@@ -144,18 +124,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
   /// [index] 탭 인덱스
   /// [isSelected] 선택 여부 (텍스트 스타일 결정)
   Widget _buildLabel(BuildContext context, int index, bool isSelected) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Text(
       AppRoutes.getTabLabels(context)[index],
-      style: AppTextStyles.labelSmall.copyWith(
-        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-        color: isSelected
-            ? theme
-                  .primaryColor // 선택된 상태 색상
-            : colorScheme.onSurfaceVariant, // 비선택 상태 색상
-      ),
+      style: isSelected
+          ? AppTextStyles.buttonSmallSemiBold10.copyWith(
+              color: AppColors.mainColor, // 선택된 상태: SemiBold 10, mainColor
+            )
+          : AppTextStyles.buttonSmallMedium10.copyWith(
+              color: AppColors.subColor2, // 비선택 상태: Medium 10, subColor2
+            ),
       maxLines: 1, // 한 줄로 제한
       overflow: TextOverflow.ellipsis, // 텍스트가 길 경우 말줄임표 처리
     );

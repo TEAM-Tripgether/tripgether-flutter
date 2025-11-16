@@ -21,6 +21,18 @@ OnboardingData _$OnboardingDataFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$OnboardingData {
+  /// 서비스 이용약관 동의 (필수)
+  bool get termsOfService => throw _privateConstructorUsedError;
+
+  /// 개인정보 처리방침 동의 (필수)
+  bool get privacyPolicy => throw _privateConstructorUsedError;
+
+  /// 만 14세 이상 확인 (필수)
+  bool get ageConfirmation => throw _privateConstructorUsedError;
+
+  /// 마케팅 정보 수신 동의 (선택)
+  bool get marketingConsent => throw _privateConstructorUsedError;
+
   /// 닉네임 (필수, 2-10자)
   ///
   /// **검증 규칙**:
@@ -74,6 +86,10 @@ abstract class $OnboardingDataCopyWith<$Res> {
   ) = _$OnboardingDataCopyWithImpl<$Res, OnboardingData>;
   @useResult
   $Res call({
+    bool termsOfService,
+    bool privacyPolicy,
+    bool ageConfirmation,
+    bool marketingConsent,
     String nickname,
     String gender,
     String? birthdate,
@@ -96,6 +112,10 @@ class _$OnboardingDataCopyWithImpl<$Res, $Val extends OnboardingData>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? termsOfService = null,
+    Object? privacyPolicy = null,
+    Object? ageConfirmation = null,
+    Object? marketingConsent = null,
     Object? nickname = null,
     Object? gender = null,
     Object? birthdate = freezed,
@@ -103,6 +123,22 @@ class _$OnboardingDataCopyWithImpl<$Res, $Val extends OnboardingData>
   }) {
     return _then(
       _value.copyWith(
+            termsOfService: null == termsOfService
+                ? _value.termsOfService
+                : termsOfService // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            privacyPolicy: null == privacyPolicy
+                ? _value.privacyPolicy
+                : privacyPolicy // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            ageConfirmation: null == ageConfirmation
+                ? _value.ageConfirmation
+                : ageConfirmation // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            marketingConsent: null == marketingConsent
+                ? _value.marketingConsent
+                : marketingConsent // ignore: cast_nullable_to_non_nullable
+                      as bool,
             nickname: null == nickname
                 ? _value.nickname
                 : nickname // ignore: cast_nullable_to_non_nullable
@@ -135,6 +171,10 @@ abstract class _$$OnboardingDataImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
+    bool termsOfService,
+    bool privacyPolicy,
+    bool ageConfirmation,
+    bool marketingConsent,
     String nickname,
     String gender,
     String? birthdate,
@@ -156,6 +196,10 @@ class __$$OnboardingDataImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? termsOfService = null,
+    Object? privacyPolicy = null,
+    Object? ageConfirmation = null,
+    Object? marketingConsent = null,
     Object? nickname = null,
     Object? gender = null,
     Object? birthdate = freezed,
@@ -163,6 +207,22 @@ class __$$OnboardingDataImplCopyWithImpl<$Res>
   }) {
     return _then(
       _$OnboardingDataImpl(
+        termsOfService: null == termsOfService
+            ? _value.termsOfService
+            : termsOfService // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        privacyPolicy: null == privacyPolicy
+            ? _value.privacyPolicy
+            : privacyPolicy // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        ageConfirmation: null == ageConfirmation
+            ? _value.ageConfirmation
+            : ageConfirmation // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        marketingConsent: null == marketingConsent
+            ? _value.marketingConsent
+            : marketingConsent // ignore: cast_nullable_to_non_nullable
+                  as bool,
         nickname: null == nickname
             ? _value.nickname
             : nickname // ignore: cast_nullable_to_non_nullable
@@ -188,6 +248,10 @@ class __$$OnboardingDataImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$OnboardingDataImpl extends _OnboardingData {
   const _$OnboardingDataImpl({
+    this.termsOfService = false,
+    this.privacyPolicy = false,
+    this.ageConfirmation = false,
+    this.marketingConsent = false,
     this.nickname = '',
     this.gender = 'NONE',
     this.birthdate,
@@ -197,6 +261,26 @@ class _$OnboardingDataImpl extends _OnboardingData {
 
   factory _$OnboardingDataImpl.fromJson(Map<String, dynamic> json) =>
       _$$OnboardingDataImplFromJson(json);
+
+  /// 서비스 이용약관 동의 (필수)
+  @override
+  @JsonKey()
+  final bool termsOfService;
+
+  /// 개인정보 처리방침 동의 (필수)
+  @override
+  @JsonKey()
+  final bool privacyPolicy;
+
+  /// 만 14세 이상 확인 (필수)
+  @override
+  @JsonKey()
+  final bool ageConfirmation;
+
+  /// 마케팅 정보 수신 동의 (선택)
+  @override
+  @JsonKey()
+  final bool marketingConsent;
 
   /// 닉네임 (필수, 2-10자)
   ///
@@ -259,7 +343,7 @@ class _$OnboardingDataImpl extends _OnboardingData {
 
   @override
   String toString() {
-    return 'OnboardingData(nickname: $nickname, gender: $gender, birthdate: $birthdate, interests: $interests)';
+    return 'OnboardingData(termsOfService: $termsOfService, privacyPolicy: $privacyPolicy, ageConfirmation: $ageConfirmation, marketingConsent: $marketingConsent, nickname: $nickname, gender: $gender, birthdate: $birthdate, interests: $interests)';
   }
 
   @override
@@ -267,6 +351,14 @@ class _$OnboardingDataImpl extends _OnboardingData {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OnboardingDataImpl &&
+            (identical(other.termsOfService, termsOfService) ||
+                other.termsOfService == termsOfService) &&
+            (identical(other.privacyPolicy, privacyPolicy) ||
+                other.privacyPolicy == privacyPolicy) &&
+            (identical(other.ageConfirmation, ageConfirmation) ||
+                other.ageConfirmation == ageConfirmation) &&
+            (identical(other.marketingConsent, marketingConsent) ||
+                other.marketingConsent == marketingConsent) &&
             (identical(other.nickname, nickname) ||
                 other.nickname == nickname) &&
             (identical(other.gender, gender) || other.gender == gender) &&
@@ -282,6 +374,10 @@ class _$OnboardingDataImpl extends _OnboardingData {
   @override
   int get hashCode => Object.hash(
     runtimeType,
+    termsOfService,
+    privacyPolicy,
+    ageConfirmation,
+    marketingConsent,
     nickname,
     gender,
     birthdate,
@@ -307,6 +403,10 @@ class _$OnboardingDataImpl extends _OnboardingData {
 
 abstract class _OnboardingData extends OnboardingData {
   const factory _OnboardingData({
+    final bool termsOfService,
+    final bool privacyPolicy,
+    final bool ageConfirmation,
+    final bool marketingConsent,
     final String nickname,
     final String gender,
     final String? birthdate,
@@ -316,6 +416,22 @@ abstract class _OnboardingData extends OnboardingData {
 
   factory _OnboardingData.fromJson(Map<String, dynamic> json) =
       _$OnboardingDataImpl.fromJson;
+
+  /// 서비스 이용약관 동의 (필수)
+  @override
+  bool get termsOfService;
+
+  /// 개인정보 처리방침 동의 (필수)
+  @override
+  bool get privacyPolicy;
+
+  /// 만 14세 이상 확인 (필수)
+  @override
+  bool get ageConfirmation;
+
+  /// 마케팅 정보 수신 동의 (선택)
+  @override
+  bool get marketingConsent;
 
   /// 닉네임 (필수, 2-10자)
   ///

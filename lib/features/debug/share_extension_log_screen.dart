@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
+import '../../core/theme/app_spacing.dart';
+import '../../shared/widgets/common/app_snackbar.dart';
 
 /// Share Extension 로그 확인 화면
 ///
@@ -14,11 +17,20 @@ class ShareExtensionLogScreen extends StatefulWidget {
       _ShareExtensionLogScreenState();
 }
 
+/// 로그 엔트리 모델
+class LogEntry {
+  final String timestamp;
+  final String message;
+  final String? url;
+
+  LogEntry({required this.timestamp, required this.message, this.url});
+}
+
 class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
   static const MethodChannel _channel = MethodChannel('sharing_service');
-  String _logContent = '로그를 불러오는 중...';
+  List<LogEntry> _logEntries = [];
   bool _isLoading = true;
-  int _logCount = 0;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -26,48 +38,96 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
     _loadLog();
   }
 
-  /// 로그 파일 읽기
+  /// 로그 파일 읽기 및 파싱
   Future<void> _loadLog() async {
     setState(() {
       _isLoading = true;
+      _errorMessage = null;
     });
 
     try {
       final result = await _channel.invokeMethod<String>('getShareLog');
 
-      // 🔍 디버깅: 원본 로그 내용 출력
+      // 비동기 작업 완료 후 위젯이 dispose 되었는지 체크
+      if (!mounted) return;
+
       debugPrint('==== [로그 파일 읽기] ====');
       debugPrint('원본 로그 길이: ${result?.length ?? 0}자');
       debugPrint('원본 로그 내용:\n$result');
       debugPrint('========================');
 
-      // 로그 엔트리 개수 계산 (빈 줄 제외)
-      final logLines = (result ?? '')
-          .split('\n')
-          .where((line) => line.trim().isNotEmpty)
-          .toList();
-
-      // 🔍 디버깅: 파싱된 로그 라인 출력
-      debugPrint('파싱된 로그 라인 수: ${logLines.length}');
-      for (int i = 0; i < logLines.length; i++) {
-        debugPrint('  [$i] ${logLines[i]}');
+      if (result == null || result.isEmpty) {
+        setState(() {
+          _logEntries = [];
+          _errorMessage = '로그 파일이 비어있습니다';
+          _isLoading = false;
+        });
+        return;
       }
 
-      // ✅ 에러 메시지인 경우 카운트를 0으로 처리
-      final isErrorMessage = result?.contains('로그 파일이 없거나 읽을 수 없습니다') ?? false;
+      // 에러 메시지 체크
+      if (result.contains('로그 파일이 없거나 읽을 수 없습니다')) {
+        setState(() {
+          _logEntries = [];
+          _errorMessage = result;
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // 로그 파싱
+      final entries = _parseLogContent(result);
 
       setState(() {
-        _logContent = result ?? '로그 파일이 없습니다';
-        _logCount = isErrorMessage ? 0 : logLines.length;
+        _logEntries = entries;
         _isLoading = false;
       });
     } catch (e) {
+      debugPrint('로그 읽기 실패: $e');
+
+      // 에러 발생 시에도 mounted 체크
+      if (!mounted) return;
+
       setState(() {
-        _logContent = '로그 읽기 실패: $e';
-        _logCount = 0;
+        _logEntries = [];
+        _errorMessage = '로그 읽기 실패: $e';
         _isLoading = false;
       });
     }
+  }
+
+  /// 로그 내용을 파싱하여 LogEntry 리스트로 변환
+  List<LogEntry> _parseLogContent(String content) {
+    final List<LogEntry> entries = [];
+
+    // 줄바꿈으로 분리 (빈 줄 제외)
+    final lines = content
+        .split('\n')
+        .where((line) => line.trim().isNotEmpty)
+        .toList();
+
+    for (final line in lines) {
+      // 형식: [날짜 시간] 메시지
+      final match = RegExp(r'\[(.*?)\]\s*(.*)').firstMatch(line);
+
+      if (match != null) {
+        final timestamp = match.group(1) ?? '';
+        final message = match.group(2) ?? '';
+
+        // URL 추출 (http:// 또는 https://로 시작하는 URL)
+        final urlMatch = RegExp(r'https?://[^\s]+').firstMatch(message);
+        final url = urlMatch?.group(0);
+
+        entries.add(LogEntry(timestamp: timestamp, message: message, url: url));
+
+        debugPrint('파싱된 로그 - timestamp: $timestamp, url: $url');
+      } else {
+        // 타임스탬프 없는 로그 (예외 처리)
+        debugPrint('파싱 실패한 로그: $line');
+      }
+    }
+
+    return entries;
   }
 
   /// 로그 삭제
@@ -87,6 +147,18 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
     }
   }
 
+  /// URL을 클립보드에 복사
+  Future<void> _copyUrl(String url) async {
+    await Clipboard.setData(ClipboardData(text: url));
+    if (mounted) {
+      AppSnackBar.showInfo(
+        context,
+        'URL 복사 완료: $url',
+        duration: const Duration(seconds: 2),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,10 +168,10 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
           children: [
             const Text('Share Extension 로그'),
             Text(
-              '최신 5개만 자동 유지 (현재: $_logCount개)',
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+              '최신 5개만 자동 유지 (현재: ${_logEntries.length}개)',
+              style: AppTextStyles.caption12.copyWith(
+                color: AppColors.textColor1.withValues(alpha: 0.6),
+              ),
             ),
           ],
         ),
@@ -116,27 +188,165 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: EdgeInsets.all(16.w),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(12.w),
-                decoration: BoxDecoration(
-                  color: Colors.black87,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Text(
-                  _logContent,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontFamily: 'monospace', // 디버그 로그용 고정폭 폰트
-                    color: AppColors.success,
-                    height: 1.5,
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_errorMessage != null) {
+      return _buildEmptyState(
+        icon: Icons.error_outline,
+        message: _errorMessage!,
+      );
+    }
+
+    if (_logEntries.isEmpty) {
+      return _buildEmptyState(
+        icon: Icons.inbox_outlined,
+        message: '저장된 로그가 없습니다\n\n외부 앱에서 URL을 공유하면 여기에 로그가 표시됩니다',
+      );
+    }
+
+    return ListView.builder(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      itemCount: _logEntries.length,
+      itemBuilder: (context, index) {
+        final entry = _logEntries[index];
+        return _buildLogCard(entry, index);
+      },
+    );
+  }
+
+  /// 빈 상태 표시
+  Widget _buildEmptyState({required IconData icon, required String message}) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(AppSpacing.xxl),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 64.w,
+              color: AppColors.textColor1.withValues(alpha: 0.7),
+            ),
+            AppSpacing.verticalSpaceLG,
+            Text(
+              message,
+              style: AppTextStyles.bodyRegular14.copyWith(
+                color: AppColors.textColor1.withValues(alpha: 0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 로그 카드 빌드
+  Widget _buildLogCard(LogEntry entry, int index) {
+    final bool hasUrl = entry.url != null && entry.url!.isNotEmpty;
+
+    return Card(
+      margin: EdgeInsets.only(bottom: AppSpacing.md),
+      elevation: AppElevation.medium,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
+      child: Padding(
+        padding: EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 헤더 (타임스탬프 + 인덱스)
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: 4.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.mainColor.withValues(alpha: 0.1),
+                    borderRadius: AppRadius.allSmall,
+                  ),
+                  child: Text(
+                    '#${_logEntries.length - index}',
+                    style: AppTextStyles.buttonMediumMedium14.copyWith(
+                      color: AppColors.mainColor,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
+                AppSpacing.horizontalSpaceSM,
+                Expanded(
+                  child: Text(
+                    entry.timestamp,
+                    style: AppTextStyles.caption12.copyWith(
+                      color: AppColors.textColor1.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ),
+                if (hasUrl)
+                  Icon(Icons.link, size: 16.w, color: AppColors.success),
+              ],
             ),
+
+            AppSpacing.verticalSpaceMD,
+
+            // 메시지 내용
+            Text(entry.message, style: AppTextStyles.bodyRegular14),
+
+            // URL 표시 (있는 경우)
+            if (hasUrl) ...[
+              AppSpacing.verticalSpaceMD,
+              Container(
+                padding: EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.success.withValues(alpha: 0.1),
+                  borderRadius: AppRadius.allSmall,
+                  border: Border.all(
+                    color: AppColors.success.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.link, size: 18.w, color: AppColors.success),
+                    AppSpacing.horizontalSpaceSM,
+                    Expanded(
+                      child: Text(
+                        entry.url!,
+                        style: AppTextStyles.metaMedium12.copyWith(
+                          color: AppColors.success,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    AppSpacing.horizontalSpaceSM,
+                    IconButton(
+                      icon: Icon(
+                        Icons.copy,
+                        size: 18.w,
+                        color: AppColors.success,
+                      ),
+                      onPressed: () => _copyUrl(entry.url!),
+                      tooltip: 'URL 복사',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

@@ -925,7 +925,7 @@
     "description": "온보딩 닉네임 입력 안내 제목"
   },
 
-  "onboardingGenderPrompt": "성별을 선택해주세요. (선택)",
+  "onboardingGenderPrompt": "성별을 선택해주세요",
   "@onboardingGenderPrompt": {
     "description": "온보딩 성별 선택 안내 제목"
   },
@@ -1010,5 +1010,242 @@
   "defaultNickname": "여행러버",
   "@defaultNickname": {
     "description": "온보딩 닉네임 입력 전 기본 플레이스홀더"
+  },
+
+  "cannotLoadContent": "콘텐츠를 불러올 수 없습니다",
+  "@cannotLoadContent": {
+    "description": "콘텐츠 로드 실패 메시지"
+  },
+
+  "noSnsContentMessage": "SNS에서 콘텐츠를 공유하면\n여기에서 확인할 수 있습니다",
+  "@noSnsContentMessage": {
+    "description": "SNS 콘텐츠 빈 상태 안내 메시지"
+  },
+
+  "noTitle": "제목 없음",
+  "@noTitle": {
+    "description": "제목이 없을 때 기본 텍스트"
+  },
+
+  "backButtonLabel": "뒤로가기 버튼",
+  "@backButtonLabel": {
+    "description": "뒤로가기 버튼 접근성 라벨 (스크린 리더용)"
+  },
+
+  "backButtonTooltip": "뒤로가기",
+  "@backButtonTooltip": {
+    "description": "뒤로가기 버튼 툴팁"
+  },
+
+  "menuButtonLabel": "메뉴 버튼",
+  "@menuButtonLabel": {
+    "description": "메뉴 버튼 접근성 라벨 (스크린 리더용)"
+  },
+
+  "menuButtonTooltip": "메뉴",
+  "@menuButtonTooltip": {
+    "description": "메뉴 버튼 툴팁"
+  },
+
+  "notificationButtonLabel": "알림 버튼",
+  "@notificationButtonLabel": {
+    "description": "알림 버튼 접근성 라벨 (스크린 리더용)"
+  },
+
+  "notificationTitle": "알림",
+  "@notificationTitle": {
+    "description": "알림 다이얼로그 제목"
+  },
+
+  "noNewNotifications": "현재 새로운 알림이 없습니다.",
+  "@noNewNotifications": {
+    "description": "새로운 알림이 없을 때 메시지"
+  },
+
+  "settingsButtonLabel": "설정 버튼",
+  "@settingsButtonLabel": {
+    "description": "설정 버튼 접근성 라벨 (스크린 리더용)"
+  },
+
+  "searchButtonLabel": "검색 버튼",
+  "@searchButtonLabel": {
+    "description": "검색 버튼 접근성 라벨 (스크린 리더용)"
+  },
+
+  "onboardingTermsPrompt": "약관에 동의해주세요",
+  "@onboardingTermsPrompt": {
+    "description": "온보딩 약관 동의 페이지 제목"
+  },
+
+  "onboardingTermsDescription": "서비스 이용을 위해 약관 동의가 필요해요",
+  "@onboardingTermsDescription": {
+    "description": "온보딩 약관 동의 페이지 설명"
+  },
+
+  "termsOfService": "서비스 이용약관",
+  "@termsOfService": {
+    "description": "서비스 이용약관 체크박스 라벨"
+  },
+
+  "privacyPolicy": "개인정보 처리방침",
+  "@privacyPolicy": {
+    "description": "개인정보 처리방침 체크박스 라벨"
+  },
+
+  "ageConfirmation": "만 14세 이상입니다",
+  "@ageConfirmation": {
+    "description": "만 14세 이상 확인 체크박스 라벨"
+  },
+
+  "marketingConsent": "마케팅 정보 수신 동의 (선택)",
+  "@marketingConsent": {
+    "description": "마케팅 정보 수신 동의 체크박스 라벨"
+  },
+
+  "agreeToAll": "전체 동의",
+  "@agreeToAll": {
+    "description": "약관 전체 동의 체크박스 라벨"
+  },
+
+  "viewDetails": "자세히 보기",
+  "@viewDetails": {
+    "description": "약관 상세 내용 보기 버튼"
+  },
+
+  "onboardingNicknameDescription": "다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요",
+  "@onboardingNicknameDescription": {
+    "description": "온보딩 닉네임 페이지 설명"
+  },
+
+  "onboardingNicknameHint": "닉네임을 입력하세요",
+  "@onboardingNicknameHint": {
+    "description": "온보딩 닉네임 입력 힌트"
+  },
+
+  "onboardingInterestsSelectedCount": "{count}개 선택",
+  "@onboardingInterestsSelectedCount": {
+    "description": "선택된 관심사 개수 표시",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "startNow": "바로 시작하기",
+  "@startNow": {
+    "description": "온보딩 완료 후 시작 버튼 텍스트"
+  },
+
+  "onboardingWelcomeUnified": "모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 {nickname}님",
+  "@onboardingWelcomeUnified": {
+    "description": "환영 페이지 통합 메시지 (닉네임 포함)",
+    "placeholders": {
+      "nickname": {
+        "type": "String",
+        "example": "여행러버"
+      }
+    }
+  },
+
+  "notifications": "알림",
+  "@notifications": {
+    "description": "알림 화면 제목"
+  },
+
+  "notificationSectionToday": "오늘",
+  "@notificationSectionToday": {
+    "description": "알림 섹션 헤더 - 오늘"
+  },
+
+  "noNotifications": "새로운 알림이 없습니다",
+  "@noNotifications": {
+    "description": "알림이 없을 때 메시지"
+  },
+
+  "sharedContentMessage": "외부 앱에서 공유된 링크가 여기에 표시됩니다",
+  "@sharedContentMessage": {
+    "description": "알림 빈 상태 설명 메시지"
+  },
+
+  "aiAnalyzingLocation": "AI가 위치정보를 파악하고 있습니다",
+  "@aiAnalyzingLocation": {
+    "description": "알림 진행 중 상태 메시지"
+  },
+
+  "aiAnalyzedLocations": "AI가 {count}곳의 위치정보를 파악했습니다",
+  "@aiAnalyzedLocations": {
+    "description": "알림 완료 상태 메시지",
+    "placeholders": {
+      "count": {
+        "type": "String",
+        "example": "N"
+      }
+    }
+  },
+
+  "authorPost": "{author}님의 게시물",
+  "@authorPost": {
+    "description": "작성자 게시물 표시",
+    "placeholders": {
+      "author": {
+        "type": "String",
+        "example": "sejong_student"
+      }
+    }
+  },
+
+  "notificationStatusProcessing": "진행 중",
+  "@notificationStatusProcessing": {
+    "description": "알림 진행 중 버튼 텍스트"
+  },
+
+  "notificationStatusCheckButton": "확인하기",
+  "@notificationStatusCheckButton": {
+    "description": "알림 완료 확인 버튼 텍스트"
+  },
+
+  "timestampJustNow": "방금",
+  "@timestampJustNow": {
+    "description": "방금 전 타임스탬프"
+  },
+
+  "timestampMinutesAgo": "{minutes}분 전",
+  "@timestampMinutesAgo": {
+    "description": "N분 전 타임스탬프",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "timestampHoursAgo": "{hours}시간 전",
+  "@timestampHoursAgo": {
+    "description": "N시간 전 타임스탬프",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "timestampDaysAgo": "{days}일 전",
+  "@timestampDaysAgo": {
+    "description": "N일 전 타임스탬프",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "defaultAuthor": "사용자",
+  "@defaultAuthor": {
+    "description": "기본 작성자명 (파싱 실패 시)"
   }
 }

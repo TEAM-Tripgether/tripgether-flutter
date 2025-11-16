@@ -118,8 +118,7 @@ lib/
 │   ├── providers/              # 전역 Provider
 │   │   └── locale_provider.dart     # 언어 설정
 │   ├── utils/                  # 유틸리티 함수
-│   │   ├── dialog_utils.dart   # 다이얼로그 헬퍼
-│   │   └── url_formatter.dart  # URL 포맷팅
+│   │   └── dialog_utils.dart   # 다이얼로그 헬퍼
 │   └── animations/             # 공용 애니메이션
 │       └── page_transitions.dart    # 페이지 전환 효과
 │
