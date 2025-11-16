@@ -37,11 +37,11 @@ class SocialLoginSection extends StatelessWidget {
     return Column(
       children: [
         /// 구글 로그인 버튼
-        /// 밝은 회색 배경 + 어두운 텍스트 + 구글 로고
+        /// 밝은 회색 배경 + 검정 텍스트 + 구글 로고
         SocialLoginButton(
           text: l10n.signInWithGoogle,
           backgroundColor: AppColorPalette.googleButton, // #F1F1F1
-          textColor: AppColors.textColor1, // 검정에 가까운 어두운 회색
+          textColor: AppColors.textColor1, // 검정 텍스트 (Medium16)
           onPressed: onGoogleLogin,
           isLoading: isGoogleLoading,
           // 구글 SVG 아이콘 (AppSizes.iconMedium = 20px)
@@ -60,7 +60,7 @@ class SocialLoginSection extends StatelessWidget {
         SocialLoginButton(
           text: l10n.signInWithKakao,
           backgroundColor: AppColorPalette.kakaoButton, // #FEE500
-          textColor: AppColors.textColor1, // 검정 텍스트
+          textColor: AppColors.textColor1, // 검정 텍스트 (Medium16)
           onPressed: () => _showComingSoon(context, l10n),
           // 카카오 SVG 아이콘 (AppSizes.iconMedium = 20px)
           icon: SvgPicture.asset(
@@ -78,7 +78,7 @@ class SocialLoginSection extends StatelessWidget {
         SocialLoginButton(
           text: l10n.signInWithNaver,
           backgroundColor: AppColorPalette.naverButton, // #03C75A
-          textColor: AppColors.white, // 흰색 텍스트
+          textColor: AppColors.white, // 흰색 텍스트 (Medium16)
           onPressed: () => _showComingSoon(context, l10n),
           // 네이버 SVG 아이콘 (AppSizes.iconMedium = 20px)
           icon: SvgPicture.asset(

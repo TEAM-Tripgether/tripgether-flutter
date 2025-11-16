@@ -150,12 +150,14 @@ class UserNotifier extends _$UserNotifier {
   /// - Access Token
   /// - Refresh Token
   /// - **모든 FlutterSecureStorage 데이터** (완전 초기화)
+  /// - **레거시 데이터** (이전 accessibility 설정의 데이터)
   ///
   /// **흐름**:
   /// 1. Google Sign-In 연결 해제 (disconnect)
   /// 2. Secure Storage의 모든 데이터 삭제 (deleteAll)
-  /// 3. Provider 상태를 AsyncValue.data(null)로 업데이트
-  /// 4. UI는 자동으로 "로그인 필요" 상태로 전환
+  /// 3. 레거시 Storage 데이터 정리 (마이그레이션 대응)
+  /// 4. Provider 상태를 AsyncValue.data(null)로 업데이트
+  /// 5. UI는 자동으로 "로그인 필요" 상태로 전환
   Future<void> clearUser() async {
     debugPrint('[UserNotifier] 🗑️ 완전 로그아웃 시작');
 
@@ -170,7 +172,24 @@ class UserNotifier extends _$UserNotifier {
       await _storage.deleteAll();
       debugPrint('[UserNotifier] 🗑️ 모든 Storage 데이터 삭제 완료');
 
-      // 3. Provider 상태 업데이트 (로그아웃 상태)
+      // 3. ⭐ 레거시 Storage 데이터 정리 (마이그레이션 대응)
+      // 이전 버전에서 first_unlock_this_device로 저장된 데이터까지 완전 삭제
+      // iOS에서 accessibility가 다르면 별도 저장소로 취급되므로 명시적 삭제 필요
+      try {
+        const legacyStorage = FlutterSecureStorage(
+          aOptions: AndroidOptions(encryptedSharedPreferences: true),
+          iOptions: IOSOptions(
+            accessibility: KeychainAccessibility.first_unlock_this_device,
+          ),
+        );
+        await legacyStorage.deleteAll();
+        debugPrint('[UserNotifier] 🧹 레거시 Storage 데이터 정리 완료');
+      } catch (e) {
+        // 레거시 데이터 정리 실패는 무시 (이미 없을 수 있음)
+        debugPrint('[UserNotifier] ℹ️ 레거시 데이터 없음 또는 정리 완료: $e');
+      }
+
+      // 4. Provider 상태 업데이트 (로그아웃 상태)
       state = const AsyncValue.data(null);
 
       debugPrint('[UserNotifier] ✅ 완전 로그아웃 완료');
