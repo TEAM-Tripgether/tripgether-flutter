@@ -6,7 +6,7 @@ import 'routes.dart';
 import 'route_guards.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
-import '../theme/app_spacing.dart';
+import '../theme/app_spacing.dart'; // ← AppSizes, AppRadius, AppElevation 포함
 import '../../shared/widgets/layout/bottom_navigation.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';

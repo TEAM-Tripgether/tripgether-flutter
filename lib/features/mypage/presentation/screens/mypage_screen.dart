@@ -46,15 +46,22 @@ class MyPageScreen extends ConsumerWidget {
           Semantics(
             label: '설정 버튼',
             button: true,
-            child: GestureDetector(
-              onTap: () {
-                debugPrint('마이페이지 설정 버튼 클릭');
-                // TODO: 설정 화면으로 이동
-              },
-              child: SvgPicture.asset(
-                'assets/icons/setting.svg',
-                width: AppSizes.iconXLarge,
-                height: AppSizes.iconXLarge,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  debugPrint('마이페이지 설정 버튼 클릭');
+                  // TODO: 설정 화면으로 이동
+                },
+                borderRadius: BorderRadius.circular(AppSizes.iconXLarge / 2),
+                child: Padding(
+                  padding: EdgeInsets.all(AppSpacing.xs),
+                  child: SvgPicture.asset(
+                    'assets/icons/setting.svg',
+                    width: AppSizes.iconXLarge,
+                    height: AppSizes.iconXLarge,
+                  ),
+                ),
               ),
             ),
           ),
