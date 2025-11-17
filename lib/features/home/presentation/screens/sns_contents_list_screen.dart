@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +9,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/mixins/refreshable_tab_mixin.dart';
 import '../../../../shared/widgets/cards/sns_content_card.dart';
 import '../../../../shared/widgets/common/app_snackbar.dart';
 import '../../../../shared/widgets/common/empty_state.dart';
@@ -32,30 +34,53 @@ class SnsContentsListScreen extends ConsumerStatefulWidget {
       _SnsContentsListScreenState();
 }
 
-class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
+class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
+    with AutomaticKeepAliveClientMixin, RefreshableTabMixin {
   /// 선택된 카테고리 ('전체', '유튜브', '인스타그램')
   String _selectedCategory = '전체';
 
+  // ════════════════════════════════════════════════════════════════════════
+  // RefreshableTabMixin 필수 구현
+  // ════════════════════════════════════════════════════════════════════════
+
+  @override
+  int get tabIndex => -1; // 독립 화면 (탭이 아님)
+
+  @override
+  bool get wantKeepAlive => false; // 탭이 아니므로 상태 유지 불필요
+
+  @override
+  bool get enableAutoRefresh => false; // 탭 재클릭 새로고침 비활성화
+
+  @override
+  Future<void> onRefreshData() async {
+    // Riverpod provider 새로고침
+    ref.invalidate(completedContentsProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context); // AutomaticKeepAliveClientMixin 필수 호출
+
     final l10n = AppLocalizations.of(context);
     final contentListAsync = ref.watch(completedContentsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight, // 전체 배경색을 backgroundLight로 변경
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(completedContentsProvider);
-        },
-        child: CustomScrollView(
-          slivers: [
-            // CollapsibleTitleSliverAppBar (제목 축소 효과)
-            _buildCollapsibleAppBar(l10n),
+      backgroundColor: AppColors.backgroundLight,
+      body: CustomScrollView(
+        controller: scrollController, // RefreshableTabMixin에서 제공
+        slivers: [
+          // CollapsibleTitleSliverAppBar (제목 축소 효과)
+          _buildCollapsibleAppBar(l10n),
 
-            // SliverGrid (콘텐츠)
-            _buildSliverContent(contentListAsync, l10n),
-          ],
-        ),
+          // CupertinoSliverRefreshControl (새로고침)
+          CupertinoSliverRefreshControl(
+            onRefresh: onRefresh, // RefreshableTabMixin의 onRefresh 사용
+          ),
+
+          // SliverGrid (콘텐츠)
+          _buildSliverContent(contentListAsync, l10n),
+        ],
       ),
     );
   }
