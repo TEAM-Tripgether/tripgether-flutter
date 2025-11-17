@@ -36,15 +36,11 @@ class InterestChip extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          // 선택 시: 보라색 배경, 미선택 시: 흰색 배경
-          color: isSelected ? AppColors.mainColor : AppColors.white,
-          // 선택 시: 테두리 없음, 미선택 시: 회색 테두리 (alpha 0.4)
-          border: Border.all(
-            color: isSelected
-                ? AppColors.mainColor
-                : AppColors.subColor2.withValues(alpha: 0.4),
-            width: 1.w,
-          ),
+          // 선택 시: 보라색 배경, 미선택 시: 연한 회색 배경 (SelectableChipList와 동일)
+          color: isSelected
+              ? AppColors.mainColor
+              : AppColors.subColor2.withValues(alpha: 0.2),
+          // 외곽선 제거 - SelectableChipList와 동일한 깔끔한 디자인
           borderRadius: BorderRadius.circular(20.r),
         ),
         child: Text(
