@@ -33,10 +33,7 @@ Widget _buildChipContainer({
         borderRadius: BorderRadius.circular(borderRadius),
         border: border,
       ),
-      child: Text(
-        label,
-        style: textStyle.copyWith(color: textColor),
-      ),
+      child: Text(label, style: textStyle.copyWith(color: textColor)),
     ),
   );
 }
@@ -139,10 +136,12 @@ class ChipList extends StatelessWidget {
   ) {
     return _buildChipContainer(
       label: item,
-      backgroundColor: backgroundColor ?? AppColors.subColor2.withValues(alpha: 0.95),
+      backgroundColor:
+          backgroundColor ?? AppColors.subColor2.withValues(alpha: 0.95),
       textColor: textColor ?? AppColors.textColor1,
       textStyle: baseTextStyle,
-      padding: chipPadding ??
+      padding:
+          chipPadding ??
           EdgeInsets.symmetric(
             horizontal: AppSpacing.sm.w,
             vertical: AppSpacing.xs.h,
@@ -297,12 +296,13 @@ class SelectableChipList extends StatelessWidget {
       backgroundColor: isSelected
           ? (selectedBackgroundColor ?? AppColors.mainColor)
           : (unselectedBackgroundColor ??
-              AppColors.subColor2.withValues(alpha: 0.2)),
+                AppColors.subColor2.withValues(alpha: 0.2)),
       textColor: isSelected
           ? (selectedTextColor ?? AppColors.white)
           : (unselectedTextColor ?? AppColors.textColor1),
       textStyle: baseTextStyle,
-      padding: chipPadding ??
+      padding:
+          chipPadding ??
           EdgeInsets.symmetric(
             horizontal: AppSpacing.sm.w,
             vertical: AppSpacing.xs.h,

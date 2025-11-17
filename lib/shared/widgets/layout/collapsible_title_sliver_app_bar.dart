@@ -128,8 +128,8 @@ class CollapsibleTitleSliverAppBar extends StatelessWidget {
         background: Builder(
           builder: (context) {
             // FlexibleSpaceBarSettings에서 스크롤 진행도 추출
-            final settings = context.dependOnInheritedWidgetOfExactType<
-                FlexibleSpaceBarSettings>();
+            final settings = context
+                .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
             final currentExtent = settings?.currentExtent ?? expandedHeight;
             final minExtent =
                 settings?.minExtent ?? (toolbarHeight ?? kToolbarHeight);
@@ -137,8 +137,10 @@ class CollapsibleTitleSliverAppBar extends StatelessWidget {
 
             // expandRatio 계산 (0.0 = 완전 축소, 1.0 = 완전 확장)
             final expandRatio =
-                ((currentExtent - minExtent) / (maxExtent - minExtent))
-                    .clamp(0.0, 1.0);
+                ((currentExtent - minExtent) / (maxExtent - minExtent)).clamp(
+                  0.0,
+                  1.0,
+                );
 
             // collapsibleContent에 expandRatio 전달
             return SafeArea(
