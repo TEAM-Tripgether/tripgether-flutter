@@ -171,6 +171,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentSnsContent => 'Recent SNS Content';
 
   @override
+  String get recentViewedContent => 'Recently Viewed';
+
+  @override
   String get recentSavedPlaces => 'Recently Saved Places';
 
   @override

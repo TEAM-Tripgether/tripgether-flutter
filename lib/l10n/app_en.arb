@@ -270,7 +270,12 @@
 
   "recentSnsContent": "Recent SNS Content",
   "@recentSnsContent": {
-    "description": "SNS content section title"
+    "description": "Home screen SNS content section title"
+  },
+
+  "recentViewedContent": "Recently Viewed",
+  "@recentViewedContent": {
+    "description": "SNS content list screen title"
   },
 
   "recentSavedPlaces": "Recently Saved Places",

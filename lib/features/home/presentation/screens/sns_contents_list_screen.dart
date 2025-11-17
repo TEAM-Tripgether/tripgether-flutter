@@ -60,11 +60,10 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
               padding: EdgeInsets.only(
                 left: AppSpacing.xxl,
                 right: AppSpacing.xxl,
-                top: AppSpacing.xsm,
-                bottom: AppSpacing.xs,
+                bottom: AppSpacing.sm,
               ),
               child: Text(
-                l10n.recentSnsContent,
+                l10n.recentViewedContent,
                 style: AppTextStyles.titleBold24.copyWith(
                   color: AppColors.textColor1,
                 ),
@@ -203,7 +202,9 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
         horizontal: AppSpacing.lg, // 16px (기본 8px에서 증가)
         vertical: AppSpacing.sm, // 8px (기본 4px에서 증가)
       ),
-      unselectedTextColor: AppColors.textColor1.withValues(alpha: 0.4), // 비활성 칩 텍스트 투명도
+      unselectedTextColor: AppColors.textColor1.withValues(
+        alpha: 0.4,
+      ), // 비활성 칩 텍스트 투명도
     );
   }
 

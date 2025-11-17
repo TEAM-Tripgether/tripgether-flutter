@@ -410,11 +410,17 @@ abstract class AppLocalizations {
   /// **'입력 내용 지우기'**
   String get clearInput;
 
-  /// SNS 콘텐츠 섹션 제목
+  /// 홈 화면 SNS 컨텐츠 섹션 제목
   ///
   /// In ko, this message translates to:
-  /// **'최근 SNS에서 본 콘텐츠'**
+  /// **'최근 SNS에서 본 컨텐츠'**
   String get recentSnsContent;
+
+  /// SNS 컨텐츠 리스트 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 본 컨텐츠'**
+  String get recentViewedContent;
 
   /// 저장한 장소 섹션 제목
   ///

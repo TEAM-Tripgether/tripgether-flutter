@@ -167,7 +167,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get clearInput => '입력 내용 지우기';
 
   @override
-  String get recentSnsContent => '최근 SNS에서 본 콘텐츠';
+  String get recentSnsContent => '최근 SNS에서 본 컨텐츠';
+
+  @override
+  String get recentViewedContent => '최근 본 컨텐츠';
 
   @override
   String get recentSavedPlaces => '최근 저장한 장소';
