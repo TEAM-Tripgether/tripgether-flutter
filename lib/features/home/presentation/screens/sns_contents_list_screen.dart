@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../../core/models/content_model.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -49,29 +50,41 @@ class SnsContentsListScreen extends ConsumerWidget {
               padding: EdgeInsets.all(AppSpacing.lg),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: AppSpacing.sm,
+                mainAxisSpacing: AppSpacing.sm, // 텍스트 영역을 고려한 간격 증가
                 crossAxisSpacing: AppSpacing.sm,
-                childAspectRatio:
-                    AppSizes.snsCardLargeWidth / AppSizes.snsCardLargeHeight,
+                // childAspectRatio 조정: 카드 + 간격 + 텍스트 2줄
+                // 0.60으로 설정하여 overflow 방지 (4.5픽셀 여유 확보)
+                childAspectRatio: 0.60,
               ),
               itemCount: contents.length,
               itemBuilder: (context, index) {
                 final content = contents[index];
-                return SnsContentCard(
-                  content: content,
-                  width: AppSizes.snsCardLargeWidth,
-                  height: AppSizes.snsCardLargeHeight,
-                  iconSize: AppSizes.iconLarge,
-                  titleStyle: AppTextStyles.summaryBold18.copyWith(
-                    color: Colors.white,
-                  ),
-                  onTap: () {
-                    // SNS 콘텐츠 상세 화면으로 이동 (ContentModel을 extra로 전달)
-                    context.push(
-                      '/home/sns-contents/detail/${content.contentId}',
-                      extra: content,
-                    );
-                  },
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // SNS 콘텐츠 카드 (썸네일 + 플랫폼 로고만)
+                    SnsContentCard(
+                      content: content,
+                      width: AppSizes.snsCardLargeWidth,
+                      height: AppSizes.snsCardLargeHeight,
+                      showTextOverlay: false, // 텍스트 오버레이 비활성화
+                      logoPadding: EdgeInsets.all(AppSpacing.md), // 로고 패딩 12px
+                      logoIconSize: AppSizes.iconDefault, // 플랫폼 로고 크기 32px
+                      onTap: () {
+                        // SNS 콘텐츠 상세 화면으로 이동 (ContentModel을 extra로 전달)
+                        context.push(
+                          '/home/sns-contents/detail/${content.contentId}',
+                          extra: content,
+                        );
+                      },
+                    ),
+
+                    // 카드와 텍스트 사이 간격
+                    AppSpacing.verticalSpaceXSM,
+
+                    // 콘텐츠 메타데이터 (채널명 + 제목)
+                    _buildContentMetadata(content),
+                  ],
                 );
               },
             ),
@@ -97,6 +110,38 @@ class SnsContentsListScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  /// 콘텐츠 메타데이터 (채널명 + 제목)
+  ///
+  /// 카드 아래에 표시되는 텍스트 정보:
+  /// - Line 1: platformUploader (채널명) - metaMedium12 + subColor2
+  /// - Line 2: title 또는 caption (제목) - titleSemiBold14 + textColor1
+  Widget _buildContentMetadata(ContentModel content) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 채널명 (platformUploader)
+        Text(
+          content.platformUploader ?? '채널 정보 없음',
+          style: AppTextStyles.metaMedium12.copyWith(
+            color: AppColors.subColor2,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+
+        // 제목 (title 또는 caption)
+        Text(
+          content.title ?? content.caption ?? '제목 없음',
+          style: AppTextStyles.titleSemiBold14.copyWith(
+            color: AppColors.textColor1,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 

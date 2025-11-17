@@ -43,6 +43,25 @@ class SnsContentCard extends StatelessWidget {
   /// 제목 최대 줄 수 (기본값: 2)
   final int? titleMaxLines;
 
+  /// 텍스트 오버레이 표시 여부 (기본값: true)
+  /// - true: 그라데이션 + 플랫폼 아이콘 + 제목 표시 (기존 동작)
+  /// - false: 플랫폼 로고만 좌측 하단에 표시 (GridView용)
+  final bool showTextOverlay;
+
+  /// 플랫폼 로고 패딩 (showTextOverlay가 false일 때 적용)
+  /// - 기본값: EdgeInsets.all(AppSpacing.sm) - 모든 방향 8px
+  /// - 좌/우/상/하 각각 다른 간격 설정 가능
+  ///
+  /// 사용 예시:
+  /// - EdgeInsets.all(AppSpacing.md) - 모든 방향 12px
+  /// - EdgeInsets.only(left: 16, bottom: 16) - 좌/하단만 16px
+  final EdgeInsets? logoPadding;
+
+  /// 플랫폼 로고 아이콘 크기 (showTextOverlay가 false일 때 적용)
+  /// - 기본값: AppSizes.iconSmall
+  /// - iconSize와 독립적으로 작동 (showTextOverlay=true일 때는 iconSize 사용)
+  final double? logoIconSize;
+
   const SnsContentCard({
     super.key,
     required this.content,
@@ -52,6 +71,9 @@ class SnsContentCard extends StatelessWidget {
     this.iconSize,
     this.titleStyle,
     this.titleMaxLines,
+    this.showTextOverlay = true, // 기본값: 기존 동작 유지
+    this.logoPadding,
+    this.logoIconSize,
   });
 
   @override
@@ -88,11 +110,14 @@ class SnsContentCard extends StatelessWidget {
                 // 배경 썸네일 이미지
                 _buildThumbnail(),
 
-                // 하단 그라데이션 오버레이
-                _buildGradientOverlay(),
+                // 하단 그라데이션 오버레이 (showTextOverlay가 true일 때만)
+                if (showTextOverlay) _buildGradientOverlay(),
 
-                // 플랫폼 아이콘 + 제목
-                _buildContentInfo(context),
+                // 플랫폼 아이콘 + 제목 (또는 로고만)
+                if (showTextOverlay)
+                  _buildContentInfo(context)
+                else
+                  _buildPlatformLogoOnly(),
               ],
             ),
           ),
@@ -181,7 +206,11 @@ class SnsContentCard extends StatelessWidget {
 
   /// 플랫폼 아이콘
   Widget _buildPlatformIcon() {
-    final size = iconSize ?? AppSizes.iconSmall;
+    final baseSize = iconSize ?? AppSizes.iconSmall;
+    // YouTube 아이콘은 75% 크기로 축소
+    final size = content.platform.toUpperCase() == 'YOUTUBE'
+        ? baseSize * 0.75
+        : baseSize;
 
     return SvgPicture.asset(
       PlatformIconMapper.getIconPath(content.platform),
@@ -202,6 +231,27 @@ class SnsContentCard extends StatelessWidget {
           AppTextStyles.metaMedium12.copyWith(color: Colors.white),
       maxLines: titleMaxLines ?? 2,
       overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  /// 플랫폼 로고만 표시 (텍스트 오버레이 없이)
+  /// showTextOverlay가 false일 때 좌측 하단에 로고만 배치
+  Widget _buildPlatformLogoOnly() {
+    final baseSize = logoIconSize ?? AppSizes.iconSmall;
+    // YouTube 아이콘은 75% 크기로 축소
+    final size = content.platform.toUpperCase() == 'YOUTUBE'
+        ? baseSize * 0.75
+        : baseSize;
+    final padding = logoPadding ?? EdgeInsets.all(AppSpacing.sm);
+
+    return Positioned(
+      left: padding.left,
+      bottom: padding.bottom,
+      child: SvgPicture.asset(
+        PlatformIconMapper.getIconPath(content.platform),
+        width: size,
+        height: size,
+      ),
     );
   }
 }
