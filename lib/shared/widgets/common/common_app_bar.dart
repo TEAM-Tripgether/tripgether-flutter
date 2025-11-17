@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../features/onboarding/presentation/widgets/onboarding_page_indicator.dart';
 
@@ -290,7 +289,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       showMenuButton: false,
       rightActions: rightActions,
       onNotificationPressed: onNotificationPressed,
-      titleStyle: titleStyle ?? AppTextStyles.greetingSemiBold20,
+      titleStyle: titleStyle, // AppTheme의 기본값 사용
       backgroundColor: backgroundColor,
     );
   }

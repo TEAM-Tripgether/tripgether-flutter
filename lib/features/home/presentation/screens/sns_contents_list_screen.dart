@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/models/content_model.dart';
@@ -9,7 +10,6 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cards/sns_content_card.dart';
 import '../../../../shared/widgets/common/app_snackbar.dart';
-import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/empty_state.dart';
 import '../../../../shared/widgets/common/chip_list.dart';
 import '../../../../shared/widgets/dialogs/common_dialog.dart';
@@ -20,6 +20,10 @@ import '../providers/content_provider.dart';
 /// 완료된 모든 SNS 콘텐츠를 그리드 레이아웃으로 표시합니다.
 /// 홈 화면의 "최근 SNS에서 본 콘텐츠" 섹션에서 더보기 버튼을 통해 접근합니다.
 /// 카테고리별 필터링 기능 포함 (전체/유튜브/인스타그램/틱톡)
+///
+/// **레이아웃 구조**:
+/// - CollapsibleTitleSliverAppBar: 스크롤 시 제목 축소
+/// - SliverGrid: 콘텐츠 그리드 (2열)
 class SnsContentsListScreen extends ConsumerStatefulWidget {
   const SnsContentsListScreen({super.key});
 
@@ -29,7 +33,7 @@ class SnsContentsListScreen extends ConsumerStatefulWidget {
 }
 
 class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
-  /// 선택된 카테고리 ('전체', 'YOUTUBE', 'INSTAGRAM', 'TIKTOK')
+  /// 선택된 카테고리 ('전체', '유튜브', '인스타그램')
   String _selectedCategory = '전체';
 
   @override
@@ -38,188 +42,279 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
     final contentListAsync = ref.watch(completedContentsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: CommonAppBar.forSubPage(
-        title: '', // 타이틀 제거
-        rightActions: [
-          // 편집 버튼 (PopupMenu)
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert_rounded),
-            color: AppColors.white,
-            offset: Offset(0, AppSpacing.xs), // 메뉴 위치를 아래로 이동
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-            ),
-            itemBuilder: (BuildContext context) {
-              return [
-                // 삭제 메뉴
-                PopupMenuItem<String>(
-                  value: 'delete',
-                  height: AppSpacing.xxl,
-                  padding: EdgeInsets.zero,
-                  child: Center(
-                    child: Text(
-                      l10n.delete,
-                      style: AppTextStyles.buttonMediumMedium14,
-                    ),
-                  ),
-                ),
-                // 구분선
-                PopupMenuItem<String>(
-                  enabled: false,
-                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-                  height: AppSizes.dividerThin,
-                  child: Divider(
-                    color: AppColors.subColor2,
-                    thickness: AppSizes.dividerThin,
-                  ),
-                ),
-                // 오류제보 메뉴
-                PopupMenuItem<String>(
-                  value: 'reportError',
-                  height: AppSpacing.xxl,
-                  padding: EdgeInsets.zero,
-                  child: Center(
-                    child: Text(
-                      l10n.reportError,
-                      style: AppTextStyles.buttonMediumMedium14,
-                    ),
-                  ),
-                ),
-              ];
-            },
-            onSelected: (String value) {
-              switch (value) {
-                case 'delete':
-                  _handleDelete();
-                  break;
-                case 'reportError':
-                  _handleReportError();
-                  break;
-              }
-            },
-          ),
-        ],
-        backgroundColor: AppColors.white,
+      backgroundColor: AppColors.backgroundLight, // 전체 배경색을 backgroundLight로 변경
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(completedContentsProvider);
+        },
+        child: CustomScrollView(
+          slivers: [
+            // CollapsibleTitleSliverAppBar (제목 축소 효과)
+            _buildCollapsibleAppBar(l10n),
+
+            // SliverGrid (콘텐츠)
+            _buildSliverContent(contentListAsync, l10n),
+          ],
+        ),
       ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 제목 섹션 (notification_screen 패턴)
-            Padding(
-              padding: EdgeInsets.only(
-                left: AppSpacing.xxl,
-                right: AppSpacing.xxl,
-                bottom: AppSpacing.sm,
-              ),
-              child: Text(
-                l10n.recentViewedContent,
-                style: AppTextStyles.titleBold24.copyWith(
-                  color: AppColors.textColor1,
+    );
+  }
+
+  /// CollapsibleTitleSliverAppBar 구현
+  ///
+  /// **구조**:
+  /// - Leading: 뒤로가기 버튼
+  /// - Actions: PopupMenuButton (삭제, 오류제보)
+  /// - collapsibleContent: "최근 본 콘텐츠" 제목 (스크롤 시 축소)
+  /// - Bottom: 카테고리 칩 (전체, 유튜브, 인스타그램)
+  Widget _buildCollapsibleAppBar(AppLocalizations l10n) {
+    return SliverAppBar(
+      pinned: true,
+      expandedHeight: 140.h,
+      backgroundColor: AppColors.white,
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
+
+      // 뒤로가기 버튼
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+
+      // 축소 시 표시될 타이틀 (동적 opacity)
+      title: Builder(
+        builder: (context) {
+          final settings = context
+              .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
+          final currentExtent = settings?.currentExtent ?? 140.h;
+          final minExtent = settings?.minExtent ?? kToolbarHeight;
+          final maxExtent = settings?.maxExtent ?? 140.h;
+
+          // expandRatio 계산 (0.0 = 축소, 1.0 = 확장)
+          final expandRatio =
+              ((currentExtent - minExtent) / (maxExtent - minExtent)).clamp(
+                0.0,
+                1.0,
+              );
+
+          return Opacity(
+            opacity: 1.0 - expandRatio, // 확장 시 숨김, 축소 시 표시
+            child: Text(l10n.recentSnsContent),
+          );
+        },
+      ),
+
+      // 우측 PopupMenu
+      actions: [
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.more_vert_rounded),
+          color: AppColors.white,
+          offset: Offset(0, AppSpacing.xs),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+          ),
+          itemBuilder: (context) => [
+            // 삭제 메뉴
+            PopupMenuItem(
+              value: 'delete',
+              height: AppSpacing.xxl,
+              padding: EdgeInsets.zero,
+              child: Center(
+                child: Text(
+                  l10n.delete,
+                  style: AppTextStyles.buttonMediumMedium14,
                 ),
               ),
             ),
-
-            // 카테고리 필터 칩
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: _buildCategoryChips(l10n),
+            // 구분선
+            PopupMenuItem(
+              enabled: false,
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+              height: AppSizes.dividerThin,
+              child: Divider(
+                color: AppColors.subColor2,
+                thickness: AppSizes.dividerThin,
+              ),
             ),
+            // 오류제보 메뉴
+            PopupMenuItem(
+              value: 'reportError',
+              height: AppSpacing.xxl,
+              padding: EdgeInsets.zero,
+              child: Center(
+                child: Text(
+                  l10n.reportError,
+                  style: AppTextStyles.buttonMediumMedium14,
+                ),
+              ),
+            ),
+          ],
+          onSelected: (value) {
+            if (value == 'delete') _handleDelete();
+            if (value == 'reportError') _handleReportError();
+          },
+        ),
+      ],
 
-            AppSpacing.verticalSpaceSM,
+      // FlexibleSpaceBar: 축소되는 제목 영역
+      flexibleSpace: FlexibleSpaceBar(
+        collapseMode: CollapseMode.parallax,
+        titlePadding: EdgeInsets.zero,
+        background: Builder(
+          builder: (context) {
+            final settings = context
+                .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
+            final currentExtent = settings?.currentExtent ?? 140.h;
+            final minExtent = settings?.minExtent ?? kToolbarHeight;
+            final maxExtent = settings?.maxExtent ?? 140.h;
 
-            // 콘텐츠 그리드
-            Expanded(
-              child: Container(
-                color: AppColors.backgroundLight,
-                child: contentListAsync.when(
-                  data: (contents) {
-                    // 카테고리 필터링
-                    final filteredContents = _getFilteredContents(contents);
+            final expandRatio =
+                ((currentExtent - minExtent) / (maxExtent - minExtent)).clamp(
+                  0.0,
+                  1.0,
+                );
 
-                    if (filteredContents.isEmpty) {
-                      // 필터링 결과가 없을 때
-                      return Center(
-                        child: EmptyStates.noData(
-                          title: _selectedCategory == '전체'
-                              ? l10n.noSnsContentYet
-                              : '해당 카테고리의 콘텐츠가 없습니다',
-                          message: _selectedCategory == '전체'
-                              ? l10n.noSnsContentMessage
-                              : '다른 카테고리를 선택해보세요',
+            return SafeArea(
+              bottom: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 상단 여백 (증가)
+                  SizedBox(height: AppSpacing.huge + AppSpacing.md),
+
+                  // "최근 본 콘텐츠" 제목 (점진적 축소)
+                  Opacity(
+                    opacity: expandRatio,
+                    child: Transform.scale(
+                      scale: 0.85 + (0.15 * expandRatio),
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: AppSpacing.xxl,
+                          right: AppSpacing.xxl,
+                          bottom: AppSpacing.sm, // 간격 축소
                         ),
-                      );
-                    }
-
-                    // 콘텐츠 그리드 표시
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        ref.invalidate(completedContentsProvider);
-                      },
-                      child: GridView.builder(
-                        padding: EdgeInsets.all(AppSpacing.lg),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: AppSpacing.sm,
-                          crossAxisSpacing: AppSpacing.sm,
-                          childAspectRatio: 0.60,
-                        ),
-                        itemCount: filteredContents.length,
-                        itemBuilder: (context, index) {
-                          final content = filteredContents[index];
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // SNS 콘텐츠 카드
-                              SnsContentCard(
-                                content: content,
-                                width: AppSizes.snsCardLargeWidth,
-                                height: AppSizes.snsCardLargeHeight,
-                                showTextOverlay: false,
-                                logoPadding: EdgeInsets.all(AppSpacing.md),
-                                logoIconSize: AppSizes.iconDefault,
-                                onTap: () {
-                                  context.push(
-                                    '/home/sns-contents/detail/${content.contentId}',
-                                    extra: content,
-                                  );
-                                },
-                              ),
-
-                              AppSpacing.verticalSpaceXSM,
-
-                              // 콘텐츠 메타데이터
-                              _buildContentMetadata(content),
-                            ],
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  loading: () => _buildLoadingShimmer(),
-                  error: (error, stack) => Center(
-                    child: EmptyStates.networkError(
-                      title: l10n.cannotLoadContent,
-                      message: l10n.networkError,
-                      action: TextButton(
-                        onPressed: () {
-                          // Provider를 다시 로드하여 재시도
-                          ref.invalidate(completedContentsProvider);
-                        },
                         child: Text(
-                          l10n.retry,
-                          style: AppTextStyles.buttonMediumMedium14.copyWith(
-                            color: AppColors.mainColor,
+                          l10n.recentViewedContent,
+                          style: AppTextStyles.titleBold24.copyWith(
+                            color: AppColors.textColor1,
                           ),
                         ),
                       ),
                     ),
                   ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+
+      // 하단 고정 카테고리 칩
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(52.h), // 높이 축소
+        child: Container(
+          color: AppColors.white,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(
+            left: AppSpacing.lg,
+            right: AppSpacing.lg,
+            bottom: AppSpacing.sm, // 패딩 축소
+          ),
+          child: _buildCategoryChips(l10n),
+        ),
+      ),
+    );
+  }
+
+  /// SliverGrid 콘텐츠 구현
+  ///
+  /// **상태별 처리**:
+  /// - data: SliverGrid 표시 (필터링 적용)
+  /// - loading: SliverToBoxAdapter + Shimmer
+  /// - error: SliverFillRemaining + 에러 메시지
+  Widget _buildSliverContent(
+    AsyncValue<List<ContentModel>> contentListAsync,
+    AppLocalizations l10n,
+  ) {
+    return contentListAsync.when(
+      data: (contents) {
+        final filteredContents = _getFilteredContents(contents);
+
+        if (filteredContents.isEmpty) {
+          // 빈 상태 표시
+          return SliverFillRemaining(
+            child: Center(
+              child: EmptyStates.noData(
+                title: _selectedCategory == '전체'
+                    ? l10n.noSnsContentYet
+                    : '해당 카테고리의 콘텐츠가 없습니다',
+                message: _selectedCategory == '전체'
+                    ? l10n.noSnsContentMessage
+                    : '다른 카테고리를 선택해보세요',
+              ),
+            ),
+          );
+        }
+
+        // SliverGrid 표시
+        return SliverPadding(
+          padding: EdgeInsets.all(AppSpacing.lg),
+          sliver: SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: AppSpacing.sm,
+              crossAxisSpacing: AppSpacing.sm,
+              childAspectRatio: 0.60,
+            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final content = filteredContents[index];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // SNS 콘텐츠 카드
+                  SnsContentCard(
+                    content: content,
+                    width: AppSizes.snsCardLargeWidth,
+                    height: AppSizes.snsCardLargeHeight,
+                    showTextOverlay: false,
+                    logoPadding: EdgeInsets.all(AppSpacing.md),
+                    logoIconSize: AppSizes.iconDefault,
+                    onTap: () {
+                      context.push(
+                        '/home/sns-contents/detail/${content.contentId}',
+                        extra: content,
+                      );
+                    },
+                  ),
+
+                  AppSpacing.verticalSpaceXSM,
+
+                  // 콘텐츠 메타데이터
+                  _buildContentMetadata(content),
+                ],
+              );
+            }, childCount: filteredContents.length),
+          ),
+        );
+      },
+      loading: () => SliverToBoxAdapter(child: _buildLoadingShimmer()),
+      error: (error, stack) => SliverFillRemaining(
+        child: Center(
+          child: EmptyStates.networkError(
+            title: l10n.cannotLoadContent,
+            message: l10n.networkError,
+            action: TextButton(
+              onPressed: () => ref.invalidate(completedContentsProvider),
+              child: Text(
+                l10n.retry,
+                style: AppTextStyles.buttonMediumMedium14.copyWith(
+                  color: AppColors.mainColor,
                 ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -244,18 +339,16 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
         }
       },
       singleSelection: true,
-      textStyle: AppTextStyles.bodyMedium14, // 사용자 요구사항: medium14
-      horizontalPadding: 0, // 이미 부모에서 padding 적용
-      showBorder: false, // 외곽선 제거
-      borderRadius: 100, // 완전한 pill 모양
-      horizontalSpacing: AppSpacing.sm, // 칩 간격 8px
+      textStyle: AppTextStyles.bodyMedium14,
+      horizontalPadding: 0,
+      showBorder: false,
+      borderRadius: 100,
+      horizontalSpacing: AppSpacing.sm,
       chipPadding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg, // 16px (기본 8px에서 증가)
-        vertical: AppSpacing.sm, // 8px (기본 4px에서 증가)
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
       ),
-      unselectedTextColor: AppColors.textColor1.withValues(
-        alpha: 0.4,
-      ), // 비활성 칩 텍스트 투명도
+      unselectedTextColor: AppColors.textColor1.withValues(alpha: 0.4),
     );
   }
 
@@ -316,6 +409,8 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
   Widget _buildLoadingShimmer() {
     return GridView.builder(
       padding: EdgeInsets.all(AppSpacing.lg),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisSpacing: AppSpacing.sm,

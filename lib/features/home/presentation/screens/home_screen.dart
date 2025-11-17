@@ -9,6 +9,7 @@ import '../../../../core/router/routes.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/inputs/search_bar.dart';
+import '../../../../shared/widgets/layout/collapsible_title_sliver_app_bar.dart';
 import '../../../../shared/mixins/refreshable_tab_mixin.dart';
 import '../../../debug/share_extension_log_screen.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -78,23 +79,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   data: (user) => user?.nickname ?? '사용자',
                 );
 
-                return SliverAppBar(
-                  expandedHeight: 190.h, // 전체 확장 높이
-                  pinned: true, // 스크롤 시에도 최소 높이 유지
-                  backgroundColor: AppColors.backgroundLight,
-                  elevation: 0,
-                  surfaceTintColor: Colors.transparent,
-                  automaticallyImplyLeading: false, // 뒤로가기 버튼 제거
+                return CollapsibleTitleSliverAppBar(
+                  expandedHeight: 190.h,
                   toolbarHeight: AppSizes.appBarHeight,
-                  centerTitle: false, // 로고를 왼쪽으로 정렬
-                  // 항상 보이는 로고 + 알림
+                  backgroundColor: AppColors.backgroundLight,
+                  centerTitle: false,
+                  titleSpacing: AppSpacing.lg,
+
+                  // 상단 고정 로고
                   title: SvgPicture.asset(
                     'assets/tripgether_text_logo.svg',
                     width: 66.w,
                     height: 24.h,
                     fit: BoxFit.contain,
                   ),
-                  titleSpacing: AppSpacing.lg, // 로고 왼쪽 간격
+
+                  // 우측 알림 버튼
                   actions: [
                     Padding(
                       padding: EdgeInsets.only(right: AppSpacing.lg),
@@ -109,84 +109,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                   ],
 
-                  // FlexibleSpaceBar로 스크롤 정도에 따라 점진적 축소
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    background: Builder(
-                      builder: (context) {
-                        // Flutter가 자동 계산한 축소 비율 가져오기
-                        final settings = context
-                            .dependOnInheritedWidgetOfExactType<
-                              FlexibleSpaceBarSettings
-                            >();
-                        final currentExtent = settings?.currentExtent ?? 190.h;
-                        final minExtent =
-                            settings?.minExtent ??
-                            (AppSizes.appBarHeight + AppSizes.searchBarHeight);
-                        final maxExtent = settings?.maxExtent ?? 190.h;
+                  // 축소되는 인사말 영역
+                  collapsibleContent: (expandRatio) => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 상단 여백 (동적 축소)
+                      SizedBox(
+                        height: AppSpacing.huge + (AppSpacing.lg * expandRatio),
+                      ),
 
-                        // 확장 비율 계산 (0.0 = 완전 축소, 1.0 = 완전 확장)
-                        final expandRatio =
-                            ((currentExtent - minExtent) /
-                                    (maxExtent - minExtent))
-                                .clamp(0.0, 1.0);
-
-                        return SafeArea(
-                          bottom: false,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min, // 최소 크기로 축소
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // 상단 여백 (로고 + 알림 영역) - 동적 축소
-                              SizedBox(
-                                height:
-                                    AppSpacing.huge +
-                                    (AppSpacing.lg * expandRatio),
-                              ),
-
-                              // 인사말 + 부제목 (점진적으로 축소되며 사라짐)
-                              Opacity(
-                                opacity: expandRatio,
-                                child: Transform.scale(
-                                  scale:
-                                      0.85 + (0.15 * expandRatio), // 0.85 ~ 1.0
-                                  alignment: Alignment.topLeft,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                      left: AppSpacing.lg + AppSpacing.sm,
-                                      bottom: AppSpacing.xs, // 검색바와의 간격
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          l10n.greeting(nickname),
-                                          style: AppTextStyles.greetingBold20
-                                              .copyWith(
-                                                color: AppColors.mainColor,
-                                              ),
-                                        ),
-                                        Text(
-                                          l10n.greetingSubtitle,
-                                          style: AppTextStyles.greetingBold20
-                                              .copyWith(
-                                                color: AppColors.mainColor,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
+                      // 인사말 (Opacity + Transform.scale 애니메이션)
+                      Opacity(
+                        opacity: expandRatio,
+                        child: Transform.scale(
+                          scale: 0.85 + (0.15 * expandRatio),
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              left: AppSpacing.lg + AppSpacing.sm,
+                              bottom: AppSpacing.xs,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  l10n.greeting(nickname),
+                                  style: AppTextStyles.greetingBold20.copyWith(
+                                    color: AppColors.mainColor,
                                   ),
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  l10n.greetingSubtitle,
+                                  style: AppTextStyles.greetingBold20.copyWith(
+                                    color: AppColors.mainColor,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      ),
+                    ],
                   ),
 
-                  // 항상 보이는 검색바
+                  // 하단 고정 검색바
                   bottom: PreferredSize(
                     preferredSize: Size.fromHeight(AppSizes.searchBarHeight),
                     child: Container(
