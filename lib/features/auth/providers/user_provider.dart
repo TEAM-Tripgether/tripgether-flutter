@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tripgether/core/services/auth/google_auth_service.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';
 
 part 'user_provider.g.dart';
@@ -32,8 +33,16 @@ class UserNotifier extends _$UserNotifier {
   /// 사용자 정보와 토큰을 안전하게 저장하는 보안 저장소입니다.
   /// - Android: EncryptedSharedPreferences
   /// - iOS: Keychain
+  ///
+  /// **iOS Keychain 동작**:
+  /// - `unlocked_this_device`: 기기 잠금 해제 시에만 접근 가능
+  /// - **앱 삭제 시 자동으로 데이터가 삭제됨** (재설치 시 이전 데이터 없음)
+  /// - 보안성과 사용자 프라이버시를 위한 권장 설정
   static const _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.unlocked_this_device,
+    ),
   );
 
   /// 사용자 정보 저장 키
@@ -136,30 +145,56 @@ class UserNotifier extends _$UserNotifier {
   /// **호출 위치**: LoginProvider.logout()
   ///
   /// **삭제 내용**:
+  /// - Google 계정 연결 해제 (서버 토큰 폐기)
   /// - 사용자 정보 (User 객체)
   /// - Access Token
   /// - Refresh Token
+  /// - **모든 FlutterSecureStorage 데이터** (완전 초기화)
+  /// - **레거시 데이터** (이전 accessibility 설정의 데이터)
   ///
   /// **흐름**:
-  /// 1. Secure Storage에서 모든 키 삭제
-  /// 2. Provider 상태를 AsyncValue.data(null)로 업데이트
-  /// 3. UI는 자동으로 "로그인 필요" 상태로 전환
+  /// 1. Google Sign-In 연결 해제 (disconnect)
+  /// 2. Secure Storage의 모든 데이터 삭제 (deleteAll)
+  /// 3. 레거시 Storage 데이터 정리 (마이그레이션 대응)
+  /// 4. Provider 상태를 AsyncValue.data(null)로 업데이트
+  /// 5. UI는 자동으로 "로그인 필요" 상태로 전환
   Future<void> clearUser() async {
-    debugPrint('[UserNotifier] 🗑️ 사용자 정보 삭제 시작');
+    debugPrint('[UserNotifier] 🗑️ 완전 로그아웃 시작');
 
     try {
-      // 1. Secure Storage에서 사용자 정보 삭제
-      await _deleteUserFromStorage();
+      // 1. ⭐ Google 계정 연결 해제 (서버 토큰까지 폐기)
+      await GoogleAuthService.disconnect();
+      debugPrint('[UserNotifier] 🚪 Google 세션 연결 해제 완료');
 
-      // 2. 토큰 삭제
-      await _deleteTokensFromStorage();
+      // 2. ⭐ 모든 Secure Storage 데이터 완전 삭제
+      // iOS Keychain과 Android EncryptedSharedPreferences의
+      // 모든 키-값 쌍을 삭제하여 완전 초기화
+      await _storage.deleteAll();
+      debugPrint('[UserNotifier] 🗑️ 모든 Storage 데이터 삭제 완료');
 
-      // 3. Provider 상태 업데이트 (로그아웃 상태)
+      // 3. ⭐ 레거시 Storage 데이터 정리 (마이그레이션 대응)
+      // 이전 버전에서 first_unlock_this_device로 저장된 데이터까지 완전 삭제
+      // iOS에서 accessibility가 다르면 별도 저장소로 취급되므로 명시적 삭제 필요
+      try {
+        const legacyStorage = FlutterSecureStorage(
+          aOptions: AndroidOptions(encryptedSharedPreferences: true),
+          iOptions: IOSOptions(
+            accessibility: KeychainAccessibility.first_unlock_this_device,
+          ),
+        );
+        await legacyStorage.deleteAll();
+        debugPrint('[UserNotifier] 🧹 레거시 Storage 데이터 정리 완료');
+      } catch (e) {
+        // 레거시 데이터 정리 실패는 무시 (이미 없을 수 있음)
+        debugPrint('[UserNotifier] ℹ️ 레거시 데이터 없음 또는 정리 완료: $e');
+      }
+
+      // 4. Provider 상태 업데이트 (로그아웃 상태)
       state = const AsyncValue.data(null);
 
-      debugPrint('[UserNotifier] ✅ 사용자 정보 삭제 완료');
+      debugPrint('[UserNotifier] ✅ 완전 로그아웃 완료');
     } catch (e, stackTrace) {
-      debugPrint('[UserNotifier] ❌ 사용자 정보 삭제 실패: $e');
+      debugPrint('[UserNotifier] ❌ 로그아웃 실패: $e');
       debugPrint('[UserNotifier] Stack trace: $stackTrace');
 
       // 에러가 발생해도 상태는 null로 설정 (로그아웃은 항상 성공해야 함)
@@ -260,16 +295,6 @@ class UserNotifier extends _$UserNotifier {
     }
   }
 
-  /// Secure Storage에서 사용자 정보 삭제
-  Future<void> _deleteUserFromStorage() async {
-    try {
-      await _storage.delete(key: _userKey);
-    } catch (e) {
-      debugPrint('[UserNotifier] ⚠️ Storage에서 사용자 정보 삭제 실패: $e');
-      // 삭제 실패는 무시 (이미 없을 수 있음)
-    }
-  }
-
   /// Secure Storage에 JWT 토큰 저장
   ///
   /// **저장 내용**:
@@ -290,19 +315,6 @@ class UserNotifier extends _$UserNotifier {
     } catch (e) {
       debugPrint('[UserNotifier] ⚠️ 토큰 저장 실패: $e');
       rethrow;
-    }
-  }
-
-  /// Secure Storage에서 JWT 토큰 삭제
-  Future<void> _deleteTokensFromStorage() async {
-    try {
-      await _storage.delete(key: _accessTokenKey);
-      await _storage.delete(key: _refreshTokenKey);
-
-      debugPrint('[UserNotifier] 🔑 토큰 삭제 완료');
-    } catch (e) {
-      debugPrint('[UserNotifier] ⚠️ 토큰 삭제 실패: $e');
-      // 삭제 실패는 무시
     }
   }
 }

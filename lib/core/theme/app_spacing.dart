@@ -9,11 +9,20 @@ class AppSpacing {
   AppSpacing._(); // Private constructor to prevent instantiation
 
   // ==================== 기본 간격 단위 ====================
+  /// 초최소 간격: 2
+  static double get xxs => 2.w;
+
   /// 최소 간격: 4
   static double get xs => 4.w;
 
+  /// 최소 중간 간격: 6
+  static double get xsm => 6.w;
+
   /// 아주 작은 간격: 8
   static double get sm => 8.w;
+
+  /// 작은 중간 간격: 10
+  static double get smd => 10.w;
 
   /// 작은 간격: 12
   static double get md => 12.w;
@@ -29,6 +38,9 @@ class AppSpacing {
 
   /// 매우 큰 간격: 32
   static double get xxxl => 32.w;
+
+  /// 특대 간격: 36
+  static double get huge36 => 36.w;
 
   /// 초대형 간격: 40
   static double get huge => 40.w;
@@ -79,8 +91,14 @@ class AppSpacing {
   /// 최소 수직 간격: 4
   static SizedBox get verticalSpaceXS => SizedBox(height: xs);
 
+  /// 최소 중간 수직 간격: 6
+  static SizedBox get verticalSpaceXSM => SizedBox(height: xsm);
+
   /// 아주 작은 수직 간격: 8
   static SizedBox get verticalSpaceSM => SizedBox(height: sm);
+
+  /// 작은 중간 수직 간격: 10
+  static SizedBox get verticalSpaceSMD => SizedBox(height: smd);
 
   /// 작은 수직 간격: 12
   static SizedBox get verticalSpaceMD => SizedBox(height: md);
@@ -97,14 +115,23 @@ class AppSpacing {
   /// 매우 큰 수직 간격: 32
   static SizedBox get verticalSpaceXXXL => SizedBox(height: xxxl);
 
+  /// 특대 수직 간격: 36
+  static SizedBox get verticalSpace36 => SizedBox(height: huge36);
+
   /// 초대형 수직 간격: 40
   static SizedBox get verticalSpaceHuge => SizedBox(height: huge);
 
   /// 특대 수직 간격: 60 (Divider 패딩 등)
   static SizedBox get verticalSpace60 => SizedBox(height: 60.h);
 
+  /// 특대 수직 간격: 72 (온보딩 설명-입력필드 간격)
+  static SizedBox get verticalSpace72 => SizedBox(height: 72.h);
+
   /// 특대 수직 간격: 80 (로고-버튼 간격)
   static SizedBox get verticalSpace80 => SizedBox(height: 80.h);
+
+  /// 특대 수직 간격: 90 (로고-버튼 간격)
+  static SizedBox get verticalSpace90 => SizedBox(height: 90.h);
 
   /// 초특대 수직 간격: 120 (상단 여백)
   static SizedBox get verticalSpace120 => SizedBox(height: 120.h);
@@ -113,8 +140,14 @@ class AppSpacing {
   /// 최소 수평 간격: 4
   static SizedBox get horizontalSpaceXS => SizedBox(width: xs);
 
+  /// 최소 중간 수평 간격: 6
+  static SizedBox get horizontalSpaceXSM => SizedBox(width: xsm);
+
   /// 아주 작은 수평 간격: 8
   static SizedBox get horizontalSpaceSM => SizedBox(width: sm);
+
+  /// 작은 중간 수평 간격: 10
+  static SizedBox get horizontalSpaceSMD => SizedBox(width: smd);
 
   /// 작은 수평 간격: 12
   static SizedBox get horizontalSpaceMD => SizedBox(width: md);
@@ -130,6 +163,9 @@ class AppSpacing {
 
   /// 매우 큰 수평 간격: 32
   static SizedBox get horizontalSpaceXXXL => SizedBox(width: xxxl);
+
+  /// 특대 수평 간격: 36
+  static SizedBox get horizontalSpace36 => SizedBox(width: huge36);
 
   // ==================== 모달/다이얼로그 패딩 ====================
   /// 모달 내부 패딩: 24
@@ -204,8 +240,8 @@ class AppRadius {
   /// 큰 반지름: 16 (다이얼로그, 바텀시트)
   static double get xlarge => 16.r;
 
-  /// 완전한 원형: 999 (아바타, FAB 등)
-  static double get circle => 999.r;
+  /// 완전한 원형: 100 (아바타, FAB 등)
+  static double get circle => 100.r;
 
   // ==================== BorderRadius 객체 ====================
 
@@ -295,7 +331,6 @@ class AppSizes {
   AppSizes._(); // Private constructor to prevent instantiation
 
   // ==================== Icon Sizes ====================
-
   /// 작은 아이콘: 16
   static double get iconSmall => 16.w;
 
@@ -308,8 +343,14 @@ class AppSizes {
   /// 큰 아이콘: 32
   static double get iconLarge => 32.w;
 
-  /// 매우 큰 아이콘: 48
+  /// 매우 큰 아이콘: 40
+  static double get iconExtraLarge => 40.w;
+
+  /// 최대 크기 아이콘: 48
   static double get iconXLarge => 48.w;
+
+  /// 에러 아이콘: 64 (에러 화면 등)
+  static double get iconError => 64.w;
 
   // ==================== Border Widths ====================
 
@@ -332,23 +373,35 @@ class AppSizes {
 
   // ==================== Component Heights ====================
 
-  /// 버튼 최소 높이: 54
-  static double get buttonHeight => 54.h;
+  /// 버튼 최소 높이: 58
+  static double get buttonHeight => 58.h;
 
   /// 텍스트 버튼 최소 높이: 40
   static double get textButtonHeight => 40.h;
 
-  /// Navigation Bar 높이: 90
-  static double get navigationBarHeight => 90.h;
+  /// Navigation Bar 높이: 80 (아이콘 24 + 간격 4 + 텍스트 12 + 상하 여백 20)
+  static double get navigationBarHeight => 80.h;
 
   /// App Bar 높이: 56 (Material Design 기본)
   static double get appBarHeight => 56.h;
+
+  /// 검색바 높이: 52 (홈 화면 SliverAppBar bottom)
+  static double get searchBarHeight => 52.h;
 
   /// Bottom Sheet 핸들 높이: 4
   static double get bottomSheetHandleHeight => 4.h;
 
   /// Progress Indicator 높이: 2
   static double get progressIndicatorHeight => 2.h;
+
+  /// SNS 콘텐츠 카드 높이: 146
+  static double get snsCardHeight => 146.h;
+
+  /// SNS 카드 그라데이션 오버레이 높이: 60
+  static double get snsCardOverlayHeight => 60.h;
+
+  /// SNS 콘텐츠 카드 큰 높이: 256
+  static double get snsCardLargeHeight => 256.h;
 
   // ==================== Component Widths ====================
 
@@ -366,4 +419,10 @@ class AppSizes {
 
   /// FAB 큰 크기: 96
   static double get fabLargeSize => 96.w;
+
+  /// SNS 콘텐츠 카드 너비: 106
+  static double get snsCardWidth => 106.w;
+
+  /// SNS 콘텐츠 카드 큰 너비: 180
+  static double get snsCardLargeWidth => 180.w;
 }

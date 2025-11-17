@@ -30,8 +30,16 @@ void main() async {
   // 3. FlutterSecureStorage 워밍업 (iOS Keychain 활성화)
   // iOS에서 Keychain 첫 접근 시 발생할 수 있는 블로킹을 미리 해결
   // 이를 통해 UserNotifier.build()에서의 Storage 읽기가 즉시 완료됨
+  //
+  // ⚠️ 중요: unlocked_this_device 사용 (user_provider.dart와 동일)
+  // - 기기 잠금 해제 시에만 접근 가능 (보안 강화)
+  // - 앱 삭제 시 Keychain 데이터가 자동으로 삭제됨
+  // - 다른 기기로 마이그레이션되지 않음
   const storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.unlocked_this_device,
+    ),
   );
   try {
     await storage.read(key: 'warmup_key');

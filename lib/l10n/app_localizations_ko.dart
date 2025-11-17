@@ -422,6 +422,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get signUpWithEmail => '이메일로 가입하기';
 
   @override
+  String get snsLoginDivider => 'SNS 계정으로 로그인/회원가입';
+
+  @override
   String get logout => '로그아웃';
 
   @override
@@ -531,7 +534,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingNicknamePrompt => '이름을 설정해주세요';
 
   @override
-  String get onboardingGenderPrompt => '성별을 선택해주세요. (선택)';
+  String get onboardingGenderPrompt => '성별을 선택해주세요';
 
   @override
   String get genderMale => '남성';
@@ -579,4 +582,136 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get defaultNickname => '여행러버';
+
+  @override
+  String get cannotLoadContent => '콘텐츠를 불러올 수 없습니다';
+
+  @override
+  String get noSnsContentMessage => 'SNS에서 콘텐츠를 공유하면\n여기에서 확인할 수 있습니다';
+
+  @override
+  String get noTitle => '제목 없음';
+
+  @override
+  String get backButtonLabel => '뒤로가기 버튼';
+
+  @override
+  String get backButtonTooltip => '뒤로가기';
+
+  @override
+  String get menuButtonLabel => '메뉴 버튼';
+
+  @override
+  String get menuButtonTooltip => '메뉴';
+
+  @override
+  String get notificationButtonLabel => '알림 버튼';
+
+  @override
+  String get notificationTitle => '알림';
+
+  @override
+  String get noNewNotifications => '현재 새로운 알림이 없습니다.';
+
+  @override
+  String get settingsButtonLabel => '설정 버튼';
+
+  @override
+  String get searchButtonLabel => '검색 버튼';
+
+  @override
+  String get onboardingTermsPrompt => '약관에 동의해주세요';
+
+  @override
+  String get onboardingTermsDescription => '서비스 이용을 위해 약관 동의가 필요해요';
+
+  @override
+  String get termsOfService => '서비스 이용약관';
+
+  @override
+  String get privacyPolicy => '개인정보 처리방침';
+
+  @override
+  String get ageConfirmation => '만 14세 이상입니다';
+
+  @override
+  String get marketingConsent => '마케팅 정보 수신 동의 (선택)';
+
+  @override
+  String get agreeToAll => '전체 동의';
+
+  @override
+  String get viewDetails => '자세히 보기';
+
+  @override
+  String get onboardingNicknameDescription =>
+      '다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요';
+
+  @override
+  String get onboardingNicknameHint => '닉네임을 입력하세요';
+
+  @override
+  String onboardingInterestsSelectedCount(int count) {
+    return '$count개 선택';
+  }
+
+  @override
+  String get startNow => '바로 시작하기';
+
+  @override
+  String onboardingWelcomeUnified(String nickname) {
+    return '모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 $nickname님';
+  }
+
+  @override
+  String get notifications => '알림';
+
+  @override
+  String get notificationSectionToday => '오늘';
+
+  @override
+  String get noNotifications => '새로운 알림이 없습니다';
+
+  @override
+  String get sharedContentMessage => '외부 앱에서 공유된 링크가 여기에 표시됩니다';
+
+  @override
+  String get aiAnalyzingLocation => 'AI가 위치정보를 파악하고 있습니다';
+
+  @override
+  String aiAnalyzedLocations(String count) {
+    return 'AI가 $count곳의 위치정보를 파악했습니다';
+  }
+
+  @override
+  String authorPost(String author) {
+    return '$author님의 게시물';
+  }
+
+  @override
+  String get notificationStatusProcessing => '진행 중';
+
+  @override
+  String get notificationStatusCheckButton => '확인하기';
+
+  @override
+  String get timestampJustNow => '방금';
+
+  @override
+  String timestampMinutesAgo(int minutes) {
+    return '$minutes분 전';
+  }
+
+  @override
+  String timestampHoursAgo(int hours) {
+    return '$hours시간 전';
+  }
+
+  @override
+  String timestampDaysAgo(int days) {
+    return '$days일 전';
+  }
+
+  @override
+  String get defaultAuthor => '사용자';
 }

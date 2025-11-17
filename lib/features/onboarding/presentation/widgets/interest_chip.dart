@@ -7,8 +7,8 @@ import '../../../../core/theme/app_text_styles.dart';
 /// 관심사 선택 칩 위젯
 ///
 /// 온보딩 과정에서 사용자가 관심사를 선택할 수 있는 커스텀 Chip입니다.
-/// - 선택되지 않은 상태: 회색 테두리 + 흰색 배경
-/// - 선택된 상태: 보라색 배경 + 흰색 텍스트
+/// - 선택되지 않은 상태: 회색 테두리 + 연한 회색 배경 + 반투명 텍스트
+/// - 선택된 상태: 보라색 테두리 + 연한 보라색 배경 + 보라색 텍스트
 class InterestChip extends StatelessWidget {
   /// 칩에 표시될 관심사 텍스트
   final String label;
@@ -36,19 +36,24 @@ class InterestChip extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          // 선택 시: 보라색 배경 (#5325CB), 미선택 시: 흰색 배경
-          color: isSelected ? AppColors.gradientMiddle : AppColors.surface,
-          // 선택 시: 테두리 없음, 미선택 시: 회색 테두리
-          border: isSelected
-              ? null
-              : Border.all(color: AppColors.outline, width: 1.w),
+          // 선택 시: 보라색 배경, 미선택 시: 흰색 배경
+          color: isSelected ? AppColors.mainColor : AppColors.white,
+          // 선택 시: 테두리 없음, 미선택 시: 회색 테두리 (alpha 0.4)
+          border: Border.all(
+            color: isSelected
+                ? AppColors.mainColor
+                : AppColors.subColor2.withValues(alpha: 0.4),
+            width: 1.w,
+          ),
           borderRadius: BorderRadius.circular(20.r),
         ),
         child: Text(
           label,
-          style: AppTextStyles.labelLarge.copyWith(
-            // 선택 시: 흰색 텍스트, 미선택 시: 회색(BBBBBB) 텍스트
-            color: isSelected ? AppColors.onPrimary : AppColors.outline,
+          style: AppTextStyles.buttonMediumMedium14.copyWith(
+            // 선택 시: 흰색 텍스트, 미선택 시: 반투명 회색 텍스트
+            color: isSelected
+                ? AppColors.white
+                : AppColors.textColor1.withValues(alpha: 0.4),
           ),
         ),
       ),

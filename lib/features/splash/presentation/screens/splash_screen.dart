@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/router/routes.dart';
 import '../../../auth/providers/user_provider.dart';
 
@@ -156,8 +157,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
 
     return Scaffold(
-      // 배경색: AppColors.primary (664BAE)
-      backgroundColor: AppColors.primary,
+      // 배경색: AppColors.mainColor (664BAE)
+      backgroundColor: AppColors.mainColor,
       body: SafeArea(
         child: SizedBox(
           width: double.infinity,
@@ -194,18 +195,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   child: Container(
                     decoration: BoxDecoration(
                       color: AppColors
-                          .primary, // 스플래시 배경색과 동일하여 Together를 자연스럽게 가림
+                          .mainColor, // 스플래시 배경색과 동일하여 Together를 자연스럽게 가림
                       borderRadius: BorderRadius.circular(6.r),
                     ),
-                    child: Text(
-                      'Trip',
-                      style: TextStyle(
-                        fontSize: 48.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.onPrimary,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
+                    child: Text('Trip', style: AppTextStyles.splashLogoBold48),
                   ),
                 )
                 .animate(target: _isAnimationStarted ? 1 : 0)
@@ -234,12 +227,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   offset: Offset(150.w, 0),
                   child: Text(
                     'Together',
-                    style: TextStyle(
-                      fontSize: 48.sp,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.onPrimary,
-                      letterSpacing: 2.0,
-                    ),
+                    style: AppTextStyles.splashLogoBold48,
                   ),
                 )
                 .animate(target: _isAnimationStarted ? 1 : 0)
@@ -290,12 +278,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     child: Center(
                       child: Text(
                         'Tripgether',
-                        style: TextStyle(
-                          fontSize: 48.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.onPrimary,
-                          letterSpacing: 2.0,
-                        ),
+                        style: AppTextStyles.splashLogoBold48,
                       ),
                     ),
                   ),
@@ -310,11 +293,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         offset: Offset(0, 40.h), // Tripgether 기준 아래쪽으로
                         child: Text(
                           'More than tours. Real local moments',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.onPrimary.withValues(alpha: 0.8),
-                            letterSpacing: 0.5,
+                          style: AppTextStyles.splashSloganRegular12.copyWith(
+                            color: AppColors.white.withValues(alpha: 0.8),
                           ),
                         ),
                       ),

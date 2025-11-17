@@ -81,7 +81,7 @@ class OnboardingTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 기본 텍스트 스타일 (사용자 지정이 없으면)
-    final defaultStyle = style ?? AppTextStyles.bodyLarge;
+    final defaultStyle = style ?? AppTextStyles.bodyMedium16;
 
     Widget textField = TextField(
       controller: controller,
@@ -97,8 +97,8 @@ class OnboardingTextField extends StatelessWidget {
       onSubmitted: onSubmitted != null ? (_) => onSubmitted!() : null,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: AppTextStyles.bodyLarge.copyWith(
-          color: AppColors.textSecondary.withValues(alpha: 0.5),
+        hintStyle: AppTextStyles.bodyMedium16.copyWith(
+          color: AppColors.subColor2, // 힌트 텍스트: medium16 + subColor2
         ),
         counterText: '', // 글자 수 카운터 숨김
         filled: false, // 배경 투명
@@ -106,21 +106,21 @@ class OnboardingTextField extends StatelessWidget {
         // 기본 상태 (활성화) - 사용자가 입력 필드를 쉽게 찾을 수 있도록 적절한 명암비
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: AppColors.outline, // 적절히 보이는 색상
+            color: AppColors.subColor2, // 적절히 보이는 색상
             width: 1.5.w,
           ),
         ),
         // 포커스 상태
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: AppColors.primary.withValues(alpha: 0.6), // Primary 색상 사용
+            color: AppColors.mainColor.withValues(alpha: 0.6), // Primary 색상 사용
             width: 2.w,
           ),
         ),
         // 비활성화 상태
         disabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: AppColors.outline.withValues(alpha: 0.1),
+            color: AppColors.subColor2.withValues(alpha: 0.1),
             width: 1.w,
           ),
         ),

@@ -148,7 +148,7 @@ class ProfileAvatar extends StatelessWidget {
   /// 이미지 로딩 중에 표시되는 스켈레톤 효과
   Widget _buildShimmerPlaceholder() {
     return Shimmer.fromColors(
-      baseColor: AppColors.shimmerBase,
+      baseColor: AppColors.subColor2.withValues(alpha: 0.3),
       highlightColor: AppColors.shimmerHighlight,
       child: Container(
         width: size.value.w,
@@ -220,7 +220,7 @@ class ProfileAvatarWithBadge extends StatelessWidget {
     this.showBorder = false,
     this.onTap,
     required this.badgeIcon,
-    this.badgeColor = AppColors.primary,
+    this.badgeColor = AppColors.mainColor,
   });
 
   @override
@@ -305,7 +305,7 @@ class ProfileAvatarWithEdit extends StatelessWidget {
               width: size.value * 0.3,
               height: size.value * 0.3,
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: AppColors.mainColor,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2.w),
                 boxShadow: [

@@ -1,203 +1,207 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shimmer/shimmer.dart';
+import '../../../core/models/content_model.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../features/home/data/models/sns_content_model.dart';
+import '../../../core/utils/platform_icon_mapper.dart';
 import '../../../l10n/app_localizations.dart';
-import '../common/platform_icon.dart';
 
 /// SNS 콘텐츠 카드 위젯
+///
+/// Instagram, YouTube, TikTok 등의 SNS 콘텐츠를 카드 형태로 표시합니다.
+/// 썸네일, 플랫폼 아이콘, 제목을 Stack 레이아웃으로 보여줍니다.
+///
+/// 사용 예시:
+/// ```dart
+/// SnsContentCard(
+///   content: contentModel,
+///   onTap: () => navigateToDetail(contentModel.contentId),
+/// )
+/// ```
 class SnsContentCard extends StatelessWidget {
-  final SnsContent content;
-  final VoidCallback? onTap;
+  /// 표시할 콘텐츠 모델
+  final ContentModel content;
+
+  /// 카드 너비 (기본값: AppSizes.snsCardWidth = 100)
   final double? width;
-  final EdgeInsets? margin;
-  final bool isGridLayout;
+
+  /// 카드 높이 (기본값: AppSizes.snsCardHeight = 142)
+  final double? height;
+
+  /// 카드 클릭 시 콜백
+  final VoidCallback? onTap;
+
+  /// 플랫폼 아이콘 크기 (기본값: AppSizes.iconSmall)
+  final double? iconSize;
+
+  /// 제목 텍스트 스타일 (기본값: AppTextStyles.metaMedium12 with white color)
+  final TextStyle? titleStyle;
+
+  /// 제목 최대 줄 수 (기본값: 2)
+  final int? titleMaxLines;
 
   const SnsContentCard({
     super.key,
     required this.content,
-    this.onTap,
     this.width,
-    this.margin,
-    this.isGridLayout = false,
+    this.height,
+    this.onTap,
+    this.iconSize,
+    this.titleStyle,
+    this.titleMaxLines,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap ?? () => debugPrint('SNS 콘텐츠 클릭: ${content.contentUrl}'),
-      child: Container(
-        width: isGridLayout ? null : (width ?? 120.w),
-        height: isGridLayout ? 250.h : 170.h,
-        margin: margin ?? EdgeInsets.only(right: AppSpacing.md),
-        child: ClipRRect(
-          borderRadius: AppRadius.allLarge,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              // 썸네일 이미지 (Hero 애니메이션 제거)
-              CachedNetworkImage(
-                imageUrl: content.thumbnailUrl,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[200],
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.grey[200],
-                  child: Icon(
-                    Icons.image_not_supported,
-                    size: AppSizes.iconXLarge,
-                    color: Colors.grey[400],
-                  ),
-                ),
-              ),
+    final cardWidth = width ?? AppSizes.snsCardWidth;
+    final cardHeight = height ?? AppSizes.snsCardHeight;
 
-              // 그라데이션 오버레이 및 텍스트 정보
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.7),
-                    ],
-                    stops: [0.5, 1.0],
-                  ),
-                ),
-                padding: EdgeInsets.all(AppSpacing.sm),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    PlatformIcon(
-                      source: content.source,
-                      size: isGridLayout
-                          ? AppSizes.iconSmall
-                          : AppSizes.iconDefault,
-                    ),
-                    SizedBox(height: AppSpacing.xs.h),
-                    Text(
-                      content.title,
-                      style: AppTextStyles.titleSmall.copyWith(
-                        color: Colors.white,
-                        height: 1.3,
-                        shadows: [
-                          Shadow(
-                            offset: const Offset(0, 1),
-                            blurRadius: 3.0,
-                            color: Colors.black.withValues(alpha: 0.5),
-                          ),
-                        ],
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Hero(
+        tag: 'sns-content-${content.contentId}',
+        child: Container(
+          width: cardWidth,
+          height: cardHeight,
+          decoration: BoxDecoration(
+            borderRadius: AppRadius.allMedium,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow.withValues(alpha: 0.1),
+                // color: AppColors.whiteBorder,
+                spreadRadius: 1,
+                blurRadius: 0,
+                offset: Offset.zero,
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(
+              AppRadius.medium - AppSizes.borderThin,
+            ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // 배경 썸네일 이미지
+                _buildThumbnail(),
 
-/// SNS 콘텐츠 가로 스크롤 리스트 위젯
-///
-/// 여러 SNS 콘텐츠를 가로로 스크롤 가능한 리스트로 표시
-class SnsContentHorizontalList extends StatelessWidget {
-  /// 표시할 SNS 콘텐츠 리스트
-  final List<SnsContent> contents;
+                // 하단 그라데이션 오버레이
+                _buildGradientOverlay(),
 
-  /// 섹션 제목
-  final String? title;
-
-  /// 더보기 버튼 탭 시 콜백
-  final VoidCallback? onSeeMoreTap;
-
-  /// 개별 콘텐츠 카드 탭 시 콜백 (콘텐츠와 인덱스를 전달)
-  final void Function(SnsContent content, int index)? onContentTap;
-
-  const SnsContentHorizontalList({
-    super.key,
-    required this.contents,
-    this.title,
-    this.onSeeMoreTap,
-    this.onContentTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (title != null) _buildSectionHeader(context),
-        AppSpacing.verticalSpaceLG,
-        SizedBox(
-          height: 170.h, // 썸네일 높이만 (제목과 크리에이터 정보는 이미지 내부에 오버레이)
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            itemCount: contents.length,
-            itemBuilder: (context, index) {
-              return SnsContentCard(
-                content: contents[index],
-                onTap: onContentTap != null
-                    ? () => onContentTap!(contents[index], index)
-                    : null,
-              );
-            },
+                // 플랫폼 아이콘 + 제목
+                _buildContentInfo(context),
+              ],
+            ),
           ),
         ),
-      ],
+      ),
     );
   }
 
-  /// 섹션 헤더 위젯 빌드
-  Widget _buildSectionHeader(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final primaryColor = Theme.of(context).primaryColor;
+  /// 썸네일 이미지 위젯
+  Widget _buildThumbnail() {
+    if (content.thumbnailUrl == null || content.thumbnailUrl!.isEmpty) {
+      return _buildPlaceholder();
+    }
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title!, style: AppTextStyles.titleLarge),
-          if (onSeeMoreTap != null)
-            GestureDetector(
-              onTap: onSeeMoreTap,
-              child: Row(
-                children: [
-                  Text(
-                    l10n.seeMore,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      color: primaryColor,
-                    ),
-                  ),
-                  AppSpacing.horizontalSpaceXS,
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: AppSizes.iconSmall,
-                    color: primaryColor,
-                  ),
-                ],
-              ),
-            ),
-        ],
+    return CachedNetworkImage(
+      imageUrl: content.thumbnailUrl!,
+      fit: BoxFit.cover,
+      placeholder: (context, url) => _buildShimmerPlaceholder(),
+      errorWidget: (context, url, error) => _buildPlaceholder(),
+    );
+  }
+
+  /// 썸네일 로딩 중 Shimmer 효과
+  Widget _buildShimmerPlaceholder() {
+    return Shimmer.fromColors(
+      baseColor: AppColors.subColor2.withValues(alpha: 0.3),
+      highlightColor: AppColors.shimmerHighlight,
+      child: Container(color: Colors.white),
+    );
+  }
+
+  /// 썸네일이 없을 때 기본 플레이스홀더
+  Widget _buildPlaceholder() {
+    return Container(
+      color: AppColors.backgroundLight,
+      child: Center(
+        child: Icon(
+          Icons.image_outlined,
+          size: AppSizes.iconLarge,
+          color: AppColors.subColor2,
+        ),
       ),
+    );
+  }
+
+  /// 하단 그라데이션 오버레이 (배경 어둡게)
+  Widget _buildGradientOverlay() {
+    return Positioned.fill(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
+            stops: const [0.5, 1.0],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 콘텐츠 정보 (플랫폼 아이콘 + 제목)
+  Widget _buildContentInfo(BuildContext context) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Padding(
+        padding: EdgeInsets.all(AppSpacing.sm),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 플랫폼 아이콘
+            _buildPlatformIcon(),
+
+            AppSpacing.verticalSpaceXSM,
+
+            // 제목
+            _buildTitle(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 플랫폼 아이콘
+  Widget _buildPlatformIcon() {
+    final size = iconSize ?? AppSizes.iconSmall;
+
+    return SvgPicture.asset(
+      PlatformIconMapper.getIconPath(content.platform),
+      width: size,
+      height: size,
+    );
+  }
+
+  /// 제목 텍스트
+  Widget _buildTitle(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final title = content.title ?? content.caption ?? l10n.noTitle;
+
+    return Text(
+      title,
+      style:
+          titleStyle ??
+          AppTextStyles.metaMedium12.copyWith(color: Colors.white),
+      maxLines: titleMaxLines ?? 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

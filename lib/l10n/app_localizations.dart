@@ -860,6 +860,12 @@ abstract class AppLocalizations {
   /// **'이메일로 가입하기'**
   String get signUpWithEmail;
 
+  /// SNS 로그인 구분선 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'SNS 계정으로 로그인/회원가입'**
+  String get snsLoginDivider;
+
   /// 로그아웃 버튼
   ///
   /// In ko, this message translates to:
@@ -1067,7 +1073,7 @@ abstract class AppLocalizations {
   /// 온보딩 성별 선택 안내 제목
   ///
   /// In ko, this message translates to:
-  /// **'성별을 선택해주세요. (선택)'**
+  /// **'성별을 선택해주세요'**
   String get onboardingGenderPrompt;
 
   /// 성별 선택 - 남성
@@ -1153,6 +1159,240 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'여행러버'**
   String get defaultNickname;
+
+  /// 콘텐츠 로드 실패 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'콘텐츠를 불러올 수 없습니다'**
+  String get cannotLoadContent;
+
+  /// SNS 콘텐츠 빈 상태 안내 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'SNS에서 콘텐츠를 공유하면\n여기에서 확인할 수 있습니다'**
+  String get noSnsContentMessage;
+
+  /// 제목이 없을 때 기본 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'제목 없음'**
+  String get noTitle;
+
+  /// 뒤로가기 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'뒤로가기 버튼'**
+  String get backButtonLabel;
+
+  /// 뒤로가기 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'뒤로가기'**
+  String get backButtonTooltip;
+
+  /// 메뉴 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'메뉴 버튼'**
+  String get menuButtonLabel;
+
+  /// 메뉴 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'메뉴'**
+  String get menuButtonTooltip;
+
+  /// 알림 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 버튼'**
+  String get notificationButtonLabel;
+
+  /// 알림 다이얼로그 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'알림'**
+  String get notificationTitle;
+
+  /// 새로운 알림이 없을 때 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 새로운 알림이 없습니다.'**
+  String get noNewNotifications;
+
+  /// 설정 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'설정 버튼'**
+  String get settingsButtonLabel;
+
+  /// 검색 버튼 접근성 라벨 (스크린 리더용)
+  ///
+  /// In ko, this message translates to:
+  /// **'검색 버튼'**
+  String get searchButtonLabel;
+
+  /// 온보딩 약관 동의 페이지 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'약관에 동의해주세요'**
+  String get onboardingTermsPrompt;
+
+  /// 온보딩 약관 동의 페이지 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'서비스 이용을 위해 약관 동의가 필요해요'**
+  String get onboardingTermsDescription;
+
+  /// 서비스 이용약관 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'서비스 이용약관'**
+  String get termsOfService;
+
+  /// 개인정보 처리방침 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'개인정보 처리방침'**
+  String get privacyPolicy;
+
+  /// 만 14세 이상 확인 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'만 14세 이상입니다'**
+  String get ageConfirmation;
+
+  /// 마케팅 정보 수신 동의 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'마케팅 정보 수신 동의 (선택)'**
+  String get marketingConsent;
+
+  /// 약관 전체 동의 체크박스 라벨
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 동의'**
+  String get agreeToAll;
+
+  /// 약관 상세 내용 보기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'자세히 보기'**
+  String get viewDetails;
+
+  /// 온보딩 닉네임 페이지 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 유저에게 보이는 이름이에요\n비속어/광고 문구는 제한돼요'**
+  String get onboardingNicknameDescription;
+
+  /// 온보딩 닉네임 입력 힌트
+  ///
+  /// In ko, this message translates to:
+  /// **'닉네임을 입력하세요'**
+  String get onboardingNicknameHint;
+
+  /// 선택된 관심사 개수 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 선택'**
+  String onboardingInterestsSelectedCount(int count);
+
+  /// 온보딩 완료 후 시작 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'바로 시작하기'**
+  String get startNow;
+
+  /// 환영 페이지 통합 메시지 (닉네임 포함)
+  ///
+  /// In ko, this message translates to:
+  /// **'모든 준비가 끝났어요 🎉\n현지의 하루로 들어가요 {nickname}님'**
+  String onboardingWelcomeUnified(String nickname);
+
+  /// 알림 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'알림'**
+  String get notifications;
+
+  /// 알림 섹션 헤더 - 오늘
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘'**
+  String get notificationSectionToday;
+
+  /// 알림이 없을 때 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'새로운 알림이 없습니다'**
+  String get noNotifications;
+
+  /// 알림 빈 상태 설명 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'외부 앱에서 공유된 링크가 여기에 표시됩니다'**
+  String get sharedContentMessage;
+
+  /// 알림 진행 중 상태 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 위치정보를 파악하고 있습니다'**
+  String get aiAnalyzingLocation;
+
+  /// 알림 완료 상태 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 {count}곳의 위치정보를 파악했습니다'**
+  String aiAnalyzedLocations(String count);
+
+  /// 작성자 게시물 표시
+  ///
+  /// In ko, this message translates to:
+  /// **'{author}님의 게시물'**
+  String authorPost(String author);
+
+  /// 알림 진행 중 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'진행 중'**
+  String get notificationStatusProcessing;
+
+  /// 알림 완료 확인 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'확인하기'**
+  String get notificationStatusCheckButton;
+
+  /// 방금 전 타임스탬프
+  ///
+  /// In ko, this message translates to:
+  /// **'방금'**
+  String get timestampJustNow;
+
+  /// N분 전 타임스탬프
+  ///
+  /// In ko, this message translates to:
+  /// **'{minutes}분 전'**
+  String timestampMinutesAgo(int minutes);
+
+  /// N시간 전 타임스탬프
+  ///
+  /// In ko, this message translates to:
+  /// **'{hours}시간 전'**
+  String timestampHoursAgo(int hours);
+
+  /// N일 전 타임스탬프
+  ///
+  /// In ko, this message translates to:
+  /// **'{days}일 전'**
+  String timestampDaysAgo(int days);
+
+  /// 기본 작성자명 (파싱 실패 시)
+  ///
+  /// In ko, this message translates to:
+  /// **'사용자'**
+  String get defaultAuthor;
 }
 
 class _AppLocalizationsDelegate

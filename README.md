@@ -114,7 +114,6 @@ lib/
 │   │   └── sharing_service.dart   # 외부 앱 공유 데이터 수신
 │   │
 │   └── utils/                      # 유틸리티
-│       └── url_formatter.dart     # URL 정리 및 플랫폼 타입 판별
 │
 ├── features/                       # 기능별 모듈 (Feature-First Architecture)
 │   ├── auth/                      # 인증 기능
