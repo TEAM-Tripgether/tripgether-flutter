@@ -40,12 +40,61 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
       appBar: CommonAppBar.forSubPage(
         title: '', // 타이틀 제거
         rightActions: [
-          // 편집 버튼
-          IconButton(
+          // 편집 버튼 (PopupMenu)
+          PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert_rounded),
-            onPressed: () {
-              // TODO: 편집 모드 구현
-              debugPrint('[SnsContentsListScreen] 편집 버튼 클릭');
+            color: AppColors.white,
+            offset: Offset(0, AppSpacing.xs), // 메뉴 위치를 아래로 이동
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+            ),
+            itemBuilder: (BuildContext context) {
+              return [
+                // 삭제 메뉴
+                PopupMenuItem<String>(
+                  value: 'delete',
+                  height: AppSpacing.xxl,
+                  padding: EdgeInsets.zero,
+                  child: Center(
+                    child: Text(
+                      l10n.delete,
+                      style: AppTextStyles.buttonMediumMedium14,
+                    ),
+                  ),
+                ),
+                // 구분선
+                PopupMenuItem<String>(
+                  enabled: false,
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                  height: AppSizes.dividerThin,
+                  child: Divider(
+                    color: AppColors.subColor2,
+                    thickness: AppSizes.dividerThin,
+                  ),
+                ),
+                // 오류제보 메뉴
+                PopupMenuItem<String>(
+                  value: 'reportError',
+                  height: AppSpacing.xxl,
+                  padding: EdgeInsets.zero,
+                  child: Center(
+                    child: Text(
+                      l10n.reportError,
+                      style: AppTextStyles.buttonMediumMedium14,
+                    ),
+                  ),
+                ),
+              ];
+            },
+            onSelected: (String value) {
+              switch (value) {
+                case 'delete':
+                  _handleDelete();
+                  break;
+                case 'reportError':
+                  _handleReportError();
+                  break;
+              }
             },
           ),
         ],
@@ -299,6 +348,64 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
           ),
         );
       },
+    );
+  }
+
+  /// 삭제 기능 핸들러
+  ///
+  /// SNS 콘텐츠 삭제 확인 다이얼로그 표시 후 삭제 수행
+  void _handleDelete() {
+    final l10n = AppLocalizations.of(context);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.delete),
+        content: const Text('선택한 콘텐츠를 삭제하시겠습니까?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.btnCancel),
+          ),
+          TextButton(
+            onPressed: () {
+              // TODO: 실제 삭제 로직 구현
+              Navigator.of(context).pop();
+              debugPrint('[SnsContentsListScreen] 삭제 실행');
+            },
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 오류 제보 기능 핸들러
+  ///
+  /// 오류 제보 화면으로 이동 또는 제보 다이얼로그 표시
+  void _handleReportError() {
+    final l10n = AppLocalizations.of(context);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.reportError),
+        content: const Text('오류를 제보하시겠습니까?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.btnCancel),
+          ),
+          TextButton(
+            onPressed: () {
+              // TODO: 실제 오류 제보 로직 구현
+              Navigator.of(context).pop();
+              debugPrint('[SnsContentsListScreen] 오류 제보 실행');
+            },
+            child: Text(l10n.reportError),
+          ),
+        ],
+      ),
     );
   }
 }

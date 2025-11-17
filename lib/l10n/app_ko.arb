@@ -92,6 +92,16 @@
     "description": "재시도 버튼"
   },
 
+  "delete": "삭제",
+  "@delete": {
+    "description": "삭제 버튼"
+  },
+
+  "reportError": "오류제보",
+  "@reportError": {
+    "description": "오류 제보 버튼"
+  },
+
   "trip": "여행",
   "@trip": {
     "description": "여행 단수형"

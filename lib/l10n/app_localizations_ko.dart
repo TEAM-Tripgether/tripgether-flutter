@@ -63,6 +63,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get retry => '다시 시도';
 
   @override
+  String get delete => '삭제';
+
+  @override
+  String get reportError => '오류제보';
+
+  @override
   String get trip => '여행';
 
   @override

@@ -206,6 +206,18 @@ abstract class AppLocalizations {
   /// **'다시 시도'**
   String get retry;
 
+  /// 삭제 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'삭제'**
+  String get delete;
+
+  /// 오류 제보 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'오류제보'**
+  String get reportError;
+
   /// 여행 단수형
   ///
   /// In ko, this message translates to:

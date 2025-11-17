@@ -64,6 +64,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
+  String get delete => 'Delete';
+
+  @override
+  String get reportError => 'Report Error';
+
+  @override
   String get trip => 'Trip';
 
   @override

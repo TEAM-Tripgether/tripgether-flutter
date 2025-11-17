@@ -92,6 +92,16 @@
     "description": "Retry button"
   },
 
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button"
+  },
+
+  "reportError": "Report Error",
+  "@reportError": {
+    "description": "Report error button"
+  },
+
   "trip": "Trip",
   "@trip": {
     "description": "Trip singular"
