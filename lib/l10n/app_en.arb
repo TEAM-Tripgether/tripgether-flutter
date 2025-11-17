@@ -102,6 +102,26 @@
     "description": "Report error button"
   },
 
+  "reportErrorTitle": "Report Error",
+  "@reportErrorTitle": {
+    "description": "Error report dialog title"
+  },
+
+  "reportErrorDescription": "Even small bug reports lead to big improvements.\nPlease feel free to share any inconveniences you experienced during content analysis",
+  "@reportErrorDescription": {
+    "description": "Error report dialog description"
+  },
+
+  "reportErrorHint": "Please describe the error",
+  "@reportErrorHint": {
+    "description": "Error report input field hint"
+  },
+
+  "reportErrorSubmit": "Submit",
+  "@reportErrorSubmit": {
+    "description": "Error report submit button"
+  },
+
   "trip": "Trip",
   "@trip": {
     "description": "Trip singular"

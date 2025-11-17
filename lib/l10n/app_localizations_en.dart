@@ -70,6 +70,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportError => 'Report Error';
 
   @override
+  String get reportErrorTitle => 'Report Error';
+
+  @override
+  String get reportErrorDescription =>
+      'Even small bug reports lead to big improvements.\nPlease feel free to share any inconveniences you experienced during content analysis';
+
+  @override
+  String get reportErrorHint => 'Please describe the error';
+
+  @override
+  String get reportErrorSubmit => 'Submit';
+
+  @override
   String get trip => 'Trip';
 
   @override

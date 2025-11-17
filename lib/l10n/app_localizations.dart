@@ -218,6 +218,30 @@ abstract class AppLocalizations {
   /// **'오류제보'**
   String get reportError;
 
+  /// 오류 제보 다이얼로그 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'오류 제보'**
+  String get reportErrorTitle;
+
+  /// 오류 제보 다이얼로그 설명
+  ///
+  /// In ko, this message translates to:
+  /// **'작은 오류 제보도 큰 개선으로 이어집니다.\n컨텐츠 분석 중 불편했던 점을 자유롭게 적어주세요'**
+  String get reportErrorDescription;
+
+  /// 오류 제보 입력 필드 힌트
+  ///
+  /// In ko, this message translates to:
+  /// **'오류 내용을 입력해주세요'**
+  String get reportErrorHint;
+
+  /// 오류 제보 제출 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'제보하기'**
+  String get reportErrorSubmit;
+
   /// 여행 단수형
   ///
   /// In ko, this message translates to:

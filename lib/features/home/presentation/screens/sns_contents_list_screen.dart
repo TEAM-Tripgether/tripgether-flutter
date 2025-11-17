@@ -8,9 +8,11 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cards/sns_content_card.dart';
+import '../../../../shared/widgets/common/app_snackbar.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/empty_state.dart';
 import '../../../../shared/widgets/common/chip_list.dart';
+import '../../../../shared/widgets/dialogs/common_dialog.dart';
 import '../providers/content_provider.dart';
 
 /// SNS 콘텐츠 리스트 화면
@@ -380,32 +382,59 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen> {
     );
   }
 
-  /// 오류 제보 기능 핸들러
+  /// 오류 제보 다이얼로그 표시
   ///
-  /// 오류 제보 화면으로 이동 또는 제보 다이얼로그 표시
+  /// CommonDialog.forInput을 사용한 텍스트 입력 다이얼로그 표시
+  /// Controller는 애니메이션 완료 후 안전하게 dispose
   void _handleReportError() {
     final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController();
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.reportError),
-        content: const Text('오류를 제보하시겠습니까?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.btnCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              // TODO: 실제 오류 제보 로직 구현
-              Navigator.of(context).pop();
-              debugPrint('[SnsContentsListScreen] 오류 제보 실행');
-            },
-            child: Text(l10n.reportError),
-          ),
-        ],
+      builder: (_) => CommonDialog.forInput(
+        title: l10n.reportErrorTitle,
+        subtitle: l10n.reportErrorDescription,
+        inputHint: l10n.reportErrorHint,
+        controller: controller,
+        submitText: l10n.reportErrorSubmit,
+        cancelText: l10n.btnCancel,
+        onSubmit: _submitErrorReport,
+        onCancel: () {}, // autoDismiss가 처리
       ),
-    );
+    ).then((_) {
+      // 애니메이션 완료 후 dispose (다이얼로그 닫힘 애니메이션 대기)
+      Future.delayed(const Duration(milliseconds: 300), () {
+        controller.dispose();
+      });
+    });
+  }
+
+  /// 오류 제보 제출 처리
+  ///
+  /// **로직 흐름**:
+  /// 1. 입력값 검증 (빈 문자열 체크)
+  /// 2. 빈 입력 → 경고 메시지 표시 후 종료 (다이얼로그 열린 상태 유지)
+  /// 3. 정상 입력 → 디버그 출력 + 성공 메시지
+  ///
+  /// **autoDismiss: true 동작**:
+  /// - onSubmit 콜백이 완료되면 CommonDialog가 자동으로 닫힘
+  /// - 빈 입력일 때는 return으로 조기 종료하여 다이얼로그 유지
+  void _submitErrorReport(String text) {
+    final trimmedText = text.trim();
+
+    // 빈 입력 검증
+    if (trimmedText.isEmpty) {
+      AppSnackBar.showInfo(context, '오류 내용을 입력해주세요.');
+      return; // return만 하면 다이얼로그 유지됨
+    }
+
+    // 디버그 출력 (실제 API 호출 전)
+    debugPrint('[SnsContentsListScreen] 오류 제보: $trimmedText');
+
+    // 성공 메시지 표시
+    AppSnackBar.showInfo(context, '소중한 제보 감사합니다.');
+
+    // Navigator.pop() 불필요 - autoDismiss: true가 자동 처리
   }
 }

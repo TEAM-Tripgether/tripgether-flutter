@@ -69,6 +69,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get reportError => '오류제보';
 
   @override
+  String get reportErrorTitle => '오류 제보';
+
+  @override
+  String get reportErrorDescription =>
+      '작은 오류 제보도 큰 개선으로 이어집니다.\n컨텐츠 분석 중 불편했던 점을 자유롭게 적어주세요';
+
+  @override
+  String get reportErrorHint => '오류 내용을 입력해주세요';
+
+  @override
+  String get reportErrorSubmit => '제보하기';
+
+  @override
   String get trip => '여행';
 
   @override
