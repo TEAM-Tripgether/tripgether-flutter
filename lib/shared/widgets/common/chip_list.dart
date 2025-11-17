@@ -177,6 +177,9 @@ class SelectableChipList extends StatelessWidget {
   /// 좌우 외부 패딩
   final double? horizontalPadding;
 
+  /// 외곽선 표시 여부 (기본값: true)
+  final bool showBorder;
+
   const SelectableChipList({
     super.key,
     required this.items,
@@ -193,6 +196,7 @@ class SelectableChipList extends StatelessWidget {
     this.chipPadding,
     this.borderRadius,
     this.horizontalPadding,
+    this.showBorder = true,
   });
 
   @override
@@ -241,15 +245,19 @@ class SelectableChipList extends StatelessWidget {
         backgroundColor: isSelected
             ? (selectedBackgroundColor ?? AppColors.mainColor)
             : (unselectedBackgroundColor ??
-                  AppColors.subColor2.withValues(alpha: 0.95)),
+                  AppColors.subColor2.withValues(alpha: 0.2)),
+        elevation: 0, // 그림자 제거로 더 깔끔한 외관
+        shadowColor: Colors.transparent, // 그림자 색상 투명하게
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.large),
-          side: BorderSide(
-            color: isSelected
-                ? (selectedBackgroundColor ?? AppColors.mainColor)
-                : AppColors.subColor2.withValues(alpha: 0.9),
-            width: 1,
-          ),
+          side: showBorder
+              ? BorderSide(
+                  color: isSelected
+                      ? (selectedBackgroundColor ?? AppColors.mainColor)
+                      : AppColors.subColor2.withValues(alpha: 0.9),
+                  width: 1,
+                )
+              : BorderSide.none,
         ),
         padding:
             chipPadding ??

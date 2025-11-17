@@ -36,6 +36,7 @@ class MyPageScreen extends ConsumerWidget {
         title: l10n.navMyPage,
         backgroundColor: AppColors.white, // 다른 페이지와 동일한 흰색 배경
         showMenuButton: false, // 마이페이지에서는 메뉴 버튼 제거 (개인 공간)
+        showBackButton: false, // 뒤로가기 버튼도 제거 (바텀 네비게이션으로 이동)
         showNotificationIcon: true, // 개인 알림 확인을 위해 알림 아이콘 유지
         onNotificationPressed: () {
           debugPrint('마이페이지 알림 버튼 클릭');
