@@ -213,6 +213,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSavedPlacesYet => 'No saved places yet.';
 
   @override
+  String get noCategoryContent => 'No content in this category';
+
+  @override
+  String get selectOtherCategory => 'Try selecting a different category';
+
+  @override
   String get filterAll => 'All';
 
   @override

@@ -494,6 +494,18 @@ abstract class AppLocalizations {
   /// **'아직 저장한 장소가 없습니다.'**
   String get noSavedPlacesYet;
 
+  /// 카테고리 필터링 후 콘텐츠가 없을 때 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'해당 카테고리의 콘텐츠가 없습니다'**
+  String get noCategoryContent;
+
+  /// 카테고리 필터링 후 콘텐츠가 없을 때 안내 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 카테고리를 선택해보세요'**
+  String get selectOtherCategory;
+
   /// 전체 필터 옵션
   ///
   /// In ko, this message translates to:

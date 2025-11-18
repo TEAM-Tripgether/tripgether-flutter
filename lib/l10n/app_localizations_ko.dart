@@ -212,6 +212,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noSavedPlacesYet => '아직 저장한 장소가 없습니다.';
 
   @override
+  String get noCategoryContent => '해당 카테고리의 콘텐츠가 없습니다';
+
+  @override
+  String get selectOtherCategory => '다른 카테고리를 선택해보세요';
+
+  @override
   String get filterAll => '전체';
 
   @override
