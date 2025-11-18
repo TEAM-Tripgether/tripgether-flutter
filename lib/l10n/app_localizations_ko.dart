@@ -63,6 +63,25 @@ class AppLocalizationsKo extends AppLocalizations {
   String get retry => '다시 시도';
 
   @override
+  String get delete => '삭제';
+
+  @override
+  String get reportError => '오류제보';
+
+  @override
+  String get reportErrorTitle => '오류 제보';
+
+  @override
+  String get reportErrorDescription =>
+      '작은 오류 제보도 큰 개선으로 이어집니다.\n컨텐츠 분석 중 불편했던 점을 자유롭게 적어주세요';
+
+  @override
+  String get reportErrorHint => '오류 내용을 입력해주세요';
+
+  @override
+  String get reportErrorSubmit => '제보하기';
+
+  @override
   String get trip => '여행';
 
   @override
@@ -167,7 +186,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get clearInput => '입력 내용 지우기';
 
   @override
-  String get recentSnsContent => '최근 SNS에서 본 콘텐츠';
+  String get recentSnsContent => '최근 SNS에서 본 컨텐츠';
+
+  @override
+  String get recentViewedContent => '최근 본 컨텐츠';
 
   @override
   String get recentSavedPlaces => '최근 저장한 장소';
@@ -188,6 +210,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get noSavedPlacesYet => '아직 저장한 장소가 없습니다.';
+
+  @override
+  String get noCategoryContent => '해당 카테고리의 콘텐츠가 없습니다';
+
+  @override
+  String get selectOtherCategory => '다른 카테고리를 선택해보세요';
 
   @override
   String get filterAll => '전체';

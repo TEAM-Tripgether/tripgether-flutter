@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../animations/page_transitions.dart';
+import 'app_colors.dart';
+import 'app_text_styles.dart';
 
 /// Tripgether 앱의 테마 설정
 ///
@@ -24,8 +26,11 @@ class AppTheme {
       fontFamily: 'Pretendard-Regular',
 
       /// 시스템 UI 오버레이 (상태바 스타일)
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
+        titleTextStyle: AppTextStyles.titleSemiBold18.copyWith(
+          color: AppColors.textColor1,
+        ),
       ),
 
       /// 페이지 전환 애니메이션

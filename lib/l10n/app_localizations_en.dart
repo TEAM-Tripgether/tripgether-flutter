@@ -64,6 +64,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
+  String get delete => 'Delete';
+
+  @override
+  String get reportError => 'Report Error';
+
+  @override
+  String get reportErrorTitle => 'Report Error';
+
+  @override
+  String get reportErrorDescription =>
+      'Even small bug reports lead to big improvements.\nPlease feel free to share any inconveniences you experienced during content analysis';
+
+  @override
+  String get reportErrorHint => 'Please describe the error';
+
+  @override
+  String get reportErrorSubmit => 'Submit';
+
+  @override
   String get trip => 'Trip';
 
   @override
@@ -171,6 +190,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentSnsContent => 'Recent SNS Content';
 
   @override
+  String get recentViewedContent => 'Recently Viewed';
+
+  @override
   String get recentSavedPlaces => 'Recently Saved Places';
 
   @override
@@ -189,6 +211,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSavedPlacesYet => 'No saved places yet.';
+
+  @override
+  String get noCategoryContent => 'No content in this category';
+
+  @override
+  String get selectOtherCategory => 'Try selecting a different category';
 
   @override
   String get filterAll => 'All';

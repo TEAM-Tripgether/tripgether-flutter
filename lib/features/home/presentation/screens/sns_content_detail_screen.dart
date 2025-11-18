@@ -180,6 +180,7 @@ class SnsContentDetailScreen extends StatelessWidget {
   /// AI 콘텐츠 요약 섹션
   Widget _buildContentDescription(BuildContext context, ContentModel content) {
     return Container(
+      width: double.infinity, // 전체 너비 차지
       padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
@@ -190,7 +191,6 @@ class SnsContentDetailScreen extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min, // 콘텐츠 크기에 맞춤
         children: [
           // AI 아이콘 + "AI 콘텐츠 요약" 헤더
           Container(
@@ -220,18 +220,21 @@ class SnsContentDetailScreen extends StatelessWidget {
           ),
 
           AppSpacing.verticalSpaceSMD, // 10
-          // 제목 텍스트 (임시)
-          Text(
-            '개당 1200원의 가성비 초밥',
-            style: AppTextStyles.summaryBold16.copyWith(
-              color: AppColors.mainColor,
+          // 제목 텍스트 (title 또는 caption의 첫 줄)
+          if (content.title != null && content.title!.isNotEmpty)
+            Text(
+              content.title!,
+              style: AppTextStyles.summaryBold16.copyWith(
+                color: AppColors.mainColor,
+              ),
             ),
-          ),
 
-          AppSpacing.verticalSpaceSMD, // 10
-          // 본문 설명 텍스트 (임시)
+          // title이 있을 경우에만 간격 추가
+          if (content.title != null && content.title!.isNotEmpty)
+            AppSpacing.verticalSpaceSMD, // 10
+          // 본문 설명 텍스트 (summary 또는 caption)
           Text(
-            '샷포로 3대 스시 맛집 \'토리톤\' — 북해도 살았던 친한 동생이 추천해준 개당 1200원대의 가성비 초밥 맛집으로 두툼하고 신선한 네타에 비해 가격이 합리적인 가성비가 강점입니다.',
+            content.summary ?? content.caption ?? '콘텐츠 요약이 없습니다.',
             style: AppTextStyles.bodyRegular14,
           ),
         ],

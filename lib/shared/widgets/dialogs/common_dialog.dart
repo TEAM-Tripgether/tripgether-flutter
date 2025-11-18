@@ -100,6 +100,10 @@ class CommonDialog extends StatelessWidget {
   /// 기본값: true
   final bool autoDismiss;
 
+  /// 커스텀 콘텐츠 위젯
+  /// 설명 텍스트 아래에 추가 위젯 삽입 (예: TextField)
+  final Widget? customContent;
+
   const CommonDialog({
     super.key,
     required this.title,
@@ -114,6 +118,7 @@ class CommonDialog extends StatelessWidget {
     this.leftButtonColor,
     this.leftButtonTextColor,
     this.autoDismiss = true,
+    this.customContent,
   });
 
   /// 삭제 확인 다이얼로그 생성
@@ -275,6 +280,81 @@ class CommonDialog extends StatelessWidget {
     );
   }
 
+  /// 텍스트 입력 다이얼로그 생성
+  ///
+  /// **특징**:
+  /// - TextField를 포함한 입력 다이얼로그
+  /// - 오른쪽 버튼: 메인 컬러 제출 버튼
+  /// - 왼쪽 버튼: 회색 취소 버튼
+  /// - autoDismiss: true로 자동 닫힘 처리
+  ///
+  /// **사용 예시**:
+  /// ```dart
+  /// final controller = TextEditingController();
+  /// showDialog(
+  ///   context: context,
+  ///   builder: (_) => CommonDialog.forInput(
+  ///     title: '오류 제보',
+  ///     subtitle: '작은 오류 제보도 큰 개선으로 이어집니다.\n자유롭게 적어주세요',
+  ///     inputHint: '오류 내용을 입력해주세요',
+  ///     controller: controller,
+  ///     onSubmit: (text) => _submitReport(text),
+  ///     onCancel: () {},  // autoDismiss가 처리
+  ///   ),
+  /// ).then((_) => controller.dispose());
+  /// ```
+  factory CommonDialog.forInput({
+    required String title,
+    required String subtitle,
+    required String inputHint,
+    required TextEditingController controller,
+    required ValueChanged<String> onSubmit,
+    VoidCallback? onCancel,
+    String submitText = '제출',
+    String cancelText = '취소',
+    int maxLines = 8,
+  }) {
+    return CommonDialog(
+      title: title,
+      description: '', // 빈 문자열로 설정
+      subtitle: subtitle,
+      leftButtonText: cancelText,
+      rightButtonText: submitText,
+      onLeftPressed: onCancel,
+      onRightPressed: () => onSubmit(controller.text),
+      rightButtonColor: AppColors.mainColor,
+      rightButtonTextColor: AppColors.white,
+      autoDismiss: true, // 자동으로 다이얼로그 닫기
+      customContent: Container(
+        margin: EdgeInsets.only(top: AppSpacing.lg),
+        padding: EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppColors.subColor2.withValues(alpha: 0.6),
+            width: AppSizes.borderMedium,
+          ),
+          borderRadius: AppRadius.allMedium,
+        ),
+        child: TextField(
+          controller: controller,
+          autofocus: true,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (text) => onSubmit(text),
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: inputHint,
+            hintStyle: AppTextStyles.bodyMedium14.copyWith(
+              color: AppColors.subColor2,
+            ),
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.zero,
+          ),
+          style: AppTextStyles.bodyMedium14,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -304,17 +384,22 @@ class CommonDialog extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
 
-            AppSpacing.verticalSpaceXXL, // 24px
-            // 메인 설명
-            Text(
-              description,
-              style: AppTextStyles.bodyMedium14,
-              textAlign: TextAlign.center,
-            ),
+            // 메인 설명 (선택 사항)
+            if (description.isNotEmpty) ...[
+              AppSpacing.verticalSpaceXXL, // 24px
+              Text(
+                description,
+                style: AppTextStyles.bodyMedium14,
+                textAlign: TextAlign.center,
+              ),
+            ],
 
             // 서브 설명 (선택 사항)
             if (subtitle != null) ...[
-              AppSpacing.verticalSpaceSM, // 8px
+              if (description.isEmpty)
+                AppSpacing.verticalSpaceXXL, // 24px (description 없을 때)
+              if (description.isNotEmpty)
+                AppSpacing.verticalSpaceSM, // 8px (description 있을 때)
               Text(
                 subtitle!,
                 style: AppTextStyles.bodyMedium12.copyWith(
@@ -323,6 +408,9 @@ class CommonDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ],
+
+            // 커스텀 콘텐츠 (선택 사항)
+            if (customContent != null) customContent!,
 
             AppSpacing.verticalSpaceXXL, // 24px
             // 버튼 행
@@ -422,7 +510,7 @@ class CommonDialog extends StatelessWidget {
         shadowColor: Colors.transparent,
         padding: EdgeInsets.symmetric(vertical: 14.h),
         shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.allMedium, // 8px
+          borderRadius: AppRadius.allSmall, // 4px
         ),
       ),
       child: Text(

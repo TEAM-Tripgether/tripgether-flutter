@@ -92,6 +92,36 @@
     "description": "Retry button"
   },
 
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button"
+  },
+
+  "reportError": "Report Error",
+  "@reportError": {
+    "description": "Report error button"
+  },
+
+  "reportErrorTitle": "Report Error",
+  "@reportErrorTitle": {
+    "description": "Error report dialog title"
+  },
+
+  "reportErrorDescription": "Even small bug reports lead to big improvements.\nPlease feel free to share any inconveniences you experienced during content analysis",
+  "@reportErrorDescription": {
+    "description": "Error report dialog description"
+  },
+
+  "reportErrorHint": "Please describe the error",
+  "@reportErrorHint": {
+    "description": "Error report input field hint"
+  },
+
+  "reportErrorSubmit": "Submit",
+  "@reportErrorSubmit": {
+    "description": "Error report submit button"
+  },
+
   "trip": "Trip",
   "@trip": {
     "description": "Trip singular"
@@ -270,7 +300,12 @@
 
   "recentSnsContent": "Recent SNS Content",
   "@recentSnsContent": {
-    "description": "SNS content section title"
+    "description": "Home screen SNS content section title"
+  },
+
+  "recentViewedContent": "Recently Viewed",
+  "@recentViewedContent": {
+    "description": "SNS content list screen title"
   },
 
   "recentSavedPlaces": "Recently Saved Places",
@@ -307,6 +342,16 @@
   "noSavedPlacesYet": "No saved places yet.",
   "@noSavedPlacesYet": {
     "description": "Message when there are no saved places"
+  },
+
+  "noCategoryContent": "No content in this category",
+  "@noCategoryContent": {
+    "description": "Title when there is no content after category filtering"
+  },
+
+  "selectOtherCategory": "Try selecting a different category",
+  "@selectOtherCategory": {
+    "description": "Message when there is no content after category filtering"
   },
 
   "filterAll": "All",
