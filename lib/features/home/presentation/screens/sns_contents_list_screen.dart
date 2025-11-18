@@ -274,10 +274,10 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
               child: EmptyStates.noData(
                 title: _selectedCategory == '전체'
                     ? l10n.noSnsContentYet
-                    : '해당 카테고리의 콘텐츠가 없습니다',
+                    : l10n.noCategoryContent,
                 message: _selectedCategory == '전체'
                     ? l10n.noSnsContentMessage
-                    : '다른 카테고리를 선택해보세요',
+                    : l10n.selectOtherCategory,
               ),
             ),
           );

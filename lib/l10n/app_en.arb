@@ -344,6 +344,16 @@
     "description": "Message when there are no saved places"
   },
 
+  "noCategoryContent": "No content in this category",
+  "@noCategoryContent": {
+    "description": "Title when there is no content after category filtering"
+  },
+
+  "selectOtherCategory": "Try selecting a different category",
+  "@selectOtherCategory": {
+    "description": "Message when there is no content after category filtering"
+  },
+
   "filterAll": "All",
   "@filterAll": {
     "description": "All filter option"

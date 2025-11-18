@@ -344,6 +344,16 @@
     "description": "저장한 장소가 없을 때 표시되는 메시지"
   },
 
+  "noCategoryContent": "해당 카테고리의 콘텐츠가 없습니다",
+  "@noCategoryContent": {
+    "description": "카테고리 필터링 후 콘텐츠가 없을 때 제목"
+  },
+
+  "selectOtherCategory": "다른 카테고리를 선택해보세요",
+  "@selectOtherCategory": {
+    "description": "카테고리 필터링 후 콘텐츠가 없을 때 안내 메시지"
+  },
+
   "filterAll": "전체",
   "@filterAll": {
     "description": "전체 필터 옵션"
