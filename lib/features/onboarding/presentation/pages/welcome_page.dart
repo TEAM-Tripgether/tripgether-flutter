@@ -45,13 +45,15 @@ class WelcomePage extends ConsumerWidget {
           stops: const [0.0, 0.5, 0.85], // 50% : 35% : 15% 비율
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.xxxl,
-        ), // 32px (OnboardingLayout과 동일)
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      child: SafeArea(
+        top: false, // 상단은 SafeArea 제외 (전체 화면 그라데이션)
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.xxxl,
+          ), // 32px (OnboardingLayout과 동일)
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
             // 상단 유연한 여백 (중앙 배치를 위한 균형)
             const Spacer(flex: 2),
 
@@ -117,7 +119,8 @@ class WelcomePage extends ConsumerWidget {
 
             // 하단 여백 (OnboardingLayout과 동일한 80px)
             AppSpacing.verticalSpace80,
-          ],
+            ],
+          ),
         ),
       ),
     );

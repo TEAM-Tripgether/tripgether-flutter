@@ -82,12 +82,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _isGoogleLoading = true);
 
     // LoginProvider를 통한 구글 로그인
-    final (success, isFirstLogin) = await ref
+    final (success, requiresOnboarding) = await ref
         .read(loginNotifierProvider.notifier)
         .loginWithGoogle();
 
     debugPrint('[LoginScreen] 구글 로그인 결과: ${success ? "성공 ✅" : "실패 ❌"}');
-    debugPrint('[LoginScreen] 최초 로그인 여부: $isFirstLogin');
+    debugPrint('[LoginScreen] 온보딩 필요 여부: $requiresOnboarding');
 
     // 로딩 종료
     if (mounted) {
@@ -96,16 +96,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     // 로그인 성공 시 온보딩 또는 홈으로 이동
     if (success && context.mounted) {
-      if (isFirstLogin) {
-        // 최초 로그인: 온보딩 페이지로 이동
+      if (requiresOnboarding) {
+        // 온보딩 필요: 온보딩 페이지로 이동
         debugPrint(
-          '[LoginScreen] 🎯 온보딩 페이지로 이동 중... (${AppRoutes.onboarding})',
+          '[LoginScreen] 🎯 온보딩 필요 → 온보딩 화면으로 이동 (${AppRoutes.onboarding})',
         );
         context.go(AppRoutes.onboarding);
         debugPrint('[LoginScreen] ✅ 온보딩 화면 전환 완료');
       } else {
-        // 기존 사용자: 홈으로 이동
-        debugPrint('[LoginScreen] 🏠 홈 화면으로 이동 중... (${AppRoutes.home})');
+        // 온보딩 완료: 홈으로 이동
+        debugPrint('[LoginScreen] 🏠 온보딩 완료 → 홈 화면으로 이동 (${AppRoutes.home})');
         context.go(AppRoutes.home);
         debugPrint('[LoginScreen] ✅ 홈 화면 전환 완료');
       }

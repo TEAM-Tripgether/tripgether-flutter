@@ -227,14 +227,23 @@ class AuthApiService {
     // 실제로는 백엔드에서 DB 조회 후 결정
     final isFirstLogin = request.email?.contains('first') ?? false;
 
+    // 온보딩 필요 여부와 현재 단계 (Mock 데이터)
+    // 실제로는 백엔드 DB에서 회원의 onboardingStatus 조회
+    final requiresOnboarding = isFirstLogin; // 첫 로그인이면 온보딩 필요
+    final onboardingStep = isFirstLogin ? 'TERMS' : 'COMPLETED';
+
     final response = AuthResponse(
       accessToken: mockAccessToken,
       refreshToken: mockRefreshToken,
       isFirstLogin: isFirstLogin,
+      requiresOnboarding: requiresOnboarding,
+      onboardingStep: onboardingStep,
     );
 
     debugPrint('[AuthApiService - Mock] ✅ Mock 로그인 성공');
     debugPrint('[AuthApiService - Mock] isFirstLogin: $isFirstLogin');
+    debugPrint('[AuthApiService - Mock] requiresOnboarding: $requiresOnboarding');
+    debugPrint('[AuthApiService - Mock] onboardingStep: $onboardingStep');
 
     return response;
   }
@@ -258,6 +267,8 @@ class AuthApiService {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
       isFirstLogin: false, // 재발급은 기존 사용자이므로 항상 false
+      requiresOnboarding: false, // 재발급 시점에는 이미 온보딩 완료
+      onboardingStep: 'COMPLETED',
     );
 
     debugPrint('[AuthApiService - Mock] ✅ Mock 토큰 재발급 성공');

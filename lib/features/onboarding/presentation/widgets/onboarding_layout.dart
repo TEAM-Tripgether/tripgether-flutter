@@ -157,7 +157,7 @@ class OnboardingLayout extends StatelessWidget {
             headerSection,
             Expanded(child: content),
             button,
-            AppSpacing.verticalSpace90,
+            AppSpacing.verticalSpace72,
           ],
         ),
       );

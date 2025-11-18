@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../shared/widgets/inputs/onboarding_text_field.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../providers/onboarding_notifier.dart';
 import '../widgets/onboarding_layout.dart';
 
 /// 닉네임 설정 페이지 (STEP 2/5)
@@ -18,11 +20,13 @@ import '../widgets/onboarding_layout.dart';
 /// - welcome_page에서 저장된 닉네임으로 환영 메시지 표시
 class NicknamePage extends ConsumerStatefulWidget {
   final VoidCallback onNext;
+  final void Function(String currentStep) onStepChange;
   final PageController pageController;
 
   const NicknamePage({
     super.key,
     required this.onNext,
+    required this.onStepChange,
     required this.pageController,
   });
 
@@ -32,6 +36,7 @@ class NicknamePage extends ConsumerStatefulWidget {
 
 class _NicknamePageState extends ConsumerState<NicknamePage> {
   late final TextEditingController _controller;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -50,17 +55,67 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
     super.dispose();
   }
 
-  void _handleNext() {
+  Future<void> _handleNext() async {
     // 1. 로컬 검증
-    if (_controller.text.length >= 2 && _controller.text.length <= 10) {
-      // 2. 키보드 내리기
-      FocusScope.of(context).unfocus();
+    if (_controller.text.length < 2 || _controller.text.length > 10) return;
+    if (_isLoading) return;
 
-      // 3. onboardingProvider에 닉네임 저장
+    // 2. 키보드 내리기
+    FocusScope.of(context).unfocus();
+
+    setState(() => _isLoading = true);
+
+    try {
+      // 3. onboardingProvider에 닉네임 저장 (로컬)
       ref.read(onboardingProvider.notifier).updateNickname(_controller.text);
 
-      // 4. 다음 페이지로 이동
-      widget.onNext();
+      // 4. API 호출
+      final response = await ref
+          .read(onboardingNotifierProvider.notifier)
+          .updateName(name: _controller.text);
+
+      if (!mounted) return;
+
+      // 5. API 응답 성공 시 currentStep에 따라 페이지 이동
+      if (response != null) {
+        debugPrint('[NicknamePage] ✅ 닉네임 설정 API 호출 성공 → 다음 단계: ${response.currentStep}');
+        widget.onStepChange(response.currentStep);
+      } else {
+        // API 호출 실패 - 사용자 친화적 에러 메시지
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '닉네임 설정 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+                style: AppTextStyles.bodyMedium14.copyWith(color: AppColors.white),
+              ),
+              backgroundColor: AppColors.error,
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.floating,
+              margin: EdgeInsets.all(AppSpacing.lg),
+              action: SnackBarAction(
+                label: '확인',
+                textColor: AppColors.white,
+                onPressed: () {},
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('[NicknamePage] ❌ 닉네임 설정 API 호출 실패: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('오류가 발생했습니다: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -103,7 +158,8 @@ class _NicknamePageState extends ConsumerState<NicknamePage> {
         ),
         button: PrimaryButton(
           text: l10n.btnContinue,
-          onPressed: isValid ? _handleNext : null,
+          onPressed: isValid && !_isLoading ? _handleNext : null,
+          isLoading: _isLoading,
           isFullWidth: true,
           style: ButtonStyle(
             shape: WidgetStateProperty.all(
