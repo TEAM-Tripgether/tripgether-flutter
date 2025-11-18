@@ -6,9 +6,14 @@ part of 'interest_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dioHash() => r'c6ee2ec553fee96b5d4641acbdddddbee3196d92';
+String _$dioHash() => r'f1ca3a9c8fd04c526530e2a3a0d4598500f8bf0c';
 
-/// Dio 인스턴스 Provider
+/// Dio 인스턴스 Provider (JWT 토큰 자동 추가)
+///
+/// **특징**:
+/// - Interceptor를 통해 모든 요청에 JWT 토큰 자동 추가
+/// - FlutterSecureStorage에서 access_token 읽기
+/// - 토큰이 없으면 요청 그대로 진행 (인증 불필요한 API 대응)
 ///
 /// Copied from [dio].
 @ProviderFor(dio)
@@ -26,7 +31,7 @@ final dioProvider = AutoDisposeProvider<Dio>.internal(
 // ignore: unused_element
 typedef DioRef = AutoDisposeProviderRef<Dio>;
 String _$interestApiServiceHash() =>
-    r'33f6223939890d279de93a4b4939f6d41993b3dd';
+    r'd7d7e5013e7a6cb17cc3405630ad4a5c8e7a17ea';
 
 /// Interest API Service Provider
 ///
@@ -46,7 +51,7 @@ final interestApiServiceProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef InterestApiServiceRef = AutoDisposeProviderRef<InterestApiService>;
-String _$interestsHash() => r'8c551d92613cf4060ac107f30d4546d6456d6be1';
+String _$interestsHash() => r'615b39fb7118eaca8cdedbb153a5d3c2e7a88e63';
 
 /// 전체 관심사 목록 조회 Provider
 ///
@@ -73,7 +78,7 @@ final interestsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef InterestsRef = AutoDisposeFutureProviderRef<GetAllInterestsResponse>;
-String _$interestByIdHash() => r'd1f1e9fadeda0ec81bd6b71832a82a96511b6486';
+String _$interestByIdHash() => r'19e64bc327a205f2c05893fa20daac44efe32038';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -240,7 +245,7 @@ class _InterestByIdProviderElement
 }
 
 String _$interestsByCategoryHash() =>
-    r'1c8a00de48be3296c44fc55866d79052afc93353';
+    r'392b9667a876260af28c8d18055806f0ab9e2bea';
 
 /// 특정 카테고리 관심사 조회 Provider
 ///

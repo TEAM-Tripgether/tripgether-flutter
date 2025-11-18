@@ -1,18 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../data/models/interest_response.dart';
 
 /// 관심사 API 서비스
 ///
 /// **Mock 모드**: 하드코딩된 데이터 반환
-/// **Production 모드**: 서버 API 호출 (JWT 인증)
+/// **Production 모드**: 서버 API 호출
+///
+/// **인증**: Dio Interceptor가 자동으로 JWT 토큰 추가 (interest_provider.dart)
 class InterestApiService {
   final Dio _dio;
-  final FlutterSecureStorage _secureStorage;
 
-  InterestApiService(this._dio)
-      : _secureStorage = const FlutterSecureStorage();
+  InterestApiService(this._dio);
 
   /// 전체 관심사 목록 조회
   ///
@@ -21,7 +20,7 @@ class InterestApiService {
   /// **Mock 모드**: 하드코딩된 14개 카테고리 데이터 반환
   /// **Production 모드**: 서버 API 호출 (Redis 캐싱 적용)
   ///
-  /// **인증**: JWT Bearer Token 필요
+  /// **인증**: Dio Interceptor가 자동으로 JWT Bearer Token 추가
   Future<GetAllInterestsResponse> getAllInterests() async {
     // USE_MOCK_API 환경 변수 활용 (기존 프로젝트 방식과 통일)
     const useMockApi = bool.fromEnvironment('USE_MOCK_API', defaultValue: true);
@@ -31,25 +30,10 @@ class InterestApiService {
     }
 
     try {
-      // 1. FlutterSecureStorage에서 JWT 토큰 읽기
-      // ⚠️ 주의: 키 이름은 user_provider.dart의 _accessTokenKey와 동일해야 함 ('access_token')
-      final accessToken = await _secureStorage.read(key: 'access_token');
+      debugPrint('[InterestApiService] 📡 전체 관심사 조회 API 호출');
 
-      // 2. 토큰 없으면 Mock 데이터 반환
-      if (accessToken == null || accessToken.isEmpty) {
-        debugPrint('[InterestApiService] ⚠️ 토큰 없음 → Mock 데이터 사용');
-        return _mockGetAllInterests();
-      }
-
-      debugPrint('[InterestApiService] 📡 전체 관심사 조회 API 호출 (JWT 인증)');
-
-      // 3. Authorization 헤더와 함께 API 호출
-      final response = await _dio.get(
-        '/api/interests',
-        options: Options(
-          headers: {'Authorization': 'Bearer $accessToken'},
-        ),
-      );
+      // Dio Interceptor가 자동으로 Authorization 헤더 추가
+      final response = await _dio.get('/api/interests');
 
       debugPrint('[InterestApiService] ✅ 전체 관심사 조회 성공');
 
