@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:tripgether/core/errors/api_error.dart';
 import '../../../../core/models/content_model.dart';
 import 'content_data_source.dart';
 
@@ -40,8 +42,27 @@ class ApiContentDataSource implements ContentDataSource {
       } else {
         throw Exception('Failed to load contents: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        debugPrint('[ApiContentDataSource] ❌ 서버 응답 전체:');
+        debugPrint("Response body : '${e.response!.toString()}'");
+
+        debugPrint('  - Status Code: ${e.response!.statusCode}');
+        debugPrint('  - Status Message: ${e.response!.statusMessage}');
+        debugPrint('  - Response Data: ${e.response!.data}');
+        debugPrint('  - Headers: ${e.response!.headers}');
+        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        final apiError = ApiError.fromDioError(e.response!.data);
+        debugPrint('[ApiContentDataSource] ❌ 에러 코드: ${apiError.code}');
+        debugPrint('[ApiContentDataSource] ❌ 에러 메시지: ${apiError.message}');
+        throw Exception(apiError.message);
+      } else {
+        debugPrint('[ApiContentDataSource] ❌ 네트워크 오류: ${e.message}');
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      debugPrint('[ApiContentDataSource] ❌ 예외 발생: $e');
+      rethrow;
     }
   }
 
@@ -58,8 +79,27 @@ class ApiContentDataSource implements ContentDataSource {
       } else {
         throw Exception('Failed to load content: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        debugPrint('[ApiContentDataSource] ❌ 서버 응답 전체:');
+        debugPrint("Response body : '${e.response!.toString()}'");
+
+        debugPrint('  - Status Code: ${e.response!.statusCode}');
+        debugPrint('  - Status Message: ${e.response!.statusMessage}');
+        debugPrint('  - Response Data: ${e.response!.data}');
+        debugPrint('  - Headers: ${e.response!.headers}');
+        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        final apiError = ApiError.fromDioError(e.response!.data);
+        debugPrint('[ApiContentDataSource] ❌ 에러 코드: ${apiError.code}');
+        debugPrint('[ApiContentDataSource] ❌ 에러 메시지: ${apiError.message}');
+        throw Exception(apiError.message);
+      } else {
+        debugPrint('[ApiContentDataSource] ❌ 네트워크 오류: ${e.message}');
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      debugPrint('[ApiContentDataSource] ❌ 예외 발생: $e');
+      rethrow;
     }
   }
 
@@ -80,8 +120,27 @@ class ApiContentDataSource implements ContentDataSource {
       } else {
         throw Exception('Failed to add content: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        debugPrint('[ApiContentDataSource] ❌ 서버 응답 전체:');
+        debugPrint("Response body : '${e.response!.toString()}'");
+
+        debugPrint('  - Status Code: ${e.response!.statusCode}');
+        debugPrint('  - Status Message: ${e.response!.statusMessage}');
+        debugPrint('  - Response Data: ${e.response!.data}');
+        debugPrint('  - Headers: ${e.response!.headers}');
+        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        final apiError = ApiError.fromDioError(e.response!.data);
+        debugPrint('[ApiContentDataSource] ❌ 에러 코드: ${apiError.code}');
+        debugPrint('[ApiContentDataSource] ❌ 에러 메시지: ${apiError.message}');
+        throw Exception(apiError.message);
+      } else {
+        debugPrint('[ApiContentDataSource] ❌ 네트워크 오류: ${e.message}');
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      debugPrint('[ApiContentDataSource] ❌ 예외 발생: $e');
+      rethrow;
     }
   }
 
@@ -102,8 +161,27 @@ class ApiContentDataSource implements ContentDataSource {
       } else {
         throw Exception('Failed to update content: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        debugPrint('[ApiContentDataSource] ❌ 서버 응답 전체:');
+        debugPrint("Response body : '${e.response!.toString()}'");
+
+        debugPrint('  - Status Code: ${e.response!.statusCode}');
+        debugPrint('  - Status Message: ${e.response!.statusMessage}');
+        debugPrint('  - Response Data: ${e.response!.data}');
+        debugPrint('  - Headers: ${e.response!.headers}');
+        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        final apiError = ApiError.fromDioError(e.response!.data);
+        debugPrint('[ApiContentDataSource] ❌ 에러 코드: ${apiError.code}');
+        debugPrint('[ApiContentDataSource] ❌ 에러 메시지: ${apiError.message}');
+        throw Exception(apiError.message);
+      } else {
+        debugPrint('[ApiContentDataSource] ❌ 네트워크 오류: ${e.message}');
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      debugPrint('[ApiContentDataSource] ❌ 예외 발생: $e');
+      rethrow;
     }
   }
 
@@ -118,8 +196,27 @@ class ApiContentDataSource implements ContentDataSource {
       if (response.statusCode != 204 && response.statusCode != 200) {
         throw Exception('Failed to delete content: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        debugPrint('[ApiContentDataSource] ❌ 서버 응답 전체:');
+        debugPrint("Response body : '${e.response!.toString()}'");
+
+        debugPrint('  - Status Code: ${e.response!.statusCode}');
+        debugPrint('  - Status Message: ${e.response!.statusMessage}');
+        debugPrint('  - Response Data: ${e.response!.data}');
+        debugPrint('  - Headers: ${e.response!.headers}');
+        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        final apiError = ApiError.fromDioError(e.response!.data);
+        debugPrint('[ApiContentDataSource] ❌ 에러 코드: ${apiError.code}');
+        debugPrint('[ApiContentDataSource] ❌ 에러 메시지: ${apiError.message}');
+        throw Exception(apiError.message);
+      } else {
+        debugPrint('[ApiContentDataSource] ❌ 네트워크 오류: ${e.message}');
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      debugPrint('[ApiContentDataSource] ❌ 예외 발생: $e');
+      rethrow;
     }
   }
 }

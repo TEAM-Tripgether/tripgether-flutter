@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:tripgether/core/errors/api_error.dart';
 import '../data/models/interest_response.dart';
 
 /// 관심사 API 서비스
@@ -39,10 +40,25 @@ class InterestApiService {
 
       return GetAllInterestsResponse.fromJson(response.data);
     } on DioException catch (e) {
-      debugPrint('[InterestApiService] ❌ 전체 관심사 조회 실패: ${e.message}');
+      // 서버 에러 응답 파싱
+      if (e.response != null) {
+        debugPrint('[InterestApiService] ❌ 서버 응답 전체:');
+        debugPrint("Response body : '${e.response!.toString()}'");
 
-      // ✅ 실패 시 Fallback: Mock 데이터 사용
-      return _mockGetAllInterests();
+        debugPrint('  - Status Code: ${e.response!.statusCode}');
+        debugPrint('  - Status Message: ${e.response!.statusMessage}');
+        debugPrint('  - Response Data: ${e.response!.data}');
+        debugPrint('  - Headers: ${e.response!.headers}');
+        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        final apiError = ApiError.fromDioError(e.response!.data);
+        debugPrint('[InterestApiService] ❌ 에러 코드: ${apiError.code}');
+        debugPrint('[InterestApiService] ❌ 에러 메시지: ${apiError.message}');
+        throw Exception(apiError.message);
+      } else {
+        debugPrint('[InterestApiService] ❌ 네트워크 오류: ${e.message}');
+        debugPrint('[InterestApiService] ❌ 에러 타입: ${e.type}');
+        throw Exception('네트워크 연결을 확인해주세요');
+      }
     }
   }
 
@@ -50,7 +66,10 @@ class InterestApiService {
   ///
   /// GET /api/interests/{interestId}
   Future<GetInterestByIdResponse> getInterestById(String interestId) async {
-    const useRealApi = bool.fromEnvironment('USE_REAL_API', defaultValue: false);
+    const useRealApi = bool.fromEnvironment(
+      'USE_REAL_API',
+      defaultValue: false,
+    );
 
     if (!useRealApi) {
       throw UnimplementedError('Mock 모드에서는 관심사 상세 조회를 지원하지 않습니다');
@@ -65,8 +84,23 @@ class InterestApiService {
 
       return GetInterestByIdResponse.fromJson(response.data);
     } on DioException catch (e) {
-      debugPrint('[InterestApiService] ❌ 관심사 상세 조회 실패: ${e.message}');
-      rethrow;
+      if (e.response != null) {
+        debugPrint('[InterestApiService] ❌ 서버 응답 전체:');
+        debugPrint("Response body : '${e.response!.toString()}'");
+
+        debugPrint('  - Status Code: ${e.response!.statusCode}');
+        debugPrint('  - Status Message: ${e.response!.statusMessage}');
+        debugPrint('  - Response Data: ${e.response!.data}');
+        debugPrint('  - Headers: ${e.response!.headers}');
+        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        final apiError = ApiError.fromDioError(e.response!.data);
+        debugPrint('[InterestApiService] ❌ 에러 코드: ${apiError.code}');
+        debugPrint('[InterestApiService] ❌ 에러 메시지: ${apiError.message}');
+        throw Exception(apiError.message);
+      }
+      debugPrint('[InterestApiService] ❌ 네트워크 오류: ${e.message}');
+      debugPrint('[InterestApiService] ❌ 에러 타입: ${e.type}');
+      throw Exception('관심사 정보를 가져올 수 없습니다.');
     }
   }
 
@@ -76,7 +110,10 @@ class InterestApiService {
   Future<GetInterestsByCategoryResponse> getInterestsByCategory(
     String category,
   ) async {
-    const useRealApi = bool.fromEnvironment('USE_REAL_API', defaultValue: false);
+    const useRealApi = bool.fromEnvironment(
+      'USE_REAL_API',
+      defaultValue: false,
+    );
 
     if (!useRealApi) {
       throw UnimplementedError('Mock 모드에서는 카테고리별 조회를 지원하지 않습니다');
@@ -91,8 +128,23 @@ class InterestApiService {
 
       return GetInterestsByCategoryResponse.fromJson(response.data);
     } on DioException catch (e) {
-      debugPrint('[InterestApiService] ❌ 카테고리별 관심사 조회 실패: ${e.message}');
-      rethrow;
+      if (e.response != null) {
+        debugPrint('[InterestApiService] ❌ 서버 응답 전체:');
+        debugPrint("Response body : '${e.response!.toString()}'");
+
+        debugPrint('  - Status Code: ${e.response!.statusCode}');
+        debugPrint('  - Status Message: ${e.response!.statusMessage}');
+        debugPrint('  - Response Data: ${e.response!.data}');
+        debugPrint('  - Headers: ${e.response!.headers}');
+        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        final apiError = ApiError.fromDioError(e.response!.data);
+        debugPrint('[InterestApiService] ❌ 에러 코드: ${apiError.code}');
+        debugPrint('[InterestApiService] ❌ 에러 메시지: ${apiError.message}');
+        throw Exception(apiError.message);
+      }
+      debugPrint('[InterestApiService] ❌ 네트워크 오류: ${e.message}');
+      debugPrint('[InterestApiService] ❌ 에러 타입: ${e.type}');
+      throw Exception('카테고리 관심사를 가져올 수 없습니다.');
     }
   }
 
