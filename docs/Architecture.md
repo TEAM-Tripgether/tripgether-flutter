@@ -1,6 +1,11 @@
-# Tripgether 아키텍처 문서
+# 🏗️ Tripgether 아키텍처 문서
 
-> 🚀 **Flutter 여행 계획 협업 앱의 기술 아키텍처 가이드**
+**최종 업데이트**: 2025-01-20
+**문서 버전**: 1.0.0
+
+Flutter 기반 여행 계획 협업 플랫폼의 기술 아키텍처 가이드입니다.
+
+---
 
 ## 📋 목차
 
@@ -13,6 +18,7 @@
 - [인증 흐름](#인증-흐름)
 - [서비스 레이어](#서비스-레이어)
 - [데이터 흐름](#데이터-흐름)
+- [API 통합](#api-통합)
 
 ---
 
@@ -26,6 +32,7 @@ Tripgether는 **Flutter** 기반의 크로스 플랫폼 여행 계획 협업 앱
 - ✅ **재사용성 (Reusability)**: 공용 컴포넌트와 서비스의 중앙 집중식 관리
 - ✅ **테스트 가능성 (Testability)**: 의존성 주입과 추상화를 통한 단위 테스트 용이성
 - ✅ **확장성 (Scalability)**: Feature 모듈 단위의 독립적 개발 및 확장
+- ✅ **반응형 설계 (Responsive Design)**: ScreenUtil을 활용한 다양한 화면 크기 대응
 
 ---
 
@@ -35,20 +42,21 @@ Tripgether는 **Flutter** 기반의 크로스 플랫폼 여행 계획 협업 앱
 
 | 영역 | 기술 | 버전 | 용도 |
 |------|------|------|------|
-| **Framework** | Flutter | 3.24.5+ | 크로스 플랫폼 UI |
-| **Language** | Dart | 3.5.4+ | 프로그래밍 언어 |
-| **State Management** | Riverpod | 2.6.1 | 선언적 상태 관리 |
+| **Framework** | Flutter | 3.24.0+ | 크로스 플랫폼 UI |
+| **Language** | Dart | 3.5.0+ | 프로그래밍 언어 |
+| **State Management** | Riverpod | 2.5.1 | 선언적 상태 관리 |
 | **Code Generation** | build_runner | 2.4.13 | Riverpod 코드 생성 |
+| **DI Container** | GetIt | 8.0.2 | 의존성 주입 |
 
 ### 주요 패키지
 
 #### UI & 디자인
 
 ```yaml
-flutter_screenutil: ^5.9.3      # 반응형 UI (ScreenUtil)
+flutter_screenutil: ^5.9.3      # 반응형 UI
 cached_network_image: ^3.4.1    # 이미지 캐싱 및 로딩
 shimmer: ^3.0.0                 # 스켈레톤 로딩 UI
-flutter_svg: ^2.0.10+1          # SVG 아이콘 렌더링
+flutter_svg: ^2.0.14            # SVG 아이콘 렌더링
 ```
 
 #### 라우팅 & 내비게이션
@@ -57,11 +65,18 @@ flutter_svg: ^2.0.10+1          # SVG 아이콘 렌더링
 go_router: ^14.6.2              # 선언적 라우팅 시스템
 ```
 
+#### 네트워크 & API
+
+```yaml
+dio: ^5.7.0                     # HTTP 클라이언트
+retrofit: ^4.4.1                # REST API 타입-세이프 클라이언트
+```
+
 #### 인증 & 보안
 
 ```yaml
 google_sign_in: ^7.2.0          # Google OAuth 인증
-flutter_secure_storage: ^9.2.2  # 보안 토큰 저장
+flutter_secure_storage: ^9.2.2  # 보안 토큰 저장 (JWT)
 ```
 
 #### 푸시 알림
@@ -75,7 +90,7 @@ flutter_local_notifications: ^18.0.1  # 로컬 알림 표시
 #### 다국어 & 환경 설정
 
 ```yaml
-intl: ^0.19.0                   # 국제화 (i18n)
+flutter_localizations: SDK      # 다국어 지원 (i18n)
 flutter_dotenv: ^5.2.1          # 환경 변수 관리
 ```
 
@@ -97,403 +112,258 @@ device_info_plus: ^11.1.1       # 디바이스 정보 수집
 ```
 lib/
 ├── core/                       # 핵심 인프라 (앱 전역 리소스)
-│   ├── theme/                  # 디자인 시스템 (Colors, TextStyles, Spacing)
-│   │   ├── app_colors.dart     # 색상 정의
-│   │   ├── app_text_styles.dart # 텍스트 스타일
-│   │   ├── app_spacing.dart    # 간격, Radius, Elevation, Sizes
-│   │   └── app_theme.dart      # Material 3 통합 테마
-│   ├── router/                 # 라우팅 시스템
-│   │   ├── router.dart         # GoRouter 설정
-│   │   ├── routes.dart         # 라우트 경로 상수
-│   │   └── route_guards.dart   # 인증 가드
-│   ├── services/               # 비즈니스 서비스
-│   │   ├── auth/
-│   │   │   └── google_auth_service.dart  # Google OAuth
-│   │   ├── fcm/
-│   │   │   ├── firebase_messaging_service.dart  # FCM 관리
-│   │   │   ├── local_notifications_service.dart # 로컬 알림
-│   │   │   └── models/fcm_token_request.dart    # FCM 모델
-│   │   ├── sharing_service.dart     # 외부 앱 공유
-│   │   └── device_info_service.dart # 디바이스 정보
+│   ├── theme/                  # 디자인 시스템
+│   │   ├── app_colors.dart    # 색상 팔레트
+│   │   ├── app_text_styles.dart # 타이포그래피
+│   │   ├── app_spacing.dart   # 간격 시스템
+│   │   └── app_theme.dart     # Material Theme 통합
+│   ├── router/                 # 라우팅 설정
+│   │   └── routes.dart        # AppRoutes 상수 정의
+│   ├── services/               # 글로벌 서비스
+│   │   ├── auth/              # 인증 서비스
+│   │   ├── fcm/               # FCM 푸시 알림
+│   │   └── local_notifications/ # 로컬 알림
 │   ├── providers/              # 전역 Provider
-│   │   └── locale_provider.dart     # 언어 설정
-│   ├── utils/                  # 유틸리티 함수
-│   │   └── dialog_utils.dart   # 다이얼로그 헬퍼
-│   └── animations/             # 공용 애니메이션
-│       └── page_transitions.dart    # 페이지 전환 효과
+│   ├── models/                 # 공용 데이터 모델
+│   ├── data/                   # 공용 데이터 소스
+│   └── utils/                  # 유틸리티 함수
 │
 ├── features/                   # 기능별 모듈 (Feature-First)
 │   ├── auth/                   # 인증 기능
-│   │   ├── models/             # 인증 데이터 모델
-│   │   ├── providers/          # 인증 상태 관리
-│   │   ├── services/           # 인증 API 서비스
-│   │   └── presentation/       # UI 레이어
-│   │       ├── pages/          # 화면 (LoginPage)
-│   │       └── widgets/        # 화면별 위젯
-│   ├── onboarding/             # 온보딩 (첫 로그인 정보 입력)
+│   │   ├── data/              # 데이터 레이어
+│   │   │   ├── models/        # 데이터 모델
+│   │   │   └── repositories/  # 리포지토리
+│   │   ├── presentation/      # 프레젠테이션 레이어
+│   │   │   ├── screens/       # 화면 위젯
+│   │   │   └── widgets/       # 기능별 위젯
+│   │   ├── providers/          # 상태 관리
+│   │   └── services/           # 비즈니스 로직
+│   ├── onboarding/             # 온보딩
 │   ├── home/                   # 홈 탭
-│   ├── course_market/          # 코스마켓 탭
-│   ├── map/                    # 지도 탭
-│   ├── schedule/               # 일정 탭
-│   └── my_page/                # 마이페이지 탭
+│   ├── mypage/                 # 마이페이지
+│   ├── map/                    # 지도 기능
+│   ├── course_market/          # 코스 마켓
+│   └── notifications/          # 알림
 │
-├── shared/                     # 공용 컴포넌트 (재사용 위젯)
-│   └── widgets/
-│       ├── common/             # 범용 위젯
-│       │   ├── common_app_bar.dart       # 공용 AppBar
-│       │   ├── empty_state.dart          # 빈 상태 표시
-│       │   ├── chip_list.dart            # 칩 리스트
-│       │   └── profile_avatar.dart       # 프로필 아바타
-│       ├── buttons/            # 버튼 위젯
-│       │   ├── common_button.dart        # Primary/Secondary/Tertiary
-│       │   └── social_login_button.dart  # 소셜 로그인 버튼
-│       ├── cards/              # 카드 위젯
-│       │   ├── sns_content_card.dart     # SNS 콘텐츠 카드
-│       │   ├── place_card.dart           # 장소 카드
-│       │   └── course_card.dart          # 코스 카드
-│       ├── inputs/             # 입력 위젯
-│       │   ├── search_bar.dart           # 검색바
-│       │   └── onboarding_text_field.dart # 온보딩 입력 필드
-│       └── layout/             # 레이아웃 위젯
-│           ├── gradient_background.dart  # 그라데이션 배경
-│           ├── section_header.dart       # 섹션 헤더
-│           ├── greeting_section.dart     # 인사말 섹션
-│           └── bottom_navigation.dart    # 바텀 네비게이션
+├── shared/                     # 공용 컴포넌트
+│   └── widgets/               # 재사용 위젯 라이브러리
+│       ├── common/            # 공통 위젯 (AppBar, EmptyState)
+│       ├── buttons/           # 버튼 컴포넌트
+│       ├── cards/             # 카드 컴포넌트
+│       ├── inputs/            # 입력 컴포넌트
+│       ├── layout/            # 레이아웃 컴포넌트
+│       └── dialogs/           # 다이얼로그 컴포넌트
 │
-├── l10n/                       # 다국어 지원 (ARB 파일)
-│   ├── app_en.arb              # 영어
-│   └── app_ko.arb              # 한국어
+├── l10n/                       # 다국어 리소스
+│   ├── app_ko.arb            # 한국어
+│   └── app_en.arb            # 영어
 │
 └── main.dart                   # 앱 진입점
 ```
 
-### 구조 원칙
+### Feature 모듈 구조
 
-#### 1. **Feature-First 구조**
-각 기능은 독립적인 모듈로 구성되어 있어, 기능 단위로 개발/테스트/배포가 가능합니다.
+각 Feature 모듈은 독립적인 기능 단위로 구성됩니다:
 
 ```
-features/auth/
-  ├── models/          # 데이터 모델 (User, AuthState 등)
-  ├── providers/       # 상태 관리 (UserNotifier, AuthNotifier)
-  ├── services/        # API 통신 (AuthApiService)
-  └── presentation/    # UI 레이어 (LoginPage, LoginForm)
+features/[feature_name]/
+├── data/                      # 데이터 레이어
+│   ├── models/               # 데이터 모델 (JSON 직렬화)
+│   ├── repositories/         # 데이터 소스 추상화
+│   └── data_sources/         # API, 로컬 DB 연결
+├── presentation/              # 프레젠테이션 레이어
+│   ├── screens/              # 전체 화면 위젯
+│   ├── widgets/              # 화면 구성 위젯
+│   └── providers/            # UI 상태 관리
+├── providers/                 # 비즈니스 로직 Provider
+└── services/                  # 도메인 서비스
 ```
-
-#### 2. **Core 레이어의 역할**
-- **theme/**: 디자인 시스템 (모든 UI는 이 테마를 사용해야 함)
-- **router/**: 앱 전체의 라우팅 로직
-- **services/**: 비즈니스 로직 (인증, FCM, 공유 등)
-- **providers/**: 전역 상태 (언어 설정 등)
-
-#### 3. **Shared 레이어의 역할**
-재사용 가능한 UI 컴포넌트를 중앙 집중식으로 관리하여:
-- 코드 중복 방지
-- 디자인 일관성 유지
-- 유지보수 효율성 향상
 
 ---
 
 ## 아키텍처 패턴
 
-### Clean Architecture + Feature-First
+### Clean Architecture
 
 ```
-┌─────────────────────────────────────────────┐
-│           Presentation Layer                │  ← UI (Pages, Widgets)
-│  (features/*/presentation/pages, widgets)   │
-├─────────────────────────────────────────────┤
-│          Business Logic Layer               │  ← State Management (Providers, Notifiers)
-│       (features/*/providers/)               │
-├─────────────────────────────────────────────┤
-│            Service Layer                    │  ← API, External Services
-│  (features/*/services, core/services)       │
-├─────────────────────────────────────────────┤
-│             Data Layer                      │  ← Models, DTOs
-│        (features/*/models/)                 │
-└─────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│                  Presentation                   │
+│         (UI Components + State Management)      │
+├─────────────────────────────────────────────────┤
+│                    Domain                       │
+│          (Business Logic + Use Cases)           │
+├─────────────────────────────────────────────────┤
+│                     Data                        │
+│      (Repositories + Data Sources + Models)     │
+└─────────────────────────────────────────────────┘
 ```
 
 ### 레이어별 책임
 
-#### **Presentation Layer (UI)**
-- **책임**: 사용자 인터페이스 렌더링, 사용자 입력 처리
-- **의존성**: Providers (상태 읽기), Widgets (재사용 컴포넌트)
-- **예시**: `LoginPage`, `HomeScreen`, `CourseCard`
+#### Presentation Layer
+- UI 컴포넌트 및 화면 렌더링
+- 사용자 입력 처리
+- UI 상태 관리 (Riverpod)
+- 라우팅 및 네비게이션
 
-#### **Business Logic Layer (상태 관리)**
-- **책임**: 앱 상태 관리, 비즈니스 로직 실행
-- **의존성**: Services (API 호출), Models (데이터 구조)
-- **예시**: `UserNotifier`, `AuthNotifier`, `LocaleProvider`
+#### Domain Layer
+- 비즈니스 로직 구현
+- Use Case 정의
+- 도메인 엔티티 관리
+- 비즈니스 규칙 검증
 
-#### **Service Layer (외부 통신)**
-- **책임**: 외부 API 통신, 플랫폼 기능 호출
-- **의존성**: Models (요청/응답 변환)
-- **예시**: `GoogleAuthService`, `FirebaseMessagingService`, `AuthApiService`
-
-#### **Data Layer (데이터 모델)**
-- **책임**: 데이터 구조 정의, 직렬화/역직렬화
-- **의존성**: 없음 (순수 데이터 클래스)
-- **예시**: `User`, `FcmTokenRequest`, `AuthState`
+#### Data Layer
+- API 통신 및 데이터 페칭
+- 로컬 데이터 저장 및 캐싱
+- 데이터 모델 변환 (DTO ↔ Entity)
+- 외부 서비스 통합
 
 ---
 
 ## 상태 관리
 
-### Riverpod 2.x (@riverpod 어노테이션)
+### Riverpod 패턴
 
-Tripgether는 **Riverpod 2.x**의 코드 생성 기반 어노테이션 방식을 사용합니다.
-
-#### Provider 작성 패턴
+#### @riverpod 어노테이션 사용
 
 ```dart
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'user_provider.g.dart';
-
+// 자동 생성 Provider (권장)
 @riverpod
 class UserNotifier extends _$UserNotifier {
   @override
   Future<User?> build() async {
-    // 초기 상태 로드
-    return await _loadUserFromStorage();
+    return await _loadUser();
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<void> updateProfile(ProfileData data) async {
     state = const AsyncValue.loading();
-
-    try {
-      final account = await GoogleAuthService.signIn();
-      // 백엔드 API 호출 및 사용자 정보 저장
-      final user = await _authApiService.socialLogin(account);
-      state = AsyncValue.data(user);
-    } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
-    }
-  }
-}
-```
-
-#### UI에서 Provider 사용
-
-```dart
-class LoginPage extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userState = ref.watch(userNotifierProvider);
-
-    return userState.when(
-      data: (user) => user == null ? _buildLoginForm() : _navigateToHome(),
-      loading: () => CircularProgressIndicator(),
-      error: (error, stack) => ErrorWidget(error),
+    state = await AsyncValue.guard(() =>
+      _userRepository.updateProfile(data)
     );
   }
-
-  void _handleGoogleLogin(WidgetRef ref) {
-    ref.read(userNotifierProvider.notifier).signInWithGoogle();
-  }
 }
 ```
 
-#### 코드 생성 명령어
+#### Provider 종류
 
-```bash
-# 개발 중 자동 감지 및 재생성
-dart run build_runner watch
+| Provider 타입 | 용도 | 예시 |
+|--------------|------|------|
+| **StateNotifier** | 복잡한 상태 관리 | UserNotifier, AuthNotifier |
+| **FutureProvider** | 비동기 데이터 페칭 | API 호출, 데이터 로딩 |
+| **StreamProvider** | 실시간 데이터 스트림 | 채팅, 알림 |
+| **StateProvider** | 단순 상태 값 | 선택 상태, 토글 |
 
-# 일회성 생성
-dart run build_runner build
+#### Provider Scope
 
-# 기존 파일 삭제 후 재생성
-dart run build_runner build --delete-conflicting-outputs
+```dart
+// 전역 Provider (core/providers)
+final userNotifierProvider = ...
+
+// Feature Provider (features/auth/providers)
+final loginNotifierProvider = ...
+
+// Screen Provider (presentation/providers)
+final searchQueryProvider = ...
 ```
 
 ---
 
 ## 라우팅 시스템
 
-### GoRouter 기반 선언적 라우팅
-
-#### 라우트 경로 상수 관리 (`core/router/routes.dart`)
+### GoRouter 구성
 
 ```dart
+// core/router/routes.dart
 class AppRoutes {
-  // 인증 화면
-  static const String login = '/auth/login';
+  static const String splash = '/';
+  static const String login = '/login';
   static const String onboarding = '/onboarding';
-
-  // 메인 탭들 (ShellRoute로 묶임)
   static const String home = '/home';
-  static const String courseMarket = '/course-market';
-  static const String map = '/map';
-  static const String schedule = '/schedule';
-  static const String myPage = '/my-page';
-
-  // 상세 화면
-  static const String courseDetail = '/course-market/detail/:courseId';
-  static const String placeDetail = '/home/saved-places/:placeId';
+  static const String mypage = '/mypage';
+  // ... 기타 라우트
 }
+
+// 라우터 설정
+final appRouter = GoRouter(
+  initialLocation: AppRoutes.splash,
+  routes: [
+    GoRoute(
+      path: AppRoutes.home,
+      builder: (context, state) => const MainScreen(),
+      routes: [
+        // 중첩 라우트
+        GoRoute(
+          path: 'detail/:id',
+          builder: (context, state) => DetailScreen(
+            id: state.pathParameters['id']!,
+          ),
+        ),
+      ],
+    ),
+  ],
+  redirect: (context, state) {
+    // 인증 상태에 따른 리다이렉트
+    final isAuthenticated = ref.read(authProvider);
+    if (!isAuthenticated && !publicRoutes.contains(state.matchedLocation)) {
+      return AppRoutes.login;
+    }
+    return null;
+  },
+);
 ```
 
-#### GoRouter 설정 (`core/router/router.dart`)
+### 네비게이션 패턴
 
 ```dart
-final goRouterProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(userNotifierProvider);
-
-  return GoRouter(
-    initialLocation: AppRoutes.splash,
-    redirect: (context, state) {
-      final isLoggedIn = authState.value != null;
-      final isLoginRoute = state.matchedLocation == AppRoutes.login;
-
-      // 미인증 사용자 → 로그인 화면
-      if (!isLoggedIn && !isLoginRoute) {
-        return AppRoutes.login;
-      }
-
-      // 인증된 사용자 → 홈 화면
-      if (isLoggedIn && isLoginRoute) {
-        return AppRoutes.home;
-      }
-
-      return null; // 변경 없음
-    },
-    routes: [
-      // ShellRoute: 바텀 네비게이션이 있는 레이아웃
-      ShellRoute(
-        builder: (context, state, child) => MainShell(child: child),
-        routes: [
-          GoRoute(path: AppRoutes.home, builder: (context, state) => HomePage()),
-          GoRoute(path: AppRoutes.courseMarket, builder: (context, state) => CourseMarketPage()),
-          // ... 나머지 탭들
-        ],
-      ),
-
-      // 인증 화면 (ShellRoute 외부)
-      GoRoute(path: AppRoutes.login, builder: (context, state) => LoginPage()),
-    ],
-  );
-});
-```
-
-#### 네비게이션 사용
-
-```dart
-// 화면 이동
+// 이동
 context.go(AppRoutes.home);
 
-// 파라미터가 있는 화면 이동
-context.go('/course-market/detail/123');
+// 푸시 (스택에 추가)
+context.push(AppRoutes.detail);
 
-// 뒤로가기 가능한 push
-context.push(AppRoutes.settings);
-
-// 뒤로가기
+// 팝
 context.pop();
+
+// 파라미터 전달
+context.push('/detail/${item.id}');
+context.pushNamed('detail', pathParameters: {'id': item.id});
 ```
 
 ---
 
 ## 인증 흐름
 
-### Google OAuth 인증 프로세스
+### Google OAuth + JWT 인증
 
 ```
-┌─────────────┐
-│ 사용자 탭   │
-│ "Google로   │
-│  시작하기"  │
-└──────┬──────┘
-       │
-       ▼
-┌──────────────────────────────────────┐
-│ GoogleAuthService.signIn()           │
-│ - authenticate() 호출                │
-│ - authenticationEvents 스트림 구독   │
-│ - GoogleSignInAccount 반환           │
-└──────┬───────────────────────────────┘
-       │
-       ▼
-┌──────────────────────────────────────┐
-│ AuthApiService.socialLogin()         │
-│ - 백엔드에 Google 인증 정보 전송     │
-│ - JWT 토큰 발급 받기                 │
-└──────┬───────────────────────────────┘
-       │
-       ▼
-┌──────────────────────────────────────┐
-│ FlutterSecureStorage에 JWT 저장      │
-│ - accessToken 저장                   │
-│ - refreshToken 저장 (있을 경우)      │
-└──────┬───────────────────────────────┘
-       │
-       ▼
-┌──────────────────────────────────────┐
-│ UserNotifier 상태 업데이트           │
-│ - state = AsyncValue.data(user)      │
-└──────┬───────────────────────────────┘
-       │
-       ▼
-┌──────────────────────────────────────┐
-│ GoRouter 자동 리다이렉트             │
-│ - /auth/login → /home                │
-└──────────────────────────────────────┘
+┌──────────┐     ┌────────────┐     ┌─────────┐     ┌──────────┐
+│   User   │────▶│Google OAuth│────▶│  Server │────▶│   JWT    │
+└──────────┘     └────────────┘     └─────────┘     └──────────┘
+     │                  │                 │               │
+     │   1. 로그인 요청  │                 │               │
+     │─────────────────▶│                 │               │
+     │                  │   2. OAuth 인증  │               │
+     │                  │────────────────▶│               │
+     │                  │                 │  3. JWT 발급  │
+     │                  │                 │──────────────▶│
+     │                  │                 │               │
+     │◀──────────────────────────────────────────────────│
+     │              4. Access Token 반환                   │
 ```
 
-### 인증 서비스 구조
-
-#### GoogleAuthService (플랫폼 인증)
+### 토큰 관리
 
 ```dart
-class GoogleAuthService {
-  static Future<void> initialize() async {
-    await GoogleSignIn.instance.initialize(
-      clientId: Platform.isIOS ? dotenv.env['GOOGLE_IOS_CLIENT_ID'] : null,
-      serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
-    );
-  }
+// JWT 토큰 저장 (Secure Storage)
+await secureStorage.write(
+  key: 'access_token',
+  value: response.accessToken,
+);
 
-  static Future<GoogleSignInAccount?> signIn() async {
-    final completer = Completer<GoogleSignInAccount?>();
-
-    GoogleSignIn.instance.authenticationEvents.listen((event) {
-      if (event is GoogleSignInAuthenticationEventSignIn) {
-        completer.complete(event.user);
-      }
-    });
-
-    await GoogleSignIn.instance.authenticate(scopeHint: ['email', 'profile']);
-    return completer.future;
-  }
-}
-```
-
-#### AuthApiService (백엔드 통신)
-
-```dart
-class AuthApiService {
-  Future<User> socialLogin({
-    required String socialPlatform,
-    required String email,
-    required String? nickname,
-  }) async {
-    final response = await http.post(
-      Uri.parse('${baseUrl}/api/auth/sign-in'),
-      body: jsonEncode({
-        'socialPlatform': socialPlatform,
-        'email': email,
-        'nickname': nickname,
-      }),
-    );
-
-    final data = jsonDecode(response.body);
-
-    // JWT 토큰 저장
-    await _secureStorage.write(key: 'accessToken', value: data['accessToken']);
-
-    return User.fromJson(data['user']);
-  }
+// 토큰 자동 갱신
+if (isTokenExpired) {
+  final newToken = await refreshToken();
+  await updateStoredToken(newToken);
 }
 ```
 
@@ -501,44 +371,39 @@ class AuthApiService {
 
 ## 서비스 레이어
 
-### 주요 서비스
+### 핵심 서비스
 
-#### 1. GoogleAuthService
-- **역할**: Google OAuth 인증 처리
-- **위치**: `core/services/auth/google_auth_service.dart`
-- **주요 메서드**:
-  - `initialize()`: Google Sign-In SDK 초기화
-  - `signIn()`: Google 로그인 실행
-  - `signOut()`: Google 로그아웃
+#### GoogleAuthService
+```dart
+// Google 로그인 처리
+final account = await _googleSignIn.signIn();
+final authentication = await account?.authentication;
+return GoogleAuthResult(
+  idToken: authentication?.idToken,
+  accessToken: authentication?.accessToken,
+);
+```
 
-#### 2. FirebaseMessagingService
-- **역할**: FCM 푸시 알림 관리
-- **위치**: `core/services/fcm/firebase_messaging_service.dart`
-- **주요 메서드**:
-  - `init()`: FCM 초기화 및 토큰 발급
-  - `requestPermission()`: iOS 푸시 권한 요청
-  - `onMessageReceived()`: 포그라운드 알림 처리
-  - `onBackgroundMessage()`: 백그라운드 알림 처리
+#### FirebaseMessagingService
+```dart
+// FCM 토큰 등록
+final fcmToken = await FirebaseMessaging.instance.getToken();
+await _apiClient.registerFCMToken(fcmToken);
 
-#### 3. LocalNotificationsService
-- **역할**: 로컬 알림 표시 (FCM 알림을 실제로 표시)
-- **위치**: `core/services/fcm/local_notifications_service.dart`
-- **주요 메서드**:
-  - `init()`: 로컬 알림 플러그인 초기화
-  - `showNotification()`: 알림 표시
+// 푸시 알림 처리
+FirebaseMessaging.onMessage.listen((message) {
+  _showLocalNotification(message);
+});
+```
 
-#### 4. SharingService
-- **역할**: 외부 앱으로부터 공유된 링크 수신
-- **위치**: `core/services/sharing_service.dart`
-- **주요 메서드**:
-  - `initialize()`: 공유 수신 리스너 등록
-  - `handleSharedUrl()`: 수신한 URL 처리
-
-#### 5. DeviceInfoService
-- **역할**: 디바이스 정보 수집 (OS, 모델, 버전 등)
-- **위치**: `core/services/device_info_service.dart`
-- **주요 메서드**:
-  - `getDeviceInfo()`: 플랫폼별 디바이스 정보 반환
+#### AuthApiService
+```dart
+// 백엔드 인증 API
+Future<AuthResponse> signIn(SocialLoginRequest request) async {
+  final response = await _dio.post('/api/auth/sign-in', data: request);
+  return AuthResponse.fromJson(response.data);
+}
+```
 
 ---
 
@@ -547,222 +412,179 @@ class AuthApiService {
 ### 일반적인 데이터 흐름
 
 ```
-User Action (버튼 탭)
-       │
-       ▼
-UI Component (ConsumerWidget)
-       │
-       │ ref.read(provider.notifier).method()
-       ▼
-Provider (Notifier)
-       │
-       │ state = AsyncValue.loading()
-       ▼
-Service Layer (API 호출)
-       │
-       │ HTTP Request → Backend
-       ▼
-Service Layer (응답 처리)
-       │
-       │ Model.fromJson(response)
-       ▼
-Provider (상태 업데이트)
-       │
-       │ state = AsyncValue.data(model)
-       ▼
-UI Component (자동 재렌더링)
-       │
-       ▼
-User Sees Updated UI
+User Action → UI Component → Provider → Service → Repository → Data Source
+     ↑                                                              ↓
+     └──────────────────── State Update ←──────────────────────────┘
 ```
 
-### 구체적 예시: Google 로그인
+### 예시: 사용자 프로필 업데이트
 
-1. **사용자 액션**
-   ```dart
-   PrimaryButton(
-     text: 'Google로 시작하기',
-     onPressed: () => ref.read(userNotifierProvider.notifier).signInWithGoogle(),
-   )
-   ```
+```dart
+// 1. UI에서 액션 시작
+ElevatedButton(
+  onPressed: () => ref.read(userNotifierProvider.notifier)
+    .updateProfile(profileData),
+  child: Text('프로필 저장'),
+);
 
-2. **Provider 메서드 실행**
-   ```dart
-   Future<void> signInWithGoogle() async {
-     state = const AsyncValue.loading(); // 로딩 상태
+// 2. Provider에서 비즈니스 로직 처리
+Future<void> updateProfile(ProfileData data) async {
+  state = const AsyncValue.loading();
 
-     try {
-       // Google OAuth 인증
-       final account = await GoogleAuthService.signIn();
+  try {
+    final updatedUser = await _userService.updateProfile(data);
+    state = AsyncValue.data(updatedUser);
+  } catch (e) {
+    state = AsyncValue.error(e, StackTrace.current);
+  }
+}
 
-       // 백엔드 API 호출
-       final user = await _authApiService.socialLogin(
-         socialPlatform: 'GOOGLE',
-         email: account.email,
-         nickname: account.displayName,
-       );
+// 3. Service에서 API 호출
+Future<User> updateProfile(ProfileData data) async {
+  final response = await _apiClient.put('/api/members/profile', data: data);
+  return User.fromJson(response.data);
+}
 
-       state = AsyncValue.data(user); // 성공 상태
-     } catch (e, stack) {
-       state = AsyncValue.error(e, stack); // 에러 상태
-     }
-   }
-   ```
-
-3. **UI 자동 업데이트**
-   ```dart
-   final userState = ref.watch(userNotifierProvider);
-
-   return userState.when(
-     data: (user) => Text('환영합니다, ${user.nickname}님!'),
-     loading: () => CircularProgressIndicator(),
-     error: (error, _) => Text('로그인 실패: $error'),
-   );
-   ```
+// 4. UI에서 상태 변경 감지
+ref.watch(userNotifierProvider).when(
+  data: (user) => ProfileView(user: user),
+  loading: () => LoadingIndicator(),
+  error: (error, _) => ErrorMessage(error: error),
+);
+```
 
 ---
 
-## 모범 사례 (Best Practices)
+## API 통합
 
-### 1. Provider 사용 시 주의사항
+### Dio 인터셉터
 
-**❌ 잘못된 예시 (ref.mounted 체크 없음)**
 ```dart
-Future<void> loadData() async {
-  final data = await apiService.fetchData();
-  state = AsyncValue.data(data); // ⚠️ Provider가 이미 dispose된 경우 에러
+class AuthInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    // JWT 토큰 자동 추가
+    final token = secureStorage.read('access_token');
+    if (token != null) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+    super.onRequest(options, handler);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    // 401 에러 시 토큰 갱신
+    if (err.response?.statusCode == 401) {
+      _refreshTokenAndRetry(err.requestOptions);
+    }
+    super.onError(err, handler);
+  }
 }
 ```
 
-**✅ 올바른 예시 (ref.mounted 체크)**
+### API 에러 처리
+
 ```dart
-Future<void> loadData() async {
-  final data = await apiService.fetchData();
-  if (!ref.mounted) return; // Provider가 유효한지 확인
-  state = AsyncValue.data(data);
+class ApiException implements Exception {
+  final String code;
+  final String message;
+  final int? statusCode;
+
+  ApiException({
+    required this.code,
+    required this.message,
+    this.statusCode,
+  });
+}
+
+// 에러 처리 예시
+try {
+  final result = await apiClient.get('/api/data');
+  return result;
+} on DioException catch (e) {
+  throw ApiException(
+    code: e.response?.data['code'] ?? 'UNKNOWN_ERROR',
+    message: e.response?.data['message'] ?? '알 수 없는 오류가 발생했습니다',
+    statusCode: e.response?.statusCode,
+  );
 }
 ```
 
-### 2. UI 컴포넌트 재사용
+---
 
-**❌ 잘못된 예시 (중복 코드)**
+## 개발 가이드라인
+
+### 코드 구성 원칙
+
+1. **Feature 독립성**: 각 Feature는 독립적으로 개발/테스트 가능해야 함
+2. **의존성 역전**: 상위 레이어는 하위 레이어에 의존하지 않음
+3. **단일 책임**: 각 클래스/함수는 하나의 명확한 책임만 가짐
+4. **테스트 우선**: 비즈니스 로직은 테스트 가능하게 설계
+
+### 명명 규칙
+
+| 구분 | 규칙 | 예시 |
+|------|------|------|
+| **파일명** | snake_case | user_profile_screen.dart |
+| **클래스명** | PascalCase | UserProfileScreen |
+| **변수명** | camelCase | userProfile |
+| **상수** | SCREAMING_SNAKE_CASE | MAX_RETRY_COUNT |
+| **Provider** | camelCase + Provider | userNotifierProvider |
+
+### 폴더 구조 규칙
+
+- Feature별로 모든 관련 코드를 그룹화
+- 공용 컴포넌트는 shared/widgets에 배치
+- 전역 서비스는 core/services에 배치
+- 디자인 시스템은 core/theme에서 중앙 관리
+
+---
+
+## 성능 최적화
+
+### 위젯 최적화
+
 ```dart
-AppBar(
-  title: Text('제목'),
-  leading: IconButton(icon: Icons.arrow_back, onPressed: () => context.pop()),
-)
+// const 생성자 사용
+const MyWidget({Key? key}) : super(key: key);
+
+// 불필요한 리빌드 방지
+Consumer(
+  builder: (context, ref, child) {
+    final specificData = ref.watch(provider.select((state) => state.field));
+    return Text(specificData);
+  },
+);
+
+// 메모이제이션
+final expensiveComputation = useMemoized(
+  () => computeExpensiveValue(),
+  [dependency],
+);
 ```
 
-**✅ 올바른 예시 (공용 위젯 사용)**
+### 이미지 최적화
+
 ```dart
-CommonAppBar.forSubPage(
-  title: '제목',
-  onBackPressed: () => context.pop(),
-)
-```
-
-### 3. 디자인 시스템 사용
-
-**❌ 잘못된 예시 (하드코딩된 스타일)**
-```dart
-Text(
-  '제목',
-  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-)
-
-Container(
-  padding: EdgeInsets.all(16),
-  decoration: BoxDecoration(
-    color: Color(0xFF664BAE),
-    borderRadius: BorderRadius.circular(12),
-  ),
-)
-```
-
-**✅ 올바른 예시 (테마 시스템 사용)**
-```dart
-Text(
-  '제목',
-  style: AppTextStyles.titleLarge,
-)
-
-Container(
-  padding: AppSpacing.cardPadding,
-  decoration: BoxDecoration(
-    color: AppColors.primary,
-    borderRadius: AppRadius.allLarge,
-  ),
-)
-```
-
-### 4. 라우팅 경로 관리
-
-**❌ 잘못된 예시 (하드코딩된 경로)**
-```dart
-context.go('/course-market/detail/123');
-```
-
-**✅ 올바른 예시 (상수 사용)**
-```dart
-context.go(AppRoutes.courseDetail.replaceFirst(':courseId', '123'));
-// 또는
-context.go('/course-market/detail/$courseId');
+// CachedNetworkImage 사용
+CachedNetworkImage(
+  imageUrl: url,
+  placeholder: (context, url) => Shimmer.fromColors(...),
+  errorWidget: (context, url, error) => Icon(Icons.error),
+  cacheManager: DefaultCacheManager(),
+);
 ```
 
 ---
 
-## 개발 워크플로우
+## 문서 업데이트 이력
 
-### 1. 새로운 Feature 추가
-
-```bash
-# 1. Feature 디렉토리 생성
-features/new_feature/
-  ├── models/
-  ├── providers/
-  ├── services/
-  └── presentation/
-      ├── pages/
-      └── widgets/
-
-# 2. Provider 작성 (Riverpod 어노테이션 사용)
-# 3. Service 작성 (API 통신 로직)
-# 4. Model 작성 (Freezed로 불변 데이터 클래스)
-# 5. UI 작성 (공용 위젯 재사용)
-
-# 6. 코드 생성
-dart run build_runner watch
-```
-
-### 2. 빌드 및 실행
-
-```bash
-# 개발 서버 실행
-flutter run
-
-# 코드 분석
-flutter analyze
-
-# 포맷팅
-dart format .
-
-# 프로덕션 빌드
-flutter build apk           # Android
-flutter build ios           # iOS
-```
+| 날짜 | 버전 | 변경 내용 |
+|------|------|----------|
+| 2025-01-20 | 1.0.0 | 최신 프로젝트 구조 반영 및 전체 문서 개선 |
+| 2025-11-10 | 0.9.0 | 초기 문서 작성 |
 
 ---
 
-## 참고 자료
-
-- [Flutter 공식 문서](https://flutter.dev/docs)
-- [Riverpod 공식 문서](https://riverpod.dev)
-- [GoRouter 공식 문서](https://pub.dev/packages/go_router)
-- [Material Design 3](https://m3.material.io)
-- [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging)
-
----
-
-**Last Updated**: 2025-11-10
-**Version**: 1.0.0
-**Maintained by**: [@EM-H20](https://github.com/EM-H20)
+**Last Updated by**: Claude Code
+**Maintained by**: TEAM-Tripgether
