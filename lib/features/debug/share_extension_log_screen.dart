@@ -277,7 +277,6 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                     '#${_logEntries.length - index}',
                     style: AppTextStyles.buttonMediumMedium14.copyWith(
                       color: AppColors.mainColor,
-                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
@@ -322,7 +321,6 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
                         entry.url!,
                         style: AppTextStyles.metaMedium12.copyWith(
                           color: AppColors.success,
-                          fontWeight: FontWeight.w600,
                         ),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
