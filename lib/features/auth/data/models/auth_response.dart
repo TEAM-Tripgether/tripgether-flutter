@@ -6,7 +6,6 @@ part 'auth_response.g.dart';
 /// 인증 API 응답 데이터 모델
 ///
 /// 소셜 로그인 및 토큰 재발급 API 응답 시 사용됩니다.
-/// API 명세서: claudedocs/TRIPGETHER_API_SPECIFICATION.md 참고
 ///
 /// **Freezed 자동 생성**:
 /// - `copyWith()`: 불변 객체 업데이트 (토큰 재발급 시 유용)
