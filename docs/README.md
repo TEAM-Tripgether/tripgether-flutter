@@ -249,5 +249,4 @@ flutter build ios --release
 이 문서는 프로젝트 진행에 따라 지속적으로 업데이트됩니다.
 문서 관련 문의사항이나 개선 제안은 GitHub Issues를 통해 등록해주세요.
 
-**Last Updated by**: Claude Code
 **Version**: 1.0.0

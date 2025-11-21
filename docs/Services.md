@@ -615,5 +615,4 @@ class SearchService {
 
 ---
 
-**Last Updated by**: Claude Code
 **Maintained by**: TEAM-Tripgether

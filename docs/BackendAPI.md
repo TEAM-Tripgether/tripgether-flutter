@@ -1155,5 +1155,4 @@ Mock Content 생성 및 반환
 ---
 
 **문서 생성일**: 2025-01-18
-**작성자**: Claude Code (Playwright MCP 활용)
 **출처**: Tripgether Backend Swagger API Documentation

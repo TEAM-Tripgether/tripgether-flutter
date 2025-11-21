@@ -696,4 +696,3 @@ flutter pub upgrade --major-versions
 
 **문서 버전**: 1.0.0
 **최종 수정**: 2025-01-20
-**작성자**: Claude Code
