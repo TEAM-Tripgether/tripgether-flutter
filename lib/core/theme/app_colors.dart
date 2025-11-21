@@ -79,8 +79,8 @@ class AppColors {
   // 시스템 색상
   // ============================================================================
 
-  static const Color error = Color(0xFFFF1B1B);
-  static const Color errorContainer = Color(0xFFFFD5D5);
+  static const Color error = redAccent;
+  static const Color errorContainer = white;
   static const Color background = white;
   static const Color surface = white;
   static const Color shadow = Color(0xFF000000);
