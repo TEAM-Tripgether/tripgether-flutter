@@ -6,7 +6,7 @@ part of 'interest_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dioHash() => r'f1ca3a9c8fd04c526530e2a3a0d4598500f8bf0c';
+String _$dioHash() => r'97e2f7c7055d4e32a6f7313f15c4cc2499145eb1';
 
 /// Dio 인스턴스 Provider (JWT 토큰 자동 추가)
 ///

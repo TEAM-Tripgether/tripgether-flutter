@@ -73,8 +73,9 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   }) async {
     try {
       // 1. Access Token 가져오기 (메모리 캐시에서 즉시 읽기)
-      final accessToken =
-          await ref.read(userNotifierProvider.notifier).getAccessToken();
+      final accessToken = await ref
+          .read(userNotifierProvider.notifier)
+          .getAccessToken();
       if (accessToken == null) {
         debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
         return null;
@@ -90,7 +91,8 @@ class OnboardingNotifier extends _$OnboardingNotifier {
       );
 
       debugPrint(
-          '[OnboardingNotifier] ✅ 약관 동의 성공 → currentStep: ${response.currentStep}');
+        '[OnboardingNotifier] ✅ 약관 동의 성공 → currentStep: ${response.currentStep}',
+      );
 
       // 3. currentStep을 Secure Storage에 저장 (앱 재시작 복원용)
       await _storage.write(key: 'onboardingStep', value: response.currentStep);
@@ -102,7 +104,7 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     } catch (e, stack) {
       debugPrint('[OnboardingNotifier] ❌ 약관 동의 실패: $e');
       state = AsyncValue.error(e, stack);
-      return null;
+      rethrow; // 에러를 상위로 전파하여 실제 에러 메시지를 UI에서 사용 가능하게 함
     }
   }
 
@@ -115,8 +117,9 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   /// **응답**: currentStep = "BIRTH_DATE" (다음 단계: 생년월일 입력)
   Future<OnboardingResponse?> updateName({required String name}) async {
     try {
-      final accessToken =
-          await ref.read(userNotifierProvider.notifier).getAccessToken();
+      final accessToken = await ref
+          .read(userNotifierProvider.notifier)
+          .getAccessToken();
       if (accessToken == null) {
         debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
         return null;
@@ -130,7 +133,8 @@ class OnboardingNotifier extends _$OnboardingNotifier {
       );
 
       debugPrint(
-          '[OnboardingNotifier] ✅ 이름 설정 성공 → currentStep: ${response.currentStep}');
+        '[OnboardingNotifier] ✅ 이름 설정 성공 → currentStep: ${response.currentStep}',
+      );
 
       await _storage.write(key: 'onboardingStep', value: response.currentStep);
       state = AsyncValue.data(response);
@@ -139,7 +143,7 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     } catch (e, stack) {
       debugPrint('[OnboardingNotifier] ❌ 이름 설정 실패: $e');
       state = AsyncValue.error(e, stack);
-      return null;
+      rethrow; // 에러를 상위로 전파하여 실제 에러 메시지를 UI에서 사용 가능하게 함
     }
   }
 
@@ -154,8 +158,9 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     required String birthDate,
   }) async {
     try {
-      final accessToken =
-          await ref.read(userNotifierProvider.notifier).getAccessToken();
+      final accessToken = await ref
+          .read(userNotifierProvider.notifier)
+          .getAccessToken();
       if (accessToken == null) {
         debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
         return null;
@@ -169,7 +174,8 @@ class OnboardingNotifier extends _$OnboardingNotifier {
       );
 
       debugPrint(
-          '[OnboardingNotifier] ✅ 생년월일 설정 성공 → currentStep: ${response.currentStep}');
+        '[OnboardingNotifier] ✅ 생년월일 설정 성공 → currentStep: ${response.currentStep}',
+      );
 
       await _storage.write(key: 'onboardingStep', value: response.currentStep);
       state = AsyncValue.data(response);
@@ -178,7 +184,7 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     } catch (e, stack) {
       debugPrint('[OnboardingNotifier] ❌ 생년월일 설정 실패: $e');
       state = AsyncValue.error(e, stack);
-      return null;
+      rethrow; // 에러를 상위로 전파하여 실제 에러 메시지를 UI에서 사용 가능하게 함
     }
   }
 
@@ -191,8 +197,9 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   /// **응답**: currentStep = "INTERESTS" (다음 단계: 관심사 선택)
   Future<OnboardingResponse?> updateGender({required String gender}) async {
     try {
-      final accessToken =
-          await ref.read(userNotifierProvider.notifier).getAccessToken();
+      final accessToken = await ref
+          .read(userNotifierProvider.notifier)
+          .getAccessToken();
       if (accessToken == null) {
         debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
         return null;
@@ -206,7 +213,8 @@ class OnboardingNotifier extends _$OnboardingNotifier {
       );
 
       debugPrint(
-          '[OnboardingNotifier] ✅ 성별 설정 성공 → currentStep: ${response.currentStep}');
+        '[OnboardingNotifier] ✅ 성별 설정 성공 → currentStep: ${response.currentStep}',
+      );
 
       await _storage.write(key: 'onboardingStep', value: response.currentStep);
       state = AsyncValue.data(response);
@@ -215,7 +223,7 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     } catch (e, stack) {
       debugPrint('[OnboardingNotifier] ❌ 성별 설정 실패: $e');
       state = AsyncValue.error(e, stack);
-      return null;
+      rethrow; // 에러를 상위로 전파하여 실제 에러 메시지를 UI에서 사용 가능하게 함
     }
   }
 
@@ -232,15 +240,17 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     required List<String> interestIds,
   }) async {
     try {
-      final accessToken =
-          await ref.read(userNotifierProvider.notifier).getAccessToken();
+      final accessToken = await ref
+          .read(userNotifierProvider.notifier)
+          .getAccessToken();
       if (accessToken == null) {
         debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
         return null;
       }
 
       debugPrint(
-          '[OnboardingNotifier] 🎯 관심사 설정 API 호출: ${interestIds.length}개');
+        '[OnboardingNotifier] 🎯 관심사 설정 API 호출: ${interestIds.length}개',
+      );
 
       final response = await _apiService.updateInterests(
         accessToken: accessToken,
@@ -248,7 +258,8 @@ class OnboardingNotifier extends _$OnboardingNotifier {
       );
 
       debugPrint(
-          '[OnboardingNotifier] ✅ 관심사 설정 성공 → currentStep: ${response.currentStep}, status: ${response.onboardingStatus}');
+        '[OnboardingNotifier] ✅ 관심사 설정 성공 → currentStep: ${response.currentStep}, status: ${response.onboardingStatus}',
+      );
 
       await _storage.write(key: 'onboardingStep', value: response.currentStep);
       state = AsyncValue.data(response);
@@ -257,7 +268,7 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     } catch (e, stack) {
       debugPrint('[OnboardingNotifier] ❌ 관심사 설정 실패: $e');
       state = AsyncValue.error(e, stack);
-      return null;
+      rethrow; // 에러를 상위로 전파하여 실제 에러 메시지를 UI에서 사용 가능하게 함
     }
   }
 
