@@ -11,6 +11,7 @@ import '../widgets/onboarding_layout.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/onboarding_notifier.dart';
 import '../../providers/interest_provider.dart';
+import '../../utils/onboarding_error_handler.dart';
 import '../../data/models/interest_response.dart';
 
 /// 관심사 선택 페이지 (STEP 5/5)
@@ -101,7 +102,9 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
 
     try {
       // 1. onboardingProvider에 관심사 저장 (로컬)
-      ref.read(onboardingProvider.notifier).updateInterests(_selectedInterestIds.toList());
+      ref
+          .read(onboardingProvider.notifier)
+          .updateInterests(_selectedInterestIds.toList());
 
       // 2. API 호출 (관심사 UUID 목록 전송)
       final response = await ref
@@ -112,39 +115,15 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
 
       // 3. API 응답 성공 시 currentStep에 따라 페이지 이동
       if (response != null) {
-        debugPrint('[InterestsPage] ✅ 관심사 설정 API 호출 성공 → 다음 단계: ${response.currentStep}');
+        debugPrint(
+          '[InterestsPage] ✅ 관심사 설정 API 호출 성공 → 다음 단계: ${response.currentStep}',
+        );
         widget.onStepChange(response.currentStep);
-      } else {
-        // API 호출 실패 - 사용자 친화적 에러 메시지
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '관심사 설정 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
-                style: AppTextStyles.bodyMedium14.copyWith(color: AppColors.white),
-              ),
-              backgroundColor: AppColors.error,
-              duration: const Duration(seconds: 3),
-              behavior: SnackBarBehavior.floating,
-              margin: EdgeInsets.all(AppSpacing.lg),
-              action: SnackBarAction(
-                label: '확인',
-                textColor: AppColors.white,
-                onPressed: () {},
-              ),
-            ),
-          );
-        }
       }
     } catch (e) {
       debugPrint('[InterestsPage] ❌ 관심사 설정 API 호출 실패: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('오류가 발생했습니다: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        await handleOnboardingError(context, ref, e);
       }
     } finally {
       if (mounted) {
@@ -273,27 +252,19 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
       // 에러 발생
       error: (error, stack) {
         debugPrint('[InterestsPage] ❌ 관심사 조회 실패: $error');
-        return Scaffold(
+
+        // 에러 발생 시 즉시 로그아웃 처리
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (context.mounted) {
+            await handleOnboardingError(context, ref, error);
+          }
+        });
+
+        // 로그아웃 처리 중 임시 화면 표시
+        return const Scaffold(
           backgroundColor: AppColors.surface,
           body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, size: 48, color: AppColors.error),
-                AppSpacing.verticalSpaceLG,
-                Text(
-                  '관심사 데이터를 불러올 수 없습니다.',
-                  style: AppTextStyles.titleSemiBold16,
-                ),
-                AppSpacing.verticalSpaceSM,
-                Text(
-                  '네트워크 연결을 확인해주세요.',
-                  style: AppTextStyles.bodyRegular14.copyWith(
-                    color: AppColors.textColor1.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-            ),
+            child: CircularProgressIndicator(color: AppColors.mainColor),
           ),
         );
       },
@@ -343,11 +314,15 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
                         spacing: 8,
                         runSpacing: 8,
                         children: categories.map((category) {
-                          final isExpanded = _expandedCategoryCode == category.category;
+                          final isExpanded =
+                              _expandedCategoryCode == category.category;
 
                           // 이 카테고리에서 선택된 관심사 개수 계산
                           final selectedInCategory = category.interests
-                              .where((item) => _selectedInterestIds.contains(item.id))
+                              .where(
+                                (item) =>
+                                    _selectedInterestIds.contains(item.id),
+                              )
                               .length;
 
                           return Container(
@@ -356,7 +331,8 @@ class _InterestsPageState extends ConsumerState<InterestsPage> {
                               categoryName: category.displayName,
                               isExpanded: isExpanded,
                               selectedCount: selectedInCategory,
-                              onTap: () => _toggleCategory(category.category, category),
+                              onTap: () =>
+                                  _toggleCategory(category.category, category),
                             ),
                           );
                         }).toList(),

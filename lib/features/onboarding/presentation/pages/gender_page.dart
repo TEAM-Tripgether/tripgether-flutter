@@ -9,6 +9,7 @@ import '../widgets/onboarding_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/onboarding_notifier.dart';
+import '../../utils/onboarding_error_handler.dart';
 
 /// 성별 선택 페이지 (STEP 4/5)
 ///
@@ -61,8 +62,8 @@ class _GenderPageState extends ConsumerState<GenderPage> {
       final genderValue = _selectedGender == 'male'
           ? 'MALE'
           : _selectedGender == 'female'
-              ? 'FEMALE'
-              : 'NONE';
+          ? 'FEMALE'
+          : 'NONE';
 
       // 2. onboardingProvider에 성별 저장 (로컬)
       ref.read(onboardingProvider.notifier).updateGender(genderValue);
@@ -76,39 +77,15 @@ class _GenderPageState extends ConsumerState<GenderPage> {
 
       // 4. API 응답 성공 시 currentStep에 따라 페이지 이동
       if (response != null) {
-        debugPrint('[GenderPage] ✅ 성별 설정 API 호출 성공 → 다음 단계: ${response.currentStep}');
+        debugPrint(
+          '[GenderPage] ✅ 성별 설정 API 호출 성공 → 다음 단계: ${response.currentStep}',
+        );
         widget.onStepChange(response.currentStep);
-      } else {
-        // API 호출 실패 - 사용자 친화적 에러 메시지
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '성별 설정 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
-                style: AppTextStyles.bodyMedium14.copyWith(color: AppColors.white),
-              ),
-              backgroundColor: AppColors.error,
-              duration: const Duration(seconds: 3),
-              behavior: SnackBarBehavior.floating,
-              margin: EdgeInsets.all(AppSpacing.lg),
-              action: SnackBarAction(
-                label: '확인',
-                textColor: AppColors.white,
-                onPressed: () {},
-              ),
-            ),
-          );
-        }
       }
     } catch (e) {
       debugPrint('[GenderPage] ❌ 성별 설정 API 호출 실패: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('오류가 발생했습니다: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        await handleOnboardingError(context, ref, e);
       }
     } finally {
       if (mounted) {
@@ -136,28 +113,15 @@ class _GenderPageState extends ConsumerState<GenderPage> {
 
       // 3. API 응답 성공 시 currentStep에 따라 페이지 이동
       if (response != null) {
-        debugPrint('[GenderPage] ✅ 성별 건너뛰기 API 호출 성공 → 다음 단계: ${response.currentStep}');
+        debugPrint(
+          '[GenderPage] ✅ 성별 건너뛰기 API 호출 성공 → 다음 단계: ${response.currentStep}',
+        );
         widget.onStepChange(response.currentStep);
-      } else {
-        // API 호출 실패
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('처리 중 오류가 발생했습니다. 다시 시도해주세요.'),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
       }
     } catch (e) {
       debugPrint('[GenderPage] ❌ 성별 건너뛰기 API 호출 실패: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('오류가 발생했습니다: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        await handleOnboardingError(context, ref, e);
       }
     } finally {
       if (mounted) {
@@ -223,7 +187,9 @@ class _GenderPageState extends ConsumerState<GenderPage> {
           // 계속하기 버튼 (성별 선택 시에만 활성화)
           PrimaryButton(
             text: l10n.btnContinue,
-            onPressed: _selectedGender != null && !_isLoading ? _handleContinue : null,
+            onPressed: _selectedGender != null && !_isLoading
+                ? _handleContinue
+                : null,
             isLoading: _isLoading,
             isFullWidth: true,
             style: ButtonStyle(

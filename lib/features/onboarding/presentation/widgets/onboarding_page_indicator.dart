@@ -29,10 +29,11 @@ class OnboardingPageIndicator extends StatelessWidget {
       animation: controller,
       builder: (context, child) {
         // 현재 페이지 인덱스 (0-4)
-        // controller.page가 null일 수 있으므로 0으로 fallback
+        // hasClients가 false면 initialPage 사용 (앱 재시작 시 올바른 페이지 표시)
+        // hasClients가 true면 현재 페이지 사용 (실시간 업데이트)
         final currentPage = controller.hasClients
-            ? (controller.page?.round() ?? 0)
-            : 0;
+            ? (controller.page?.round() ?? controller.initialPage)
+            : controller.initialPage;
 
         return Row(
           mainAxisSize: MainAxisSize.min,

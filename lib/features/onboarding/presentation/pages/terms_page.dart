@@ -7,6 +7,7 @@ import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/onboarding_notifier.dart';
+import '../../utils/onboarding_error_handler.dart';
 import '../widgets/onboarding_layout.dart';
 
 /// 약관 동의 페이지 (STEP 1/6)
@@ -127,12 +128,7 @@ class _TermsPageState extends ConsumerState<TermsPage> {
     } catch (e) {
       debugPrint('[TermsPage] ❌ 약관 동의 API 호출 실패: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('오류가 발생했습니다: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        await handleOnboardingError(context, ref, e);
       }
     } finally {
       if (mounted) {
