@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tripgether/core/errors/api_error.dart';
+import 'package:tripgether/core/utils/api_logger.dart';
 import '../data/models/onboarding_response.dart';
 
 /// 온보딩 API 서비스
@@ -119,25 +120,15 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'OnboardingApiService.agreeTerms');
       if (e.response != null) {
-        debugPrint('[onboardingApiService] ❌ 서버 응답 전체:');
-        debugPrint("Response body : '${e.response!.toString()}'");
-
-        debugPrint('  - Status Code: ${e.response!.statusCode}');
-        debugPrint('  - Status Message: ${e.response!.statusMessage}');
-        debugPrint('  - Response Data: ${e.response!.data}');
-        debugPrint('  - Headers: ${e.response!.headers}');
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[OnboardingApiService] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[OnboardingApiService] ❌ 에러 메시지: ${apiError.message}');
         throw Exception(apiError.message);
       } else {
-        debugPrint('[OnboardingApiService] ❌ 네트워크 오류: ${e.message}');
         throw Exception('네트워크 연결을 확인해주세요.');
       }
     } catch (e) {
-      debugPrint('[OnboardingApiService] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'OnboardingApiService.agreeTerms');
       rethrow;
     }
   }
@@ -168,25 +159,15 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'OnboardingApiService.updateName');
       if (e.response != null) {
-        debugPrint('[onboardingApiService] ❌ 서버 응답 전체:');
-        debugPrint("Response body : '${e.response!.toString()}'");
-
-        debugPrint('  - Status Code: ${e.response!.statusCode}');
-        debugPrint('  - Status Message: ${e.response!.statusMessage}');
-        debugPrint('  - Response Data: ${e.response!.data}');
-        debugPrint('  - Headers: ${e.response!.headers}');
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[OnboardingApiService] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[OnboardingApiService] ❌ 에러 메시지: ${apiError.message}');
         throw Exception(apiError.message);
       } else {
-        debugPrint('[OnboardingApiService] ❌ 네트워크 오류: ${e.message}');
         throw Exception('네트워크 연결을 확인해주세요.');
       }
     } catch (e) {
-      debugPrint('[OnboardingApiService] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'OnboardingApiService.updateName');
       rethrow;
     }
   }
@@ -217,25 +198,15 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'OnboardingApiService.updateBirthDate');
       if (e.response != null) {
-        debugPrint('[onboardingApiService] ❌ 서버 응답 전체:');
-        debugPrint("Response body : '${e.response!.toString()}'");
-
-        debugPrint('  - Status Code: ${e.response!.statusCode}');
-        debugPrint('  - Status Message: ${e.response!.statusMessage}');
-        debugPrint('  - Response Data: ${e.response!.data}');
-        debugPrint('  - Headers: ${e.response!.headers}');
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[OnboardingApiService] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[OnboardingApiService] ❌ 에러 메시지: ${apiError.message}');
         throw Exception(apiError.message);
       } else {
-        debugPrint('[OnboardingApiService] ❌ 네트워크 오류: ${e.message}');
         throw Exception('네트워크 연결을 확인해주세요.');
       }
     } catch (e) {
-      debugPrint('[OnboardingApiService] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'OnboardingApiService.updateBirthDate');
       rethrow;
     }
   }
@@ -266,25 +237,15 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'OnboardingApiService.updateGender');
       if (e.response != null) {
-        debugPrint('[onboardingApiService] ❌ 서버 응답 전체:');
-        debugPrint("Response body : '${e.response!.toString()}'");
-
-        debugPrint('  - Status Code: ${e.response!.statusCode}');
-        debugPrint('  - Status Message: ${e.response!.statusMessage}');
-        debugPrint('  - Response Data: ${e.response!.data}');
-        debugPrint('  - Headers: ${e.response!.headers}');
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[OnboardingApiService] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[OnboardingApiService] ❌ 에러 메시지: ${apiError.message}');
         throw Exception(apiError.message);
       } else {
-        debugPrint('[OnboardingApiService] ❌ 네트워크 오류: ${e.message}');
         throw Exception('네트워크 연결을 확인해주세요.');
       }
     } catch (e) {
-      debugPrint('[OnboardingApiService] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'OnboardingApiService.updateGender');
       rethrow;
     }
   }
@@ -315,25 +276,15 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'OnboardingApiService.updateInterests');
       if (e.response != null) {
-        debugPrint('[onboardingApiService] ❌ 서버 응답 전체:');
-        debugPrint("Response body : '${e.response!.toString()}'");
-
-        debugPrint('  - Status Code: ${e.response!.statusCode}');
-        debugPrint('  - Status Message: ${e.response!.statusMessage}');
-        debugPrint('  - Response Data: ${e.response!.data}');
-        debugPrint('  - Headers: ${e.response!.headers}');
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[OnboardingApiService] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[OnboardingApiService] ❌ 에러 메시지: ${apiError.message}');
         throw Exception(apiError.message);
       } else {
-        debugPrint('[OnboardingApiService] ❌ 네트워크 오류: ${e.message}');
         throw Exception('네트워크 연결을 확인해주세요.');
       }
     } catch (e) {
-      debugPrint('[OnboardingApiService] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'OnboardingApiService.updateInterests');
       rethrow;
     }
   }

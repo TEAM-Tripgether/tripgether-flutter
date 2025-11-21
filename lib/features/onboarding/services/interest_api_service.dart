@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tripgether/core/errors/api_error.dart';
+import 'package:tripgether/core/utils/api_logger.dart';
 import '../data/models/interest_response.dart';
 
 /// 관심사 API 서비스
@@ -40,23 +41,11 @@ class InterestApiService {
 
       return GetAllInterestsResponse.fromJson(response.data);
     } on DioException catch (e) {
-      // 서버 에러 응답 파싱
+      ApiLogger.logDioError(e, context: 'InterestApiService.getAllInterests');
       if (e.response != null) {
-        debugPrint('[InterestApiService] ❌ 서버 응답 전체:');
-        debugPrint("Response body : '${e.response!.toString()}'");
-
-        debugPrint('  - Status Code: ${e.response!.statusCode}');
-        debugPrint('  - Status Message: ${e.response!.statusMessage}');
-        debugPrint('  - Response Data: ${e.response!.data}');
-        debugPrint('  - Headers: ${e.response!.headers}');
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[InterestApiService] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[InterestApiService] ❌ 에러 메시지: ${apiError.message}');
         throw Exception(apiError.message);
       } else {
-        debugPrint('[InterestApiService] ❌ 네트워크 오류: ${e.message}');
-        debugPrint('[InterestApiService] ❌ 에러 타입: ${e.type}');
         throw Exception('네트워크 연결을 확인해주세요');
       }
     }
@@ -84,22 +73,11 @@ class InterestApiService {
 
       return GetInterestByIdResponse.fromJson(response.data);
     } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'InterestApiService.getInterestById');
       if (e.response != null) {
-        debugPrint('[InterestApiService] ❌ 서버 응답 전체:');
-        debugPrint("Response body : '${e.response!.toString()}'");
-
-        debugPrint('  - Status Code: ${e.response!.statusCode}');
-        debugPrint('  - Status Message: ${e.response!.statusMessage}');
-        debugPrint('  - Response Data: ${e.response!.data}');
-        debugPrint('  - Headers: ${e.response!.headers}');
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[InterestApiService] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[InterestApiService] ❌ 에러 메시지: ${apiError.message}');
         throw Exception(apiError.message);
       }
-      debugPrint('[InterestApiService] ❌ 네트워크 오류: ${e.message}');
-      debugPrint('[InterestApiService] ❌ 에러 타입: ${e.type}');
       throw Exception('관심사 정보를 가져올 수 없습니다.');
     }
   }
@@ -128,22 +106,11 @@ class InterestApiService {
 
       return GetInterestsByCategoryResponse.fromJson(response.data);
     } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'InterestApiService.getInterestsByCategory');
       if (e.response != null) {
-        debugPrint('[InterestApiService] ❌ 서버 응답 전체:');
-        debugPrint("Response body : '${e.response!.toString()}'");
-
-        debugPrint('  - Status Code: ${e.response!.statusCode}');
-        debugPrint('  - Status Message: ${e.response!.statusMessage}');
-        debugPrint('  - Response Data: ${e.response!.data}');
-        debugPrint('  - Headers: ${e.response!.headers}');
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[InterestApiService] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[InterestApiService] ❌ 에러 메시지: ${apiError.message}');
         throw Exception(apiError.message);
       }
-      debugPrint('[InterestApiService] ❌ 네트워크 오류: ${e.message}');
-      debugPrint('[InterestApiService] ❌ 에러 타입: ${e.type}');
       throw Exception('카테고리 관심사를 가져올 수 없습니다.');
     }
   }

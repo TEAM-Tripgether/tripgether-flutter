@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tripgether/core/errors/api_error.dart';
+import 'package:tripgether/core/utils/api_logger.dart';
 import 'package:tripgether/features/auth/data/models/auth_request.dart';
 import 'package:tripgether/features/auth/data/models/auth_response.dart';
 
@@ -346,20 +347,14 @@ class AuthApiService {
       } else if (e.type == DioExceptionType.receiveTimeout) {
         throw Exception('응답 시간 초과: 서버 응답이 없습니다.');
       } else if (e.response != null) {
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        ApiLogger.logDioError(e, context: 'AuthApiService.signIn');
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[AuthApiService - Real] ❌ 에러 메시지: ${apiError.statusCode}');
-        debugPrint('[AuthApiService - Real] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[AuthApiService - Real] ❌ 에러 메시지: ${apiError.message}');
-
-        // 백엔드에서 제공하는 메시지를 그대로 사용
         throw Exception(apiError.message);
       } else {
         throw Exception('네트워크 오류: ${e.message}');
       }
     } catch (e) {
-      // 기타 예외 처리
-      debugPrint('[AuthApiService - Real] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'AuthApiService.signIn');
       rethrow;
     }
   }
@@ -407,11 +402,8 @@ class AuthApiService {
       debugPrint('[AuthApiService - Real] ❌ Dio 에러: ${e.type}');
 
       if (e.response != null) {
-        // 서버에서 에러 응답을 받은 경우 - ApiError 활용
+        ApiLogger.logDioError(e, context: 'AuthApiService.reissueToken');
         final apiError = ApiError.fromDioError(e.response!.data);
-        debugPrint('[AuthApiService - Real] ❌ 에러 메시지: ${apiError.statusCode}');
-        debugPrint('[AuthApiService - Real] ❌ 에러 코드: ${apiError.code}');
-        debugPrint('[AuthApiService - Real] ❌ 에러 메시지: ${apiError.message}');
 
         // Refresh Token 관련 에러는 재로그인 필요
         if (apiError.code == 'REFRESH_TOKEN_NOT_FOUND' ||
@@ -420,7 +412,6 @@ class AuthApiService {
           throw Exception('${apiError.message} 다시 로그인해주세요.');
         }
 
-        // 백엔드에서 제공하는 메시지를 그대로 사용
         throw Exception(apiError.message);
       } else if (e.type == DioExceptionType.connectionTimeout) {
         throw Exception('연결 시간 초과: 서버에 연결할 수 없습니다.');
@@ -428,7 +419,7 @@ class AuthApiService {
         throw Exception('네트워크 오류: ${e.message}');
       }
     } catch (e) {
-      debugPrint('[AuthApiService - Real] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'AuthApiService.reissueToken');
       rethrow;
     }
   }
@@ -490,15 +481,12 @@ class AuthApiService {
       // 성공 여부 반환
       return response.statusCode == 200;
     } on DioException catch (e) {
-      // Dio 관련 에러 처리
-      debugPrint('[AuthApiService - Real] ⚠️ Dio 에러: ${e.type}');
-      debugPrint('[AuthApiService - Real] ⚠️ 에러 메시지: ${e.message}');
-
+      ApiLogger.logDioError(e, context: 'AuthApiService.logout');
       // 로그아웃 API 실패해도 로컬 토큰은 이미 삭제되었으므로 true 반환
       // 네트워크 오류나 서버 오류는 사용자 경험에 영향을 주지 않음
       return true;
     } catch (e) {
-      debugPrint('[AuthApiService - Real] ⚠️ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'AuthApiService.logout');
       // 로그아웃 API 실패해도 로컬 토큰은 이미 삭제되었으므로 true 반환
       return true;
     }
