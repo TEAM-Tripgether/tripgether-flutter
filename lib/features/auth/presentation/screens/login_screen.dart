@@ -81,43 +81,56 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // 로딩 시작
     setState(() => _isGoogleLoading = true);
 
-    // LoginProvider를 통한 구글 로그인
-    final (success, isFirstLogin) = await ref
-        .read(loginNotifierProvider.notifier)
-        .loginWithGoogle();
+    try {
+      // LoginProvider를 통한 구글 로그인
+      final (success, requiresOnboarding) = await ref
+          .read(loginNotifierProvider.notifier)
+          .loginWithGoogle();
 
-    debugPrint('[LoginScreen] 구글 로그인 결과: ${success ? "성공 ✅" : "실패 ❌"}');
-    debugPrint('[LoginScreen] 최초 로그인 여부: $isFirstLogin');
+      debugPrint('[LoginScreen] 구글 로그인 결과: ${success ? "성공 ✅" : "실패 ❌"}');
+      debugPrint('[LoginScreen] 온보딩 필요 여부: $requiresOnboarding');
 
-    // 로딩 종료
-    if (mounted) {
-      setState(() => _isGoogleLoading = false);
-    }
-
-    // 로그인 성공 시 온보딩 또는 홈으로 이동
-    if (success && context.mounted) {
-      if (isFirstLogin) {
-        // 최초 로그인: 온보딩 페이지로 이동
-        debugPrint(
-          '[LoginScreen] 🎯 온보딩 페이지로 이동 중... (${AppRoutes.onboarding})',
-        );
-        context.go(AppRoutes.onboarding);
-        debugPrint('[LoginScreen] ✅ 온보딩 화면 전환 완료');
-      } else {
-        // 기존 사용자: 홈으로 이동
-        debugPrint('[LoginScreen] 🏠 홈 화면으로 이동 중... (${AppRoutes.home})');
-        context.go(AppRoutes.home);
-        debugPrint('[LoginScreen] ✅ 홈 화면 전환 완료');
+      // 로그인 성공 시 온보딩 또는 홈으로 이동
+      if (success && context.mounted) {
+        if (requiresOnboarding) {
+          // 온보딩 필요: 온보딩 페이지로 이동
+          debugPrint(
+            '[LoginScreen] 🎯 온보딩 필요 → 온보딩 화면으로 이동 (${AppRoutes.onboarding})',
+          );
+          context.go(AppRoutes.onboarding);
+          debugPrint('[LoginScreen] ✅ 온보딩 화면 전환 완료');
+        } else {
+          // 온보딩 완료: 홈으로 이동
+          debugPrint('[LoginScreen] 🏠 온보딩 완료 → 홈 화면으로 이동 (${AppRoutes.home})');
+          context.go(AppRoutes.home);
+          debugPrint('[LoginScreen] ✅ 홈 화면 전환 완료');
+        }
+      } else if (!success && context.mounted) {
+        // 사용자가 취소한 경우 - 에러 메시지 표시하지 않음
+        debugPrint('[LoginScreen] ℹ️ 사용자가 구글 로그인을 취소함');
       }
-    } else if (!success && context.mounted) {
-      // 로그인 실패 시 에러 메시지 표시
-      debugPrint('[LoginScreen] ⚠️ 구글 로그인 실패 - 에러 메시지 표시');
-      AppSnackBar.showError(
-        context,
-        AppLocalizations.of(context).googleLoginFailed,
-      );
-    } else if (!context.mounted) {
-      debugPrint('[LoginScreen] ⚠️ context가 unmounted됨 - 화면 전환 불가');
+    } catch (e) {
+      // 에러 발생 시 백엔드에서 받은 구체적인 에러 메시지 표시
+      debugPrint('[LoginScreen] ⚠️ 구글 로그인 에러 발생: $e');
+
+      if (context.mounted) {
+        // Exception 메시지에서 'Exception: ' 접두사 제거
+        final errorMessage = e.toString().replaceFirst('Exception: ', '');
+
+        // 백엔드에서 받은 구체적인 에러 메시지 표시
+        // 백엔드가 이미 한국어 메시지를 제공하므로 그대로 사용
+        AppSnackBar.showError(
+          context,
+          errorMessage.isEmpty
+              ? AppLocalizations.of(context).googleLoginFailed
+              : errorMessage,
+        );
+      }
+    } finally {
+      // 로딩 종료
+      if (mounted) {
+        setState(() => _isGoogleLoading = false);
+      }
     }
   }
 

@@ -111,47 +111,48 @@ class ProfileHeader extends ConsumerWidget {
 
   /// 로그인 플랫폼 뱃지
   ///
-  /// Google, Kakao 등의 로그인 플랫폼을 표시 (AppColorPalette 활용)
+  /// Google, Kakao 등의 로그인 플랫폼을 표시 (mainColor 사용으로 가독성 개선)
   Widget _buildLoginPlatformBadge(BuildContext context, String platform) {
     final l10n = AppLocalizations.of(context);
 
-    // 플랫폼별 색상 (AppColorPalette 사용)
-    Color badgeColor;
+    // 플랫폼별 아이콘 설정
     IconData icon;
+    String displayName;
 
     switch (platform.toUpperCase()) {
       case 'GOOGLE':
-        badgeColor = AppColorPalette.googleButton;
         icon = Icons.g_mobiledata;
+        displayName = 'Google';
         break;
       case 'KAKAO':
-        badgeColor = AppColorPalette.kakaoButton;
         icon = Icons.chat_bubble;
+        displayName = 'Kakao';
         break;
       default:
-        badgeColor = AppColors.mainColor;
         icon = Icons.person;
+        displayName = platform;
     }
 
+    // mainColor 사용으로 통일된 디자인과 더 나은 가독성
     return Container(
       padding: AppSpacing.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: badgeColor.withValues(alpha: 0.1),
+        color: AppColors.mainColor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: badgeColor.withValues(alpha: 0.3),
+          color: AppColors.mainColor.withValues(alpha: 0.4),
           width: 1.w,
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16.w, color: badgeColor),
+          Icon(icon, size: AppSizes.iconSmall, color: AppColors.mainColor),
           AppSpacing.horizontalSpaceXS,
           Text(
-            l10n.accountSuffix(platform),
+            l10n.accountSuffix(displayName),
             style: AppTextStyles.buttonMediumMedium14.copyWith(
-              color: badgeColor,
+              color: AppColors.mainColor,
             ),
           ),
         ],

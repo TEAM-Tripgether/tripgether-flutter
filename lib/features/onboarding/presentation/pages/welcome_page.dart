@@ -45,79 +45,82 @@ class WelcomePage extends ConsumerWidget {
           stops: const [0.0, 0.5, 0.85], // 50% : 35% : 15% 비율
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.xxxl,
-        ), // 32px (OnboardingLayout과 동일)
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 상단 유연한 여백 (중앙 배치를 위한 균형)
-            const Spacer(flex: 2),
+      child: SafeArea(
+        top: false, // 상단은 SafeArea 제외 (전체 화면 그라데이션)
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.xxxl,
+          ), // 32px (OnboardingLayout과 동일)
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // 상단 유연한 여백 (중앙 배치를 위한 균형)
+              const Spacer(flex: 2),
 
-            // 체크 아이콘 (PNG)
-            Image.asset('assets/icons/check.png', width: 66.w, height: 66.h),
+              // 체크 아이콘 (PNG)
+              Image.asset('assets/icons/check.png', width: 66.w, height: 66.h),
 
-            // 아이콘과 메시지 사이 40px 간격
-            AppSpacing.verticalSpaceHuge,
+              // 아이콘과 메시지 사이 40px 간격
+              AppSpacing.verticalSpaceHuge,
 
-            // 통합 환영 메시지 (닉네임 포함)
-            Text(
-              l10n.onboardingWelcomeUnified(
-                nickname.isNotEmpty ? nickname : l10n.defaultNickname,
-              ),
-              style: AppTextStyles.greetingSemiBold20.copyWith(
-                color: AppColors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            // 하단 유연한 여백 (버튼을 하단에 배치)
-            const Spacer(flex: 3),
-
-            // SNS 장소추출 튜토리얼 버튼 (테두리 버튼, 국제화 적용)
-            OutlinedButton(
-              onPressed: () {
-                // TODO: 튜토리얼 화면으로 이동
-              },
-              style: OutlinedButton.styleFrom(
-                minimumSize: Size(double.infinity, 48.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.circle),
+              // 통합 환영 메시지 (닉네임 포함)
+              Text(
+                l10n.onboardingWelcomeUnified(
+                  nickname.isNotEmpty ? nickname : l10n.defaultNickname,
                 ),
-                side: BorderSide(
-                  color: AppColors.gradient2, // #5325CB - 선명한 보라 테두리
-                  width: 2.w,
+                style: AppTextStyles.greetingSemiBold20.copyWith(
+                  color: AppColors.white,
                 ),
+                textAlign: TextAlign.center,
               ),
-              child: Text(
-                l10n.snsPlaceExtractionTutorial,
-                style: AppTextStyles.bodyMedium16.copyWith(
-                  color: AppColors.mainColor, // #5325CB - 선명한 보라 텍스트
-                ),
-              ),
-            ),
 
-            AppSpacing.verticalSpaceLG,
+              // 하단 유연한 여백 (버튼을 하단에 배치)
+              const Spacer(flex: 3),
 
-            // 시작하기 버튼 (mainColor 배경 + 흰색 텍스트)
-            PrimaryButton(
-              text: l10n.startNow,
-              onPressed: () => context.go(AppRoutes.home),
-              isFullWidth: true,
-              // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
-              style: ButtonStyle(
-                shape: WidgetStateProperty.all(
-                  RoundedRectangleBorder(
+              // SNS 장소추출 튜토리얼 버튼 (테두리 버튼, 국제화 적용)
+              OutlinedButton(
+                onPressed: () {
+                  // TODO: 튜토리얼 화면으로 이동
+                },
+                style: OutlinedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 48.h),
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.circle),
+                  ),
+                  side: BorderSide(
+                    color: AppColors.gradient2, // #5325CB - 선명한 보라 테두리
+                    width: 2.w,
+                  ),
+                ),
+                child: Text(
+                  l10n.snsPlaceExtractionTutorial,
+                  style: AppTextStyles.bodyMedium16.copyWith(
+                    color: AppColors.mainColor, // #5325CB - 선명한 보라 텍스트
                   ),
                 ),
               ),
-            ),
 
-            // 하단 여백 (OnboardingLayout과 동일한 80px)
-            AppSpacing.verticalSpace80,
-          ],
+              AppSpacing.verticalSpaceLG,
+
+              // 시작하기 버튼 (mainColor 배경 + 흰색 텍스트)
+              PrimaryButton(
+                text: l10n.startNow,
+                onPressed: () => context.go(AppRoutes.home),
+                isFullWidth: true,
+                // 소셜 로그인 버튼과 동일한 완전한 pill 모양 적용
+                style: ButtonStyle(
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.circle),
+                    ),
+                  ),
+                ),
+              ),
+
+              // 하단 여백 (OnboardingLayout과 동일한 80px)
+              AppSpacing.verticalSpace80,
+            ],
+          ),
         ),
       ),
     );

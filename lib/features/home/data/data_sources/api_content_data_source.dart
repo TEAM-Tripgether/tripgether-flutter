@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:tripgether/core/errors/api_error.dart';
+import 'package:tripgether/core/utils/api_logger.dart';
 import '../../../../core/models/content_model.dart';
 import 'content_data_source.dart';
 
@@ -13,10 +16,8 @@ class ApiContentDataSource implements ContentDataSource {
   ApiContentDataSource({String? baseUrl, Dio? dio})
     : baseUrl =
           baseUrl ??
-          const String.fromEnvironment(
-            'API_BASE_URL',
-            defaultValue: 'https://api.tripgether.suhsaechan.kr',
-          ),
+          dotenv.env['API_BASE_URL'] ??
+          'https://api.tripgether.suhsaechan.kr',
       dio = dio ?? Dio();
 
   @override
@@ -40,8 +41,17 @@ class ApiContentDataSource implements ContentDataSource {
       } else {
         throw Exception('Failed to load contents: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'ApiContentDataSource.getContents');
+      if (e.response != null) {
+        final apiError = ApiError.fromDioError(e.response!.data);
+        throw Exception(apiError.message);
+      } else {
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      ApiLogger.logException(e, context: 'ApiContentDataSource.getContents');
+      rethrow;
     }
   }
 
@@ -58,8 +68,17 @@ class ApiContentDataSource implements ContentDataSource {
       } else {
         throw Exception('Failed to load content: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'ApiContentDataSource.getContentById');
+      if (e.response != null) {
+        final apiError = ApiError.fromDioError(e.response!.data);
+        throw Exception(apiError.message);
+      } else {
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      ApiLogger.logException(e, context: 'ApiContentDataSource.getContentById');
+      rethrow;
     }
   }
 
@@ -80,8 +99,17 @@ class ApiContentDataSource implements ContentDataSource {
       } else {
         throw Exception('Failed to add content: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'ApiContentDataSource.addContent');
+      if (e.response != null) {
+        final apiError = ApiError.fromDioError(e.response!.data);
+        throw Exception(apiError.message);
+      } else {
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      ApiLogger.logException(e, context: 'ApiContentDataSource.addContent');
+      rethrow;
     }
   }
 
@@ -102,8 +130,23 @@ class ApiContentDataSource implements ContentDataSource {
       } else {
         throw Exception('Failed to update content: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      ApiLogger.logDioError(
+        e,
+        context: 'ApiContentDataSource.updateContentStatus',
+      );
+      if (e.response != null) {
+        final apiError = ApiError.fromDioError(e.response!.data);
+        throw Exception(apiError.message);
+      } else {
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      ApiLogger.logException(
+        e,
+        context: 'ApiContentDataSource.updateContentStatus',
+      );
+      rethrow;
     }
   }
 
@@ -118,8 +161,17 @@ class ApiContentDataSource implements ContentDataSource {
       if (response.statusCode != 204 && response.statusCode != 200) {
         throw Exception('Failed to delete content: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      ApiLogger.logDioError(e, context: 'ApiContentDataSource.deleteContent');
+      if (e.response != null) {
+        final apiError = ApiError.fromDioError(e.response!.data);
+        throw Exception(apiError.message);
+      } else {
+        throw Exception('네트워크 연결을 확인해주세요.');
+      }
     } catch (e) {
-      throw Exception('API 호출 실패: $e');
+      ApiLogger.logException(e, context: 'ApiContentDataSource.deleteContent');
+      rethrow;
     }
   }
 }

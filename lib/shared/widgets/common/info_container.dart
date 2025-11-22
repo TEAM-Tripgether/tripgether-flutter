@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 
@@ -136,10 +137,10 @@ class SuccessInfoContainer extends StatelessWidget {
     return InfoContainer(
       title: title,
       titleIcon: Icons.check_circle_outline,
-      backgroundColor: Colors.green.shade50,
-      borderColor: Colors.green.shade200,
-      titleColor: Colors.green.shade700,
-      iconColor: Colors.green.shade700,
+      backgroundColor: AppColors.success.withValues(alpha: 0.1),
+      borderColor: AppColors.success.withValues(alpha: 0.3),
+      titleColor: AppColors.success,
+      iconColor: AppColors.success,
       actions: actions,
       child: child,
     );
@@ -164,10 +165,10 @@ class WarningInfoContainer extends StatelessWidget {
     return InfoContainer(
       title: title,
       titleIcon: Icons.warning_amber_outlined,
-      backgroundColor: Colors.orange.shade50,
-      borderColor: Colors.orange.shade200,
-      titleColor: Colors.orange.shade700,
-      iconColor: Colors.orange.shade700,
+      backgroundColor: AppColors.redAccent.withValues(alpha: 0.05),
+      borderColor: AppColors.redAccent.withValues(alpha: 0.2),
+      titleColor: AppColors.redAccent,
+      iconColor: AppColors.redAccent,
       actions: actions,
       child: child,
     );

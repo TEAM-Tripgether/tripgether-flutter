@@ -6,6 +6,8 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../providers/onboarding_notifier.dart';
+import '../../utils/onboarding_error_handler.dart';
 import '../widgets/onboarding_layout.dart';
 
 /// 약관 동의 페이지 (STEP 1/6)
@@ -26,11 +28,13 @@ import '../widgets/onboarding_layout.dart';
 /// - onboardingProvider에 약관 동의 상태 저장
 class TermsPage extends ConsumerStatefulWidget {
   final VoidCallback onNext;
+  final void Function(String currentStep) onStepChange;
   final PageController pageController;
 
   const TermsPage({
     super.key,
     required this.onNext,
+    required this.onStepChange,
     required this.pageController,
   });
 
@@ -44,6 +48,9 @@ class _TermsPageState extends ConsumerState<TermsPage> {
   bool _privacyPolicy = false;
   bool _ageConfirmation = false;
   bool _marketingConsent = false;
+
+  // API 호출 로딩 상태
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -66,6 +73,75 @@ class _TermsPageState extends ConsumerState<TermsPage> {
   /// 필수 약관 동의 상태 확인 (버튼 활성화 조건)
   bool get _isRequiredAgreed =>
       _termsOfService && _privacyPolicy && _ageConfirmation;
+
+  /// 계속하기 버튼 핸들러 (API 호출)
+  Future<void> _handleContinue() async {
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      // 1. onboardingProvider에 약관 동의 상태 저장 (로컬)
+      ref
+          .read(onboardingProvider.notifier)
+          .updateTermsAgreement(
+            termsOfService: _termsOfService,
+            privacyPolicy: _privacyPolicy,
+            ageConfirmation: _ageConfirmation,
+            marketingConsent: _marketingConsent,
+          );
+
+      // 2. API 호출
+      final response = await ref
+          .read(onboardingNotifierProvider.notifier)
+          .agreeTerms(
+            isServiceTermsAndPrivacyAgreed: _isRequiredAgreed,
+            isMarketingAgreed: _marketingConsent,
+          );
+
+      if (!mounted) return;
+
+      // 3. API 응답 성공 시 currentStep에 따라 페이지 이동
+      if (response != null) {
+        debugPrint(
+          '[TermsPage] ✅ 약관 동의 API 호출 성공 → 다음 단계: ${response.currentStep}',
+        );
+        widget.onStepChange(response.currentStep);
+      } else {
+        // API 호출 실패 - 사용자 친화적 에러 메시지
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '약관 동의 처리 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+                style: AppTextStyles.bodyMedium14.copyWith(
+                  color: AppColors.white,
+                ),
+              ),
+              backgroundColor: AppColors.error,
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.floating,
+              margin: EdgeInsets.all(AppSpacing.lg),
+              action: SnackBarAction(
+                label: '확인',
+                textColor: AppColors.white,
+                onPressed: () {},
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('[TermsPage] ❌ 약관 동의 API 호출 실패: $e');
+      if (mounted) {
+        await handleOnboardingError(context, ref, e);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   /// 전체 동의 토글 핸들러
   void _handleAgreeAll(bool? value) {
@@ -175,22 +251,8 @@ class _TermsPageState extends ConsumerState<TermsPage> {
       ),
       button: PrimaryButton(
         text: l10n.btnContinue,
-        onPressed: _isRequiredAgreed
-            ? () {
-                // onboardingProvider에 약관 동의 상태 저장
-                ref
-                    .read(onboardingProvider.notifier)
-                    .updateTermsAgreement(
-                      termsOfService: _termsOfService,
-                      privacyPolicy: _privacyPolicy,
-                      ageConfirmation: _ageConfirmation,
-                      marketingConsent: _marketingConsent,
-                    );
-
-                // 다음 페이지로 이동
-                widget.onNext();
-              }
-            : null,
+        onPressed: _isRequiredAgreed && !_isLoading ? _handleContinue : null,
+        isLoading: _isLoading,
         isFullWidth: true,
         style: ButtonStyle(
           shape: WidgetStateProperty.all(

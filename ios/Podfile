@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '15.0'
+platform :ios, '17.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -37,7 +37,7 @@ target 'Runner' do
     inherit! :search_paths
   end
 
-  target 'Share Extension' do
+  target 'share' do
     inherit! :search_paths
     # Share Extension은 static linkage를 사용하여 Flutter 모듈과 호환성 확보
     use_frameworks! :linkage => :static
@@ -53,10 +53,10 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
 
-    # iOS Deployment Target 최소 버전을 12.0으로 강제 설정
+    # iOS Deployment Target 최소 버전을 17.0으로 강제 설정
     # 이는 Xcode 빌드 경고를 해결하고 최신 iOS 기능 호환성을 보장합니다
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.0'
     end
   end
 end

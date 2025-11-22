@@ -42,6 +42,25 @@ mixin _$AuthResponse {
   /// 최초 로그인 시 추가 프로필 설정 화면으로 이동할 수 있습니다.
   bool get isFirstLogin => throw _privateConstructorUsedError;
 
+  /// 온보딩 필요 여부
+  ///
+  /// - true: 온보딩이 완료되지 않아 온보딩 화면으로 이동 필요
+  /// - false: 온보딩 완료, 홈 화면으로 이동
+  bool get requiresOnboarding => throw _privateConstructorUsedError;
+
+  /// 현재 온보딩 단계
+  ///
+  /// **가능한 값**:
+  /// - "TERMS": 약관 동의 필요
+  /// - "NAME": 이름 입력 필요
+  /// - "BIRTH_DATE": 생년월일 입력 필요
+  /// - "GENDER": 성별 선택 필요
+  /// - "INTERESTS": 관심사 선택 필요
+  /// - "COMPLETED": 온보딩 완료
+  ///
+  /// requiresOnboarding이 true일 때만 의미 있는 값
+  String get onboardingStep => throw _privateConstructorUsedError;
+
   /// Serializes this AuthResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
@@ -59,7 +78,13 @@ abstract class $AuthResponseCopyWith<$Res> {
     $Res Function(AuthResponse) then,
   ) = _$AuthResponseCopyWithImpl<$Res, AuthResponse>;
   @useResult
-  $Res call({String accessToken, String refreshToken, bool isFirstLogin});
+  $Res call({
+    String accessToken,
+    String refreshToken,
+    bool isFirstLogin,
+    bool requiresOnboarding,
+    String onboardingStep,
+  });
 }
 
 /// @nodoc
@@ -80,6 +105,8 @@ class _$AuthResponseCopyWithImpl<$Res, $Val extends AuthResponse>
     Object? accessToken = null,
     Object? refreshToken = null,
     Object? isFirstLogin = null,
+    Object? requiresOnboarding = null,
+    Object? onboardingStep = null,
   }) {
     return _then(
       _value.copyWith(
@@ -95,6 +122,14 @@ class _$AuthResponseCopyWithImpl<$Res, $Val extends AuthResponse>
                 ? _value.isFirstLogin
                 : isFirstLogin // ignore: cast_nullable_to_non_nullable
                       as bool,
+            requiresOnboarding: null == requiresOnboarding
+                ? _value.requiresOnboarding
+                : requiresOnboarding // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            onboardingStep: null == onboardingStep
+                ? _value.onboardingStep
+                : onboardingStep // ignore: cast_nullable_to_non_nullable
+                      as String,
           )
           as $Val,
     );
@@ -110,7 +145,13 @@ abstract class _$$AuthResponseImplCopyWith<$Res>
   ) = __$$AuthResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String accessToken, String refreshToken, bool isFirstLogin});
+  $Res call({
+    String accessToken,
+    String refreshToken,
+    bool isFirstLogin,
+    bool requiresOnboarding,
+    String onboardingStep,
+  });
 }
 
 /// @nodoc
@@ -130,6 +171,8 @@ class __$$AuthResponseImplCopyWithImpl<$Res>
     Object? accessToken = null,
     Object? refreshToken = null,
     Object? isFirstLogin = null,
+    Object? requiresOnboarding = null,
+    Object? onboardingStep = null,
   }) {
     return _then(
       _$AuthResponseImpl(
@@ -145,6 +188,14 @@ class __$$AuthResponseImplCopyWithImpl<$Res>
             ? _value.isFirstLogin
             : isFirstLogin // ignore: cast_nullable_to_non_nullable
                   as bool,
+        requiresOnboarding: null == requiresOnboarding
+            ? _value.requiresOnboarding
+            : requiresOnboarding // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        onboardingStep: null == onboardingStep
+            ? _value.onboardingStep
+            : onboardingStep // ignore: cast_nullable_to_non_nullable
+                  as String,
       ),
     );
   }
@@ -157,6 +208,8 @@ class _$AuthResponseImpl extends _AuthResponse {
     required this.accessToken,
     required this.refreshToken,
     required this.isFirstLogin,
+    required this.requiresOnboarding,
+    required this.onboardingStep,
   }) : super._();
 
   factory _$AuthResponseImpl.fromJson(Map<String, dynamic> json) =>
@@ -186,9 +239,30 @@ class _$AuthResponseImpl extends _AuthResponse {
   @override
   final bool isFirstLogin;
 
+  /// 온보딩 필요 여부
+  ///
+  /// - true: 온보딩이 완료되지 않아 온보딩 화면으로 이동 필요
+  /// - false: 온보딩 완료, 홈 화면으로 이동
+  @override
+  final bool requiresOnboarding;
+
+  /// 현재 온보딩 단계
+  ///
+  /// **가능한 값**:
+  /// - "TERMS": 약관 동의 필요
+  /// - "NAME": 이름 입력 필요
+  /// - "BIRTH_DATE": 생년월일 입력 필요
+  /// - "GENDER": 성별 선택 필요
+  /// - "INTERESTS": 관심사 선택 필요
+  /// - "COMPLETED": 온보딩 완료
+  ///
+  /// requiresOnboarding이 true일 때만 의미 있는 값
+  @override
+  final String onboardingStep;
+
   @override
   String toString() {
-    return 'AuthResponse(accessToken: $accessToken, refreshToken: $refreshToken, isFirstLogin: $isFirstLogin)';
+    return 'AuthResponse(accessToken: $accessToken, refreshToken: $refreshToken, isFirstLogin: $isFirstLogin, requiresOnboarding: $requiresOnboarding, onboardingStep: $onboardingStep)';
   }
 
   @override
@@ -201,13 +275,23 @@ class _$AuthResponseImpl extends _AuthResponse {
             (identical(other.refreshToken, refreshToken) ||
                 other.refreshToken == refreshToken) &&
             (identical(other.isFirstLogin, isFirstLogin) ||
-                other.isFirstLogin == isFirstLogin));
+                other.isFirstLogin == isFirstLogin) &&
+            (identical(other.requiresOnboarding, requiresOnboarding) ||
+                other.requiresOnboarding == requiresOnboarding) &&
+            (identical(other.onboardingStep, onboardingStep) ||
+                other.onboardingStep == onboardingStep));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, accessToken, refreshToken, isFirstLogin);
+  int get hashCode => Object.hash(
+    runtimeType,
+    accessToken,
+    refreshToken,
+    isFirstLogin,
+    requiresOnboarding,
+    onboardingStep,
+  );
 
   /// Create a copy of AuthResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -228,6 +312,8 @@ abstract class _AuthResponse extends AuthResponse {
     required final String accessToken,
     required final String refreshToken,
     required final bool isFirstLogin,
+    required final bool requiresOnboarding,
+    required final String onboardingStep,
   }) = _$AuthResponseImpl;
   const _AuthResponse._() : super._();
 
@@ -257,6 +343,27 @@ abstract class _AuthResponse extends AuthResponse {
   /// 최초 로그인 시 추가 프로필 설정 화면으로 이동할 수 있습니다.
   @override
   bool get isFirstLogin;
+
+  /// 온보딩 필요 여부
+  ///
+  /// - true: 온보딩이 완료되지 않아 온보딩 화면으로 이동 필요
+  /// - false: 온보딩 완료, 홈 화면으로 이동
+  @override
+  bool get requiresOnboarding;
+
+  /// 현재 온보딩 단계
+  ///
+  /// **가능한 값**:
+  /// - "TERMS": 약관 동의 필요
+  /// - "NAME": 이름 입력 필요
+  /// - "BIRTH_DATE": 생년월일 입력 필요
+  /// - "GENDER": 성별 선택 필요
+  /// - "INTERESTS": 관심사 선택 필요
+  /// - "COMPLETED": 온보딩 완료
+  ///
+  /// requiresOnboarding이 true일 때만 의미 있는 값
+  @override
+  String get onboardingStep;
 
   /// Create a copy of AuthResponse
   /// with the given fields replaced by the non-null parameter values.

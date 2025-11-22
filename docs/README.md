@@ -1,84 +1,196 @@
-# Tripgether 프로젝트 문서
+# 📚 Tripgether 기술 문서
 
-> 📚 **Tripgether Flutter 앱의 완벽한 기술 문서**
+**최종 업데이트**: 2025-01-20
+**프로젝트 버전**: 1.0.0
+**Flutter SDK**: 3.24.0+
 
-## 📋 문서 목록
-
-### 1. [Architecture.md](Architecture.md)
-**프로젝트 아키텍처 설명서**
-
-- 기술 스택 및 핵심 패키지
-- 프로젝트 구조 (Feature-First)
-- Clean Architecture + Riverpod 상태 관리
-- 라우팅 시스템 (GoRouter)
-- 인증 흐름 (Google OAuth + 백엔드 API)
-- 서비스 레이어 구조
-- 데이터 흐름 및 모범 사례
-
-**대상 독자**: 신규 개발자, 아키텍처 리뷰어, 기술 리더
+여행 계획을 함께 만들어가는 협업 플랫폼, **Tripgether**의 기술 문서 허브입니다.
 
 ---
 
-### 2. [DesignSystem.md](DesignSystem.md)
+## 🎯 빠른 시작 가이드
+
+### 신규 개발자를 위한 읽기 순서
+
+1. **[Development.md](Development.md)** - 개발 환경 설정 및 빌드 가이드
+2. **[Architecture.md](Architecture.md)** - 프로젝트 아키텍처와 데이터 흐름 이해
+3. **[DesignSystem.md](DesignSystem.md)** - 디자인 시스템과 UI 가이드라인
+4. **[Widgets.md](Widgets.md)** - 공용 위젯 컴포넌트 API 문서
+5. **[Services.md](Services.md)** - 핵심 서비스 모듈 문서
+6. **[BackendAPI.md](BackendAPI.md)** - 백엔드 API 명세서
+
+---
+
+## 📖 문서 구조
+
+### 🏗️ [Architecture.md](Architecture.md)
+**프로젝트 아키텍처 및 데이터 흐름**
+- Clean Architecture 기반 구조 설계
+- Riverpod을 활용한 상태 관리 패턴
+- GoRouter 기반 네비게이션 시스템
+- 데이터 레이어 및 리포지토리 패턴
+- 의존성 주입 및 모듈 구조
+
+### 🎨 [DesignSystem.md](DesignSystem.md)
 **디자인 시스템 가이드**
+- Material 3 기반 테마 시스템
+- 색상 팔레트 (Primary, Status, Social, Gradient)
+- 타이포그래피 시스템 (Headline, Title, Body, Label)
+- 간격 시스템 (Spacing, Radius, Elevation)
+- 반응형 디자인 가이드 (ScreenUtil)
 
-- 색상 시스템 (Primary, Status, Social 등)
-- 타이포그래피 (Pretendard 폰트)
-- 간격 시스템 (Spacing, Radius, Elevation, Sizes)
+### 🧩 [Widgets.md](Widgets.md)
+**공용 위젯 컴포넌트 라이브러리**
+- Common 위젯 (AppBar, EmptyState, Chip 등)
+- Button 컴포넌트 (Primary, Secondary, Social)
+- Card 컴포넌트 (SNS, Place, Course)
+- Input 컴포넌트 (SearchBar, TextField)
+- Layout 컴포넌트 (GradientBackground, SectionHeader)
+- Dialog 컴포넌트 (CommonDialog)
+
+### 🛠️ [Services.md](Services.md)
+**핵심 서비스 모듈**
+- Google OAuth 인증 서비스
+- Firebase Cloud Messaging (FCM)
+- 외부 앱 공유 수신 (Share Extension)
+- 로컬 알림 서비스
+- API 클라이언트 및 에러 핸들링
+
+### 💻 [Development.md](Development.md)
+**개발 환경 설정 가이드**
+- 개발 환경 요구사항
+- Flutter 프로젝트 설정
+- iOS/Android 빌드 설정
+- 디버깅 및 테스트 가이드
+- CI/CD 파이프라인
+
+### 🔌 [BackendAPI.md](BackendAPI.md)
+**백엔드 API 명세서**
+- 인증 API (소셜 로그인, JWT)
+- 회원 관리 API
+- 온보딩 API (약관, 프로필, 관심사)
+- 콘텐츠 API (SNS 콘텐츠 분석)
+- AI 서버 연동 API
+
+### 📱 [SharedContent.md](SharedContent.md)
+**공유 콘텐츠 처리 가이드**
+- iOS Share Extension 구현
+- Android Intent Filter 설정
+- 딥링크 처리 로직
+- 공유 데이터 파싱 및 검증
+
+---
+
+## 🚀 주요 기능
+
+### 완료된 기능 ✅
+- Google OAuth 소셜 로그인
+- JWT 기반 인증 시스템
+- 온보딩 플로우 (약관 → 이름 → 생년월일 → 성별 → 관심사)
+- FCM 푸시 알림 (Android 완료, iOS 설정 중)
+- 외부 앱 공유 수신 기능
 - 반응형 UI (ScreenUtil)
-- 컴포넌트 스타일 (Button, Card, Input 등)
-- 사용 예시 및 모범 사례
+- 다국어 지원 (한국어, 영어)
+- 디자인 시스템 구축
+- 공용 다이얼로그 시스템 (CommonDialog)
 
-**대상 독자**: UI 개발자, 디자이너, 신규 개발자
-
----
-
-### 3. [Widgets.md](Widgets.md)
-**공용 위젯 API 문서**
-
-- **Common**: AppBar, EmptyState, ChipList, ProfileAvatar
-- **Buttons**: Primary, Secondary, Tertiary, SocialLogin
-- **Cards**: SnsContent, Place, Course
-- **Inputs**: SearchBar, TextField
-- **Layout**: GradientBackground, SectionHeader, BottomNavigation
-- 사용 예시 및 개발 가이드라인
-
-**대상 독자**: UI 개발자, 신규 개발자
+### 진행 중 🚧
+- 백엔드 API 통합
+- SNS 콘텐츠 장소 추출 기능
+- 여행 계획 협업 기능
+- 실시간 동기화
+- iOS Push Notification 활성화
 
 ---
 
-### 4. [Services.md](Services.md)
-**핵심 서비스 API 문서**
+## 🛡️ 기술 스택
 
-- **GoogleAuthService**: Google OAuth 인증
-- **FirebaseMessagingService**: FCM 푸시 알림
-- **LocalNotificationsService**: 로컬 알림 표시
-- **SharingService**: 외부 앱 공유 수신
-- **DeviceInfoService**: 디바이스 정보 수집
-- **AuthApiService**: 백엔드 인증 API
-- 사용 예시 및 모범 사례
+### Frontend
+- **Framework**: Flutter 3.24.0+
+- **Language**: Dart 3.5.0+
+- **State Management**: Riverpod 2.5.1 (@riverpod 어노테이션)
+- **Routing**: GoRouter 14.6.2
+- **DI**: GetIt 8.0.2
 
-**대상 독자**: 백엔드 통합 개발자, 신규 개발자
+### Backend Integration
+- **API Client**: Dio 5.7.0
+- **Authentication**: JWT + Secure Storage
+- **Push Notification**: Firebase Cloud Messaging
+- **Social Login**: Google Sign-In 7.2.0
+
+### UI/UX
+- **Design System**: Material 3
+- **Responsive**: flutter_screenutil 5.9.3
+- **Images**: CachedNetworkImage 3.4.1
+- **Loading**: Shimmer 3.0.0
+- **Icons**: flutter_svg 2.0.14
+
+### Development Tools
+- **Code Generation**: build_runner, freezed
+- **Localization**: flutter_localizations
+- **Linting**: flutter_lints
+- **Testing**: flutter_test, mockito
 
 ---
 
-### 5. [Development.md](Development.md)
-**개발 환경 설정 및 워크플로우**
+## 📂 프로젝트 구조
 
-- 개발 환경 설정 (Flutter SDK, IDE, 환경 변수)
-- 프로젝트 실행 (iOS/Android)
-- 개발 워크플로우 (Feature 개발, Provider 작성, 라우팅)
-- 코드 스타일 가이드
-- 테스트 가이드 (Unit, Widget)
-- 디버깅 가이드 (DevTools, 로그 분석)
-- 빌드 및 배포 (APK, IPA, App Bundle)
-- 문제 해결 (FAQ)
-
-**대상 독자**: 모든 개발자, 신규 팀원
+```
+lib/
+├── core/                    # 핵심 모듈
+│   ├── theme/              # 디자인 시스템
+│   ├── router/             # 라우팅 설정
+│   ├── services/           # 글로벌 서비스
+│   ├── providers/          # 글로벌 프로바이더
+│   └── utils/              # 유틸리티
+│
+├── features/               # 기능별 모듈
+│   ├── auth/              # 인증 기능
+│   ├── onboarding/        # 온보딩
+│   ├── home/              # 홈 화면
+│   ├── mypage/            # 마이페이지
+│   ├── map/               # 지도
+│   └── course_market/     # 코스 마켓
+│
+├── shared/                 # 공용 컴포넌트
+│   └── widgets/           # 재사용 위젯
+│       ├── common/        # 공통 위젯
+│       ├── buttons/       # 버튼 컴포넌트
+│       ├── cards/         # 카드 컴포넌트
+│       ├── inputs/        # 입력 컴포넌트
+│       ├── layout/        # 레이아웃 컴포넌트
+│       └── dialogs/       # 다이얼로그 컴포넌트
+│
+└── l10n/                   # 다국어 리소스
+```
 
 ---
 
-## 🚀 빠른 시작 가이드
+## 🔧 개발 규칙
+
+### 코드 컨벤션
+- **명명 규칙**: Dart 공식 가이드라인 준수
+- **파일 구조**: Feature-first 구조
+- **상태 관리**: Riverpod @riverpod 어노테이션 사용
+- **에러 처리**: Result 패턴 또는 Exception 활용
+
+### Git 커밋 규칙
+```
+브랜치명 : 타입 : 설명 #이슈번호
+
+예시:
+온보딩 화면 수정 : fix : 성별 선택 버튼 오류 수정 #45
+```
+
+### 디자인 시스템 준수
+- 모든 UI는 `core/theme/` 디자인 시스템 사용 필수
+- 하드코딩된 색상, 크기, 텍스트 스타일 절대 금지
+- 공용 위젯 우선 사용 (`shared/widgets/`)
+- fontWeight 직접 설정 금지 (AppTextStyles 사용)
+
+---
+
+## 🚀 빠른 시작
 
 ### 1. 개발 환경 설정
 
@@ -90,25 +202,14 @@ cd tripgether-flutter
 # 2. 의존성 설치
 flutter pub get
 
-# 3. 환경 변수 설정 (.env 파일 생성)
-# 자세한 내용은 Development.md 참고
-
-# 4. Riverpod 코드 생성
+# 3. Riverpod 코드 생성
 dart run build_runner build --delete-conflicting-outputs
 
-# 5. 앱 실행
+# 4. 앱 실행
 flutter run
 ```
 
-### 2. 필수 읽기 순서 (신규 개발자)
-
-1. **[Development.md](Development.md)** - 개발 환경 설정
-2. **[Architecture.md](Architecture.md)** - 프로젝트 구조 이해
-3. **[DesignSystem.md](DesignSystem.md)** - 디자인 시스템 학습
-4. **[Widgets.md](Widgets.md)** - 공용 위젯 활용
-5. **[Services.md](Services.md)** - 서비스 레이어 이해
-
-### 3. 주요 명령어
+### 2. 주요 명령어
 
 ```bash
 # 개발 서버 실행
@@ -135,120 +236,17 @@ flutter build ios --release
 
 ---
 
-## 📁 프로젝트 구조 개요
+## 📞 연락처
 
-```
-lib/
-├── core/                    # 핵심 인프라
-│   ├── theme/               # 디자인 시스템 (필수 사용!)
-│   ├── router/              # 라우팅 (GoRouter)
-│   ├── services/            # 비즈니스 서비스
-│   ├── providers/           # 전역 Provider
-│   └── utils/               # 유틸리티 함수
-├── features/                # 기능별 모듈 (Feature-First)
-│   ├── auth/                # 인증
-│   ├── onboarding/          # 온보딩
-│   ├── home/                # 홈 탭
-│   ├── course_market/       # 코스마켓 탭
-│   └── ...
-├── shared/widgets/          # 공용 위젯 (재사용 필수!)
-│   ├── common/              # AppBar, EmptyState, Chip 등
-│   ├── buttons/             # Primary, Secondary, Tertiary
-│   ├── cards/               # SNS, Place, Course 카드
-│   ├── inputs/              # SearchBar, TextField
-│   └── layout/              # GradientBackground, SectionHeader
-├── l10n/                    # 다국어 (ARB)
-└── main.dart                # 앱 진입점
-```
+- **GitHub**: [TEAM-Tripgether/tripgether-flutter](https://github.com/TEAM-Tripgether/tripgether-flutter)
+- **API Server**: https://api.tripgether.suhsaechan.kr
+- **Swagger UI**: https://api.tripgether.suhsaechan.kr/docs/swagger-ui
 
 ---
 
-## 🎯 핵심 원칙
+## 📝 문서 관리
 
-### 1. 디자인 시스템 필수 사용
-모든 UI 개발은 `core/theme/` 시스템을 사용해야 합니다.
+이 문서는 프로젝트 진행에 따라 지속적으로 업데이트됩니다.
+문서 관련 문의사항이나 개선 제안은 GitHub Issues를 통해 등록해주세요.
 
-```dart
-// ✅ CORRECT
-Container(
-  color: AppColors.primary,
-  padding: AppSpacing.cardPadding,
-  child: Text('제목', style: AppTextStyles.titleLarge),
-)
-
-// ❌ WRONG
-Container(
-  color: Color(0xFF664BAE),
-  padding: EdgeInsets.all(16),
-  child: Text('제목', style: TextStyle(fontSize: 20)),
-)
-```
-
-### 2. 공용 위젯 재사용
-중복 UI 생성 절대 금지! `shared/widgets/`의 공용 위젯을 재사용하세요.
-
-```dart
-// ✅ CORRECT
-PrimaryButton(text: '저장', onPressed: _save)
-
-// ❌ WRONG
-ElevatedButton(child: Text('저장'), onPressed: _save)
-```
-
-### 3. Feature-First 구조
-기능별로 독립적인 모듈을 생성합니다.
-
-```
-features/auth/
-  ├── models/          # User, AuthState
-  ├── providers/       # UserNotifier
-  ├── services/        # AuthApiService
-  └── presentation/    # LoginPage, LoginForm
-```
-
----
-
-## 🛠️ 개발 도구
-
-### IDE 확장 프로그램 (권장)
-
-**VS Code**:
-- Flutter
-- Dart
-- Riverpod Snippets
-- Error Lens
-
-**Android Studio**:
-- Flutter
-- Dart
-- Rainbow Brackets
-
-### 유용한 링크
-- [Flutter DevTools](https://docs.flutter.dev/tools/devtools)
-- [Riverpod 공식 문서](https://riverpod.dev)
-- [Material Design 3](https://m3.material.io)
-- [Firebase Console](https://console.firebase.google.com)
-
----
-
-## 📞 문의 및 지원
-
-### GitHub Issues
-버그 리포트 및 기능 요청: [GitHub Issues](https://github.com/TEAM-Tripgether/tripgether-flutter/issues)
-
-### 팀 연락처
-- 프로젝트 매니저: [PM 이메일]
-- 기술 리더: [Tech Lead 이메일]
-
----
-
-## 📝 문서 업데이트 이력
-
-| 날짜 | 버전 | 변경 내용 |
-|------|------|----------|
-| 2025-11-10 | 1.0.0 | 초기 문서 작성 (Architecture, DesignSystem, Widgets, Services, Development) |
-
----
-
-**Last Updated**: 2025-11-10
-**Maintained by**: [@EM-H20](https://github.com/EM-H20)
+**Version**: 1.0.0

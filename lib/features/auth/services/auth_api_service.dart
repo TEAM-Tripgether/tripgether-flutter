@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tripgether/core/errors/api_error.dart';
+import 'package:tripgether/core/utils/api_logger.dart';
 import 'package:tripgether/features/auth/data/models/auth_request.dart';
 import 'package:tripgether/features/auth/data/models/auth_response.dart';
 
@@ -223,18 +225,33 @@ class AuthApiService {
     final mockRefreshToken =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock_refresh_token_payload.mock_signature';
 
-    // 최초 로그인 여부 (email 기반 랜덤 결정)
+    // 최초 로그인 여부
+    // - Debug 모드: 항상 true (온보딩 테스트 용이)
+    // - Release 모드: email 기반 판단 (실제 로직)
     // 실제로는 백엔드에서 DB 조회 후 결정
-    final isFirstLogin = request.email?.contains('first') ?? false;
+    final isFirstLogin = kDebugMode
+        ? true // 개발 중: 항상 온보딩 표시
+        : (request.email?.contains('first') ?? false); // 프로덕션: 실제 판단
+
+    // 온보딩 필요 여부와 현재 단계 (Mock 데이터)
+    // 실제로는 백엔드 DB에서 회원의 onboardingStatus 조회
+    final requiresOnboarding = isFirstLogin; // 첫 로그인이면 온보딩 필요
+    final onboardingStep = isFirstLogin ? 'TERMS' : 'COMPLETED';
 
     final response = AuthResponse(
       accessToken: mockAccessToken,
       refreshToken: mockRefreshToken,
       isFirstLogin: isFirstLogin,
+      requiresOnboarding: requiresOnboarding,
+      onboardingStep: onboardingStep,
     );
 
     debugPrint('[AuthApiService - Mock] ✅ Mock 로그인 성공');
     debugPrint('[AuthApiService - Mock] isFirstLogin: $isFirstLogin');
+    debugPrint(
+      '[AuthApiService - Mock] requiresOnboarding: $requiresOnboarding',
+    );
+    debugPrint('[AuthApiService - Mock] onboardingStep: $onboardingStep');
 
     return response;
   }
@@ -258,6 +275,8 @@ class AuthApiService {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
       isFirstLogin: false, // 재발급은 기존 사용자이므로 항상 false
+      requiresOnboarding: false, // 재발급 시점에는 이미 온보딩 완료
+      onboardingStep: 'COMPLETED',
     );
 
     debugPrint('[AuthApiService - Mock] ✅ Mock 토큰 재발급 성공');
@@ -327,24 +346,19 @@ class AuthApiService {
       }
     } on DioException catch (e) {
       // Dio 관련 에러 처리
-      debugPrint('[AuthApiService - Real] ❌ Dio 에러: ${e.type}');
-      debugPrint('[AuthApiService - Real] ❌ 에러 메시지: ${e.message}');
-
       if (e.type == DioExceptionType.connectionTimeout) {
         throw Exception('연결 시간 초과: 서버에 연결할 수 없습니다.');
       } else if (e.type == DioExceptionType.receiveTimeout) {
         throw Exception('응답 시간 초과: 서버 응답이 없습니다.');
       } else if (e.response != null) {
-        // 서버에서 에러 응답을 받은 경우
-        final statusCode = e.response!.statusCode;
-        final errorMessage = e.response!.data['message'] ?? '알 수 없는 오류';
-        throw Exception('로그인 실패 ($statusCode): $errorMessage');
+        ApiLogger.logDioError(e, context: 'AuthApiService.signIn');
+        final apiError = ApiError.fromDioError(e.response!.data);
+        throw Exception(apiError.message);
       } else {
         throw Exception('네트워크 오류: ${e.message}');
       }
     } catch (e) {
-      // 기타 예외 처리
-      debugPrint('[AuthApiService - Real] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'AuthApiService.signIn');
       rethrow;
     }
   }
@@ -392,22 +406,24 @@ class AuthApiService {
       debugPrint('[AuthApiService - Real] ❌ Dio 에러: ${e.type}');
 
       if (e.response != null) {
-        final statusCode = e.response!.statusCode;
+        ApiLogger.logDioError(e, context: 'AuthApiService.reissueToken');
+        final apiError = ApiError.fromDioError(e.response!.data);
 
-        // 401/404: Refresh Token 만료 또는 무효 → 재로그인 필요
-        if (statusCode == 401 || statusCode == 404) {
-          throw Exception('Refresh Token이 만료되었거나 유효하지 않습니다. 다시 로그인해주세요.');
+        // Refresh Token 관련 에러는 재로그인 필요
+        if (apiError.code == 'REFRESH_TOKEN_NOT_FOUND' ||
+            apiError.code == 'INVALID_REFRESH_TOKEN' ||
+            apiError.code == 'EXPIRED_REFRESH_TOKEN') {
+          throw Exception('${apiError.message} 다시 로그인해주세요.');
         }
 
-        final errorMessage = e.response!.data['message'] ?? '알 수 없는 오류';
-        throw Exception('토큰 재발급 실패 ($statusCode): $errorMessage');
+        throw Exception(apiError.message);
       } else if (e.type == DioExceptionType.connectionTimeout) {
         throw Exception('연결 시간 초과: 서버에 연결할 수 없습니다.');
       } else {
         throw Exception('네트워크 오류: ${e.message}');
       }
     } catch (e) {
-      debugPrint('[AuthApiService - Real] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'AuthApiService.reissueToken');
       rethrow;
     }
   }
@@ -469,15 +485,12 @@ class AuthApiService {
       // 성공 여부 반환
       return response.statusCode == 200;
     } on DioException catch (e) {
-      // Dio 관련 에러 처리
-      debugPrint('[AuthApiService - Real] ⚠️ Dio 에러: ${e.type}');
-      debugPrint('[AuthApiService - Real] ⚠️ 에러 메시지: ${e.message}');
-
+      ApiLogger.logDioError(e, context: 'AuthApiService.logout');
       // 로그아웃 API 실패해도 로컬 토큰은 이미 삭제되었으므로 true 반환
       // 네트워크 오류나 서버 오류는 사용자 경험에 영향을 주지 않음
       return true;
     } catch (e) {
-      debugPrint('[AuthApiService - Real] ⚠️ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'AuthApiService.logout');
       // 로그아웃 API 실패해도 로컬 토큰은 이미 삭제되었으므로 true 반환
       return true;
     }

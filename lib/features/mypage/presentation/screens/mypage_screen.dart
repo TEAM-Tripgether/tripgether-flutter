@@ -114,9 +114,7 @@ class MyPageScreen extends ConsumerWidget {
           padding: AppSpacing.only(left: 16, top: 24, right: 16, bottom: 12),
           child: Text(
             l10n.languageSelection,
-            style: AppTextStyles.titleSemiBold16.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: AppTextStyles.titleSemiBold16,
           ),
         ),
 
@@ -176,10 +174,11 @@ class MyPageScreen extends ConsumerWidget {
       contentPadding: AppSpacing.symmetric(horizontal: 16, vertical: 4),
       title: Text(
         languageName,
-        style: AppTextStyles.bodyMedium16.copyWith(
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          color: isSelected ? primaryColor : colorScheme.onSurface,
-        ),
+        style: isSelected
+            ? AppTextStyles.bodyMedium16.copyWith(color: primaryColor)
+            : AppTextStyles.bodyRegular14.copyWith(
+                color: colorScheme.onSurface,
+              ),
       ),
       trailing: isSelected
           ? Icon(
@@ -252,7 +251,6 @@ class MyPageScreen extends ConsumerWidget {
               Text(
                 '🧪 테스트 모드',
                 style: AppTextStyles.titleSemiBold14.copyWith(
-                  fontWeight: FontWeight.w700,
                   color: colorScheme.secondary,
                 ),
               ),
@@ -267,12 +265,7 @@ class MyPageScreen extends ConsumerWidget {
               context.push(AppRoutes.onboarding);
             },
             icon: Icon(Icons.assignment_outlined, size: AppSizes.iconMedium),
-            label: Text(
-              '온보딩 화면 테스트',
-              style: AppTextStyles.bodyRegular14.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            label: Text('온보딩 화면 테스트', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.secondaryContainer,
               foregroundColor: colorScheme.onSecondaryContainer,
@@ -288,7 +281,6 @@ class MyPageScreen extends ConsumerWidget {
           Text(
             'CommonDialog 테스트',
             style: AppTextStyles.titleSemiBold14.copyWith(
-              fontWeight: FontWeight.w600,
               color: colorScheme.secondary,
             ),
           ),
@@ -311,12 +303,7 @@ class MyPageScreen extends ConsumerWidget {
               );
             },
             icon: Icon(Icons.delete_outline, size: AppSizes.iconMedium),
-            label: Text(
-              '삭제 확인 다이얼로그',
-              style: AppTextStyles.bodyRegular14.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            label: Text('삭제 확인 다이얼로그', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.errorContainer,
               foregroundColor: colorScheme.onErrorContainer,
@@ -341,12 +328,7 @@ class MyPageScreen extends ConsumerWidget {
               );
             },
             icon: Icon(Icons.error_outline, size: AppSizes.iconMedium),
-            label: Text(
-              '오류 다이얼로그',
-              style: AppTextStyles.bodyRegular14.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            label: Text('오류 다이얼로그', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.secondaryContainer,
               foregroundColor: colorScheme.onSecondaryContainer,
@@ -373,12 +355,7 @@ class MyPageScreen extends ConsumerWidget {
               );
             },
             icon: Icon(Icons.help_outline, size: AppSizes.iconMedium),
-            label: Text(
-              '일반 확인 다이얼로그',
-              style: AppTextStyles.bodyRegular14.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            label: Text('일반 확인 다이얼로그', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.primaryContainer,
               foregroundColor: colorScheme.onPrimaryContainer,
@@ -402,12 +379,7 @@ class MyPageScreen extends ConsumerWidget {
               );
             },
             icon: Icon(Icons.check_circle_outline, size: AppSizes.iconMedium),
-            label: Text(
-              '성공 알림 다이얼로그',
-              style: AppTextStyles.bodyRegular14.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            label: Text('성공 알림 다이얼로그', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.tertiaryContainer,
               foregroundColor: colorScheme.onTertiaryContainer,
@@ -483,7 +455,6 @@ class MyPageScreen extends ConsumerWidget {
                 label: Text(
                   AppLocalizations.of(context).logout,
                   style: AppTextStyles.bodyMedium16.copyWith(
-                    fontWeight: FontWeight.w600,
                     color: colorScheme.error,
                   ),
                 ),
@@ -532,9 +503,7 @@ class MyPageScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: Text(
           l10n.logoutConfirmTitle,
-          style: AppTextStyles.titleSemiBold16.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTextStyles.titleSemiBold16,
         ),
         content: Text(
           l10n.logoutConfirmMessage,
@@ -547,7 +516,6 @@ class MyPageScreen extends ConsumerWidget {
             child: Text(
               l10n.btnCancel,
               style: AppTextStyles.buttonSelectSemiBold16.copyWith(
-                fontWeight: FontWeight.w600,
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
@@ -559,7 +527,6 @@ class MyPageScreen extends ConsumerWidget {
             child: Text(
               l10n.logout,
               style: AppTextStyles.buttonSelectSemiBold16.copyWith(
-                fontWeight: FontWeight.w600,
                 color: colorScheme.error,
               ),
             ),

@@ -6,7 +6,6 @@ part 'auth_request.g.dart';
 /// 인증 API 요청 데이터 모델
 ///
 /// 소셜 로그인, 토큰 재발급, 로그아웃 API 호출 시 사용됩니다.
-/// API 명세서: claudedocs/TRIPGETHER_API_SPECIFICATION.md 참고
 ///
 /// **Freezed 자동 생성**:
 /// - `copyWith()`: 불변 객체 업데이트

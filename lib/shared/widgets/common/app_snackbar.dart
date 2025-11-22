@@ -55,7 +55,7 @@ class AppSnackBar {
         backgroundColor: backgroundColor ?? AppColors.grayPurple,
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.allSmall),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
         margin: EdgeInsets.symmetric(
           horizontal: AppSpacing.xl, // 20
           vertical: AppSpacing.xl, // 20

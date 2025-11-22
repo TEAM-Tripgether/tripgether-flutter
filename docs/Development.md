@@ -1,455 +1,411 @@
-# Tripgether 개발 가이드
+# 📚 Development.md
 
-> 📚 **개발 환경 설정부터 배포까지 완벽 가이드**
+**최종 업데이트**: 2025-01-20
+**프로젝트 버전**: 1.0.0
+**Flutter SDK**: 3.24.0+
+
+---
 
 ## 📋 목차
 
-- [개발 환경 설정](#개발-환경-설정)
-- [프로젝트 실행](#프로젝트-실행)
+- [개발 환경 요구사항](#개발-환경-요구사항)
+- [프로젝트 설정](#프로젝트-설정)
 - [개발 워크플로우](#개발-워크플로우)
 - [코드 스타일 가이드](#코드-스타일-가이드)
 - [테스트 가이드](#테스트-가이드)
 - [디버깅 가이드](#디버깅-가이드)
 - [빌드 및 배포](#빌드-및-배포)
+- [CI/CD 파이프라인](#cicd-파이프라인)
 - [문제 해결](#문제-해결)
 
 ---
 
-## 개발 환경 설정
+## 🔧 개발 환경 요구사항
 
-### 필수 도구
+### 필수 소프트웨어
 
-#### 1. Flutter SDK
+| 도구 | 최소 버전 | 권장 버전 | 용도 |
+|------|----------|----------|------|
+| Flutter SDK | 3.24.0 | 3.24.5+ | 프레임워크 |
+| Dart SDK | 3.5.0 | 3.5.0+ | 언어 |
+| Android Studio | 2022.3 | 최신 버전 | Android 개발 |
+| Xcode | 14.0 | 15.0+ | iOS 개발 (macOS) |
+| VS Code | 1.80 | 최신 버전 | IDE (선택) |
+| CocoaPods | 1.11 | 1.14+ | iOS 의존성 (macOS) |
+
+### Flutter 설치 및 검증
 
 ```bash
-# Flutter SDK 설치 (버전 3.24.5 이상)
-flutter doctor
+# Flutter 설치 확인
+flutter doctor -v
 
-# 필요한 항목 모두 체크 확인:
-# [✓] Flutter (Channel stable, 3.24.5)
-# [✓] Android toolchain
-# [✓] Xcode (macOS만 해당)
-# [✓] Chrome (웹 개발 시)
-# [✓] Android Studio / VS Code
+# 예상 출력:
+[✓] Flutter (Channel stable, 3.24.5)
+[✓] Android toolchain - develop for Android devices
+[✓] Xcode - develop for iOS and macOS (macOS only)
+[✓] Chrome - develop for the web
+[✓] Android Studio
+[✓] VS Code
+[✓] Connected device (디바이스 연결 시)
+
+# 문제 해결
+flutter doctor --android-licenses  # Android 라이선스 동의
 ```
 
-#### 2. IDE 설정
+### IDE 설정
 
-**VS Code**:
-```bash
-# 필수 확장 프로그램 설치
-- Flutter (by Dart Code)
-- Dart (by Dart Code)
-- Riverpod Snippets (by Robert Brunhage)
-- Error Lens (by Alexander)
-```
+#### VS Code 필수 확장
+- Flutter (Dart-Code.flutter)
+- Dart (Dart-Code.dart-code)
+- Error Lens (usernamehw.errorlens)
+- Flutter Riverpod Snippets (robert-brunhage.flutter-riverpod-snippets)
+- GitLens (eamodio.gitlens)
 
-**Android Studio**:
-```bash
-# 필수 플러그인 설치
+#### Android Studio 필수 플러그인
 - Flutter
 - Dart
 - Rainbow Brackets
-```
+- Flutter Intl
 
-#### 3. 환경 변수 설정
+---
 
-`.env` 파일을 생성하고 다음 정보를 입력합니다:
+## 🚀 프로젝트 설정
 
-```env
-# Google OAuth
-GOOGLE_IOS_CLIENT_ID=your-ios-client-id
-GOOGLE_WEB_CLIENT_ID=your-web-client-id
-
-# Firebase (자동으로 생성됨)
-# google-services.json (Android)
-# GoogleService-Info.plist (iOS)
-
-# 백엔드 API
-API_BASE_URL=http://api.tripgether.suhsaechan.kr
-```
-
-**환경 변수 획득 방법**:
-1. Google Cloud Console → API 및 서비스 → 사용자 인증 정보
-2. Firebase Console → 프로젝트 설정 → 앱 추가
-3. 백엔드 개발자에게 API URL 요청
-
-### 프로젝트 클론
+### 1. 저장소 클론
 
 ```bash
-# 저장소 클론
+# HTTPS
 git clone https://github.com/TEAM-Tripgether/tripgether-flutter.git
-cd tripgether-flutter
 
-# 의존성 설치
+# SSH (권장)
+git clone git@github.com:TEAM-Tripgether/tripgether-flutter.git
+
+cd tripgether-flutter
+```
+
+### 2. 환경 변수 설정
+
+**.env 파일 생성** (프로젝트 루트):
+
+```env
+# API 설정
+API_BASE_URL=https://api.tripgether.suhsaechan.kr
+
+# Google OAuth
+GOOGLE_IOS_CLIENT_ID=your-ios-client-id.apps.googleusercontent.com
+GOOGLE_WEB_CLIENT_ID=your-web-client-id.apps.googleusercontent.com
+
+# Firebase (선택 - 자동 설정 가능)
+FIREBASE_API_KEY=your-firebase-api-key
+FIREBASE_PROJECT_ID=your-project-id
+```
+
+### 3. Firebase 설정
+
+```bash
+# Firebase CLI 설치
+npm install -g firebase-tools
+
+# FlutterFire CLI 설치
+dart pub global activate flutterfire_cli
+
+# Firebase 프로젝트 설정
+flutterfire configure
+
+# 생성되는 파일:
+# - android/app/google-services.json
+# - ios/Runner/GoogleService-Info.plist
+# - lib/firebase_options.dart
+```
+
+### 4. 의존성 설치
+
+```bash
+# Flutter 패키지 설치
 flutter pub get
+
+# iOS 의존성 설치 (macOS)
+cd ios && pod install && cd ..
 
 # Riverpod 코드 생성
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-### iOS 설정 (macOS만 해당)
+### 5. 플랫폼별 추가 설정
 
+#### iOS (macOS)
 ```bash
-# 1. CocoaPods 설치
-sudo gem install cocoapods
-
-# 2. iOS 의존성 설치
-cd ios
-pod install
-cd ..
-
-# 3. Xcode에서 서명 설정
+# Xcode 프로젝트 열기
 open ios/Runner.xcworkspace
 
-# Xcode에서:
-# - Runner → Signing & Capabilities
-# - Team 선택
-# - Bundle Identifier 확인 (kr.co.tripgether.app)
-```
-
-### Android 설정
-
-```bash
-# 1. google-services.json 추가
-# Firebase Console에서 다운로드 후 android/app/ 폴더에 복사
-
-# 2. Android SDK 경로 확인
-flutter doctor -v
-
-# 3. Gradle 동기화
-cd android
-./gradlew clean
-cd ..
-```
-
----
-
-## 프로젝트 실행
-
-### 기본 실행
-
-```bash
-# 개발 서버 실행 (핫 리로드 활성화)
-flutter run
-
-# 특정 디바이스에서 실행
-flutter devices                     # 연결된 디바이스 목록
-flutter run -d <device-id>          # 특정 디바이스에서 실행
-
-# 릴리즈 모드로 실행
-flutter run --release
-```
-
-### Riverpod 코드 생성 (자동 감지)
-
-```bash
-# 파일 변경 시 자동으로 코드 생성 (개발 중 권장)
-dart run build_runner watch
-
-# 또는 일회성 생성
-dart run build_runner build
-
-# 기존 파일 삭제 후 재생성
-dart run build_runner build --delete-conflicting-outputs
-```
-
-### 플랫폼별 실행
-
-#### iOS
-
-```bash
-# iOS 시뮬레이터 실행
-open -a Simulator
-
-# 특정 시뮬레이터 실행
-flutter run -d "iPhone 15 Pro"
-
-# 실제 디바이스 실행
-flutter run -d <device-id>
+# Signing & Capabilities에서:
+1. Team 선택
+2. Bundle Identifier 확인: kr.co.tripgether.app
+3. Push Notifications capability 추가
+4. Background Modes > Remote notifications 체크
 ```
 
 #### Android
-
 ```bash
-# 에뮬레이터 목록 확인
-flutter emulators
+# 최소 SDK 확인 (android/app/build.gradle)
+minSdkVersion 21
+targetSdkVersion 34
+compileSdkVersion 34
 
-# 에뮬레이터 실행
-flutter emulators --launch <emulator-id>
-
-# 실제 디바이스 실행
-flutter run -d <device-id>
+# 서명 키 생성 (배포용)
+keytool -genkey -v -keystore ~/tripgether.jks -keyalg RSA -keysize 2048 -validity 10000 -alias tripgether
 ```
 
 ---
 
-## 개발 워크플로우
+## 💻 개발 워크플로우
 
-### 새로운 Feature 개발
+### Git Flow 전략
+
+```
+main (production)
+  ├── develop (개발 통합)
+  │   ├── feature/기능명 (기능 개발)
+  │   ├── fix/버그명 (버그 수정)
+  │   └── refactor/개선사항 (리팩토링)
+  └── hotfix/긴급수정 (운영 긴급 수정)
+```
+
+### 브랜치 명명 규칙
 
 ```bash
-# 1. 새 브랜치 생성
-git checkout -b feature/코스-상세-화면
+# 형식: 날짜_#이슈번호_타입_카테고리_설명
 
-# 2. Feature 디렉토리 생성
-features/course_detail/
-  ├── models/          # 데이터 모델
-  ├── providers/       # 상태 관리
-  ├── services/        # API 서비스
-  └── presentation/    # UI 레이어
-      ├── pages/
-      └── widgets/
+# 예시:
+20251120_#83_기능개선_온보딩_온보딩_API_1차_수정
+20251112_#81_디자인_색상_레이아웃_1차_디자인_피드백
+```
 
-# 3. Provider 작성 (Riverpod @riverpod 어노테이션)
-@riverpod
-class CourseDetailNotifier extends _$CourseDetailNotifier {
-  @override
-  Future<Course> build(String courseId) async {
-    return await ref.read(courseServiceProvider).getCourseDetail(courseId);
-  }
-}
+### 커밋 메시지 규칙
 
-# 4. 코드 생성
-dart run build_runner build
+```bash
+# 형식: 브랜치명 : 타입 : 설명 #이슈번호
 
-# 5. UI 작성 (공용 위젯 재사용)
-class CourseDetailPage extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final courseState = ref.watch(courseDetailNotifierProvider(courseId));
+# 예시:
+온보딩 API 1차 수정 : feat : 관심사 API 마이그레이션 및 JWT 인증 추가 #83
+온보딩 화면 수정 : fix : 성별 선택 버튼 오류 수정 #45
+```
 
-    return courseState.when(
-      data: (course) => _buildContent(course),
-      loading: () => CircularProgressIndicator(),
-      error: (error, _) => ErrorWidget(error),
-    );
-  }
-}
+### 개발 프로세스
 
-# 6. 코드 포맷팅 및 분석
-dart format .
-flutter analyze
+```bash
+# 1. 이슈 생성 (GitHub Issues)
+제목: [feat] 코스 상세 화면 구현
+레이블: enhancement, frontend
 
-# 7. 커밋
+# 2. 브랜치 생성
+git checkout -b 20251120_#123_기능개발_코스_상세화면_구현
+
+# 3. 개발 진행
+# - TDD 방식으로 테스트 먼저 작성
+# - 기능 구현
+# - 코드 리뷰 반영
+
+# 4. 커밋
 git add .
-git commit -m "feature/코스-상세-화면 : feat : 코스 상세 화면 구현 #123"
+git commit -m "코스 상세화면 : feat : 코스 정보 표시 및 지도 연동 #123"
 
-# 8. 푸시
-git push origin feature/코스-상세-화면
-```
-
-### Provider 작성 패턴
-
-```dart
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'my_provider.g.dart';
-
-// 1. 비동기 Provider (데이터 로딩)
-@riverpod
-class UserNotifier extends _$UserNotifier {
-  @override
-  Future<User?> build() async {
-    // 초기 데이터 로드
-    return await _loadUser();
-  }
-
-  Future<void> updateUser(User user) async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      await _api.updateUser(user);
-      return user;
-    });
-  }
-}
-
-// 2. 동기 Provider (계산된 값)
-@riverpod
-String greeting(GreetingRef ref) {
-  final user = ref.watch(userNotifierProvider).value;
-  return '안녕하세요, ${user?.nickname ?? "게스트"}님!';
-}
-
-// 3. Family Provider (파라미터가 있는 Provider)
-@riverpod
-Future<Course> courseDetail(CourseDetailRef ref, String courseId) async {
-  return await ref.read(courseServiceProvider).getCourseDetail(courseId);
-}
-```
-
-### 라우팅 추가
-
-```dart
-// 1. core/router/routes.dart에 경로 추가
-class AppRoutes {
-  static const String courseDetail = '/course-market/detail/:courseId';
-}
-
-// 2. core/router/router.dart에 라우트 추가
-GoRoute(
-  path: AppRoutes.courseDetail,
-  builder: (context, state) {
-    final courseId = state.pathParameters['courseId']!;
-    return CourseDetailPage(courseId: courseId);
-  },
-),
-
-// 3. 화면 이동
-context.push('/course-market/detail/123');
-// 또는
-context.go(AppRoutes.courseDetail.replaceFirst(':courseId', '123'));
+# 5. PR 생성
+# 제목: [#123] 코스 상세 화면 구현
+# 설명: 구현 내용, 스크린샷, 테스트 결과
 ```
 
 ---
 
-## 코드 스타일 가이드
+## 📝 코드 스타일 가이드
 
-### Dart 스타일 가이드 준수
+### Dart 명명 규칙
 
 ```dart
-// ✅ CORRECT - 변수명은 camelCase
-final userName = 'John Doe';
-final isLoggedIn = true;
-
-// ✅ CORRECT - 클래스명은 PascalCase
-class UserProfile extends StatelessWidget {}
-
-// ✅ CORRECT - 파일명은 snake_case
+// 📁 파일명: snake_case
 user_profile_page.dart
 common_button.dart
+auth_service.dart
 
-// ❌ WRONG
-final UserName = 'John';         // 변수는 camelCase
-class userProfile {}             // 클래스는 PascalCase
-UserProfilePage.dart             // 파일은 snake_case
+// 📦 클래스명: PascalCase
+class UserProfile {}
+class AuthService {}
+class CourseDetailPage {}
+
+// 🔤 변수/함수명: camelCase
+final userName = 'John';
+void getUserData() {}
+bool isLoggedIn = false;
+
+// 🔢 상수: camelCase 또는 SCREAMING_SNAKE_CASE
+const apiTimeout = 30;
+const MAX_RETRY_COUNT = 3;
 ```
 
-### 필수 import 순서
+### Import 순서
 
 ```dart
-// 1. Dart 표준 라이브러리
+// 1. Dart SDK
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
 
-// 2. Flutter 라이브러리
+// 2. Flutter
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// 3. 외부 패키지 (알파벳 순서)
-import 'package:cached_network_image/cached_network_image.dart';
+// 3. 외부 패키지 (알파벳 순)
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 // 4. 프로젝트 내부 (상대 경로)
 import '../../../core/theme/app_colors.dart';
-import '../../../shared/widgets/buttons/common_button.dart';
 import '../../models/user.dart';
+
+// 5. Part files
+part 'user_provider.g.dart';
 ```
 
-### 주석 작성 규칙
+### 디자인 시스템 준수
 
 ```dart
-/// 공개 API에 대한 문서 주석 (3개의 슬래시)
-///
-/// 사용 예시:
-/// ```dart
-/// final user = await UserService.getUser('123');
-/// ```
-class UserService {
-  // 구현 상세에 대한 일반 주석 (2개의 슬래시)
-  Future<User> getUser(String userId) async {
-    // TODO: 캐싱 로직 추가
-    return await _api.fetchUser(userId);
+// ✅ CORRECT - 디자인 시스템 사용
+import 'package:tripgether/core/theme/app_colors.dart';
+import 'package:tripgether/core/theme/app_text_styles.dart';
+import 'package:tripgether/core/theme/app_spacing.dart';
+
+Text(
+  '제목',
+  style: AppTextStyles.titleBold24,
+)
+
+Container(
+  padding: EdgeInsets.all(AppSpacing.lg),
+  decoration: BoxDecoration(
+    color: AppColors.primary,
+    borderRadius: BorderRadius.circular(AppRadius.large),
+  ),
+)
+
+// ❌ WRONG - 하드코딩 금지
+TextStyle(fontSize: 24, fontWeight: FontWeight.bold)  // 금지!
+Color(0xFF6366F1)  // 금지!
+EdgeInsets.all(16)  // 금지!
+```
+
+### Riverpod 패턴
+
+```dart
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'course_provider.g.dart';
+
+// 1. AsyncNotifier 패턴 (추천)
+@riverpod
+class CourseDetail extends _$CourseDetail {
+  @override
+  Future<Course> build(String courseId) async {
+    return await ref.read(courseServiceProvider).getCourse(courseId);
+  }
+
+  Future<void> updateCourse(Course course) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      return await ref.read(courseServiceProvider).updateCourse(course);
+    });
   }
 }
-```
 
-### 한국어 주석 사용
+// 2. Provider 사용
+final courseAsync = ref.watch(courseDetailProvider(courseId));
 
-```dart
-// ✅ CORRECT - 한국어 주석으로 명확하게
-// 사용자가 로그인했는지 확인
-if (!isLoggedIn) {
-  // 로그인 화면으로 이동
-  context.go(AppRoutes.login);
-}
-
-// ❌ WRONG - 불필요한 영어 주석
-// Check if user is logged in
-if (!isLoggedIn) {
-  // Navigate to login screen
-  context.go(AppRoutes.login);
-}
+courseAsync.when(
+  data: (course) => CourseDetailView(course: course),
+  loading: () => const LoadingIndicator(),
+  error: (error, stack) => ErrorView(error: error),
+);
 ```
 
 ---
 
-## 테스트 가이드
+## 🧪 테스트 가이드
 
-### 단위 테스트 (Unit Test)
+### 테스트 구조
+
+```
+test/
+├── unit/           # 단위 테스트
+│   ├── services/
+│   └── models/
+├── widget/         # 위젯 테스트
+│   └── widgets/
+├── integration/    # 통합 테스트
+│   └── features/
+└── fixtures/       # 테스트 데이터
+```
+
+### 단위 테스트 예시
 
 ```dart
-// test/services/auth_service_test.dart
-
+// test/unit/services/auth_service_test.dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tripgether/core/services/auth/google_auth_service.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockAuthApi extends Mock implements AuthApiService {}
 
 void main() {
-  group('GoogleAuthService', () {
-    test('initialize should not throw error', () async {
-      expect(() async => await GoogleAuthService.initialize(), returnsNormally);
+  group('AuthService', () {
+    late AuthService authService;
+    late MockAuthApi mockApi;
+
+    setUp(() {
+      mockApi = MockAuthApi();
+      authService = AuthService(api: mockApi);
     });
 
-    test('signIn returns null when user cancels', () async {
-      final account = await GoogleAuthService.signIn();
-      // 사용자가 취소하면 null 반환
-      expect(account, isNull);
+    test('로그인 성공 시 토큰 저장', () async {
+      // Given
+      when(() => mockApi.signIn(any()))
+        .thenAnswer((_) async => AuthResponse(token: 'test-token'));
+
+      // When
+      final result = await authService.signIn('test@test.com');
+
+      // Then
+      expect(result.isSuccess, true);
+      verify(() => mockApi.signIn(any())).called(1);
     });
   });
 }
 ```
 
-### 위젯 테스트 (Widget Test)
+### 위젯 테스트 예시
 
 ```dart
-// test/widgets/buttons/common_button_test.dart
-
+// test/widget/widgets/common_button_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tripgether/shared/widgets/buttons/common_button.dart';
 
 void main() {
-  testWidgets('PrimaryButton renders correctly', (tester) async {
+  testWidgets('PrimaryButton 탭 이벤트 테스트', (tester) async {
+    // Given
+    var tapped = false;
+
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(
-          body: PrimaryButton(
-            text: '확인',
-            onPressed: () {},
-          ),
+        home: PrimaryButton(
+          text: '확인',
+          onPressed: () => tapped = true,
         ),
       ),
     );
 
-    expect(find.text('확인'), findsOneWidget);
-    expect(find.byType(ElevatedButton), findsOneWidget);
-  });
+    // When
+    await tester.tap(find.text('확인'));
+    await tester.pumpAndSettle();
 
-  testWidgets('PrimaryButton shows loading state', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: PrimaryButton(
-            text: '저장',
-            isLoading: true,
-            onPressed: () {},
-          ),
-        ),
-      ),
-    );
-
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    // Then
+    expect(tapped, true);
   });
 }
 ```
@@ -460,262 +416,283 @@ void main() {
 # 모든 테스트 실행
 flutter test
 
-# 특정 테스트 파일만 실행
-flutter test test/services/auth_service_test.dart
+# 특정 테스트만 실행
+flutter test test/unit/services/
 
-# 커버리지 생성
+# 커버리지 리포트 생성
 flutter test --coverage
+lcov --remove coverage/lcov.info '*.g.dart' '*.freezed.dart' -o coverage/lcov.info
 genhtml coverage/lcov.info -o coverage/html
 open coverage/html/index.html
+
+# 테스트 watch 모드
+flutter test --reporter expanded
 ```
 
 ---
 
-## 디버깅 가이드
+## 🐛 디버깅 가이드
 
-### 로그 출력
+### 로깅 전략
 
 ```dart
 import 'package:flutter/foundation.dart';
 
-// ✅ CORRECT - debugPrint 사용 (릴리즈 빌드에서 자동 제거)
-debugPrint('[ServiceName] 로그 메시지');
+// 개발용 로그 (릴리즈에서 자동 제거)
+debugPrint('[AuthService] 로그인 시도: $email');
 
-// ❌ WRONG - print 사용 (릴리즈 빌드에서도 출력됨)
-print('로그 메시지');
+// 조건부 로그
+if (kDebugMode) {
+  print('디버그 모드에서만 출력');
+}
+
+// 에러 로깅
+try {
+  // 코드
+} catch (e, stackTrace) {
+  debugPrint('에러 발생: $e');
+  debugPrintStack(stackTrace: stackTrace);
+}
 ```
 
-### Flutter DevTools
+### Flutter Inspector
 
 ```bash
 # DevTools 실행
 flutter pub global activate devtools
 flutter pub global run devtools
 
-# 또는 IDE에서 실행
-# VS Code: 디버그 패널 → "Open DevTools"
-# Android Studio: Run → Flutter DevTools
+# 기능:
+- Widget Inspector: 위젯 트리 탐색
+- Network: HTTP 요청/응답 모니터링
+- Performance: 프레임 분석
+- Memory: 메모리 누수 감지
+- Logging: 콘솔 로그 확인
 ```
 
-**주요 기능**:
-- **Flutter Inspector**: 위젯 트리 시각화, 레이아웃 문제 디버깅
-- **Network**: HTTP 요청/응답 모니터링
-- **Performance**: CPU/GPU 프로파일링
-- **Memory**: 메모리 누수 감지
-
-### 브레이크포인트 사용
+### 디버깅 팁
 
 ```dart
-// 1. 코드에서 직접 브레이크포인트 설정
-debugger(); // 여기서 멈춤
-
-// 2. IDE에서 라인 번호 클릭하여 브레이크포인트 설정
-
-// 3. 조건부 브레이크포인트
-if (userId == '123') {
-  debugger(); // userId가 '123'일 때만 멈춤
+// 1. 위젯 경계 표시
+void main() {
+  debugPaintSizeEnabled = true;  // 위젯 경계
+  runApp(MyApp());
 }
-```
 
-### 네트워크 디버깅
+// 2. 성능 오버레이
+MaterialApp(
+  showPerformanceOverlay: true,  // FPS 표시
+)
 
-```dart
-// HTTP 요청 로깅
-final response = await http.post(
-  Uri.parse('$baseUrl/api/auth/sign-in'),
-  headers: {'Content-Type': 'application/json'},
-  body: jsonEncode(requestData),
-);
-
-debugPrint('Request URL: $baseUrl/api/auth/sign-in');
-debugPrint('Request Body: ${jsonEncode(requestData)}');
-debugPrint('Response Status: ${response.statusCode}');
-debugPrint('Response Body: ${response.body}');
+// 3. 조건부 중단점
+if (user.id == 'debug-user') {
+  debugger();  // 여기서 중단
+}
 ```
 
 ---
 
-## 빌드 및 배포
-
-### Android 빌드
-
-```bash
-# 1. 디버그 빌드 (개발 중)
-flutter build apk --debug
-
-# 2. 릴리즈 빌드 (배포용)
-flutter build apk --release
-
-# 3. App Bundle 빌드 (Google Play Store 권장)
-flutter build appbundle --release
-
-# 빌드 결과 위치:
-# build/app/outputs/flutter-apk/app-release.apk
-# build/app/outputs/bundle/release/app-release.aab
-```
-
-### iOS 빌드 (macOS만 해당)
-
-```bash
-# 1. 시뮬레이터용 빌드
-flutter build ios --simulator
-
-# 2. 실제 디바이스용 빌드
-flutter build ios --release
-
-# 3. Archive 생성 (App Store 배포용)
-flutter build ipa --release
-
-# 빌드 결과 위치:
-# build/ios/iphoneos/Runner.app
-# build/ios/archive/Runner.xcarchive
-```
+## 📦 빌드 및 배포
 
 ### 버전 관리
 
 ```yaml
 # pubspec.yaml
-version: 1.0.0+1
-#        │   │ │
-#        │   │ └─ Build number (1, 2, 3, ...)
-#        │   └─── Patch version
-#        └─────── Major.Minor version
-
-# 버전 업데이트 예시:
-# 1.0.0+1 → 1.0.1+2 (버그 수정)
-# 1.0.1+2 → 1.1.0+3 (새 기능)
-# 1.1.0+3 → 2.0.0+4 (대규모 변경)
+name: tripgether
+version: 1.2.3+45
+#        │ │ │  │
+#        │ │ │  └── Build number (자동 증가)
+#        │ │ └───── Patch (버그 수정)
+#        │ └─────── Minor (기능 추가)
+#        └───────── Major (대규모 변경)
 ```
 
-### 난독화 (Obfuscation)
+### Android 빌드
 
 ```bash
-# 난독화 포함 릴리즈 빌드
-flutter build apk --release --obfuscate --split-debug-info=build/debug-info
-flutter build ios --release --obfuscate --split-debug-info=build/debug-info
+# 개발 빌드
+flutter build apk --debug
 
-# 난독화 심볼 저장 (크래시 리포트 분석용)
-# build/debug-info/ 디렉토리 백업 필수
+# 릴리즈 빌드 (APK)
+flutter build apk --release --obfuscate --split-debug-info=build/symbols
+
+# 릴리즈 빌드 (App Bundle - Play Store)
+flutter build appbundle --release --obfuscate --split-debug-info=build/symbols
+
+# 빌드 결과:
+# build/app/outputs/flutter-apk/app-release.apk
+# build/app/outputs/bundle/release/app-release.aab
+```
+
+### iOS 빌드
+
+```bash
+# 개발 빌드
+flutter build ios --debug
+
+# 릴리즈 빌드
+flutter build ios --release --obfuscate --split-debug-info=build/symbols
+
+# IPA 생성 (App Store)
+flutter build ipa --release --obfuscate --split-debug-info=build/symbols
+
+# 빌드 결과:
+# build/ios/iphoneos/Runner.app
+# build/ios/ipa/tripgether.ipa
+```
+
+### 빌드 최적화
+
+```bash
+# 앱 크기 분석
+flutter build apk --analyze-size
+flutter pub global activate devtools
+flutter pub global run devtools --appSizeBase=apk-code-size-analysis_01.json
+
+# ProGuard 규칙 (android/app/proguard-rules.pro)
+-keep class kr.co.tripgether.** { *; }
+-keep class com.google.firebase.** { *; }
 ```
 
 ---
 
-## 문제 해결
+## 🚀 CI/CD 파이프라인
+
+### GitHub Actions 워크플로우
+
+```yaml
+# .github/workflows/flutter_ci.yml
+name: Flutter CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.5'
+        channel: 'stable'
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Run tests
+      run: flutter test --coverage
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage/lcov.info
+```
+
+### Fastlane 배포 (선택)
+
+```ruby
+# ios/fastlane/Fastfile
+lane :beta do
+  build_app(
+    scheme: "Runner",
+    export_method: "app-store"
+  )
+  upload_to_testflight
+end
+
+# android/fastlane/Fastfile
+lane :beta do
+  gradle(
+    task: 'bundle',
+    build_type: 'Release'
+  )
+  upload_to_play_store(track: 'beta')
+end
+```
+
+---
+
+## 🔧 문제 해결
 
 ### 자주 발생하는 문제
 
-#### 1. "Gradle build failed with exit code 1"
-
+#### 1. Gradle 빌드 실패
 ```bash
-# 해결 방법:
+# 해결:
 cd android
 ./gradlew clean
 cd ..
 flutter clean
 flutter pub get
-flutter run
 ```
 
-#### 2. "CocoaPods not installed"
-
+#### 2. iOS 빌드 실패
 ```bash
-# 해결 방법:
-sudo gem install cocoapods
+# 해결:
 cd ios
-pod install
+rm -rf Pods Podfile.lock
+pod cache clean --all
+pod install --repo-update
 cd ..
+flutter clean
 ```
 
-#### 3. "The Flutter SDK is not available"
-
+#### 3. Riverpod 코드 생성 오류
 ```bash
-# 해결 방법:
-flutter doctor
-flutter upgrade
-```
-
-#### 4. "Build runner conflicts"
-
-```bash
-# 해결 방법:
+# 해결:
 dart run build_runner clean
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-#### 5. "Google Sign-In 실패"
-
+#### 4. 패키지 버전 충돌
 ```bash
-# 체크리스트:
-# 1. .env 파일에 GOOGLE_IOS_CLIENT_ID와 GOOGLE_WEB_CLIENT_ID 설정 확인
-# 2. Firebase Console에서 iOS/Android 앱 추가 확인
-# 3. google-services.json (Android) 및 GoogleService-Info.plist (iOS) 파일 확인
-# 4. iOS: Xcode에서 URL Schemes 설정 확인
+# 해결:
+flutter pub deps
+flutter pub upgrade --major-versions
 ```
 
-#### 6. "FCM 토큰 발급 실패 (iOS 시뮬레이터)"
+### 디버깅 체크리스트
 
-```bash
-# 정상 동작:
-# iOS 시뮬레이터에서는 FCM 토큰을 발급받을 수 없습니다.
-# 실제 iOS 디바이스에서 테스트하세요.
-
-# 확인 방법:
-final isPhysical = await DeviceInfoService.isPhysicalDevice();
-if (!isPhysical) {
-  debugPrint('⚠️ FCM은 실제 디바이스에서만 동작합니다');
-}
-```
-
-### 로그 분석
-
-```bash
-# Android 로그 확인
-flutter logs
-
-# iOS 로그 확인
-flutter logs -d <ios-device-id>
-
-# 특정 태그만 필터링
-flutter logs | grep "\[ServiceName\]"
-```
-
-### 성능 프로파일링
-
-```bash
-# CPU 프로파일링
-flutter run --profile
-
-# 메모리 프로파일링
-flutter run --profile --trace-skia
-
-# DevTools에서 분석
-flutter pub global run devtools
-```
+- [ ] `flutter doctor` 모든 항목 정상?
+- [ ] 최신 stable Flutter 버전 사용?
+- [ ] `pubspec.yaml` 의존성 버전 호환?
+- [ ] Firebase 설정 파일 올바른 위치?
+- [ ] 환경 변수 (.env) 제대로 설정?
+- [ ] iOS: 인증서 및 프로비저닝 프로파일 유효?
+- [ ] Android: 서명 키스토어 설정?
 
 ---
 
-## 추가 리소스
-
-### 공식 문서
-- [Flutter 공식 문서](https://flutter.dev/docs)
-- [Dart 언어 가이드](https://dart.dev/guides)
-- [Riverpod 공식 문서](https://riverpod.dev)
-- [GoRouter 가이드](https://pub.dev/packages/go_router)
+## 📚 참고 자료
 
 ### 프로젝트 문서
+- [README.md](README.md) - 프로젝트 개요
 - [Architecture.md](Architecture.md) - 아키텍처 설명
-- [DesignSystem.md](DesignSystem.md) - 디자인 시스템 가이드
-- [Widgets.md](Widgets.md) - 공용 위젯 API
-- [Services.md](Services.md) - 핵심 서비스 API
+- [DesignSystem.md](DesignSystem.md) - 디자인 시스템
+- [Widgets.md](Widgets.md) - 공용 위젯 가이드
+- [Services.md](Services.md) - 서비스 레이어
+- [BackendAPI.md](BackendAPI.md) - API 명세
 
-### 유용한 도구
-- [Flutter Inspector](https://docs.flutter.dev/tools/devtools/inspector)
-- [Dart DevTools](https://dart.dev/tools/dart-devtools)
-- [Android Studio Emulator](https://developer.android.com/studio/run/emulator)
-- [Xcode Simulator](https://developer.apple.com/documentation/xcode/running-your-app-in-simulator-or-on-a-device)
+### 외부 링크
+- [Flutter 공식 문서](https://docs.flutter.dev)
+- [Dart 스타일 가이드](https://dart.dev/effective-dart/style)
+- [Riverpod 문서](https://riverpod.dev)
+- [Material Design 3](https://m3.material.io)
+- [Firebase Flutter](https://firebase.google.com/docs/flutter/setup)
+
+### 팀 리소스
+- [GitHub Repository](https://github.com/TEAM-Tripgether/tripgether-flutter)
+- [API 문서](https://api.tripgether.suhsaechan.kr/docs)
+- [Figma 디자인](https://figma.com/tripgether) *(링크 필요)*
+- [Notion 위키](https://notion.so/tripgether) *(링크 필요)*
 
 ---
 
-**Last Updated**: 2025-11-10
-**Version**: 1.0.0
-**Maintained by**: [@EM-H20](https://github.com/EM-H20)
+**문서 버전**: 1.0.0
+**최종 수정**: 2025-01-20

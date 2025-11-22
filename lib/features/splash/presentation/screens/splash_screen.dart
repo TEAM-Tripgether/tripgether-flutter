@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -97,8 +98,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   ///
   /// UserNotifier의 상태에 따라 적절한 화면으로 이동합니다.
   ///
-  /// [hasUser] true: 사용자가 로그인되어 있음 (홈으로 이동)
-  ///          false: 로그인 안 됨 (로그인 화면으로 이동)
+  /// **라우팅 로직**:
+  /// 1. hasUser == false → 로그인 화면
+  /// 2. hasUser == true → onboardingStep 확인
+  ///    - onboardingStep == "COMPLETED" → 홈 화면
+  ///    - 기타 (TERMS, NAME, BIRTH_DATE, GENDER, INTERESTS) → 온보딩 화면
+  ///
+  /// [hasUser] true: 사용자가 로그인되어 있음, false: 로그인 안 됨
   void _navigateAfterSessionRestore(bool hasUser) async {
     // 이미 네비게이션 완료되었으면 중복 실행 방지
     if (_navigationCompleted) return;
@@ -115,8 +121,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     // 사용자 로그인 여부에 따라 자동 이동
     if (hasUser) {
-      debugPrint('[SplashScreen] ✅ 세션 복원 완료 → 홈 화면으로 이동');
-      context.go(AppRoutes.home);
+      // Secure Storage에서 onboardingStep 읽기
+      const storage = FlutterSecureStorage();
+      final onboardingStep = await storage.read(key: 'onboardingStep');
+
+      if (!mounted) return;
+
+      // onboardingStep이 COMPLETED가 아니면 온보딩 화면으로
+      if (onboardingStep != null && onboardingStep != 'COMPLETED') {
+        debugPrint(
+          '[SplashScreen] 🔄 온보딩 진행 중 (currentStep: $onboardingStep) → 온보딩 화면으로 이동',
+        );
+        context.go(AppRoutes.onboarding);
+      } else {
+        debugPrint('[SplashScreen] ✅ 세션 복원 완료 → 홈 화면으로 이동');
+        context.go(AppRoutes.home);
+      }
     } else {
       debugPrint('[SplashScreen] ℹ️ 저장된 세션 없음 → 로그인 화면으로 이동');
       context.go(AppRoutes.login);

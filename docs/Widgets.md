@@ -11,6 +11,7 @@
 - [Cards 위젯](#cards-위젯)
 - [Inputs 위젯](#inputs-위젯)
 - [Layout 위젯](#layout-위젯)
+- [Dialogs 위젯](#dialogs-위젯)
 - [개발 가이드라인](#개발-가이드라인)
 
 ---
@@ -30,11 +31,12 @@
 
 ```
 shared/widgets/
-├── common/         # 범용 위젯 (AppBar, EmptyState, Chip, Avatar)
-├── buttons/        # 버튼 위젯 (Primary, Secondary, Tertiary, Social Login)
-├── cards/          # 카드 위젯 (SNS Content, Place, Course)
-├── inputs/         # 입력 위젯 (SearchBar, TextField)
-└── layout/         # 레이아웃 위젯 (GradientBackground, SectionHeader, BottomNav)
+├── common/         # 범용 위젯 (AppBar, EmptyState, Chip, Avatar, ListTile, SnackBar)
+├── buttons/        # 버튼 위젯 (Primary, Secondary, Tertiary, Social Login, Link)
+├── cards/          # 카드 위젯 (SNS Content, Place Detail)
+├── inputs/         # 입력 위젯 (SearchBar, OnboardingTextField)
+├── layout/         # 레이아웃 위젯 (Gradient, SectionHeader, BottomNav, CollapsibleAppBar)
+└── dialogs/        # 다이얼로그 위젯 (CommonDialog)
 ```
 
 ---
@@ -49,6 +51,10 @@ import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
 import 'package:tripgether/shared/widgets/common/empty_state.dart';
 import 'package:tripgether/shared/widgets/common/chip_list.dart';
 import 'package:tripgether/shared/widgets/common/profile_avatar.dart';
+import 'package:tripgether/shared/widgets/common/custom_list_tile.dart';
+import 'package:tripgether/shared/widgets/common/app_snackbar.dart';
+import 'package:tripgether/shared/widgets/common/section_divider.dart';
+import 'package:tripgether/shared/widgets/common/info_container.dart';
 
 // Button 위젯
 import 'package:tripgether/shared/widgets/buttons/common_button.dart';
@@ -56,8 +62,7 @@ import 'package:tripgether/shared/widgets/buttons/social_login_button.dart';
 
 // Card 위젯
 import 'package:tripgether/shared/widgets/cards/sns_content_card.dart';
-import 'package:tripgether/shared/widgets/cards/place_card.dart';
-import 'package:tripgether/shared/widgets/cards/course_card.dart';
+import 'package:tripgether/shared/widgets/cards/place_detail_card.dart';
 
 // Input 위젯
 import 'package:tripgether/shared/widgets/inputs/search_bar.dart';
@@ -67,6 +72,10 @@ import 'package:tripgether/shared/widgets/inputs/onboarding_text_field.dart';
 import 'package:tripgether/shared/widgets/layout/gradient_background.dart';
 import 'package:tripgether/shared/widgets/layout/section_header.dart';
 import 'package:tripgether/shared/widgets/layout/bottom_navigation.dart';
+import 'package:tripgether/shared/widgets/layout/collapsible_title_sliver_app_bar.dart';
+
+// Dialogs 위젯
+import 'package:tripgether/shared/widgets/dialogs/common_dialog.dart';
 ```
 
 ---
@@ -81,13 +90,15 @@ import 'package:tripgether/shared/widgets/layout/bottom_navigation.dart';
 
 ```dart
 CommonAppBar.forHome(
+  title: 'Tripgether',
   onMenuPressed: () => _openDrawer(),
   onNotificationPressed: () => _openNotifications(),
 )
 ```
 
 **특징**:
-- 왼쪽: 메뉴 아이콘
+- 왼쪽: 햄버거 메뉴 또는 뒤로가기 (자동 감지)
+- 중앙: 제목 (기본값: "Tripgether")
 - 오른쪽: 알림 아이콘
 - Elevation: 0 (기본), 스크롤 시 1
 
@@ -96,7 +107,6 @@ CommonAppBar.forHome(
 ```dart
 CommonAppBar.forSubPage(
   title: '장소 목록',
-  onBackPressed: () => context.pop(),
   rightActions: [
     IconButton(
       icon: Icon(Icons.filter_list),
@@ -107,37 +117,55 @@ CommonAppBar.forSubPage(
 ```
 
 **특징**:
-- 왼쪽: 뒤로가기 아이콘
+- 왼쪽: 뒤로가기 아이콘 (자동)
 - 중앙: 제목
-- 오른쪽: 선택적 액션 버튼들
+- 오른쪽: 커스텀 액션 버튼들
 
 #### 3. 설정 화면 AppBar
 
 ```dart
 CommonAppBar.forSettings(
+  context: context,
   title: '프로필 편집',
-  onBackPressed: () => context.pop(),
   onSavePressed: () => _save(),
-  isSaveEnabled: _isFormValid,
 )
 ```
 
 **특징**:
 - 왼쪽: 뒤로가기 아이콘
 - 중앙: 제목
-- 오른쪽: 저장 버튼 (활성화/비활성화 상태)
+- 오른쪽: 체크 아이콘 (저장)
+
+#### 4. 온보딩 화면 AppBar
+
+```dart
+CommonAppBar.forOnboarding(
+  pageController: _pageController,
+  count: 5,
+  currentPage: _currentPage,
+  onBackPressed: () => _pageController.previousPage(),
+)
+```
+
+**특징**:
+- 중앙: 진행도 인디케이터
+- 왼쪽: 조건부 뒤로가기 (첫 페이지가 아닐 때만)
+- 배경 투명
 
 #### API
 
 | 파라미터 | 타입 | 기본값 | 설명 |
 |----------|------|--------|------|
 | `title` | `String?` | `null` | AppBar 제목 |
-| `onBackPressed` | `VoidCallback?` | `null` | 뒤로가기 버튼 콜백 |
+| `titleWidget` | `Widget?` | `null` | 커스텀 제목 위젯 |
+| `leftAction` | `Widget?` | `null` | 왼쪽 커스텀 액션 |
+| `rightActions` | `List<Widget>?` | `null` | 오른쪽 액션 버튼들 |
 | `onMenuPressed` | `VoidCallback?` | `null` | 메뉴 버튼 콜백 |
 | `onNotificationPressed` | `VoidCallback?` | `null` | 알림 버튼 콜백 |
-| `onSavePressed` | `VoidCallback?` | `null` | 저장 버튼 콜백 |
-| `isSaveEnabled` | `bool` | `true` | 저장 버튼 활성화 여부 |
-| `rightActions` | `List<Widget>?` | `null` | 오른쪽 커스텀 액션 버튼 |
+| `showBackButton` | `bool?` | `null` | 뒤로가기 버튼 강제 표시 |
+| `showMenuButton` | `bool` | `true` | 메뉴 버튼 표시 여부 |
+| `showNotificationIcon` | `bool` | `true` | 알림 아이콘 표시 여부 |
+| `elevation` | `double` | `0` | 그림자 높이 |
 
 ---
 
@@ -189,9 +217,16 @@ EmptyStates.networkError(
   action: PrimaryButton(text: '다시 시도', onPressed: _retry),
 )
 
+// 권한 없음
+EmptyStates.noPermission(
+  title: '접근 권한이 없습니다',
+  message: '관리자에게 문의하세요',
+)
+
 // 아직 추가된 항목 없음
 EmptyStates.notYetAdded(
   title: '아직 추가된 코스가 없습니다',
+  action: PrimaryButton(text: '코스 추가하기', onPressed: _addCourse),
 )
 ```
 
@@ -216,6 +251,8 @@ EmptyStates.notYetAdded(
 ChipList(
   items: ['데이트', '산책', '빈티지', '카페'],
   onItemTap: (item) => _handleChipTap(item),
+  horizontalSpacing: AppSpacing.xs.w,
+  verticalSpacing: AppSpacing.xs.h,
 )
 ```
 
@@ -231,6 +268,20 @@ SelectableChipList(
     });
   },
   singleSelection: false, // true면 단일 선택, false면 다중 선택
+  showBorder: true, // 외곽선 표시 여부
+)
+```
+
+**외곽선 없는 SNS 필터 예시**:
+```dart
+SelectableChipList(
+  items: ['전체', '유튜브', '인스타그램'],
+  selectedItems: {_selectedCategory},
+  singleSelection: true,
+  showBorder: false,
+  onSelectionChanged: (selected) {
+    setState(() => _selectedCategory = selected.first);
+  },
 )
 ```
 
@@ -242,16 +293,20 @@ SelectableChipList(
 |----------|------|--------|------|
 | `items` | `List<String>` | 필수 | 칩 텍스트 리스트 |
 | `onItemTap` | `void Function(String)?` | `null` | 칩 탭 시 콜백 |
-| `spacing` | `double?` | `8.w` | 칩 간 가로 간격 |
+| `horizontalSpacing` | `double?` | `8.w` | 칩 간 가로 간격 |
+| `verticalSpacing` | `double?` | `8.h` | 칩 간 세로 간격 |
+| `backgroundColor` | `Color?` | `AppColors.subColor2.withAlpha(0.95)` | 칩 배경색 |
+| `borderColor` | `Color?` | `AppColors.subColor2.withAlpha(0.9)` | 칩 테두리 색상 |
 
 **SelectableChipList**
 
 | 파라미터 | 타입 | 기본값 | 설명 |
 |----------|------|--------|------|
 | `items` | `List<String>` | 필수 | 칩 텍스트 리스트 |
-| `selectedItems` | `List<String>` | 필수 | 현재 선택된 항목들 |
-| `onSelectionChanged` | `void Function(List<String>)` | 필수 | 선택 변경 시 콜백 |
+| `selectedItems` | `Set<String>` | 필수 | 현재 선택된 항목들 |
+| `onSelectionChanged` | `void Function(Set<String>)` | 필수 | 선택 변경 시 콜백 |
 | `singleSelection` | `bool` | `false` | 단일 선택 모드 여부 |
+| `showBorder` | `bool` | `true` | 외곽선 표시 여부 |
 
 ---
 
@@ -260,27 +315,43 @@ SelectableChipList(
 프로필 이미지를 표시하는 아바타 위젯
 
 ```dart
+// 기본 아바타
 ProfileAvatar(
   imageUrl: user.profileImageUrl,
-  size: AppSizes.avatarLarge,
+  size: ProfileAvatarSize.large,
   onTap: () => _viewProfile(),
+)
+
+// 테두리 포함
+ProfileAvatar(
+  imageUrl: user.profileImageUrl,
+  size: ProfileAvatarSize.medium,
+  showBorder: true,
+)
+
+// 뱃지 포함
+ProfileAvatarWithBadge(
+  imageUrl: user.profileImageUrl,
+  size: ProfileAvatarSize.medium,
+  badgeIcon: Icons.verified,
+  badgeColor: Colors.blue,
+)
+
+// 편집 버튼 포함
+ProfileAvatarWithEdit(
+  imageUrl: user.profileImageUrl,
+  size: ProfileAvatarSize.xLarge,
+  onEditPressed: () => _pickImage(),
 )
 ```
 
-#### 크기 프리셋
+#### 크기 프리셋 (ProfileAvatarSize)
 
 ```dart
-// 작은 크기 (32)
-ProfileAvatar(imageUrl: url, size: AppSizes.avatarSmall)
-
-// 중간 크기 (48)
-ProfileAvatar(imageUrl: url, size: AppSizes.avatarMedium)
-
-// 큰 크기 (64)
-ProfileAvatar(imageUrl: url, size: AppSizes.avatarLarge)
-
-// 커스텀 크기
-ProfileAvatar(imageUrl: url, size: 80.w)
+ProfileAvatarSize.small   // 32dp (댓글, 채팅 리스트)
+ProfileAvatarSize.medium  // 56dp (앱바, 네비게이션 헤더)
+ProfileAvatarSize.large   // 80dp (프로필 헤더)
+ProfileAvatarSize.xLarge  // 120dp (프로필 수정 화면)
 ```
 
 #### API
@@ -288,9 +359,177 @@ ProfileAvatar(imageUrl: url, size: 80.w)
 | 파라미터 | 타입 | 기본값 | 설명 |
 |----------|------|--------|------|
 | `imageUrl` | `String?` | `null` | 프로필 이미지 URL |
-| `size` | `double` | `48.w` | 아바타 크기 (정사각형) |
+| `size` | `ProfileAvatarSize` | `ProfileAvatarSize.medium` | 아바타 크기 |
+| `showBorder` | `bool` | `false` | 테두리 표시 여부 |
 | `onTap` | `VoidCallback?` | `null` | 탭 시 콜백 |
-| `placeholder` | `Widget?` | `null` | 이미지 로딩 중 표시할 위젯 |
+| `backgroundColor` | `Color?` | `null` | 기본 아이콘 배경색 |
+
+---
+
+### CustomListTile, IconListTile, ActionListTile
+
+리스트 아이템을 일관된 스타일로 표시하는 위젯
+
+#### 기본 ListTile
+
+```dart
+CustomListTile(
+  leading: Icon(Icons.history),
+  title: '최근 검색어',
+  subtitle: '데이트 코스',
+  trailing: Text('2분 전'),
+  onTap: () => _navigateToSearch(),
+)
+```
+
+#### 아이콘 ListTile
+
+```dart
+IconListTile(
+  icon: Icons.history,
+  iconColor: AppColors.neutral60,
+  title: '최근 검색어',
+  subtitle: '데이트 코스',
+  trailing: Text('2분 전'),
+  onTap: () => _navigateToSearch(),
+)
+```
+
+#### 액션 버튼 ListTile
+
+```dart
+ActionListTile(
+  leading: Icon(Icons.search),
+  title: '데이트 코스',
+  subtitle: '방금 검색',
+  actionIcon: Icons.close,
+  onActionTap: () => _removeSearch(),
+  onTap: () => _navigateToSearch(),
+)
+```
+
+#### API
+
+| 파라미터 | 타입 | 기본값 | 설명 |
+|----------|------|--------|------|
+| `title` | `String` | 필수 | 제목 텍스트 |
+| `subtitle` | `String?` | `null` | 부제목 텍스트 |
+| `leading` | `Widget?` | `null` | 왼쪽 위젯 |
+| `trailing` | `Widget?` | `null` | 오른쪽 위젯 |
+| `onTap` | `VoidCallback?` | `null` | 타일 탭 시 콜백 |
+
+---
+
+### AppSnackBar
+
+앱 전체에서 사용하는 공용 SnackBar
+
+```dart
+// 기본 사용
+AppSnackBar.show(context, message: '로그인되었습니다');
+
+// 성공 메시지
+AppSnackBar.showSuccess(context, '저장되었습니다');
+
+// 정보 메시지
+AppSnackBar.showInfo(context, '언어가 변경되었습니다');
+
+// 오류 메시지
+AppSnackBar.showError(context, '오류가 발생했습니다');
+
+// 커스텀 duration
+AppSnackBar.show(
+  context,
+  message: '잠시 후 다시 시도해주세요',
+  duration: Duration(seconds: 5),
+);
+```
+
+#### API
+
+| 파라미터 | 타입 | 기본값 | 설명 |
+|----------|------|--------|------|
+| `message` | `String` | 필수 | 표시할 메시지 |
+| `duration` | `Duration` | `Duration(seconds: 3)` | 표시 시간 |
+| `backgroundColor` | `Color?` | `AppColors.grayPurple` | 배경색 |
+
+---
+
+### SectionDivider
+
+섹션 구분선 위젯
+
+```dart
+// 얇은 라인 구분선
+SectionDivider.thin()
+
+// 커스텀 패딩
+SectionDivider.thin(
+  horizontalPadding: AppSpacing.xxl,
+)
+
+// 두꺼운 배경 구분선
+SectionDivider.thick()
+
+// 커스텀 높이
+SectionDivider.thick(
+  height: AppSpacing.lg.h,
+)
+```
+
+#### API
+
+| 파라미터 | 타입 | 기본값 | 설명 |
+|----------|------|--------|------|
+| `type` | `SectionDividerType` | `thin` | 구분선 타입 (thin/thick) |
+| `horizontalPadding` | `double?` | `AppSpacing.lg` | 좌우 패딩 (thin 타입) |
+| `height` | `double?` | `AppSpacing.xs.h` | 높이 (thick 타입) |
+| `color` | `Color?` | `null` | 커스텀 색상 |
+
+---
+
+### InfoContainer
+
+정보 표시용 컨테이너 위젯
+
+```dart
+// 기본 사용
+InfoContainer(
+  title: '공유된 데이터',
+  titleIcon: Icons.info,
+  child: Text('콘텐츠 정보가 여기에 표시됩니다.'),
+  actions: [
+    TextButton(child: Text('확인'), onPressed: () {}),
+  ],
+)
+
+// 성공 메시지
+SuccessInfoContainer(
+  title: '저장 완료',
+  child: Text('변경사항이 성공적으로 저장되었습니다.'),
+)
+
+// 경고 메시지
+WarningInfoContainer(
+  title: '주의',
+  child: Text('이 작업은 되돌릴 수 없습니다.'),
+)
+
+// 에러 메시지
+ErrorInfoContainer(
+  title: '오류 발생',
+  child: Text('네트워크 연결을 확인해주세요.'),
+)
+```
+
+#### API
+
+| 파라미터 | 타입 | 기본값 | 설명 |
+|----------|------|--------|------|
+| `title` | `String?` | `null` | 제목 |
+| `titleIcon` | `IconData?` | `null` | 제목 아이콘 |
+| `child` | `Widget` | 필수 | 메인 콘텐츠 |
+| `actions` | `List<Widget>?` | `null` | 하단 액션 버튼들 |
 
 ---
 
@@ -391,6 +630,60 @@ TertiaryButton(
 
 ---
 
+### CommonIconButton
+
+일관된 스타일의 아이콘 버튼
+
+```dart
+CommonIconButton(
+  icon: Icons.favorite,
+  onPressed: () => _toggleFavorite(),
+  tooltip: '좋아요',
+  hasBackground: true,
+  backgroundColor: AppColors.primary,
+)
+```
+
+#### API
+
+| 파라미터 | 타입 | 기본값 | 설명 |
+|----------|------|--------|------|
+| `icon` | `IconData` | 필수 | 표시할 아이콘 |
+| `onPressed` | `VoidCallback?` | 필수 | 탭 시 콜백 |
+| `tooltip` | `String?` | `null` | 접근성 툴팁 |
+| `hasBackground` | `bool` | `false` | 배경 표시 여부 |
+
+---
+
+### LinkButton
+
+링크 바로가기 버튼
+
+```dart
+LinkButton(
+  text: '링크 바로가기',
+  onPressed: () => _openUrl(),
+)
+
+// 커스텀 아이콘
+LinkButton(
+  text: '상세보기',
+  iconPath: 'assets/icons/open.svg',
+  textStyle: AppTextStyles.labelMedium,
+  onPressed: () => _openDetail(),
+)
+```
+
+#### API
+
+| 파라미터 | 타입 | 기본값 | 설명 |
+|----------|------|--------|------|
+| `text` | `String` | 필수 | 버튼 텍스트 |
+| `onPressed` | `VoidCallback?` | 필수 | 탭 시 콜백 |
+| `iconPath` | `String?` | `'assets/icons/link.svg'` | SVG 아이콘 경로 |
+
+---
+
 ### ButtonGroup
 
 여러 버튼을 그룹화하여 표시 (가로/세로 배치)
@@ -436,7 +729,7 @@ SocialLoginButton(
   text: "Google로 시작하기",
   backgroundColor: AppColorPalette.googleButton,
   textColor: Colors.black,
-  icon: SvgPicture.asset('assets/icons/google.svg'),
+  icon: SvgPicture.asset('assets/icons/google.svg', width: 20.w),
   onPressed: () => _loginWithGoogle(),
   isLoading: _isGoogleLoading,
 )
@@ -481,7 +774,7 @@ SocialLoginButton(
 | `text` | `String` | 필수 | 버튼 텍스트 |
 | `backgroundColor` | `Color` | 필수 | 배경색 |
 | `textColor` | `Color` | 필수 | 텍스트 색상 |
-| `icon` | `Widget` | 필수 | 왼쪽 아이콘 (SvgPicture 등) |
+| `icon` | `Widget?` | `null` | 왼쪽 아이콘 (SvgPicture 등) |
 | `onPressed` | `VoidCallback` | 필수 | 탭 시 콜백 |
 | `isLoading` | `bool` | `false` | 로딩 상태 표시 여부 |
 
@@ -494,19 +787,21 @@ SocialLoginButton(
 SNS 콘텐츠를 표시하는 카드 (썸네일, 제목, 플랫폼 아이콘)
 
 ```dart
-// 단일 카드
+// 기본 사용 (텍스트 오버레이 포함)
 SnsContentCard(
   content: snsContent,
   onTap: () => _openContentDetail(snsContent),
-  width: 120.w,
-  isGridLayout: false,
+  width: AppSizes.snsCardWidth,
+  height: AppSizes.snsCardHeight,
 )
 
-// 그리드용 카드 (세로형)
+// 플랫폼 로고만 표시 (GridView용)
 SnsContentCard(
   content: snsContent,
+  showTextOverlay: false,
+  logoIconSize: AppSizes.iconSmall,
+  logoPadding: EdgeInsets.all(AppSpacing.sm),
   onTap: () => _openContentDetail(snsContent),
-  isGridLayout: true,
 )
 ```
 
@@ -514,24 +809,32 @@ SnsContentCard(
 
 | 파라미터 | 타입 | 기본값 | 설명 |
 |----------|------|--------|------|
-| `content` | `SnsContent` | 필수 | SNS 콘텐츠 데이터 모델 |
+| `content` | `ContentModel` | 필수 | SNS 콘텐츠 데이터 모델 |
 | `onTap` | `VoidCallback?` | `null` | 카드 탭 시 콜백 |
-| `width` | `double?` | `120.w` | 카드 너비 (isGridLayout=false일 때만) |
-| `margin` | `EdgeInsets?` | `EdgeInsets.only(right: 12)` | 카드 외부 여백 |
-| `isGridLayout` | `bool` | `false` | 그리드용 세로형 레이아웃 여부 |
+| `width` | `double?` | `AppSizes.snsCardWidth` | 카드 너비 |
+| `height` | `double?` | `AppSizes.snsCardHeight` | 카드 높이 |
+| `showTextOverlay` | `bool` | `true` | 텍스트 오버레이 표시 여부 |
+| `logoIconSize` | `double?` | `AppSizes.iconSmall` | 로고 아이콘 크기 (showTextOverlay=false) |
+| `logoPadding` | `EdgeInsets?` | `EdgeInsets.all(AppSpacing.sm)` | 로고 패딩 (showTextOverlay=false) |
 
 ---
 
-### SnsContentHorizontalList
+### PlaceDetailCard
 
-SNS 콘텐츠를 가로 스크롤 리스트로 표시
+장소 상세 정보를 표시하는 카드
 
 ```dart
-SnsContentHorizontalList(
-  contents: _snsContents,
-  title: '추천 콘텐츠',
-  onSeeMoreTap: () => _seeMoreContents(),
-  onContentTap: (content, index) => _openDetail(content),
+PlaceDetailCard(
+  category: '카페',
+  placeName: '스타벅스 강남점',
+  address: '서울 강남구 테헤란로 123',
+  rating: 4.5,
+  reviewCount: 92,
+  imageUrls: [
+    'https://example.com/image1.jpg',
+    'https://example.com/image2.jpg',
+  ],
+  onTap: () => _openPlaceDetail(),
 )
 ```
 
@@ -539,64 +842,12 @@ SnsContentHorizontalList(
 
 | 파라미터 | 타입 | 기본값 | 설명 |
 |----------|------|--------|------|
-| `contents` | `List<SnsContent>` | 필수 | SNS 콘텐츠 리스트 |
-| `title` | `String?` | `null` | 섹션 제목 |
-| `onSeeMoreTap` | `VoidCallback?` | `null` | 더보기 버튼 탭 시 콜백 |
-| `onContentTap` | `void Function(SnsContent, int)?` | `null` | 콘텐츠 탭 시 콜백 |
-
----
-
-### PlaceCard
-
-저장한 장소를 표시하는 카드
-
-```dart
-PlaceCard(
-  place: savedPlace,
-  onTap: () => _openPlaceDetail(savedPlace),
-  onImageTap: (index) => _viewImage(index),
-)
-```
-
-#### API
-
-| 파라미터 | 타입 | 기본값 | 설명 |
-|----------|------|--------|------|
-| `place` | `SavedPlace` | 필수 | 저장된 장소 데이터 모델 |
-| `onTap` | `VoidCallback?` | `null` | 카드 전체 탭 시 콜백 |
-| `onImageTap` | `void Function(int)?` | `null` | 이미지 탭 시 콜백 (인덱스 전달) |
-
----
-
-### CourseCard
-
-코스를 표시하는 카드
-
-```dart
-// 기본 코스 카드
-CourseCard(
-  course: courseData,
-  onTap: () => _openCourse(courseData),
-)
-
-// 내 주변 코스 카드 (거리 정보 포함)
-NearbyCourseCard(
-  course: courseData,
-  onTap: () => _openCourse(courseData),
-)
-
-// 인기 코스 카드 (좋아요, 조회수 포함)
-PopularCourseCard(
-  course: courseData,
-  onTap: () => _openCourse(courseData),
-)
-```
-
-#### API
-
-| 파라미터 | 타입 | 기본값 | 설명 |
-|----------|------|--------|------|
-| `course` | `Course` | 필수 | 코스 데이터 모델 |
+| `category` | `String` | 필수 | 카테고리 (예: "카페") |
+| `placeName` | `String` | 필수 | 장소 이름 |
+| `address` | `String` | 필수 | 주소 |
+| `rating` | `double` | 필수 | 평점 (예: 4.5) |
+| `reviewCount` | `int` | 필수 | 리뷰 수 (예: 92) |
+| `imageUrls` | `List<String>` | 필수 | 이미지 URL 리스트 |
 | `onTap` | `VoidCallback?` | `null` | 카드 탭 시 콜백 |
 
 ---
@@ -650,7 +901,7 @@ TripSearchBar(
 OnboardingTextField(
   controller: _nameController,
   hintText: '이름을 입력하세요',
-  prefixIcon: Icons.person,
+  maxLength: 10,
   keyboardType: TextInputType.name,
 )
 ```
@@ -659,11 +910,12 @@ OnboardingTextField(
 
 | 파라미터 | 타입 | 기본값 | 설명 |
 |----------|------|--------|------|
-| `controller` | `TextEditingController` | 필수 | 텍스트 컨트롤러 |
-| `hintText` | `String` | 필수 | 힌트 텍스트 |
-| `prefixIcon` | `IconData?` | `null` | 왼쪽 아이콘 |
-| `keyboardType` | `TextInputType` | `TextInputType.text` | 키보드 타입 |
-| `obscureText` | `bool` | `false` | 비밀번호 입력 모드 |
+| `controller` | `TextEditingController?` | `null` | 텍스트 컨트롤러 |
+| `hintText` | `String?` | `null` | 힌트 텍스트 |
+| `maxLength` | `int?` | `null` | 최대 입력 길이 |
+| `textAlign` | `TextAlign` | `TextAlign.center` | 텍스트 정렬 |
+| `keyboardType` | `TextInputType?` | `null` | 키보드 타입 |
+| `onChanged` | `void Function(String)?` | `null` | 값 변경 콜백 |
 
 ---
 
@@ -691,8 +943,7 @@ GradientBackground(
 | 파라미터 | 타입 | 기본값 | 설명 |
 |----------|------|--------|------|
 | `child` | `Widget` | 필수 | 그라데이션 배경 위에 표시할 위젯 |
-| `padding` | `EdgeInsets?` | `EdgeInsets.all(16)` | 내부 패딩 |
-| `gradient` | `Gradient?` | `AppColorPalette.homeHeaderGradient` | 커스텀 그라데이션 |
+| `padding` | `EdgeInsetsGeometry?` | `EdgeInsets.all(AppSpacing.lg)` | 내부 패딩 |
 
 ---
 
@@ -703,12 +954,13 @@ GradientBackground(
 ```dart
 SectionHeader(
   title: '추천 장소',
-  onSeeMoreTap: () => _seeMorePlaces(),
+  onMoreTap: () => _seeMorePlaces(),
 )
 
 // 더보기 버튼 없이
 SectionHeader(
   title: '내 정보',
+  showMoreButton: false,
 )
 
 // 커스텀 trailing 위젯
@@ -726,45 +978,28 @@ SectionHeader(
 | 파라미터 | 타입 | 기본값 | 설명 |
 |----------|------|--------|------|
 | `title` | `String` | 필수 | 섹션 제목 |
-| `onSeeMoreTap` | `VoidCallback?` | `null` | 더보기 버튼 탭 시 콜백 |
-| `seeMoreText` | `String?` | `'더보기'` | 더보기 버튼 텍스트 |
-| `trailing` | `Widget?` | `null` | 커스텀 우측 위젯 (더보기 대신) |
-| `showSeeMoreIcon` | `bool` | `true` | 더보기 아이콘 표시 여부 |
+| `onMoreTap` | `VoidCallback?` | `null` | 더보기 버튼 탭 시 콜백 |
+| `showMoreButton` | `bool` | `true` | 더보기 버튼 표시 여부 |
+| `trailing` | `Widget?` | `null` | 커스텀 우측 위젯 |
 
 ---
 
-### GreetingSection
-
-사용자 인사말 섹션 (홈 화면 상단)
-
-```dart
-GreetingSection(
-  userName: user.nickname,
-  greeting: '안녕하세요!',
-)
-```
-
-#### API
-
-| 파라미터 | 타입 | 기본값 | 설명 |
-|----------|------|--------|------|
-| `userName` | `String` | 필수 | 사용자 이름 |
-| `greeting` | `String?` | `'안녕하세요!'` | 인사말 텍스트 |
-
----
-
-### BottomNavigation
+### CustomBottomNavigationBar
 
 바텀 네비게이션 바
 
 ```dart
-BottomNavigation(
+CustomBottomNavigationBar(
   currentIndex: _currentIndex,
   onTap: (index) {
     setState(() {
       _currentIndex = index;
     });
     _navigateToTab(index);
+  },
+  onTabReselected: (index) {
+    // 같은 탭을 다시 클릭했을 때 스크롤을 최상단으로
+    _scrollToTop();
   },
 )
 ```
@@ -775,6 +1010,7 @@ BottomNavigation(
 |----------|------|--------|------|
 | `currentIndex` | `int` | 필수 | 현재 선택된 탭 인덱스 (0~4) |
 | `onTap` | `void Function(int)` | 필수 | 탭 선택 시 콜백 (인덱스 전달) |
+| `onTabReselected` | `void Function(int)?` | `null` | 탭 재선택 시 콜백 |
 
 **탭 인덱스**:
 - `0`: 홈
@@ -782,6 +1018,137 @@ BottomNavigation(
 - `2`: 지도
 - `3`: 일정
 - `4`: 마이페이지
+
+---
+
+### CollapsibleTitleSliverAppBar
+
+스크롤 시 제목이 점진적으로 축소되며 사라지는 SliverAppBar
+
+```dart
+// 홈 화면: 인사말 2줄 축소
+CollapsibleTitleSliverAppBar(
+  expandedHeight: 190.h,
+  title: SvgPicture.asset('logo.svg'),
+  actions: [NotificationButton()],
+  collapsibleContent: (expandRatio) => Opacity(
+    opacity: expandRatio,
+    child: Text('안녕하세요!'),
+  ),
+  bottom: PreferredSize(child: SearchBar()),
+)
+
+// SNS 콘텐츠: 제목 1줄 축소
+CollapsibleTitleSliverAppBar(
+  expandedHeight: 140.h,
+  actions: [PopupMenuButton()],
+  collapsibleContent: (expandRatio) => Opacity(
+    opacity: expandRatio,
+    child: Text('최근 본 콘텐츠'),
+  ),
+  bottom: PreferredSize(child: CategoryChips()),
+)
+```
+
+#### API
+
+| 파라미터 | 타입 | 기본값 | 설명 |
+|----------|------|--------|------|
+| `collapsibleContent` | `Widget Function(double)` | 필수 | 축소되는 제목 영역 빌더 (expandRatio: 0.0~1.0) |
+| `expandedHeight` | `double` | 필수 | SliverAppBar 확장 높이 |
+| `title` | `Widget?` | `null` | 상단 고정 타이틀 위젯 |
+| `actions` | `List<Widget>?` | `null` | 우측 액션 버튼들 |
+| `bottom` | `PreferredSizeWidget?` | `null` | 하단 고정 영역 |
+| `pinned` | `bool` | `true` | 스크롤 시 최소 높이 유지 여부 |
+
+---
+
+## Dialogs 위젯
+
+### CommonDialog
+
+공용 다이얼로그 컴포넌트
+
+#### 삭제 확인 다이얼로그
+
+```dart
+showDialog(
+  context: context,
+  builder: (context) => CommonDialog.forDelete(
+    title: '장소를 삭제하시겠습니까?',
+    description: '삭제된 장소는 복구할 수 없습니다.',
+    subtitle: '연관된 코스도 함께 삭제됩니다.',
+    onConfirm: () => _deletePlace(),
+  ),
+);
+```
+
+#### 오류 제보 다이얼로그
+
+```dart
+showDialog(
+  context: context,
+  builder: (context) => CommonDialog.forError(
+    title: '오류가 발생했습니다',
+    description: '네트워크 연결을 확인해주세요.',
+    subtitle: '오류 코드: 500',
+  ),
+);
+```
+
+#### 확인 다이얼로그
+
+```dart
+showDialog(
+  context: context,
+  builder: (context) => CommonDialog.forConfirm(
+    title: '변경사항을 저장하시겠습니까?',
+    description: '저장하지 않으면 변경사항이 사라집니다.',
+    onConfirm: () => _saveChanges(),
+  ),
+);
+```
+
+#### 성공 알림 다이얼로그
+
+```dart
+showDialog(
+  context: context,
+  builder: (context) => CommonDialog.forSuccess(
+    title: '저장 완료',
+    description: '변경사항이 성공적으로 저장되었습니다.',
+  ),
+);
+```
+
+#### 텍스트 입력 다이얼로그
+
+```dart
+final controller = TextEditingController();
+showDialog(
+  context: context,
+  builder: (_) => CommonDialog.forInput(
+    title: '오류 제보',
+    subtitle: '작은 오류 제보도 큰 개선으로 이어집니다.\n자유롭게 적어주세요',
+    inputHint: '오류 내용을 입력해주세요',
+    controller: controller,
+    onSubmit: (text) => _submitReport(text),
+  ),
+).then((_) => controller.dispose());
+```
+
+#### API
+
+| 파라미터 | 타입 | 기본값 | 설명 |
+|----------|------|--------|------|
+| `title` | `String` | 필수 | 다이얼로그 제목 |
+| `description` | `String` | 필수 | 메인 설명 텍스트 |
+| `subtitle` | `String?` | `null` | 부가 설명 텍스트 |
+| `leftButtonText` | `String?` | `null` | 왼쪽 버튼 텍스트 |
+| `rightButtonText` | `String?` | `null` | 오른쪽 버튼 텍스트 |
+| `onLeftPressed` | `VoidCallback?` | `null` | 왼쪽 버튼 콜백 |
+| `onRightPressed` | `VoidCallback?` | `null` | 오른쪽 버튼 콜백 |
+| `autoDismiss` | `bool` | `true` | 자동 닫기 여부 |
 
 ---
 
@@ -847,46 +1214,6 @@ class ExistingCard extends StatelessWidget {
 - ❌ 비즈니스 로직이 화면에 종속된 위젯
 - ❌ 디자인이 자주 변경될 가능성이 높은 실험적 UI
 
-### 4. 테스트 작성
-
-```dart
-// test/widgets/buttons/common_button_test.dart
-
-void main() {
-  testWidgets('PrimaryButton renders correctly', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: PrimaryButton(
-            text: '확인',
-            onPressed: () {},
-          ),
-        ),
-      ),
-    );
-
-    expect(find.text('확인'), findsOneWidget);
-    expect(find.byType(ElevatedButton), findsOneWidget);
-  });
-
-  testWidgets('PrimaryButton shows loading state', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: PrimaryButton(
-            text: '저장',
-            isLoading: true,
-            onPressed: () {},
-          ),
-        ),
-      ),
-    );
-
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-  });
-}
-```
-
 ---
 
 ## 모범 사례
@@ -907,7 +1234,7 @@ Column(
   children: [
     SectionHeader(
       title: '추천 장소',
-      onSeeMoreTap: () => _seeMore(),
+      onMoreTap: () => _seeMore(),
     ),
     AppSpacing.verticalSpaceLG,
     PlaceListSection(places: _places),
@@ -960,6 +1287,6 @@ Center(
 
 ---
 
-**Last Updated**: 2025-11-10
-**Version**: 1.0.0
+**Last Updated**: 2025-11-20
+**Version**: 2.0.0
 **Maintained by**: [@EM-H20](https://github.com/EM-H20)
