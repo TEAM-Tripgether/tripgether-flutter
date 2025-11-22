@@ -148,13 +148,13 @@ class AuthApiService {
           deviceId = await DeviceIdManager.getOrCreateDeviceId();
 
           debugPrint('[AuthApiService] ✅ FCM 데이터 수집 완료');
-          debugPrint('[AuthApiService]   - 토큰: ${fcmToken.substring(0, 20)}...');
+          debugPrint(
+            '[AuthApiService]   - 토큰: ${fcmToken.substring(0, 20)}...',
+          );
           debugPrint('[AuthApiService]   - 타입: $deviceType');
           debugPrint('[AuthApiService]   - 기기ID: $deviceId');
         } else {
-          debugPrint(
-            '[AuthApiService] ⚠️ FCM 토큰 없음 (시뮬레이터 또는 권한 거부)',
-          );
+          debugPrint('[AuthApiService] ⚠️ FCM 토큰 없음 (시뮬레이터 또는 권한 거부)');
           debugPrint('[AuthApiService] → FCM 없이 로그인 진행');
         }
       } catch (e) {
