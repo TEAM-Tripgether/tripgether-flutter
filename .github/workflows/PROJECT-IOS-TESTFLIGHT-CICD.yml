@@ -321,7 +321,7 @@ jobs:
               <dict>
                   <key>com.tripgether.alom</key>
                   <string>${{ steps.install_profile.outputs.profile_name }}</string>
-                  <key>com.tripgether.alom.Share-Extension</key>
+                  <key>com.tripgether.alom.share</key>
                   <string>${{ steps.install_profile.outputs.share_profile_name }}</string>
               </dict>
               <key>signingStyle</key>
@@ -410,14 +410,14 @@ jobs:
           # Share Extension 타겟 설정 (있는 경우)
           share_profile = '${{ steps.install_profile.outputs.share_profile_name }}'
           if !share_profile.empty?
-            share_target = project.targets.find { |t| t.name == 'Share Extension' }
+            share_target = project.targets.find { |t| t.name == 'share' }
             if share_target
               share_target.build_configurations.each do |config|
                 if config.name == 'Release'
                   config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
                   config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Distribution'
                   config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = share_profile
-                  puts "✅ Share Extension target configured with profile: #{share_profile}"
+                  puts "✅ share target configured with profile: #{share_profile}"
                 end
               end
             end
