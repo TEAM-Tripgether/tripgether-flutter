@@ -4,6 +4,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tripgether/core/errors/api_error.dart';
 import 'package:tripgether/core/utils/api_logger.dart';
+import 'package:tripgether/core/services/fcm/firebase_messaging_service.dart';
+import 'package:tripgether/core/services/device_info_service.dart';
+import 'package:tripgether/core/services/device_id_manager.dart';
 import 'package:tripgether/features/auth/data/models/auth_request.dart';
 import 'package:tripgether/features/auth/data/models/auth_response.dart';
 
@@ -102,18 +105,19 @@ class AuthApiService {
 
   /// 소셜 로그인 API
   ///
-  /// Google OAuth 인증 후 백엔드에 사용자 정보를 전송하여 JWT 토큰을 발급받습니다.
+  /// Google OAuth 인증 후 백엔드에 사용자 정보 + FCM 정보를 전송하여 JWT 토큰을 발급받습니다.
   ///
   /// **API 명세**:
   /// - Method: POST
   /// - Path: /auth/sign-in
-  /// - Body: AuthRequest (socialPlatform, email, nickname, profileUrl)
+  /// - Body: AuthRequest (socialPlatform, email, nickname, profileUrl, fcmToken, deviceType, deviceId)
   ///
   /// **흐름**:
   /// 1. Google OAuth 인증 완료
-  /// 2. 사용자 정보를 백엔드에 전송
-  /// 3. 백엔드에서 JWT Access Token + Refresh Token 발급
-  /// 4. isFirstLogin 플래그 반환 (최초 로그인 여부)
+  /// 2. FCM 토큰 + 디바이스 정보 수집 (선택적)
+  /// 3. 사용자 정보 + FCM 정보를 백엔드에 전송
+  /// 4. 백엔드에서 JWT Access Token + Refresh Token 발급
+  /// 5. isFirstLogin 플래그 반환 (최초 로그인 여부)
   ///
   /// [request] Google 로그인 정보가 포함된 요청 객체
   ///
@@ -124,10 +128,57 @@ class AuthApiService {
     debugPrint('[AuthApiService] Mode: ${_useMockData ? "MOCK" : "REAL"}');
 
     try {
+      // ═══════════════════════════════════════════════════════════════
+      // 🆕 FCM 푸시 알림 데이터 수집 (멀티 디바이스 지원)
+      // ═══════════════════════════════════════════════════════════════
+      String? fcmToken;
+      String? deviceType;
+      String? deviceId;
+
+      try {
+        debugPrint('[AuthApiService] 📱 FCM 데이터 수집 시작...');
+
+        // 1. FCM 토큰 가져오기
+        final fcmService = FirebaseMessagingService.instance();
+        fcmToken = await fcmService.getFcmToken();
+
+        // 2. FCM 토큰이 있으면 디바이스 정보도 수집
+        if (fcmToken != null) {
+          deviceType = DeviceInfoService.getDeviceType();
+          deviceId = await DeviceIdManager.getOrCreateDeviceId();
+
+          debugPrint('[AuthApiService] ✅ FCM 데이터 수집 완료');
+          debugPrint('[AuthApiService]   - 토큰: ${fcmToken.substring(0, 20)}...');
+          debugPrint('[AuthApiService]   - 타입: $deviceType');
+          debugPrint('[AuthApiService]   - 기기ID: $deviceId');
+        } else {
+          debugPrint(
+            '[AuthApiService] ⚠️ FCM 토큰 없음 (시뮬레이터 또는 권한 거부)',
+          );
+          debugPrint('[AuthApiService] → FCM 없이 로그인 진행');
+        }
+      } catch (e) {
+        // FCM 수집 실패해도 로그인은 계속 진행 (중요!)
+        debugPrint('[AuthApiService] ⚠️ FCM 데이터 수집 실패 (로그인은 계속 진행)');
+        debugPrint('[AuthApiService] 에러: $e');
+      }
+
+      // ═══════════════════════════════════════════════════════════════
+      // FCM 데이터가 포함된 요청 생성
+      // ═══════════════════════════════════════════════════════════════
+      final requestWithFcm = request.copyWith(
+        fcmToken: fcmToken,
+        deviceType: deviceType,
+        deviceId: deviceId,
+      );
+
+      // ═══════════════════════════════════════════════════════════════
+      // Mock/Real API 호출
+      // ═══════════════════════════════════════════════════════════════
       if (_useMockData) {
-        return await _mockSignIn(request);
+        return await _mockSignIn(requestWithFcm);
       } else {
-        return await _realSignIn(request);
+        return await _realSignIn(requestWithFcm);
       }
     } catch (e) {
       debugPrint('[AuthApiService] ❌ 로그인 실패: $e');
