@@ -22,6 +22,7 @@
 - [유틸리티 서비스](#유틸리티-서비스)
   - [SharingService](#sharingservice)
   - [DeviceInfoService](#deviceinfoservice)
+  - [DeviceIdManager](#deviceidmanager)
 - [개발 가이드라인](#개발-가이드라인)
 
 ---
@@ -135,15 +136,50 @@ await googleAuthService.signOut();
 | `refreshToken()` | `POST /api/auth/reissue` | 토큰 재발급 |
 | `logout()` | `POST /api/auth/logout` | 로그아웃 |
 
-#### 사용 예시
+#### 요청 데이터 (AuthRequest)
+
+**필수 필드**:
+```dart
+{
+  "socialPlatform": "GOOGLE" | "KAKAO",  // 소셜 로그인 플랫폼
+  "email": "user@example.com",           // 사용자 이메일
+  "name": "홍길동"                        // 사용자 이름
+}
+```
+
+**선택 필드 - 프로필**:
+```dart
+{
+  "profileUrl": "https://example.com/profile.jpg"  // 프로필 이미지 URL
+}
+```
+
+**선택 필드 - FCM 푸시 알림 (멀티 디바이스 지원)**:
+```dart
+{
+  "fcmToken": "dXQzM2k1N2RkZjM0OGE3YjczZGY5...",     // FCM 토큰
+  "deviceType": "IOS" | "ANDROID",                  // 기기 타입
+  "deviceId": "550e8400-e29b-41d4-a716-446655440000" // 기기 고유 ID (UUID v4)
+}
+```
+
+⚠️ **중요**: `fcmToken`, `deviceType`, `deviceId`는 **3개 모두 함께 전송** 또는 **모두 생략**해야 합니다. 일부만 전송 시 400 Bad Request 반환됩니다.
+
+#### 전체 요청 예시
 
 ```dart
-// 소셜 로그인
-final response = await authApiService.signIn(
+// Google 로그인 + FCM 멀티 디바이스 지원
+final request = AuthRequest.signIn(
   socialPlatform: 'GOOGLE',
   email: 'user@example.com',
   name: '홍길동',
+  profileUrl: 'https://example.com/profile.jpg',
+  fcmToken: 'dXQzM2k1N2RkZjM0OGE3YjczZGY5...',
+  deviceType: 'IOS',
+  deviceId: '550e8400-e29b-41d4-a716-446655440000',
 );
+
+final response = await authApiService.signIn(request);
 
 // JWT 토큰 저장
 await secureStorage.write(
@@ -162,6 +198,32 @@ if (response.requiresOnboarding) {
 }
 ```
 
+#### FCM 데이터 자동 수집
+
+`AuthApiService.signIn()`은 내부적으로 FCM 데이터를 자동 수집합니다:
+
+```dart
+// 1. FCM 토큰 가져오기
+final fcmToken = await FirebaseMessagingService.instance().getFcmToken();
+
+// 2. FCM 토큰이 있으면 디바이스 정보도 수집
+if (fcmToken != null) {
+  final deviceType = DeviceInfoService.getDeviceType();      // "IOS" | "ANDROID"
+  final deviceId = await DeviceIdManager.getOrCreateDeviceId(); // UUID v4
+}
+
+// 3. 로그인 요청에 FCM 데이터 포함
+final requestWithFcm = request.copyWith(
+  fcmToken: fcmToken,
+  deviceType: deviceType,
+  deviceId: deviceId,
+);
+```
+
+**Graceful Degradation**:
+- iOS 시뮬레이터: FCM 토큰 없이 로그인 진행 ✅
+- FCM 실패: 로그인은 정상 진행 (푸시 알림만 비활성) ✅
+
 ---
 
 ## 푸시 알림 서비스
@@ -178,54 +240,65 @@ FCM(Firebase Cloud Messaging) 푸시 알림 관리 서비스
 | 메서드 | 설명 | 반환 타입 |
 |--------|------|-----------|
 | `init()` | FCM 서비스 초기화 | `Future<void>` |
-| `getToken()` | FCM 토큰 가져오기 | `Future<String?>` |
-| `requestPermission()` | 알림 권한 요청 | `Future<bool>` |
-| `setupMessageHandlers()` | 메시지 핸들러 설정 | `void` |
+| `getFcmToken()` | FCM 토큰 가져오기 (백엔드 등록용) | `Future<String?>` |
 
-#### 메시지 처리
+#### 특징
+
+- **싱글톤 패턴**: `FirebaseMessagingService.instance()` 사용
+- **자동 토큰 관리**: 토큰 갱신 시 자동 리스너 등록
+- **iOS 시뮬레이터 대응**: 토큰 없어도 에러 없이 null 반환
+
+#### 사용 예시
 
 ```dart
-class FirebaseMessagingService {
-  // 초기화
-  static Future<void> init() async {
-    // iOS 권한 요청
-    await _requestIOSPermission();
+// 1. main.dart에서 초기화
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-    // FCM 토큰 가져오기
-    final fcmToken = await FirebaseMessaging.instance.getToken();
-    debugPrint('FCM Token: $fcmToken');
+  // LocalNotificationsService 먼저 초기화
+  final localNotificationsService = LocalNotificationsService();
+  await localNotificationsService.init();
 
-    // 토큰 갱신 리스너
-    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-      // 서버에 새 토큰 전송
-      _updateTokenOnServer(newToken);
-    });
+  // FirebaseMessagingService 초기화
+  final fcmService = FirebaseMessagingService.instance();
+  await fcmService.init(
+    localNotificationsService: localNotificationsService,
+  );
 
-    // 메시지 핸들러 설정
-    _setupMessageHandlers();
-  }
-
-  static void _setupMessageHandlers() {
-    // 포그라운드 메시지
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _showLocalNotification(message);
-    });
-
-    // 백그라운드 메시지 클릭
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _handleMessageClick(message);
-    });
-
-    // 종료 상태에서 메시지 클릭
-    FirebaseMessaging.instance
-      .getInitialMessage()
-      .then((RemoteMessage? message) {
-        if (message != null) {
-          _handleMessageClick(message);
-        }
-      });
-  }
+  runApp(MyApp());
 }
+
+// 2. 로그인 시 FCM 토큰 가져오기
+final fcmService = FirebaseMessagingService.instance();
+final fcmToken = await fcmService.getFcmToken();
+
+if (fcmToken != null) {
+  print('✅ FCM 토큰: ${fcmToken.substring(0, 20)}...');
+  // 백엔드로 토큰 전송 (AuthApiService에서 자동 처리됨)
+} else {
+  print('⚠️ FCM 토큰 없음 (시뮬레이터 또는 권한 거부)');
+}
+
+// 3. 메시지 처리
+// - Foreground: LocalNotificationsService로 알림 표시
+// - Background: 자동으로 시스템 알림 표시
+// - Terminated: 알림 탭 시 앱 실행 및 메시지 처리
+```
+
+#### 토큰 갱신 처리
+
+```dart
+// FCM 토큰은 다음 경우 자동 갱신됩니다:
+// - 앱 재설치
+// - 앱 데이터 삭제
+// - Firebase SDK 업데이트
+// - iOS: 기기 복원 또는 OS 업데이트
+
+// 토큰 갱신 시 자동으로 리스너가 호출됨 (init() 내부에서 등록)
+FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+  debugPrint('🔄 FCM token refreshed: $newToken');
+  // TODO: 백엔드로 갱신된 토큰 전송 (향후 구현 예정)
+});
 ```
 
 ### LocalNotificationsService
@@ -445,31 +518,91 @@ NSExtension
 
 | 메서드 | 설명 | 반환 타입 |
 |--------|------|-----------|
-| `getDeviceInfo()` | 디바이스 전체 정보 | `Future<DeviceInfo>` |
-| `getPlatform()` | 플랫폼 (iOS/Android) | `String` |
+| `getDeviceType()` | 플랫폼 (IOS/ANDROID) | `String` |
+| `getDeviceName()` | 디바이스 이름 | `Future<String>` |
 | `getOSVersion()` | OS 버전 | `Future<String>` |
-| `getDeviceModel()` | 디바이스 모델명 | `Future<String>` |
-| `getUniqueId()` | 디바이스 고유 ID | `Future<String>` |
+| `isPhysicalDevice()` | 실제 디바이스 여부 | `Future<bool>` |
+| `getFullDeviceInfo()` | 디바이스 전체 정보 (디버그용) | `Future<Map>` |
 
 #### 사용 예시
 
 ```dart
-// 디바이스 정보 가져오기
-final deviceInfo = await DeviceInfoService.getDeviceInfo();
+// 플랫폼 타입 (FCM 등록 시 필수)
+final deviceType = DeviceInfoService.getDeviceType();
+print('플랫폼: $deviceType');  // "IOS" 또는 "ANDROID"
 
-print('플랫폼: ${deviceInfo.platform}');       // iOS/Android
-print('OS 버전: ${deviceInfo.osVersion}');     // 14.5/11
-print('모델: ${deviceInfo.model}');            // iPhone 12/Galaxy S21
-print('고유 ID: ${deviceInfo.uniqueId}');      // UUID
+// 디바이스 이름
+final deviceName = await DeviceInfoService.getDeviceName();
+print('기기 이름: $deviceName');  // "Luca's iPhone"
 
-// API 호출 시 디바이스 정보 포함
-final headers = {
-  'X-Device-Platform': deviceInfo.platform,
-  'X-Device-OS': deviceInfo.osVersion,
-  'X-Device-Model': deviceInfo.model,
-  'X-Device-ID': deviceInfo.uniqueId,
-};
+// OS 버전
+final osVersion = await DeviceInfoService.getOSVersion();
+print('OS 버전: $osVersion');  // "17.2"
+
+// 실제 디바이스 확인 (시뮬레이터 vs 실기기)
+final isPhysical = await DeviceInfoService.isPhysicalDevice();
+if (!isPhysical) {
+  print('⚠️ 시뮬레이터에서 실행 중 (FCM 토큰 사용 불가)');
+}
+
+// 전체 디바이스 정보 (디버깅용)
+final fullInfo = await DeviceInfoService.getFullDeviceInfo();
+print('전체 정보: $fullInfo');
 ```
+
+### DeviceIdManager
+
+기기 고유 ID 관리 서비스 (FCM 멀티 디바이스 지원)
+
+#### 위치
+`lib/core/services/device_id_manager.dart`
+
+#### 주요 기능
+
+| 메서드 | 설명 | 반환 타입 |
+|--------|------|-----------|
+| `getOrCreateDeviceId()` | 기기 ID 가져오기/생성 | `Future<String>` |
+| `clearDeviceId()` | 기기 ID 삭제 (테스트용) | `Future<void>` |
+
+#### 특징
+
+- **UUID v4 형식**: 랜덤 생성, 충돌 가능성 극히 낮음
+- **영속성**:
+  - ✅ 앱 재시작: UUID 유지
+  - ✅ 앱 업데이트: UUID 유지
+  - ✅ 앱 재설치: UUID 새로 생성 (새 기기로 등록)
+- **저장소**: SharedPreferences (`DEVICE_ID` 키)
+
+#### 사용 예시
+
+```dart
+// 기기 ID 가져오기 (없으면 자동 생성)
+final deviceId = await DeviceIdManager.getOrCreateDeviceId();
+print('기기 ID: $deviceId');
+// "550e8400-e29b-41d4-a716-446655440000"
+
+// FCM 등록 시 사용
+final request = AuthRequest.signIn(
+  socialPlatform: 'GOOGLE',
+  email: 'user@example.com',
+  name: '홍길동',
+  fcmToken: fcmToken,
+  deviceType: 'IOS',
+  deviceId: deviceId,  // ← 기기 고유 ID
+);
+```
+
+#### 멀티 디바이스 시나리오
+
+```dart
+// 사용자가 여러 기기에서 로그인
+// 기기 1 (iPhone): deviceId = "550e8400-..."
+// 기기 2 (iPad):   deviceId = "a1b2c3d4-..."
+
+→ 백엔드에서 한 사용자의 여러 기기에 푸시 알림 발송 가능
+```
+
+⚠️ **주의**: `clearDeviceId()`는 테스트 목적으로만 사용하세요. 기기 ID가 변경되면 해당 기기로 푸시 알림이 전송되지 않습니다.
 
 ---
 
@@ -610,6 +743,7 @@ class SearchService {
 
 | 날짜 | 버전 | 변경 내용 |
 |------|------|----------|
+| 2025-01-23 | 1.1.0 | FCM 멀티 디바이스 지원 추가 (AuthRequest, DeviceIdManager, FirebaseMessagingService 업데이트) |
 | 2025-01-20 | 1.0.0 | 최신 서비스 구조 반영 및 온보딩 서비스 추가 |
 | 2025-11-10 | 0.9.0 | 초기 문서 작성 |
 

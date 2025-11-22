@@ -47,7 +47,29 @@ mixin _$AuthRequest {
   /// 리프레시 토큰 (선택)
   ///
   /// 토큰 재발급 및 로그아웃 API 호출 시 필수
-  String? get refreshToken => throw _privateConstructorUsedError;
+  String? get refreshToken =>
+      throw _privateConstructorUsedError; // ═══════════════════════════════════════════════════════════════
+  // 🆕 FCM 푸시 알림 필드 (멀티 디바이스 지원)
+  // ═══════════════════════════════════════════════════════════════
+  /// Firebase Cloud Messaging 토큰 (선택)
+  ///
+  /// 푸시 알림 발송을 위한 디바이스별 FCM 토큰
+  /// - fcmToken, deviceType, deviceId는 **3개 모두 함께 전송** 또는 **모두 생략**
+  /// - 일부만 전송 시 백엔드에서 400 Bad Request 반환
+  String? get fcmToken => throw _privateConstructorUsedError;
+
+  /// 기기 타입 (선택)
+  ///
+  /// 가능한 값: "IOS", "ANDROID"
+  /// - fcmToken 제공 시 **필수**
+  String? get deviceType => throw _privateConstructorUsedError;
+
+  /// 기기 고유 식별자 (선택)
+  ///
+  /// UUID v4 형식의 디바이스 고유 ID
+  /// - fcmToken 제공 시 **필수**
+  /// - 한 사용자가 여러 기기(폰, 태블릿)에서 로그인 시 각 기기 식별용
+  String? get deviceId => throw _privateConstructorUsedError;
 
   /// Serializes this AuthRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -72,6 +94,9 @@ abstract class $AuthRequestCopyWith<$Res> {
     String? name,
     String? profileUrl,
     String? refreshToken,
+    String? fcmToken,
+    String? deviceType,
+    String? deviceId,
   });
 }
 
@@ -95,6 +120,9 @@ class _$AuthRequestCopyWithImpl<$Res, $Val extends AuthRequest>
     Object? name = freezed,
     Object? profileUrl = freezed,
     Object? refreshToken = freezed,
+    Object? fcmToken = freezed,
+    Object? deviceType = freezed,
+    Object? deviceId = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -118,6 +146,18 @@ class _$AuthRequestCopyWithImpl<$Res, $Val extends AuthRequest>
                 ? _value.refreshToken
                 : refreshToken // ignore: cast_nullable_to_non_nullable
                       as String?,
+            fcmToken: freezed == fcmToken
+                ? _value.fcmToken
+                : fcmToken // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            deviceType: freezed == deviceType
+                ? _value.deviceType
+                : deviceType // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            deviceId: freezed == deviceId
+                ? _value.deviceId
+                : deviceId // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -139,6 +179,9 @@ abstract class _$$AuthRequestImplCopyWith<$Res>
     String? name,
     String? profileUrl,
     String? refreshToken,
+    String? fcmToken,
+    String? deviceType,
+    String? deviceId,
   });
 }
 
@@ -161,6 +204,9 @@ class __$$AuthRequestImplCopyWithImpl<$Res>
     Object? name = freezed,
     Object? profileUrl = freezed,
     Object? refreshToken = freezed,
+    Object? fcmToken = freezed,
+    Object? deviceType = freezed,
+    Object? deviceId = freezed,
   }) {
     return _then(
       _$AuthRequestImpl(
@@ -184,6 +230,18 @@ class __$$AuthRequestImplCopyWithImpl<$Res>
             ? _value.refreshToken
             : refreshToken // ignore: cast_nullable_to_non_nullable
                   as String?,
+        fcmToken: freezed == fcmToken
+            ? _value.fcmToken
+            : fcmToken // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        deviceType: freezed == deviceType
+            ? _value.deviceType
+            : deviceType // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        deviceId: freezed == deviceId
+            ? _value.deviceId
+            : deviceId // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -198,6 +256,9 @@ class _$AuthRequestImpl implements _AuthRequest {
     this.name,
     this.profileUrl,
     this.refreshToken,
+    this.fcmToken,
+    this.deviceType,
+    this.deviceId,
   });
 
   factory _$AuthRequestImpl.fromJson(Map<String, dynamic> json) =>
@@ -235,10 +296,35 @@ class _$AuthRequestImpl implements _AuthRequest {
   /// 토큰 재발급 및 로그아웃 API 호출 시 필수
   @override
   final String? refreshToken;
+  // ═══════════════════════════════════════════════════════════════
+  // 🆕 FCM 푸시 알림 필드 (멀티 디바이스 지원)
+  // ═══════════════════════════════════════════════════════════════
+  /// Firebase Cloud Messaging 토큰 (선택)
+  ///
+  /// 푸시 알림 발송을 위한 디바이스별 FCM 토큰
+  /// - fcmToken, deviceType, deviceId는 **3개 모두 함께 전송** 또는 **모두 생략**
+  /// - 일부만 전송 시 백엔드에서 400 Bad Request 반환
+  @override
+  final String? fcmToken;
+
+  /// 기기 타입 (선택)
+  ///
+  /// 가능한 값: "IOS", "ANDROID"
+  /// - fcmToken 제공 시 **필수**
+  @override
+  final String? deviceType;
+
+  /// 기기 고유 식별자 (선택)
+  ///
+  /// UUID v4 형식의 디바이스 고유 ID
+  /// - fcmToken 제공 시 **필수**
+  /// - 한 사용자가 여러 기기(폰, 태블릿)에서 로그인 시 각 기기 식별용
+  @override
+  final String? deviceId;
 
   @override
   String toString() {
-    return 'AuthRequest(socialPlatform: $socialPlatform, email: $email, name: $name, profileUrl: $profileUrl, refreshToken: $refreshToken)';
+    return 'AuthRequest(socialPlatform: $socialPlatform, email: $email, name: $name, profileUrl: $profileUrl, refreshToken: $refreshToken, fcmToken: $fcmToken, deviceType: $deviceType, deviceId: $deviceId)';
   }
 
   @override
@@ -253,7 +339,13 @@ class _$AuthRequestImpl implements _AuthRequest {
             (identical(other.profileUrl, profileUrl) ||
                 other.profileUrl == profileUrl) &&
             (identical(other.refreshToken, refreshToken) ||
-                other.refreshToken == refreshToken));
+                other.refreshToken == refreshToken) &&
+            (identical(other.fcmToken, fcmToken) ||
+                other.fcmToken == fcmToken) &&
+            (identical(other.deviceType, deviceType) ||
+                other.deviceType == deviceType) &&
+            (identical(other.deviceId, deviceId) ||
+                other.deviceId == deviceId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -265,6 +357,9 @@ class _$AuthRequestImpl implements _AuthRequest {
     name,
     profileUrl,
     refreshToken,
+    fcmToken,
+    deviceType,
+    deviceId,
   );
 
   /// Create a copy of AuthRequest
@@ -288,6 +383,9 @@ abstract class _AuthRequest implements AuthRequest {
     final String? name,
     final String? profileUrl,
     final String? refreshToken,
+    final String? fcmToken,
+    final String? deviceType,
+    final String? deviceId,
   }) = _$AuthRequestImpl;
 
   factory _AuthRequest.fromJson(Map<String, dynamic> json) =
@@ -324,7 +422,31 @@ abstract class _AuthRequest implements AuthRequest {
   ///
   /// 토큰 재발급 및 로그아웃 API 호출 시 필수
   @override
-  String? get refreshToken;
+  String? get refreshToken; // ═══════════════════════════════════════════════════════════════
+  // 🆕 FCM 푸시 알림 필드 (멀티 디바이스 지원)
+  // ═══════════════════════════════════════════════════════════════
+  /// Firebase Cloud Messaging 토큰 (선택)
+  ///
+  /// 푸시 알림 발송을 위한 디바이스별 FCM 토큰
+  /// - fcmToken, deviceType, deviceId는 **3개 모두 함께 전송** 또는 **모두 생략**
+  /// - 일부만 전송 시 백엔드에서 400 Bad Request 반환
+  @override
+  String? get fcmToken;
+
+  /// 기기 타입 (선택)
+  ///
+  /// 가능한 값: "IOS", "ANDROID"
+  /// - fcmToken 제공 시 **필수**
+  @override
+  String? get deviceType;
+
+  /// 기기 고유 식별자 (선택)
+  ///
+  /// UUID v4 형식의 디바이스 고유 ID
+  /// - fcmToken 제공 시 **필수**
+  /// - 한 사용자가 여러 기기(폰, 태블릿)에서 로그인 시 각 기기 식별용
+  @override
+  String? get deviceId;
 
   /// Create a copy of AuthRequest
   /// with the given fields replaced by the non-null parameter values.

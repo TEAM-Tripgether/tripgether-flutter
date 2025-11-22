@@ -23,6 +23,32 @@ class FirebaseMessagingService {
   // 알림 표시를 위한 로컬 알림 서비스 참조
   LocalNotificationsService? _localNotificationsService;
 
+  /// 백엔드 등록용 FCM 토큰을 가져옵니다
+  ///
+  /// 로그인 API 호출 시 이 메서드를 사용하여 FCM 토큰을 가져옵니다.
+  ///
+  /// **주의**:d
+  /// - iOS 시뮬레이터에서는 토큰을 사용할 수 없어 null을 반환합니다
+  /// - 권한이 거부된 경우에도 null을 반환합니다
+  ///
+  /// Returns:
+  /// - 성공: FCM 토큰 문자열
+  /// - 실패/시뮬레이터: null
+  Future<String?> getFcmToken() async {
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        debugPrint('[FCM] ✅ 토큰 가져오기 성공: ${token.toString()}');
+      } else {
+        debugPrint('[FCM] ⚠️ 토큰 없음 (시뮬레이터 또는 권한 거부)');
+      }
+      return token;
+    } catch (e) {
+      debugPrint('[FCM] ❌ 토큰 가져오기 실패: $e');
+      return null;
+    }
+  }
+
   /// Initialize Firebase Messaging and sets up all message listeners
   /// Firebase Messaging을 초기화하고 모든 메시지 리스너를 설정합니다
   Future<void> init({
@@ -86,15 +112,12 @@ class FirebaseMessagingService {
 
     // 3. Try to get FCM token (may fail on iOS simulator)
     // 3. FCM 토큰 가져오기 시도 (iOS 시뮬레이터에서는 실패할 수 있음)
-    try {
-      // Get the FCM token for the device
-      // 디바이스의 FCM 토큰 가져오기
-      final token = await FirebaseMessaging.instance.getToken();
+    // getFcmToken()이 이미 try-catch 처리하므로 재사용
+    final token = await getFcmToken();
 
-      // Print FCM token
-      // FCM 토큰 출력
-      debugPrint('✅ Push notifications token: $token');
-
+    // 4. Setup token refresh listener if token exists
+    // 4. 토큰이 있으면 갱신 리스너 등록
+    if (token != null) {
       // Listen for token refresh events
       // 토큰 갱신 이벤트 수신 대기
       FirebaseMessaging.instance.onTokenRefresh
@@ -117,12 +140,8 @@ class FirebaseMessagingService {
             // 토큰 갱신 중 발생한 에러 처리
             debugPrint('❌ Error refreshing FCM token: $error');
           });
-    } catch (e) {
-      // Handle token retrieval errors
-      // 토큰 가져오기 에러 처리
-      debugPrint('⚠️ Unable to get FCM token: $e');
-
-      // Show helpful message for simulator users
+    } else {
+      // Show helpful message for simulator users when token is null
       // 시뮬레이터 사용자를 위한 안내 메시지
       if (!isPhysical) {
         debugPrint(
@@ -132,9 +151,6 @@ class FirebaseMessagingService {
           '💡 Device information is collected successfully, but push notifications require a real device',
         );
       }
-
-      // Don't throw - allow app to continue running on simulator
-      // 에러를 throw하지 않음 - 시뮬레이터에서도 앱이 계속 실행되도록 함
     }
   }
 

@@ -13,6 +13,9 @@ _$AuthRequestImpl _$$AuthRequestImplFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       profileUrl: json['profileUrl'] as String?,
       refreshToken: json['refreshToken'] as String?,
+      fcmToken: json['fcmToken'] as String?,
+      deviceType: json['deviceType'] as String?,
+      deviceId: json['deviceId'] as String?,
     );
 
 Map<String, dynamic> _$$AuthRequestImplToJson(_$AuthRequestImpl instance) =>
@@ -22,4 +25,7 @@ Map<String, dynamic> _$$AuthRequestImplToJson(_$AuthRequestImpl instance) =>
       'name': instance.name,
       'profileUrl': instance.profileUrl,
       'refreshToken': instance.refreshToken,
+      'fcmToken': instance.fcmToken,
+      'deviceType': instance.deviceType,
+      'deviceId': instance.deviceId,
     };
