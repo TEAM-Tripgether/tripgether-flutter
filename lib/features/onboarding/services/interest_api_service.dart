@@ -56,7 +56,7 @@ class InterestApiService {
   /// GET /api/interests/{interestId}
   Future<GetInterestByIdResponse> getInterestById(String interestId) async {
     const useRealApi = bool.fromEnvironment(
-      'USE_REAL_API',
+      'USE_MOCK_API',
       defaultValue: false,
     );
 
@@ -89,7 +89,7 @@ class InterestApiService {
     String category,
   ) async {
     const useRealApi = bool.fromEnvironment(
-      'USE_REAL_API',
+      'USE_MOCK_API',
       defaultValue: false,
     );
 
@@ -106,7 +106,10 @@ class InterestApiService {
 
       return GetInterestsByCategoryResponse.fromJson(response.data);
     } on DioException catch (e) {
-      ApiLogger.logDioError(e, context: 'InterestApiService.getInterestsByCategory');
+      ApiLogger.logDioError(
+        e,
+        context: 'InterestApiService.getInterestsByCategory',
+      );
       if (e.response != null) {
         final apiError = ApiError.fromDioError(e.response!.data);
         throw Exception(apiError.message);

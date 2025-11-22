@@ -62,9 +62,7 @@ Future<void> handleOnboardingError(
     await ref.read(onboardingNotifierProvider.notifier).reset();
     debugPrint('[OnboardingErrorHandler] ✅ OnboardingNotifier.reset() 완료');
   } catch (logoutError) {
-    debugPrint(
-      '[OnboardingErrorHandler] ⚠️ 로그아웃 처리 중 오류: $logoutError',
-    );
+    debugPrint('[OnboardingErrorHandler] ⚠️ 로그아웃 처리 중 오류: $logoutError');
     // 로그아웃 실패해도 로그인 화면으로 이동
   }
 

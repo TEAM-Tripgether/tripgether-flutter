@@ -215,7 +215,8 @@ class LoginNotifier extends _$LoginNotifier {
         debugPrint('[LoginProvider] ❌ HTTP 상태 코드 에러 감지');
       } else if (errorString.contains('연결') || errorString.contains('네트워크')) {
         debugPrint('[LoginProvider] ❌ 네트워크 연결 문제 감지');
-      } else if (errorString.contains('시간 초과') || errorString.contains('timeout')) {
+      } else if (errorString.contains('시간 초과') ||
+          errorString.contains('timeout')) {
         debugPrint('[LoginProvider] ❌ 타임아웃 에러 감지');
       }
 

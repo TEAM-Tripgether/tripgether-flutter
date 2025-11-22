@@ -87,7 +87,8 @@ class UserNotifier extends _$UserNotifier {
       _accessTokenCache = await _storage.read(key: _accessTokenKey);
       _refreshTokenCache = await _storage.read(key: _refreshTokenKey);
       debugPrint(
-          '[UserNotifier] 🔑 토큰 메모리 캐시 초기화 완료 (Access: ${_accessTokenCache != null}, Refresh: ${_refreshTokenCache != null})');
+        '[UserNotifier] 🔑 토큰 메모리 캐시 초기화 완료 (Access: ${_accessTokenCache != null}, Refresh: ${_refreshTokenCache != null})',
+      );
 
       // 2. Secure Storage에서 사용자 정보 로드
       final user = await _loadUserFromStorage();

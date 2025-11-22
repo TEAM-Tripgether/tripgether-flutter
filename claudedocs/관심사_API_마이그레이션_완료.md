@@ -67,7 +67,7 @@ class InterestApiService {
   ///
   /// GET /api/interests
   Future<GetAllInterestsResponse> getAllInterests() async {
-    const useRealApi = bool.fromEnvironment('USE_REAL_API', defaultValue: false);
+    const useRealApi = bool.fromEnvironment('USE_MOCK_API', defaultValue: false);
 
     if (!useRealApi) {
       return _mockGetAllInterests();  // Mock 데이터 반환
@@ -300,7 +300,7 @@ flutter run
 
 ```bash
 # Production 모드 실행
-flutter run --dart-define=USE_REAL_API=true
+flutter run --dart-define=USE_MOCK_API=true
 ```
 
 **예상 동작**:
@@ -313,7 +313,7 @@ flutter run --dart-define=USE_REAL_API=true
 
 ```bash
 # 네트워크 연결 끊고 Production 모드 실행
-flutter run --dart-define=USE_REAL_API=true
+flutter run --dart-define=USE_MOCK_API=true
 ```
 
 **예상 동작**:

@@ -128,7 +128,7 @@ class CategoryApiService {
   /// **Mock 모드**: 하드코딩된 데이터 반환
   /// **Production 모드**: 서버 API 호출
   Future<CategoryResponse> getCategories() async {
-    const useRealApi = bool.fromEnvironment('USE_REAL_API', defaultValue: false);
+    const useRealApi = bool.fromEnvironment('USE_MOCK_API', defaultValue: false);
 
     if (!useRealApi) {
       return _mockGetCategories();

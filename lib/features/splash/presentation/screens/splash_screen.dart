@@ -130,7 +130,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       // onboardingStep이 COMPLETED가 아니면 온보딩 화면으로
       if (onboardingStep != null && onboardingStep != 'COMPLETED') {
         debugPrint(
-            '[SplashScreen] 🔄 온보딩 진행 중 (currentStep: $onboardingStep) → 온보딩 화면으로 이동');
+          '[SplashScreen] 🔄 온보딩 진행 중 (currentStep: $onboardingStep) → 온보딩 화면으로 이동',
+        );
         context.go(AppRoutes.onboarding);
       } else {
         debugPrint('[SplashScreen] ✅ 세션 복원 완료 → 홈 화면으로 이동');

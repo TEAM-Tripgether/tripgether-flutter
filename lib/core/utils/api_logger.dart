@@ -22,55 +22,98 @@ import '../errors/api_error.dart';
 class ApiLogger {
   /// DioException 에러 로깅
   ///
-  /// **출력 정보**:
-  /// - 에러 발생 위치 (context)
-  /// - 서버 응답 전체 (statusCode, statusMessage, data, headers)
-  /// - ApiError 파싱 결과 (code, message)
-  /// - 네트워크 에러 메시지
+  /// **개발 환경 (kDebugMode == true)**:
+  /// - 전체 response 데이터 출력 (디버깅용)
+  /// - Headers, Body 상세 정보 포함
+  ///
+  /// **프로덕션 환경 (kReleaseMode)**:
+  /// - StatusCode + ApiError 코드/메시지만 출력
+  /// - 민감정보 노출 방지
   ///
   /// [e] DioException 객체
   /// [context] 에러 발생 위치 (예: 'AuthApiService.signIn')
   static void logDioError(DioException e, {required String context}) {
+    if (kDebugMode) {
+      // 개발 환경: 전체 데이터 확인 가능
+      _logDebugError(e, context);
+    } else {
+      // 프로덕션: 최소 정보만
+      _logProductionError(e, context);
+    }
+  }
+
+  /// 개발 환경 상세 로깅 (전체 response 포함)
+  static void _logDebugError(DioException e, String context) {
     if (e.response != null) {
       // 서버 응답이 있는 경우
-      debugPrint('[$context] ❌ 서버 응답 전체:');
-      debugPrint("Response body : '${e.response!.toString()}'");
-      debugPrint('  - Status Code: ${e.response!.statusCode}');
-      debugPrint('  - Status Message: ${e.response!.statusMessage}');
-      debugPrint('  - Response Data: ${e.response!.data}');
+      debugPrint('[$context] ❌ 서버 응답 전체 (Debug):');
+      debugPrint("Response Object: '${e.response!.toString()}'");
+      debugPrint(
+        '  - Status: ${e.response!.statusCode} ${e.response!.statusMessage}',
+      );
+      debugPrint('  - Data: ${e.response!.data}');
       debugPrint('  - Headers: ${e.response!.headers}');
 
       // ApiError 파싱
       final apiError = ApiError.fromDioError(e.response!.data);
-      debugPrint('[$context] ❌ 에러 코드: ${apiError.code}');
-      debugPrint('[$context] ❌ 에러 메시지: ${apiError.message}');
+      debugPrint('  - Error Code: ${apiError.code}');
+      debugPrint('  - Error Message: ${apiError.message}');
     } else {
       // 네트워크 에러 (응답 없음)
       debugPrint('[$context] ❌ 네트워크 오류: ${e.message}');
     }
   }
 
+  /// 프로덕션 환경 최소 로깅 (민감정보 제외)
+  static void _logProductionError(DioException e, String context) {
+    if (e.response != null) {
+      final apiError = ApiError.fromDioError(e.response!.data);
+      // StatusCode + ApiError만 로깅 (헤더/바디 제외)
+      debugPrint(
+        '[$context] ❌ API Error: ${e.response!.statusCode} - ${apiError.code}: ${apiError.message}',
+      );
+    } else {
+      // 네트워크 에러 타입만 로깅 (상세 메시지 제외)
+      debugPrint('[$context] ❌ Network Error: ${e.type.name}');
+    }
+  }
+
   /// 일반 예외 로깅
+  ///
+  /// **개발 환경**: 상세 예외 스택 트레이스 출력
+  /// **프로덕션**: 예외 타입만 로깅
   ///
   /// [e] Exception 객체
   /// [context] 에러 발생 위치
   static void logException(Object e, {required String context}) {
-    debugPrint('[$context] ❌ 예외 발생: $e');
+    if (kDebugMode) {
+      debugPrint('[$context] ❌ 예외 발생: $e');
+    } else {
+      debugPrint('[$context] ❌ Exception: ${e.runtimeType}');
+    }
   }
 
   /// API 호출 성공 로깅 (선택 사항)
   ///
+  /// **개발 환경에서만 로깅**
+  ///
   /// [context] API 호출 위치
   /// [message] 추가 메시지
   static void logSuccess(String context, {String? message}) {
-    debugPrint('[$context] ✅ ${message ?? '성공'}');
+    if (kDebugMode) {
+      debugPrint('[$context] ✅ ${message ?? '성공'}');
+    }
   }
 
   /// API 호출 시작 로깅 (선택 사항)
   ///
+  /// **개발 환경에서만 로깅**
+  ///
   /// [context] API 호출 위치
   /// [message] 추가 메시지
   static void logStart(String context, {String? message}) {
-    debugPrint('[$context] 🔄 ${message ?? '시작'}');
+    if (kDebugMode) {
+      debugPrint('[$context] 🔄 ${message ?? '시작'}');
+    }
   }
 }

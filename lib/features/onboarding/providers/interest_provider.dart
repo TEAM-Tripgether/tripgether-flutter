@@ -18,12 +18,11 @@ part 'interest_provider.g.dart';
 Dio dio(Ref ref) {
   final dio = Dio(
     BaseOptions(
-      baseUrl: dotenv.env['API_BASE_URL'] ?? 'https://api.tripgether.suhsaechan.kr',
+      baseUrl:
+          dotenv.env['API_BASE_URL'] ?? 'https://api.tripgether.suhsaechan.kr',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
     ),
   );
 
@@ -73,10 +72,7 @@ Future<GetAllInterestsResponse> interests(Ref ref) async {
 ///
 /// GET /api/interests/{interestId}
 @riverpod
-Future<GetInterestByIdResponse> interestById(
-  Ref ref,
-  String interestId,
-) async {
+Future<GetInterestByIdResponse> interestById(Ref ref, String interestId) async {
   final service = ref.watch(interestApiServiceProvider);
   return await service.getInterestById(interestId);
 }

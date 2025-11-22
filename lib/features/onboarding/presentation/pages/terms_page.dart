@@ -82,7 +82,9 @@ class _TermsPageState extends ConsumerState<TermsPage> {
 
     try {
       // 1. onboardingProvider에 약관 동의 상태 저장 (로컬)
-      ref.read(onboardingProvider.notifier).updateTermsAgreement(
+      ref
+          .read(onboardingProvider.notifier)
+          .updateTermsAgreement(
             termsOfService: _termsOfService,
             privacyPolicy: _privacyPolicy,
             ageConfirmation: _ageConfirmation,
@@ -101,7 +103,9 @@ class _TermsPageState extends ConsumerState<TermsPage> {
 
       // 3. API 응답 성공 시 currentStep에 따라 페이지 이동
       if (response != null) {
-        debugPrint('[TermsPage] ✅ 약관 동의 API 호출 성공 → 다음 단계: ${response.currentStep}');
+        debugPrint(
+          '[TermsPage] ✅ 약관 동의 API 호출 성공 → 다음 단계: ${response.currentStep}',
+        );
         widget.onStepChange(response.currentStep);
       } else {
         // API 호출 실패 - 사용자 친화적 에러 메시지
@@ -110,7 +114,9 @@ class _TermsPageState extends ConsumerState<TermsPage> {
             SnackBar(
               content: Text(
                 '약관 동의 처리 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
-                style: AppTextStyles.bodyMedium14.copyWith(color: AppColors.white),
+                style: AppTextStyles.bodyMedium14.copyWith(
+                  color: AppColors.white,
+                ),
               ),
               backgroundColor: AppColors.error,
               duration: const Duration(seconds: 3),

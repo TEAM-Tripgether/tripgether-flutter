@@ -206,7 +206,10 @@ class OnboardingApiService {
         throw Exception('네트워크 연결을 확인해주세요.');
       }
     } catch (e) {
-      ApiLogger.logException(e, context: 'OnboardingApiService.updateBirthDate');
+      ApiLogger.logException(
+        e,
+        context: 'OnboardingApiService.updateBirthDate',
+      );
       rethrow;
     }
   }
@@ -284,7 +287,10 @@ class OnboardingApiService {
         throw Exception('네트워크 연결을 확인해주세요.');
       }
     } catch (e) {
-      ApiLogger.logException(e, context: 'OnboardingApiService.updateInterests');
+      ApiLogger.logException(
+        e,
+        context: 'OnboardingApiService.updateInterests',
+      );
       rethrow;
     }
   }

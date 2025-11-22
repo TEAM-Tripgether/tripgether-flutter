@@ -101,7 +101,9 @@ class ProfileAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         // 테두리 설정
-        border: showBorder ? Border.all(color: AppColors.white, width: 2.w) : null,
+        border: showBorder
+            ? Border.all(color: AppColors.white, width: 2.w)
+            : null,
         // 그림자 효과 (테두리 있을 때만)
         boxShadow: showBorder
             ? [
@@ -247,7 +249,11 @@ class ProfileAvatarWithBadge extends StatelessWidget {
               shape: BoxShape.circle,
               border: Border.all(color: AppColors.white, width: 2.w),
             ),
-            child: Icon(badgeIcon, size: size.value * 0.2, color: AppColors.white),
+            child: Icon(
+              badgeIcon,
+              size: size.value * 0.2,
+              color: AppColors.white,
+            ),
           ),
         ),
       ],

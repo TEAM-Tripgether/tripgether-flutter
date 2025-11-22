@@ -176,7 +176,9 @@ class MyPageScreen extends ConsumerWidget {
         languageName,
         style: isSelected
             ? AppTextStyles.bodyMedium16.copyWith(color: primaryColor)
-            : AppTextStyles.bodyRegular14.copyWith(color: colorScheme.onSurface),
+            : AppTextStyles.bodyRegular14.copyWith(
+                color: colorScheme.onSurface,
+              ),
       ),
       trailing: isSelected
           ? Icon(
@@ -263,10 +265,7 @@ class MyPageScreen extends ConsumerWidget {
               context.push(AppRoutes.onboarding);
             },
             icon: Icon(Icons.assignment_outlined, size: AppSizes.iconMedium),
-            label: Text(
-              '온보딩 화면 테스트',
-              style: AppTextStyles.titleSemiBold14,
-            ),
+            label: Text('온보딩 화면 테스트', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.secondaryContainer,
               foregroundColor: colorScheme.onSecondaryContainer,
@@ -304,10 +303,7 @@ class MyPageScreen extends ConsumerWidget {
               );
             },
             icon: Icon(Icons.delete_outline, size: AppSizes.iconMedium),
-            label: Text(
-              '삭제 확인 다이얼로그',
-              style: AppTextStyles.titleSemiBold14,
-            ),
+            label: Text('삭제 확인 다이얼로그', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.errorContainer,
               foregroundColor: colorScheme.onErrorContainer,
@@ -332,10 +328,7 @@ class MyPageScreen extends ConsumerWidget {
               );
             },
             icon: Icon(Icons.error_outline, size: AppSizes.iconMedium),
-            label: Text(
-              '오류 다이얼로그',
-              style: AppTextStyles.titleSemiBold14,
-            ),
+            label: Text('오류 다이얼로그', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.secondaryContainer,
               foregroundColor: colorScheme.onSecondaryContainer,
@@ -362,10 +355,7 @@ class MyPageScreen extends ConsumerWidget {
               );
             },
             icon: Icon(Icons.help_outline, size: AppSizes.iconMedium),
-            label: Text(
-              '일반 확인 다이얼로그',
-              style: AppTextStyles.titleSemiBold14,
-            ),
+            label: Text('일반 확인 다이얼로그', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.primaryContainer,
               foregroundColor: colorScheme.onPrimaryContainer,
@@ -389,10 +379,7 @@ class MyPageScreen extends ConsumerWidget {
               );
             },
             icon: Icon(Icons.check_circle_outline, size: AppSizes.iconMedium),
-            label: Text(
-              '성공 알림 다이얼로그',
-              style: AppTextStyles.titleSemiBold14,
-            ),
+            label: Text('성공 알림 다이얼로그', style: AppTextStyles.titleSemiBold14),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.tertiaryContainer,
               foregroundColor: colorScheme.onTertiaryContainer,

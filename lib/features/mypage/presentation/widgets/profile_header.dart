@@ -147,11 +147,7 @@ class ProfileHeader extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: AppSizes.iconSmall,
-            color: AppColors.mainColor,
-          ),
+          Icon(icon, size: AppSizes.iconSmall, color: AppColors.mainColor),
           AppSpacing.horizontalSpaceXS,
           Text(
             l10n.accountSuffix(displayName),

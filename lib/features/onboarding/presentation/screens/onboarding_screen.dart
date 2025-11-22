@@ -35,8 +35,8 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  /// 페이지 컨트롤러
-  late final PageController _pageController;
+  /// 페이지 컨트롤러 (비동기 초기화를 위해 nullable)
+  PageController? _pageController;
 
   /// 현재 페이지 인덱스 (0-5)
   int _currentPage = 0;
@@ -70,12 +70,24 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _pageController = PageController(initialPage: initialPage);
       _currentPage = initialPage;
 
+      // ⚠️ 비동기 작업 완료 후 위젯이 dispose된 경우 처리
+      if (!mounted) {
+        _pageController?.dispose();
+        return;
+      }
+
       setState(() => _isInitialized = true);
     } catch (e) {
       debugPrint('[OnboardingScreen] ❌ 초기화 실패: $e');
 
       // 오류 발생 시 기본값(0)으로 시작
       _pageController = PageController(initialPage: 0);
+
+      if (!mounted) {
+        _pageController?.dispose();
+        return;
+      }
+
       setState(() => _isInitialized = true);
     }
   }
@@ -115,14 +127,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _pageController?.dispose();
     super.dispose();
   }
 
   /// 다음 페이지로 이동 (순차적)
   void _goToNextPage() {
     if (_currentPage < 5) {
-      _pageController.nextPage(
+      _pageController?.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -137,7 +149,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       '[OnboardingScreen] 📍 API 응답 currentStep: $currentStep → 페이지 $targetPage로 이동',
     );
 
-    _pageController.jumpToPage(targetPage);
+    _pageController?.jumpToPage(targetPage);
   }
 
   @override
@@ -151,6 +163,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ),
       );
     }
+
+    // ✅ 초기화 완료 후에는 _pageController가 non-null임을 보장
+    final pageController = _pageController!;
 
     return PopScope(
       // ⚠️ 시스템 뒤로가기 완전 차단 (Android 물리 버튼, iOS 제스처)
@@ -180,7 +195,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   child: SizedBox(
                     width: 200.w,
                     child: OnboardingPageIndicator(
-                      controller: _pageController,
+                      controller: pageController,
                       count: 5, // 실제 데이터 입력 5단계
                     ),
                   ),
@@ -190,7 +205,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             // PageView (나머지 공간)
             Expanded(
               child: PageView(
-                controller: _pageController,
+                controller: pageController,
                 // 모든 스와이프 제스처 차단 - 버튼으로만 페이지 이동
                 physics: const NeverScrollableScrollPhysics(),
                 onPageChanged: (index) {
@@ -203,7 +218,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: TermsPage(
                       onNext: _goToNextPage,
                       onStepChange: _goToStepPage,
-                      pageController: _pageController,
+                      pageController: pageController,
                     ),
                   ),
                   SafeArea(
@@ -211,7 +226,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: NicknamePage(
                       onNext: _goToNextPage,
                       onStepChange: _goToStepPage,
-                      pageController: _pageController,
+                      pageController: pageController,
                     ),
                   ),
                   SafeArea(
@@ -219,7 +234,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: BirthdatePage(
                       onNext: _goToNextPage,
                       onStepChange: _goToStepPage,
-                      pageController: _pageController,
+                      pageController: pageController,
                     ),
                   ),
                   SafeArea(
@@ -227,7 +242,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: GenderPage(
                       onNext: _goToNextPage,
                       onStepChange: _goToStepPage,
-                      pageController: _pageController,
+                      pageController: pageController,
                     ),
                   ),
                   SafeArea(
@@ -235,7 +250,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: InterestsPage(
                       onNext: _goToNextPage,
                       onStepChange: _goToStepPage,
-                      pageController: _pageController,
+                      pageController: pageController,
                     ),
                   ),
 
