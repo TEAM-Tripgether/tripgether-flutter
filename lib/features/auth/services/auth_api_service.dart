@@ -225,9 +225,13 @@ class AuthApiService {
     final mockRefreshToken =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock_refresh_token_payload.mock_signature';
 
-    // 최초 로그인 여부 (email 기반 랜덤 결정)
+    // 최초 로그인 여부
+    // - Debug 모드: 항상 true (온보딩 테스트 용이)
+    // - Release 모드: email 기반 판단 (실제 로직)
     // 실제로는 백엔드에서 DB 조회 후 결정
-    final isFirstLogin = request.email?.contains('first') ?? false;
+    final isFirstLogin = kDebugMode
+        ? true // 개발 중: 항상 온보딩 표시
+        : (request.email?.contains('first') ?? false); // 프로덕션: 실제 판단
 
     // 온보딩 필요 여부와 현재 단계 (Mock 데이터)
     // 실제로는 백엔드 DB에서 회원의 onboardingStatus 조회
