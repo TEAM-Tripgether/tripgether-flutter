@@ -64,6 +64,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
+  String get delete => 'Delete';
+
+  @override
+  String get reportError => 'Report Error';
+
+  @override
+  String get reportErrorTitle => 'Report Error';
+
+  @override
+  String get reportErrorDescription =>
+      'Even small bug reports lead to big improvements.\nPlease feel free to share any inconveniences you experienced during content analysis';
+
+  @override
+  String get reportErrorHint => 'Please describe the error';
+
+  @override
+  String get reportErrorSubmit => 'Submit';
+
+  @override
   String get trip => 'Trip';
 
   @override
@@ -171,6 +190,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentSnsContent => 'Recent SNS Content';
 
   @override
+  String get recentViewedContent => 'Recently Viewed';
+
+  @override
   String get recentSavedPlaces => 'Recently Saved Places';
 
   @override
@@ -189,6 +211,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSavedPlacesYet => 'No saved places yet.';
+
+  @override
+  String get noCategoryContent => 'No content in this category';
+
+  @override
+  String get selectOtherCategory => 'Try selecting a different category';
 
   @override
   String get filterAll => 'All';
@@ -423,6 +451,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signUpWithEmail => 'Sign up with Email';
 
   @override
+  String get snsLoginDivider => 'Sign in/Sign up with SNS';
+
+  @override
   String get logout => 'Logout';
 
   @override
@@ -539,7 +570,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingNicknamePrompt => 'Please set your name';
 
   @override
-  String get onboardingGenderPrompt => 'Select your gender. (Optional)';
+  String get onboardingGenderPrompt => 'Select your gender';
 
   @override
   String get genderMale => 'Male';
@@ -589,4 +620,139 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get defaultNickname => 'Traveler';
+
+  @override
+  String get cannotLoadContent => 'Cannot load content';
+
+  @override
+  String get noSnsContentMessage =>
+      'When you share content from SNS,\nyou can check it here';
+
+  @override
+  String get noTitle => 'No title';
+
+  @override
+  String get backButtonLabel => 'Back button';
+
+  @override
+  String get backButtonTooltip => 'Back';
+
+  @override
+  String get menuButtonLabel => 'Menu button';
+
+  @override
+  String get menuButtonTooltip => 'Menu';
+
+  @override
+  String get notificationButtonLabel => 'Notification button';
+
+  @override
+  String get notificationTitle => 'Notifications';
+
+  @override
+  String get noNewNotifications => 'No new notifications.';
+
+  @override
+  String get settingsButtonLabel => 'Settings button';
+
+  @override
+  String get searchButtonLabel => 'Search button';
+
+  @override
+  String get onboardingTermsPrompt => 'Please agree to the terms';
+
+  @override
+  String get onboardingTermsDescription =>
+      'You need to agree to the terms to use the service';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get ageConfirmation => 'I am 14 years or older';
+
+  @override
+  String get marketingConsent => 'Marketing consent (optional)';
+
+  @override
+  String get agreeToAll => 'Agree to all';
+
+  @override
+  String get viewDetails => 'View details';
+
+  @override
+  String get onboardingNicknameDescription =>
+      'This is the name other users will see\nProfanity and advertising are restricted';
+
+  @override
+  String get onboardingNicknameHint => 'Enter your nickname';
+
+  @override
+  String onboardingInterestsSelectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get startNow => 'Get Started';
+
+  @override
+  String onboardingWelcomeUnified(String nickname) {
+    return 'All set! 🎉\nLet\'s dive into the local day, $nickname!';
+  }
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notificationSectionToday => 'Today';
+
+  @override
+  String get noNotifications => 'No new notifications';
+
+  @override
+  String get sharedContentMessage =>
+      'Shared links from external apps will appear here';
+
+  @override
+  String get aiAnalyzingLocation => 'AI is analyzing location information';
+
+  @override
+  String aiAnalyzedLocations(String count) {
+    return 'AI analyzed $count location(s)';
+  }
+
+  @override
+  String authorPost(String author) {
+    return '$author\'s post';
+  }
+
+  @override
+  String get notificationStatusProcessing => 'Processing';
+
+  @override
+  String get notificationStatusCheckButton => 'View';
+
+  @override
+  String get timestampJustNow => 'Just now';
+
+  @override
+  String timestampMinutesAgo(int minutes) {
+    return '${minutes}m ago';
+  }
+
+  @override
+  String timestampHoursAgo(int hours) {
+    return '${hours}h ago';
+  }
+
+  @override
+  String timestampDaysAgo(int days) {
+    return '${days}d ago';
+  }
+
+  @override
+  String get defaultAuthor => 'User';
 }

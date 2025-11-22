@@ -1,0 +1,752 @@
+# 🛠️ Tripgether 핵심 서비스 API
+
+**최종 업데이트**: 2025-01-20
+**문서 버전**: 1.0.0
+
+비즈니스 로직 및 외부 통신 서비스 가이드입니다.
+
+---
+
+## 📋 목차
+
+- [개요](#개요)
+- [인증 서비스](#인증-서비스)
+  - [GoogleAuthService](#googleauthservice)
+  - [AuthApiService](#authapiservice)
+- [푸시 알림 서비스](#푸시-알림-서비스)
+  - [FirebaseMessagingService](#firebasemessagingservice)
+  - [LocalNotificationsService](#localnotificationsservice)
+- [온보딩 서비스](#온보딩-서비스)
+  - [OnboardingApiService](#onboardingapiservice)
+  - [InterestApiService](#interestapiservice)
+- [유틸리티 서비스](#유틸리티-서비스)
+  - [SharingService](#sharingservice)
+  - [DeviceInfoService](#deviceinfoservice)
+  - [DeviceIdManager](#deviceidmanager)
+- [개발 가이드라인](#개발-가이드라인)
+
+---
+
+## 개요
+
+서비스 레이어는 앱의 비즈니스 로직과 외부 시스템 통신을 담당합니다.
+
+### 서비스 레이어 책임
+
+- **외부 API 통신**: 백엔드 서버, Google, Firebase 등과의 통신
+- **플랫폼 기능 호출**: 네이티브 기능 (디바이스 정보, 공유, 알림 등)
+- **비즈니스 로직 캡슐화**: 복잡한 로직을 재사용 가능한 서비스로 추상화
+- **에러 처리**: 네트워크 오류, 플랫폼 오류 등의 처리
+
+### 서비스 구조
+
+```
+core/services/                         # 글로벌 서비스
+├── auth/
+│   └── google_auth_service.dart      # Google OAuth 인증
+├── fcm/
+│   ├── firebase_messaging_service.dart  # FCM 푸시 알림
+│   ├── local_notifications_service.dart # 로컬 알림 표시
+│   └── models/                          # FCM 데이터 모델
+├── sharing_service.dart               # 외부 앱 공유 수신
+└── device_info_service.dart           # 디바이스 정보 수집
+
+features/*/services/                   # Feature별 서비스
+├── auth/services/
+│   └── auth_api_service.dart         # 백엔드 인증 API
+├── onboarding/services/
+│   ├── onboarding_api_service.dart   # 온보딩 API
+│   └── interest_api_service.dart     # 관심사 API
+```
+
+---
+
+## 인증 서비스
+
+### GoogleAuthService
+
+Google OAuth 인증을 처리하는 서비스
+
+#### 위치
+`lib/core/services/auth/google_auth_service.dart`
+
+#### 주요 기능
+
+| 메서드 | 설명 | 반환 타입 |
+|--------|------|-----------|
+| `signIn()` | Google 로그인 진행 | `Future<GoogleSignInAccount?>` |
+| `signOut()` | Google 로그아웃 | `Future<void>` |
+| `getCurrentUser()` | 현재 로그인된 사용자 | `GoogleSignInAccount?` |
+| `isSignedIn()` | 로그인 상태 확인 | `Future<bool>` |
+
+#### 사용 예시
+
+```dart
+// DI 컨테이너에서 서비스 가져오기
+final googleAuthService = GetIt.instance<GoogleAuthService>();
+
+// Google 로그인
+try {
+  final account = await googleAuthService.signIn();
+
+  if (account != null) {
+    // 로그인 성공
+    print('로그인 성공: ${account.email}');
+
+    // 인증 정보 가져오기
+    final authentication = await account.authentication;
+    final idToken = authentication.idToken;
+
+    // 백엔드 서버로 토큰 전송
+    await authApiService.signIn(
+      socialPlatform: 'GOOGLE',
+      email: account.email,
+      name: account.displayName ?? '',
+    );
+  }
+} catch (e) {
+  print('로그인 실패: $e');
+}
+
+// 로그아웃
+await googleAuthService.signOut();
+```
+
+#### 에러 처리
+
+```dart
+// Google Sign-In 에러 타입
+- PlatformException: 플랫폼 오류 (iOS/Android)
+- GoogleSignInCanceled: 사용자가 로그인 취소
+- GoogleSignInFailed: 로그인 실패
+```
+
+### AuthApiService
+
+백엔드 서버 인증 API 서비스
+
+#### 위치
+`lib/features/auth/services/auth_api_service.dart`
+
+#### 주요 API
+
+| 메서드 | 엔드포인트 | 설명 |
+|--------|-----------|------|
+| `signIn()` | `POST /api/auth/sign-in` | 소셜 로그인 (JWT 발급) |
+| `refreshToken()` | `POST /api/auth/reissue` | 토큰 재발급 |
+| `logout()` | `POST /api/auth/logout` | 로그아웃 |
+
+#### 요청 데이터 (AuthRequest)
+
+**필수 필드**:
+```dart
+{
+  "socialPlatform": "GOOGLE" | "KAKAO",  // 소셜 로그인 플랫폼
+  "email": "user@example.com",           // 사용자 이메일
+  "name": "홍길동"                        // 사용자 이름
+}
+```
+
+**선택 필드 - 프로필**:
+```dart
+{
+  "profileUrl": "https://example.com/profile.jpg"  // 프로필 이미지 URL
+}
+```
+
+**선택 필드 - FCM 푸시 알림 (멀티 디바이스 지원)**:
+```dart
+{
+  "fcmToken": "dXQzM2k1N2RkZjM0OGE3YjczZGY5...",     // FCM 토큰
+  "deviceType": "IOS" | "ANDROID",                  // 기기 타입
+  "deviceId": "550e8400-e29b-41d4-a716-446655440000" // 기기 고유 ID (UUID v4)
+}
+```
+
+⚠️ **중요**: `fcmToken`, `deviceType`, `deviceId`는 **3개 모두 함께 전송** 또는 **모두 생략**해야 합니다. 일부만 전송 시 400 Bad Request 반환됩니다.
+
+#### 전체 요청 예시
+
+```dart
+// Google 로그인 + FCM 멀티 디바이스 지원
+final request = AuthRequest.signIn(
+  socialPlatform: 'GOOGLE',
+  email: 'user@example.com',
+  name: '홍길동',
+  profileUrl: 'https://example.com/profile.jpg',
+  fcmToken: 'dXQzM2k1N2RkZjM0OGE3YjczZGY5...',
+  deviceType: 'IOS',
+  deviceId: '550e8400-e29b-41d4-a716-446655440000',
+);
+
+final response = await authApiService.signIn(request);
+
+// JWT 토큰 저장
+await secureStorage.write(
+  key: 'access_token',
+  value: response.accessToken,
+);
+await secureStorage.write(
+  key: 'refresh_token',
+  value: response.refreshToken,
+);
+
+// 온보딩 필요 여부 확인
+if (response.requiresOnboarding) {
+  // 온보딩 화면으로 이동
+  context.go(AppRoutes.onboarding);
+}
+```
+
+#### FCM 데이터 자동 수집
+
+`AuthApiService.signIn()`은 내부적으로 FCM 데이터를 자동 수집합니다:
+
+```dart
+// 1. FCM 토큰 가져오기
+final fcmToken = await FirebaseMessagingService.instance().getFcmToken();
+
+// 2. FCM 토큰이 있으면 디바이스 정보도 수집
+if (fcmToken != null) {
+  final deviceType = DeviceInfoService.getDeviceType();      // "IOS" | "ANDROID"
+  final deviceId = await DeviceIdManager.getOrCreateDeviceId(); // UUID v4
+}
+
+// 3. 로그인 요청에 FCM 데이터 포함
+final requestWithFcm = request.copyWith(
+  fcmToken: fcmToken,
+  deviceType: deviceType,
+  deviceId: deviceId,
+);
+```
+
+**Graceful Degradation**:
+- iOS 시뮬레이터: FCM 토큰 없이 로그인 진행 ✅
+- FCM 실패: 로그인은 정상 진행 (푸시 알림만 비활성) ✅
+
+---
+
+## 푸시 알림 서비스
+
+### FirebaseMessagingService
+
+FCM(Firebase Cloud Messaging) 푸시 알림 관리 서비스
+
+#### 위치
+`lib/core/services/fcm/firebase_messaging_service.dart`
+
+#### 주요 기능
+
+| 메서드 | 설명 | 반환 타입 |
+|--------|------|-----------|
+| `init()` | FCM 서비스 초기화 | `Future<void>` |
+| `getFcmToken()` | FCM 토큰 가져오기 (백엔드 등록용) | `Future<String?>` |
+
+#### 특징
+
+- **싱글톤 패턴**: `FirebaseMessagingService.instance()` 사용
+- **자동 토큰 관리**: 토큰 갱신 시 자동 리스너 등록
+- **iOS 시뮬레이터 대응**: 토큰 없어도 에러 없이 null 반환
+
+#### 사용 예시
+
+```dart
+// 1. main.dart에서 초기화
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // LocalNotificationsService 먼저 초기화
+  final localNotificationsService = LocalNotificationsService();
+  await localNotificationsService.init();
+
+  // FirebaseMessagingService 초기화
+  final fcmService = FirebaseMessagingService.instance();
+  await fcmService.init(
+    localNotificationsService: localNotificationsService,
+  );
+
+  runApp(MyApp());
+}
+
+// 2. 로그인 시 FCM 토큰 가져오기
+final fcmService = FirebaseMessagingService.instance();
+final fcmToken = await fcmService.getFcmToken();
+
+if (fcmToken != null) {
+  print('✅ FCM 토큰: ${fcmToken.substring(0, 20)}...');
+  // 백엔드로 토큰 전송 (AuthApiService에서 자동 처리됨)
+} else {
+  print('⚠️ FCM 토큰 없음 (시뮬레이터 또는 권한 거부)');
+}
+
+// 3. 메시지 처리
+// - Foreground: LocalNotificationsService로 알림 표시
+// - Background: 자동으로 시스템 알림 표시
+// - Terminated: 알림 탭 시 앱 실행 및 메시지 처리
+```
+
+#### 토큰 갱신 처리
+
+```dart
+// FCM 토큰은 다음 경우 자동 갱신됩니다:
+// - 앱 재설치
+// - 앱 데이터 삭제
+// - Firebase SDK 업데이트
+// - iOS: 기기 복원 또는 OS 업데이트
+
+// 토큰 갱신 시 자동으로 리스너가 호출됨 (init() 내부에서 등록)
+FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+  debugPrint('🔄 FCM token refreshed: $newToken');
+  // TODO: 백엔드로 갱신된 토큰 전송 (향후 구현 예정)
+});
+```
+
+### LocalNotificationsService
+
+로컬 알림 표시 서비스
+
+#### 위치
+`lib/core/services/fcm/local_notifications_service.dart`
+
+#### 주요 기능
+
+| 메서드 | 설명 | 파라미터 |
+|--------|------|----------|
+| `init()` | 로컬 알림 초기화 | - |
+| `showNotification()` | 알림 표시 | `title`, `body`, `payload` |
+| `showBigPictureNotification()` | 이미지 알림 표시 | `title`, `body`, `imageUrl` |
+| `cancelNotification()` | 알림 취소 | `id` |
+
+#### 사용 예시
+
+```dart
+// 초기화 (main.dart)
+await LocalNotificationsService.init();
+
+// 기본 알림 표시
+await LocalNotificationsService.showNotification(
+  title: '새로운 메시지',
+  body: '친구가 메시지를 보냈습니다',
+  payload: 'message_id:123',
+);
+
+// 이미지 알림 표시
+await LocalNotificationsService.showBigPictureNotification(
+  title: '새로운 장소 추천',
+  body: '오사카 도톤보리를 확인해보세요!',
+  imageUrl: 'https://example.com/image.jpg',
+);
+
+// 알림 클릭 처리
+LocalNotificationsService.onNotificationClick.listen((payload) {
+  // payload 파싱 후 해당 화면으로 이동
+  if (payload?.startsWith('message_id:') ?? false) {
+    final messageId = payload!.split(':')[1];
+    context.push('/message/$messageId');
+  }
+});
+```
+
+---
+
+## 온보딩 서비스
+
+### OnboardingApiService
+
+온보딩 단계별 API 서비스
+
+#### 위치
+`lib/features/onboarding/services/onboarding_api_service.dart`
+
+#### 주요 API
+
+| 메서드 | 엔드포인트 | 설명 |
+|--------|-----------|------|
+| `agreeTerms()` | `POST /api/members/onboarding/terms` | 약관 동의 |
+| `updateName()` | `POST /api/members/onboarding/name` | 이름 설정 |
+| `updateBirthDate()` | `POST /api/members/onboarding/birth-date` | 생년월일 설정 |
+| `updateGender()` | `POST /api/members/onboarding/gender` | 성별 설정 |
+| `updateInterests()` | `POST /api/members/onboarding/interests` | 관심사 설정 |
+
+#### 사용 예시
+
+```dart
+// 약관 동의
+final response = await onboardingApiService.agreeTerms(
+  isServiceTermsAndPrivacyAgreed: true,
+  isMarketingAgreed: false,
+);
+
+// 이름 설정
+await onboardingApiService.updateName(name: '홍길동');
+
+// 생년월일 설정
+await onboardingApiService.updateBirthDate(
+  birthDate: DateTime(1990, 1, 1),
+);
+
+// 성별 설정
+await onboardingApiService.updateGender(gender: 'MALE');
+
+// 관심사 설정
+await onboardingApiService.updateInterests(
+  interestIds: ['uuid1', 'uuid2', 'uuid3'],
+);
+```
+
+### InterestApiService
+
+관심사 조회 API 서비스
+
+#### 위치
+`lib/features/onboarding/services/interest_api_service.dart`
+
+#### 주요 API
+
+| 메서드 | 엔드포인트 | 설명 |
+|--------|-----------|------|
+| `getAllInterests()` | `GET /api/interests` | 전체 관심사 목록 조회 |
+| `getInterestById()` | `GET /api/interests/{id}` | 특정 관심사 조회 |
+| `getInterestsByCategory()` | `GET /api/interests/categories/{category}` | 카테고리별 관심사 조회 |
+
+#### 관심사 카테고리
+
+```dart
+enum InterestCategory {
+  FOOD,             // 맛집/푸드
+  CAFE_DESSERT,     // 카페/디저트
+  LOCAL_MARKET,     // 시장/로컬푸드
+  NATURE_OUTDOOR,   // 자연/야외활동
+  URBAN_PHOTOSPOTS, // 도심/포토스팟
+  CULTURE_ART,      // 문화/예술
+  HISTORY_ARCHITECTURE, // 역사/건축
+  EXPERIENCE_CLASS, // 체험/클래스
+  SHOPPING_FASHION, // 쇼핑/패션
+  NIGHTLIFE,        // 나이트라이프
+  WELLNESS,         // 웰니스/힐링
+  FAMILY_KIDS,      // 가족/키즈
+  KPOP_CULTURE,     // K-POP/한류
+  DRIVE_SUBURBS,    // 드라이브/교외
+}
+```
+
+---
+
+## 유틸리티 서비스
+
+### SharingService
+
+외부 앱 공유 수신 서비스
+
+#### 위치
+`lib/core/services/sharing_service.dart`
+
+#### 주요 기능
+
+| 메서드 | 설명 | 반환 타입 |
+|--------|------|-----------|
+| `init()` | 공유 서비스 초기화 | `Future<void>` |
+| `getInitialSharedData()` | 앱 시작 시 공유 데이터 | `Future<SharedData?>` |
+| `getSharedDataStream()` | 공유 데이터 스트림 | `Stream<SharedData>` |
+| `processSharedUrl()` | URL 파싱 및 처리 | `SharedContent?` |
+
+#### 공유 데이터 처리
+
+```dart
+class SharingService {
+  // 공유 데이터 스트림 구독
+  static void setupSharedDataListener() {
+    getSharedDataStream().listen((sharedData) {
+      if (sharedData.type == SharedDataType.url) {
+        final url = sharedData.text;
+
+        // Instagram URL 처리
+        if (url.contains('instagram.com')) {
+          _processInstagramUrl(url);
+        }
+        // YouTube URL 처리
+        else if (url.contains('youtube.com') || url.contains('youtu.be')) {
+          _processYoutubeUrl(url);
+        }
+      }
+    });
+  }
+
+  // URL 파싱
+  static SharedContent? processSharedUrl(String url) {
+    final uri = Uri.parse(url);
+
+    return SharedContent(
+      platform: _detectPlatform(uri),
+      contentId: _extractContentId(uri),
+      originalUrl: url,
+      timestamp: DateTime.now(),
+    );
+  }
+}
+```
+
+#### iOS Share Extension 설정
+
+```swift
+// Info.plist 설정
+NSExtension
+├── NSExtensionAttributes
+│   └── NSExtensionActivationSupportsWebURLWithMaxCount: 1
+└── NSExtensionPrincipalClass: ShareViewController
+```
+
+#### Android Intent Filter 설정
+
+```xml
+<!-- AndroidManifest.xml -->
+<intent-filter>
+  <action android:name="android.intent.action.SEND" />
+  <category android:name="android.intent.category.DEFAULT" />
+  <data android:mimeType="text/plain" />
+</intent-filter>
+```
+
+### DeviceInfoService
+
+디바이스 정보 수집 서비스
+
+#### 위치
+`lib/core/services/device_info_service.dart`
+
+#### 주요 기능
+
+| 메서드 | 설명 | 반환 타입 |
+|--------|------|-----------|
+| `getDeviceType()` | 플랫폼 (IOS/ANDROID) | `String` |
+| `getDeviceName()` | 디바이스 이름 | `Future<String>` |
+| `getOSVersion()` | OS 버전 | `Future<String>` |
+| `isPhysicalDevice()` | 실제 디바이스 여부 | `Future<bool>` |
+| `getFullDeviceInfo()` | 디바이스 전체 정보 (디버그용) | `Future<Map>` |
+
+#### 사용 예시
+
+```dart
+// 플랫폼 타입 (FCM 등록 시 필수)
+final deviceType = DeviceInfoService.getDeviceType();
+print('플랫폼: $deviceType');  // "IOS" 또는 "ANDROID"
+
+// 디바이스 이름
+final deviceName = await DeviceInfoService.getDeviceName();
+print('기기 이름: $deviceName');  // "Luca's iPhone"
+
+// OS 버전
+final osVersion = await DeviceInfoService.getOSVersion();
+print('OS 버전: $osVersion');  // "17.2"
+
+// 실제 디바이스 확인 (시뮬레이터 vs 실기기)
+final isPhysical = await DeviceInfoService.isPhysicalDevice();
+if (!isPhysical) {
+  print('⚠️ 시뮬레이터에서 실행 중 (FCM 토큰 사용 불가)');
+}
+
+// 전체 디바이스 정보 (디버깅용)
+final fullInfo = await DeviceInfoService.getFullDeviceInfo();
+print('전체 정보: $fullInfo');
+```
+
+### DeviceIdManager
+
+기기 고유 ID 관리 서비스 (FCM 멀티 디바이스 지원)
+
+#### 위치
+`lib/core/services/device_id_manager.dart`
+
+#### 주요 기능
+
+| 메서드 | 설명 | 반환 타입 |
+|--------|------|-----------|
+| `getOrCreateDeviceId()` | 기기 ID 가져오기/생성 | `Future<String>` |
+| `clearDeviceId()` | 기기 ID 삭제 (테스트용) | `Future<void>` |
+
+#### 특징
+
+- **UUID v4 형식**: 랜덤 생성, 충돌 가능성 극히 낮음
+- **영속성**:
+  - ✅ 앱 재시작: UUID 유지
+  - ✅ 앱 업데이트: UUID 유지
+  - ✅ 앱 재설치: UUID 새로 생성 (새 기기로 등록)
+- **저장소**: SharedPreferences (`DEVICE_ID` 키)
+
+#### 사용 예시
+
+```dart
+// 기기 ID 가져오기 (없으면 자동 생성)
+final deviceId = await DeviceIdManager.getOrCreateDeviceId();
+print('기기 ID: $deviceId');
+// "550e8400-e29b-41d4-a716-446655440000"
+
+// FCM 등록 시 사용
+final request = AuthRequest.signIn(
+  socialPlatform: 'GOOGLE',
+  email: 'user@example.com',
+  name: '홍길동',
+  fcmToken: fcmToken,
+  deviceType: 'IOS',
+  deviceId: deviceId,  // ← 기기 고유 ID
+);
+```
+
+#### 멀티 디바이스 시나리오
+
+```dart
+// 사용자가 여러 기기에서 로그인
+// 기기 1 (iPhone): deviceId = "550e8400-..."
+// 기기 2 (iPad):   deviceId = "a1b2c3d4-..."
+
+→ 백엔드에서 한 사용자의 여러 기기에 푸시 알림 발송 가능
+```
+
+⚠️ **주의**: `clearDeviceId()`는 테스트 목적으로만 사용하세요. 기기 ID가 변경되면 해당 기기로 푸시 알림이 전송되지 않습니다.
+
+---
+
+## 개발 가이드라인
+
+### 서비스 생성 규칙
+
+#### 1. 단일 책임 원칙
+각 서비스는 하나의 명확한 책임만 가져야 합니다.
+
+```dart
+// ✅ GOOD - 단일 책임
+class GoogleAuthService {
+  // Google 인증만 담당
+}
+
+class FacebookAuthService {
+  // Facebook 인증만 담당
+}
+
+// ❌ BAD - 여러 책임
+class SocialAuthService {
+  // Google, Facebook, Kakao 모두 담당
+}
+```
+
+#### 2. 의존성 주입
+서비스는 GetIt을 통해 주입되어야 합니다.
+
+```dart
+// 등록 (main.dart)
+GetIt.instance.registerSingleton<GoogleAuthService>(
+  GoogleAuthService(),
+);
+
+// 사용
+final googleAuthService = GetIt.instance<GoogleAuthService>();
+```
+
+#### 3. 에러 처리
+모든 서비스 메서드는 적절한 에러 처리를 포함해야 합니다.
+
+```dart
+Future<AuthResponse?> signIn() async {
+  try {
+    final response = await _dio.post('/api/auth/sign-in');
+    return AuthResponse.fromJson(response.data);
+  } on DioException catch (e) {
+    if (e.response?.statusCode == 401) {
+      throw UnauthorizedException('인증 실패');
+    }
+    throw NetworkException('네트워크 오류');
+  } catch (e) {
+    throw UnknownException('알 수 없는 오류: $e');
+  }
+}
+```
+
+### 테스트 작성
+
+#### 단위 테스트 예시
+
+```dart
+// test/services/google_auth_service_test.dart
+void main() {
+  late GoogleAuthService service;
+  late MockGoogleSignIn mockGoogleSignIn;
+
+  setUp(() {
+    mockGoogleSignIn = MockGoogleSignIn();
+    service = GoogleAuthService(googleSignIn: mockGoogleSignIn);
+  });
+
+  test('signIn returns GoogleSignInAccount when successful', () async {
+    // Arrange
+    final expectedAccount = MockGoogleSignInAccount();
+    when(mockGoogleSignIn.signIn())
+      .thenAnswer((_) async => expectedAccount);
+
+    // Act
+    final result = await service.signIn();
+
+    // Assert
+    expect(result, equals(expectedAccount));
+    verify(mockGoogleSignIn.signIn()).called(1);
+  });
+}
+```
+
+### 성능 고려사항
+
+#### 1. 캐싱
+자주 사용되는 데이터는 캐싱을 고려합니다.
+
+```dart
+class InterestApiService {
+  Map<String, List<Interest>>? _cachedInterests;
+
+  Future<List<Interest>> getAllInterests() async {
+    // 캐시 확인
+    if (_cachedInterests != null) {
+      return _cachedInterests!;
+    }
+
+    // API 호출
+    final response = await _dio.get('/api/interests');
+    _cachedInterests = response.data;
+
+    // 5분 후 캐시 무효화
+    Future.delayed(Duration(minutes: 5), () {
+      _cachedInterests = null;
+    });
+
+    return _cachedInterests!;
+  }
+}
+```
+
+#### 2. 디바운싱
+연속적인 호출을 방지합니다.
+
+```dart
+class SearchService {
+  Timer? _debounce;
+
+  void search(String query) {
+    _debounce?.cancel();
+    _debounce = Timer(Duration(milliseconds: 500), () {
+      _performSearch(query);
+    });
+  }
+}
+```
+
+---
+
+## 문서 업데이트 이력
+
+| 날짜 | 버전 | 변경 내용 |
+|------|------|----------|
+| 2025-01-23 | 1.1.0 | FCM 멀티 디바이스 지원 추가 (AuthRequest, DeviceIdManager, FirebaseMessagingService 업데이트) |
+| 2025-01-20 | 1.0.0 | 최신 서비스 구조 반영 및 온보딩 서비스 추가 |
+| 2025-11-10 | 0.9.0 | 초기 문서 작성 |
+
+---
+
+**Maintained by**: TEAM-Tripgether

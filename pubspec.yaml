@@ -4,7 +4,7 @@ description: "Tripgether - Share your travel moments and discover local places t
 publish_to: 'none' 
 
 
-version: 1.1.14
+version: 1.1.23
 
 environment:
   sdk: ^3.9.2
@@ -39,6 +39,8 @@ dependencies:
   flutter_secure_storage: ^9.2.4  # 민감 데이터 안전 저장
   google_sign_in: ^7.2.0          # 구글 소셜 로그인 (Firebase 없이)
   flutter_dotenv: ^6.0.0          # 환경 변수 관리 (.env 파일)
+  device_info_plus: ^10.1.2       # 기기 정보 수집 (FCM 기기 식별용)
+  uuid: ^4.5.2                    # 앱 내 고유 식별자 생성
 
   # UI/UX 레이아웃
   flutter_screenutil: ^5.9.3      # 화면, 해상도 대응 유틸리티
@@ -108,27 +110,35 @@ flutter:
     - assets/platform_icons/
     - assets/icons/
     - .env
+    - lib/core/data/mock/mockData.json
   fonts:
-    - family: Pretendard
+    - family: Pretendard-Thin
       fonts:
         - asset: assets/fonts/Pretendard-Thin.ttf
-          weight: 100
+    - family: Pretendard-ExtraLight
+      fonts:
         - asset: assets/fonts/Pretendard-ExtraLight.ttf
-          weight: 200
+    - family: Pretendard-Light
+      fonts:
         - asset: assets/fonts/Pretendard-Light.ttf
-          weight: 300
+    - family: Pretendard-Regular
+      fonts:
         - asset: assets/fonts/Pretendard-Regular.ttf
-          weight: 400
+    - family: Pretendard-Medium
+      fonts:
         - asset: assets/fonts/Pretendard-Medium.ttf
-          weight: 500
+    - family: Pretendard-SemiBold
+      fonts:
         - asset: assets/fonts/Pretendard-SemiBold.ttf
-          weight: 600
+    - family: Pretendard-Bold
+      fonts:
         - asset: assets/fonts/Pretendard-Bold.ttf
-          weight: 700
+    - family: Pretendard-ExtraBold
+      fonts:
         - asset: assets/fonts/Pretendard-ExtraBold.ttf
-          weight: 800
+    - family: Pretendard-Black
+      fonts:
         - asset: assets/fonts/Pretendard-Black.ttf
-          weight: 900
 
 flutter_launcher_icons:
   android: true

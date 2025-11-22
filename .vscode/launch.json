@@ -1,7 +1,7 @@
 {
   "version": "0.2.0",
   "configurations": [
-    // 개발 모드 (Mock API)
+    // 개발용 (Mock 데이터)
     {
       "name": "Development (Mock)",
       "request": "launch",
@@ -11,25 +11,15 @@
         "--dart-define=USE_MOCK_API=true"
       ]
     },
-    // 실제 백엔드 연동 테스트
+    // 실제용 (Real API)
     {
-      "name": "Staging (Real API)",
+      "name": "Production (Real API)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
       "args": [
-        "--dart-define=USE_MOCK_API=false"
-      ]
-    },
-    // 프로덕션 배포용
-    {
-      "name": "Production",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        "--dart-define=API_BASE_URL=https://api.tripgether.suhsaechan.kr",
-        "--dart-define=USE_MOCK_API=false"
+        "--dart-define=USE_MOCK_API=false",
+        "--dart-define=API_BASE_URL=https://api.tripgether.suhsaechan.kr"
       ]
     }
   ]

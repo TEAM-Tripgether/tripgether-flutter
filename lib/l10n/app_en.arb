@@ -92,6 +92,36 @@
     "description": "Retry button"
   },
 
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button"
+  },
+
+  "reportError": "Report Error",
+  "@reportError": {
+    "description": "Report error button"
+  },
+
+  "reportErrorTitle": "Report Error",
+  "@reportErrorTitle": {
+    "description": "Error report dialog title"
+  },
+
+  "reportErrorDescription": "Even small bug reports lead to big improvements.\nPlease feel free to share any inconveniences you experienced during content analysis",
+  "@reportErrorDescription": {
+    "description": "Error report dialog description"
+  },
+
+  "reportErrorHint": "Please describe the error",
+  "@reportErrorHint": {
+    "description": "Error report input field hint"
+  },
+
+  "reportErrorSubmit": "Submit",
+  "@reportErrorSubmit": {
+    "description": "Error report submit button"
+  },
+
   "trip": "Trip",
   "@trip": {
     "description": "Trip singular"
@@ -270,7 +300,12 @@
 
   "recentSnsContent": "Recent SNS Content",
   "@recentSnsContent": {
-    "description": "SNS content section title"
+    "description": "Home screen SNS content section title"
+  },
+
+  "recentViewedContent": "Recently Viewed",
+  "@recentViewedContent": {
+    "description": "SNS content list screen title"
   },
 
   "recentSavedPlaces": "Recently Saved Places",
@@ -307,6 +342,16 @@
   "noSavedPlacesYet": "No saved places yet.",
   "@noSavedPlacesYet": {
     "description": "Message when there are no saved places"
+  },
+
+  "noCategoryContent": "No content in this category",
+  "@noCategoryContent": {
+    "description": "Title when there is no content after category filtering"
+  },
+
+  "selectOtherCategory": "Try selecting a different category",
+  "@selectOtherCategory": {
+    "description": "Message when there is no content after category filtering"
   },
 
   "filterAll": "All",
@@ -737,6 +782,11 @@
     "description": "Email sign up button"
   },
 
+  "snsLoginDivider": "Sign in/Sign up with SNS",
+  "@snsLoginDivider": {
+    "description": "SNS login divider text"
+  },
+
   "logout": "Logout",
   "@logout": {
     "description": "Logout button"
@@ -925,7 +975,7 @@
     "description": "Onboarding nickname input prompt title"
   },
 
-  "onboardingGenderPrompt": "Select your gender. (Optional)",
+  "onboardingGenderPrompt": "Select your gender",
   "@onboardingGenderPrompt": {
     "description": "Onboarding gender selection prompt title"
   },
@@ -1010,5 +1060,242 @@
   "defaultNickname": "Traveler",
   "@defaultNickname": {
     "description": "Default placeholder before nickname input in onboarding"
+  },
+
+  "cannotLoadContent": "Cannot load content",
+  "@cannotLoadContent": {
+    "description": "Content load failure message"
+  },
+
+  "noSnsContentMessage": "When you share content from SNS,\nyou can check it here",
+  "@noSnsContentMessage": {
+    "description": "SNS content empty state guide message"
+  },
+
+  "noTitle": "No title",
+  "@noTitle": {
+    "description": "Default text when there is no title"
+  },
+
+  "backButtonLabel": "Back button",
+  "@backButtonLabel": {
+    "description": "Back button accessibility label (for screen readers)"
+  },
+
+  "backButtonTooltip": "Back",
+  "@backButtonTooltip": {
+    "description": "Back button tooltip"
+  },
+
+  "menuButtonLabel": "Menu button",
+  "@menuButtonLabel": {
+    "description": "Menu button accessibility label (for screen readers)"
+  },
+
+  "menuButtonTooltip": "Menu",
+  "@menuButtonTooltip": {
+    "description": "Menu button tooltip"
+  },
+
+  "notificationButtonLabel": "Notification button",
+  "@notificationButtonLabel": {
+    "description": "Notification button accessibility label (for screen readers)"
+  },
+
+  "notificationTitle": "Notifications",
+  "@notificationTitle": {
+    "description": "Notification dialog title"
+  },
+
+  "noNewNotifications": "No new notifications.",
+  "@noNewNotifications": {
+    "description": "Message when there are no new notifications"
+  },
+
+  "settingsButtonLabel": "Settings button",
+  "@settingsButtonLabel": {
+    "description": "Settings button accessibility label (for screen readers)"
+  },
+
+  "searchButtonLabel": "Search button",
+  "@searchButtonLabel": {
+    "description": "Search button accessibility label (for screen readers)"
+  },
+
+  "onboardingTermsPrompt": "Please agree to the terms",
+  "@onboardingTermsPrompt": {
+    "description": "Onboarding terms agreement page title"
+  },
+
+  "onboardingTermsDescription": "You need to agree to the terms to use the service",
+  "@onboardingTermsDescription": {
+    "description": "Onboarding terms agreement page description"
+  },
+
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Terms of service checkbox label"
+  },
+
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Privacy policy checkbox label"
+  },
+
+  "ageConfirmation": "I am 14 years or older",
+  "@ageConfirmation": {
+    "description": "Age confirmation checkbox label"
+  },
+
+  "marketingConsent": "Marketing consent (optional)",
+  "@marketingConsent": {
+    "description": "Marketing consent checkbox label"
+  },
+
+  "agreeToAll": "Agree to all",
+  "@agreeToAll": {
+    "description": "Agree to all terms checkbox label"
+  },
+
+  "viewDetails": "View details",
+  "@viewDetails": {
+    "description": "View term details button"
+  },
+
+  "onboardingNicknameDescription": "This is the name other users will see\nProfanity and advertising are restricted",
+  "@onboardingNicknameDescription": {
+    "description": "Onboarding nickname page description"
+  },
+
+  "onboardingNicknameHint": "Enter your nickname",
+  "@onboardingNicknameHint": {
+    "description": "Onboarding nickname input hint"
+  },
+
+  "onboardingInterestsSelectedCount": "{count} selected",
+  "@onboardingInterestsSelectedCount": {
+    "description": "Selected interests count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "startNow": "Get Started",
+  "@startNow": {
+    "description": "Onboarding completion start button text"
+  },
+
+  "onboardingWelcomeUnified": "All set! 🎉\nLet's dive into the local day, {nickname}!",
+  "@onboardingWelcomeUnified": {
+    "description": "Welcome page unified message (with nickname)",
+    "placeholders": {
+      "nickname": {
+        "type": "String",
+        "example": "TravelLover"
+      }
+    }
+  },
+
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications screen title"
+  },
+
+  "notificationSectionToday": "Today",
+  "@notificationSectionToday": {
+    "description": "Notification section header - Today"
+  },
+
+  "noNotifications": "No new notifications",
+  "@noNotifications": {
+    "description": "No notifications message"
+  },
+
+  "sharedContentMessage": "Shared links from external apps will appear here",
+  "@sharedContentMessage": {
+    "description": "Notification empty state description message"
+  },
+
+  "aiAnalyzingLocation": "AI is analyzing location information",
+  "@aiAnalyzingLocation": {
+    "description": "Notification processing status message"
+  },
+
+  "aiAnalyzedLocations": "AI analyzed {count} location(s)",
+  "@aiAnalyzedLocations": {
+    "description": "Notification completed status message",
+    "placeholders": {
+      "count": {
+        "type": "String",
+        "example": "N"
+      }
+    }
+  },
+
+  "authorPost": "{author}'s post",
+  "@authorPost": {
+    "description": "Author post display",
+    "placeholders": {
+      "author": {
+        "type": "String",
+        "example": "sejong_student"
+      }
+    }
+  },
+
+  "notificationStatusProcessing": "Processing",
+  "@notificationStatusProcessing": {
+    "description": "Notification processing button text"
+  },
+
+  "notificationStatusCheckButton": "View",
+  "@notificationStatusCheckButton": {
+    "description": "Notification completed check button text"
+  },
+
+  "timestampJustNow": "Just now",
+  "@timestampJustNow": {
+    "description": "Just now timestamp"
+  },
+
+  "timestampMinutesAgo": "{minutes}m ago",
+  "@timestampMinutesAgo": {
+    "description": "N minutes ago timestamp",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "timestampHoursAgo": "{hours}h ago",
+  "@timestampHoursAgo": {
+    "description": "N hours ago timestamp",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "timestampDaysAgo": "{days}d ago",
+  "@timestampDaysAgo": {
+    "description": "N days ago timestamp",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "defaultAuthor": "User",
+  "@defaultAuthor": {
+    "description": "Default author name (when parsing fails)"
   }
 }

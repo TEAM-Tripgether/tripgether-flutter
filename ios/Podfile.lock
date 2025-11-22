@@ -9,6 +9,8 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
+  - device_info_plus (0.0.1):
+    - Flutter
   - Firebase/CoreOnly (12.2.0):
     - FirebaseCore (~> 12.2.0)
   - Firebase/Messaging (12.2.0):
@@ -123,6 +125,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
@@ -157,6 +160,8 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_messaging:
@@ -187,6 +192,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
+  device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   Firebase: 26f6f8d460603af3df970ad505b16b15f5e2e9a1
   firebase_core: c92b2e526c46f625784f19c07121cd533536d0e7
   firebase_messaging: ef6c722ea333105264ee17cf7df9ed5ee28d8485
@@ -215,6 +221,6 @@ SPEC CHECKSUMS:
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
 
-PODFILE CHECKSUM: 765a98c733551dee1aaa85be0e99f7efd13ecb16
+PODFILE CHECKSUM: 55b557e65c5dbe56cfe5898449002b488059b3fc
 
 COCOAPODS: 1.16.2

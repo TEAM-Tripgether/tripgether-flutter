@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// 지도 화면
@@ -23,9 +21,7 @@ class MapScreen extends ConsumerWidget {
       // 제목 없이 미니멀하게 구성하여 지도 공간을 극대화
       appBar: CommonAppBar(
         title: '', // 제목 없음으로 지도 공간 극대화
-        backgroundColor: AppColors.surface.withValues(
-          alpha: 0.95,
-        ), // 반투명 배경으로 지도 일부가 보이도록
+        backgroundColor: AppColors.surface, // AppBar 배경색
         elevation: 0, // 그림자 없음
         showMenuButton: true, // 햄버거 메뉴는 유지 (다른 화면 접근용)
         showNotificationIcon: false, // 알림 아이콘 제거로 공간 확보
@@ -39,7 +35,7 @@ class MapScreen extends ConsumerWidget {
             icon: Icon(
               Icons.my_location_outlined,
               size: 24.w,
-              color: AppColors.neutral70,
+              color: AppColors.subColor2,
             ),
             onPressed: () {
               debugPrint("임시 디버그 메시지");
@@ -50,28 +46,7 @@ class MapScreen extends ConsumerWidget {
           SizedBox(width: 8.w),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.map_outlined, size: 64.w, color: AppColors.neutral60),
-            AppSpacing.verticalSpaceLG,
-            Text(
-              l10n.navMap,
-              style: AppTextStyles.headlineSmall.copyWith(
-                color: AppColors.neutral70,
-              ),
-            ),
-            AppSpacing.verticalSpaceSM,
-            Text(
-              l10n.mapPlaceholder,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.neutral50,
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: Container(color: AppColors.surface),
     );
   }
 }

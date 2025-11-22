@@ -6,7 +6,6 @@ part 'auth_request.g.dart';
 /// 인증 API 요청 데이터 모델
 ///
 /// 소셜 로그인, 토큰 재발급, 로그아웃 API 호출 시 사용됩니다.
-/// API 명세서: claudedocs/TRIPGETHER_API_SPECIFICATION.md 참고
 ///
 /// **Freezed 자동 생성**:
 /// - `copyWith()`: 불변 객체 업데이트
@@ -44,6 +43,30 @@ class AuthRequest with _$AuthRequest {
     ///
     /// 토큰 재발급 및 로그아웃 API 호출 시 필수
     String? refreshToken,
+
+    // ═══════════════════════════════════════════════════════════════
+    // 🆕 FCM 푸시 알림 필드 (멀티 디바이스 지원)
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Firebase Cloud Messaging 토큰 (선택)
+    ///
+    /// 푸시 알림 발송을 위한 디바이스별 FCM 토큰
+    /// - fcmToken, deviceType, deviceId는 **3개 모두 함께 전송** 또는 **모두 생략**
+    /// - 일부만 전송 시 백엔드에서 400 Bad Request 반환
+    String? fcmToken,
+
+    /// 기기 타입 (선택)
+    ///
+    /// 가능한 값: "IOS", "ANDROID"
+    /// - fcmToken 제공 시 **필수**
+    String? deviceType,
+
+    /// 기기 고유 식별자 (선택)
+    ///
+    /// UUID v4 형식의 디바이스 고유 ID
+    /// - fcmToken 제공 시 **필수**
+    /// - 한 사용자가 여러 기기(폰, 태블릿)에서 로그인 시 각 기기 식별용
+    String? deviceId,
   }) = _AuthRequest;
 
   /// 소셜 로그인 요청 생성 팩토리
@@ -54,17 +77,26 @@ class AuthRequest with _$AuthRequest {
   /// [email]: 사용자 이메일
   /// [name]: 사용자 이름 (displayName)
   /// [profileUrl]: 프로필 이미지 URL (선택)
+  /// [fcmToken]: FCM 푸시 알림 토큰 (선택)
+  /// [deviceType]: 기기 타입 "IOS" 또는 "ANDROID" (fcmToken 제공 시 필수)
+  /// [deviceId]: 기기 고유 식별자 UUID (fcmToken 제공 시 필수)
   factory AuthRequest.signIn({
     required String socialPlatform,
     required String email,
     required String name,
     String? profileUrl,
+    String? fcmToken,
+    String? deviceType,
+    String? deviceId,
   }) {
     return AuthRequest(
       socialPlatform: socialPlatform,
       email: email,
       name: name,
       profileUrl: profileUrl,
+      fcmToken: fcmToken,
+      deviceType: deviceType,
+      deviceId: deviceId,
     );
   }
 

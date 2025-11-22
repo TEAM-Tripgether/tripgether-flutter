@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../features/onboarding/presentation/widgets/onboarding_page_indicator.dart';
 
 /// Tripgether 앱에서 사용하는 공용 AppBar 컴포넌트
 ///
@@ -17,9 +20,14 @@ import '../../../l10n/app_localizations.dart';
 /// - ScreenUtil을 활용한 반응형 사이즈 적용
 /// - 접근성 및 시맨틱 라벨 지원
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
-  /// AppBar에 표시될 제목
-  /// 기본값은 "Tripgether"이며, 다른 화면에서는 해당 화면의 제목을 사용
-  final String title;
+  /// AppBar에 표시될 제목 (String)
+  /// titleWidget과 함께 사용할 수 없음
+  final String? title;
+
+  /// AppBar에 표시될 커스텀 제목 위젯
+  /// title과 함께 사용할 수 없음
+  /// 예: OnboardingPageIndicator, 커스텀 로고 등
+  final Widget? titleWidget;
 
   /// 왼쪽에 표시될 액션 위젯
   /// null일 경우 자동으로 햄버거 메뉴 또는 뒤로가기 버튼을 표시
@@ -67,7 +75,8 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const CommonAppBar({
     super.key,
-    this.title = 'Tripgether',
+    this.title,
+    this.titleWidget,
     this.leftAction,
     this.rightActions,
     this.titleStyle,
@@ -79,32 +88,43 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showBackButton,
     this.showMenuButton = true,
     this.showNotificationIcon = true,
-  });
+  }) : assert(
+         title != null || titleWidget != null,
+         'title 또는 titleWidget 중 하나는 필수입니다.',
+       ),
+       assert(
+         title == null || titleWidget == null,
+         'title과 titleWidget을 동시에 사용할 수 없습니다.',
+       );
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      // 제목 설정
-      title: Text(
-        title,
-        style: titleStyle, // AppTheme에서 이미 AppBar 제목 스타일이 정의되어 있음
-      ),
+      // 제목 설정 (String 또는 Widget)
+      title:
+          titleWidget ??
+          (title != null
+              ? Text(
+                  title!,
+                  style: titleStyle, // AppTheme에서 이미 AppBar 제목 스타일이 정의되어 있음
+                )
+              : null),
 
       // 제목을 중앙에 정렬
       centerTitle: true,
 
-      // 배경색 설정 (기본값: 앱 테마 색상)
-      backgroundColor: backgroundColor ?? AppColors.surface,
+      // 배경색 설정 (항상 흰색 고정)
+      backgroundColor: backgroundColor ?? AppColors.white,
 
       // 텍스트 및 아이콘 색상
-      foregroundColor: AppColors.onSurface,
+      foregroundColor: AppColors.textColor1,
 
       // 그림자 설정
       elevation: elevation,
       scrolledUnderElevation: scrolledUnderElevation,
 
-      // Surface tint 색상 (Material 3)
-      surfaceTintColor: AppColors.surfaceTint,
+      // Surface tint 제거 (Material 3에서 색상 자동 변경 방지)
+      surfaceTintColor: Colors.transparent,
 
       // 왼쪽 액션 설정
       leading: _buildLeftAction(context),
@@ -117,7 +137,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
       // 아이콘 테마
       iconTheme: IconThemeData(
-        color: AppColors.onSurface,
+        color: AppColors.textColor1, // 텍스트 기본 색상 사용
         size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
       ),
     );
@@ -136,38 +156,47 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     final shouldShowBackButton = showBackButton ?? context.canPop();
 
     if (shouldShowBackButton) {
-      return Semantics(
-        label: '뒤로가기 버튼', // 스크린 리더용 시맨틱 라벨
-        button: true,
-        child: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: AppSizes.iconMedium, // ScreenUtil로 반응형 크기
+      final l10n = AppLocalizations.of(context);
+      return Padding(
+        padding: EdgeInsets.only(left: AppSpacing.lg),
+        child: Semantics(
+          label: l10n.backButtonLabel, // 스크린 리더용 시맨틱 라벨
+          button: true,
+          child: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
+              color: AppColors.textColor1, // 텍스트 기본 색상 사용
+            ),
+            onPressed: () {
+              // GoRouter 사용 시 context.pop() 사용
+              // 안전을 위해 canPop() 체크 후 pop 실행
+              if (context.canPop()) {
+                context.pop();
+              }
+            },
+            tooltip: l10n.backButtonTooltip, // 접근성을 위한 툴팁
           ),
-          onPressed: () {
-            // GoRouter 사용 시 context.pop() 사용
-            // 안전을 위해 canPop() 체크 후 pop 실행
-            if (context.canPop()) {
-              context.pop();
-            }
-          },
-          tooltip: '뒤로가기', // 접근성을 위한 툴팁
         ),
       );
     }
 
     // 3. 햄버거 메뉴 버튼 표시 (showMenuButton이 true인 경우)
     if (showMenuButton) {
-      return Semantics(
-        label: '메뉴 버튼', // 스크린 리더용 시맨틱 라벨
-        button: true,
-        child: IconButton(
-          icon: Icon(
-            Icons.menu,
-            size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
+      final l10n = AppLocalizations.of(context);
+      return Padding(
+        padding: EdgeInsets.only(left: AppSpacing.lg),
+        child: Semantics(
+          label: l10n.menuButtonLabel, // 스크린 리더용 시맨틱 라벨
+          button: true,
+          child: IconButton(
+            icon: Icon(
+              Icons.menu,
+              size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
+            ),
+            onPressed: onMenuPressed ?? () => _openDrawer(context),
+            tooltip: l10n.menuButtonTooltip, // 접근성을 위한 툴팁
           ),
-          onPressed: onMenuPressed ?? () => _openDrawer(context),
-          tooltip: '메뉴', // 접근성을 위한 툴팁
         ),
       );
     }
@@ -184,22 +213,25 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     // 기본 알림 아이콘 표시
     if (showNotificationIcon) {
+      final l10n = AppLocalizations.of(context);
       return [
-        Semantics(
-          label: '알림 버튼', // 스크린 리더용 시맨틱 라벨
-          button: true,
-          child: IconButton(
-            icon: Icon(
-              Icons.notifications_outlined,
-              size: AppSizes.iconDefault, // ScreenUtil로 반응형 크기
+        Padding(
+          padding: EdgeInsets.only(right: AppSpacing.lg),
+          child: Semantics(
+            label: l10n.notificationButtonLabel, // 스크린 리더용 시맨틱 라벨
+            button: true,
+            child: GestureDetector(
+              onTap:
+                  onNotificationPressed ??
+                  () => _showNotificationDialog(context),
+              child: SvgPicture.asset(
+                'assets/icons/alarm_inactive.svg',
+                width: AppSizes.iconExtraLarge,
+                height: AppSizes.iconExtraLarge,
+              ),
             ),
-            onPressed:
-                onNotificationPressed ?? () => _showNotificationDialog(context),
-            tooltip: '알림', // 접근성을 위한 툴팁
           ),
         ),
-        // 오른쪽 마진 추가 (Material Design 가이드라인)
-        SizedBox(width: AppSpacing.sm),
       ];
     }
 
@@ -218,25 +250,9 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   /// 알림 아이콘의 기본 동작
-  /// 현재는 간단한 다이얼로그를 표시 (향후 알림 페이지로 이동하도록 변경 가능)
+  /// 알림 페이지로 이동
   void _showNotificationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('알림'), // AppTheme의 dialogTheme.titleTextStyle 사용
-        content: Text(
-          '현재 새로운 알림이 없습니다.',
-        ), // AppTheme의 dialogTheme.contentTextStyle 사용
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              AppLocalizations.of(context).btnConfirm,
-            ), // AppTheme의 textButtonTheme.style.textStyle 사용
-          ),
-        ],
-      ),
-    );
+    context.push(AppRoutes.notifications);
   }
 
   /// PreferredSizeWidget 인터페이스 구현
@@ -247,11 +263,12 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 홈 화면용 AppBar 생성
   /// 기본 설정으로 "Tripgether" 제목과 햄버거 메뉴, 알림 아이콘을 표시
   static CommonAppBar forHome({
+    String? title,
     VoidCallback? onMenuPressed,
     VoidCallback? onNotificationPressed,
   }) {
     return CommonAppBar(
-      title: 'Tripgether',
+      title: title ?? 'Tripgether',
       onMenuPressed: onMenuPressed,
       onNotificationPressed: onNotificationPressed,
     );
@@ -263,6 +280,8 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     required String title,
     List<Widget>? rightActions,
     VoidCallback? onNotificationPressed,
+    TextStyle? titleStyle,
+    Color? backgroundColor,
   }) {
     return CommonAppBar(
       title: title,
@@ -270,29 +289,33 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       showMenuButton: false,
       rightActions: rightActions,
       onNotificationPressed: onNotificationPressed,
+      titleStyle: titleStyle, // AppTheme의 기본값 사용
+      backgroundColor: backgroundColor,
     );
   }
 
   /// 설정 화면용 AppBar 생성
   /// 뒤로가기 버튼과 저장 버튼을 표시
   static CommonAppBar forSettings({
-    String title = '설정',
+    required BuildContext context,
+    String? title,
     VoidCallback? onSavePressed,
   }) {
+    final l10n = AppLocalizations.of(context);
     return CommonAppBar(
-      title: title,
+      title: title ?? l10n.settings,
       showBackButton: true,
       showMenuButton: false,
       showNotificationIcon: false,
       rightActions: onSavePressed != null
           ? [
               Semantics(
-                label: '설정 버튼', // 스크린 리더용 시맨틱 라벨
+                label: l10n.settingsButtonLabel, // 스크린 리더용 시맨틱 라벨
                 button: true,
                 child: IconButton(
                   icon: const Icon(Icons.check),
                   onPressed: onSavePressed,
-                  tooltip: '설정',
+                  tooltip: l10n.settings,
                 ),
               ),
               SizedBox(width: AppSpacing.sm),
@@ -304,28 +327,62 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 검색 화면용 AppBar 생성
   /// 뒤로가기 버튼과 검색 아이콘을 표시
   static CommonAppBar forSearch({
-    String title = '검색',
+    required BuildContext context,
+    String? title,
     VoidCallback? onSearchPressed,
   }) {
+    final l10n = AppLocalizations.of(context);
     return CommonAppBar(
-      title: title,
+      title: title ?? l10n.searchScreen,
       showBackButton: true,
       showMenuButton: false,
       showNotificationIcon: false,
       rightActions: onSearchPressed != null
           ? [
               Semantics(
-                label: '검색 버튼', // 스크린 리더용 시맨틱 라벨
+                label: l10n.searchButtonLabel, // 스크린 리더용 시맨틱 라벨
                 button: true,
                 child: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: onSearchPressed,
-                  tooltip: '검색',
+                  tooltip: l10n.searchScreen,
                 ),
               ),
               SizedBox(width: AppSpacing.sm),
             ]
           : null,
+    );
+  }
+
+  /// 온보딩 화면용 AppBar 생성
+  /// OnboardingPageIndicator를 제목으로 표시하며, 조건부 뒤로가기 버튼 제공
+  static CommonAppBar forOnboarding({
+    required PageController pageController,
+    required int count,
+    required int currentPage,
+    VoidCallback? onBackPressed,
+  }) {
+    return CommonAppBar(
+      titleWidget: SizedBox(
+        width: 200.w, // Progress Bar 최대 너비 제한
+        child: OnboardingPageIndicator(
+          controller: pageController,
+          count: count,
+        ),
+      ),
+      leftAction: currentPage > 0
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: onBackPressed,
+              iconSize: 24.w,
+              color: AppColors.textColor1,
+              padding: EdgeInsets.zero,
+            )
+          : null,
+      showMenuButton: false,
+      showNotificationIcon: false,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
     );
   }
 }

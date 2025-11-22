@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// Tripgether 앱의 공용 버튼 컴포넌트
 ///
-/// Theme 시스템을 완전히 활용하여 일관된 버튼 스타일을 제공합니다.
-/// 모든 버튼은 app_theme.dart에 정의된 스타일을 기본으로 사용하며,
-/// 필요시 개별 커스터마이징이 가능합니다.
+/// ⚠️ 중요: Theme 대신 AppColors를 직접 사용합니다.
+/// 디자이너가 지정한 색상을 명시적으로 적용하여 명확성과 유지보수성을 향상시킵니다.
 
 // ==================== Primary Button ====================
 
@@ -63,30 +65,41 @@ class PrimaryButton extends StatelessWidget {
   });
 
   /// 기본 버튼 스타일 생성
-  /// Theme의 elevatedButtonTheme을 기반으로 기본 스타일 구성
-  ButtonStyle _buildBaseStyle(BuildContext context) {
-    return ElevatedButton.styleFrom();
+  /// 디자이너 스펙을 직접 적용: mainColor 배경, white 텍스트
+  ButtonStyle _buildBaseStyle() {
+    return ElevatedButton.styleFrom(
+      backgroundColor: AppColors.buttonActive, // #5325CB
+      foregroundColor: AppColors.buttonTextActive, // white
+      disabledBackgroundColor: AppColors.mainColor.withValues(
+        alpha: 0.2,
+      ), // #5325CB alpha 0.2
+      disabledForegroundColor: AppColors.buttonTextInactive, // white
+      elevation: AppElevation.medium,
+      shadowColor: AppColors.shadow.withValues(alpha: 0.15),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(100), // 완전한 pill 모양
+      ),
+      minimumSize: Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return SizedBox(
       width: isFullWidth ? double.infinity : null,
       height: height ?? AppSizes.buttonHeight,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         // 기본 스타일과 커스텀 스타일 병합 (null이 아닌 속성만 오버라이드)
-        style: _buildBaseStyle(context).merge(style),
+        style: _buildBaseStyle().merge(style),
         child: isLoading
             ? SizedBox(
                 width: AppSizes.iconMedium,
                 height: AppSizes.iconMedium,
-                child: CircularProgressIndicator(
+                child: const CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    theme.colorScheme.onPrimary,
+                    AppColors.buttonTextActive, // white
                   ),
                 ),
               )
@@ -98,7 +111,14 @@ class PrimaryButton extends StatelessWidget {
                     Icon(icon, size: AppSizes.iconMedium),
                     SizedBox(width: AppSpacing.sm),
                   ],
-                  Text(text),
+                  Text(
+                    text,
+                    style: AppTextStyles.bodyMedium16.copyWith(
+                      color: onPressed != null
+                          ? AppColors.white
+                          : AppColors.buttonTextInactive,
+                    ),
+                  ),
                 ],
               ),
       ),
@@ -152,30 +172,41 @@ class SecondaryButton extends StatelessWidget {
   });
 
   /// 기본 버튼 스타일 생성
-  /// Theme의 outlinedButtonTheme을 기반으로 기본 스타일 구성
-  ButtonStyle _buildBaseStyle(BuildContext context) {
-    return OutlinedButton.styleFrom();
+  /// 디자이너 스펙을 직접 적용: mainColor 테두리/텍스트, 흰 배경
+  ButtonStyle _buildBaseStyle() {
+    return OutlinedButton.styleFrom(
+      foregroundColor: AppColors.mainColor, // #5325CB 텍스트
+      disabledForegroundColor: AppColors.textColor1.withValues(
+        alpha: 0.4,
+      ), // alpha 0.4
+      side: BorderSide(
+        color: AppColors.subColor2, // #BBBBBB 테두리
+        width: AppSizes.borderThin,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(100), // 완전한 pill 모양
+      ),
+      minimumSize: Size(AppSizes.buttonMinWidth, AppSizes.buttonHeight),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return SizedBox(
       width: isFullWidth ? double.infinity : null,
       height: height ?? AppSizes.buttonHeight,
       child: OutlinedButton(
         onPressed: isLoading ? null : onPressed,
         // 기본 스타일과 커스텀 스타일 병합 (null이 아닌 속성만 오버라이드)
-        style: _buildBaseStyle(context).merge(style),
+        style: _buildBaseStyle().merge(style),
         child: isLoading
             ? SizedBox(
                 width: AppSizes.iconMedium,
                 height: AppSizes.iconMedium,
-                child: CircularProgressIndicator(
+                child: const CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    theme.colorScheme.primary,
+                    AppColors.mainColor, // #5325CB
                   ),
                 ),
               )
@@ -239,9 +270,17 @@ class TertiaryButton extends StatelessWidget {
   });
 
   /// 기본 버튼 스타일 생성
-  /// Theme의 textButtonTheme을 기반으로 기본 스타일 구성
-  ButtonStyle _buildBaseStyle(BuildContext context) {
-    return TextButton.styleFrom();
+  /// 디자이너 스펙을 직접 적용: subColor2 텍스트
+  ButtonStyle _buildBaseStyle() {
+    return TextButton.styleFrom(
+      foregroundColor: AppColors.subColor2, // #BBBBBB
+      disabledForegroundColor: AppColors.textColor1.withValues(
+        alpha: 0.4,
+      ), // alpha 0.4
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(100), // 완전한 pill 모양
+      ),
+    );
   }
 
   @override
@@ -252,7 +291,7 @@ class TertiaryButton extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         // 기본 스타일과 커스텀 스타일 병합 (null이 아닌 속성만 오버라이드)
-        style: _buildBaseStyle(context).merge(style),
+        style: _buildBaseStyle().merge(style),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -319,7 +358,7 @@ class CommonIconButton extends StatelessWidget {
       onPressed: onPressed,
       tooltip: tooltip,
       iconSize: size ?? AppSizes.iconDefault,
-      // Theme의 iconButtonTheme 스타일이 자동 적용됨
+      color: AppColors.textColor1, // 디자이너 스펙 적용
     );
 
     if (!hasBackground) {
@@ -331,7 +370,7 @@ class CommonIconButton extends StatelessWidget {
       decoration: BoxDecoration(
         color:
             backgroundColor ??
-            Theme.of(context).colorScheme.surfaceContainerHighest,
+            AppColors.subColor2.withValues(alpha: 0.2), // subColor2 alpha 0.2
         borderRadius: AppRadius.allMedium,
       ),
       child: iconButton,
@@ -393,5 +432,95 @@ class ButtonGroup extends StatelessWidget {
         ],
       );
     }
+  }
+}
+
+// ==================== Link Button ====================
+
+/// 링크 바로가기 버튼
+///
+/// 외부 URL이나 콘텐츠로 이동하는 링크 버튼입니다.
+/// SVG 아이콘과 텍스트를 포함하며, 작고 가벼운 스타일입니다.
+///
+/// 사용 예시:
+/// ```dart
+/// LinkButton(
+///   text: '링크 바로가기',
+///   onPressed: () => _openUrl(),
+/// )
+/// ```
+///
+/// 커스텀 아이콘 예시:
+/// ```dart
+/// LinkButton(
+///   text: '상세보기',
+///   iconPath: 'assets/icons/open.svg',
+///   textStyle: AppTextStyles.labelMedium,
+///   backgroundColor: AppColors.primary,
+///   foregroundColor: AppColors.white,
+///   onPressed: () => _openDetail(),
+/// )
+/// ```
+class LinkButton extends StatelessWidget {
+  /// 버튼에 표시될 텍스트
+  final String text;
+
+  /// 버튼 탭 시 실행될 콜백 함수
+  final VoidCallback? onPressed;
+
+  /// SVG 아이콘 경로 (기본값: 'assets/icons/link.svg')
+  final String? iconPath;
+
+  /// 배경색 (기본값: AppColors.white)
+  final Color? backgroundColor;
+
+  /// 아이콘 및 텍스트 색상 (기본값: AppColors.subColor2)
+  final Color? foregroundColor;
+
+  /// 텍스트 스타일 (기본값: AppTextStyles.metaMedium12)
+  /// 버튼마다 다른 스타일이 필요할 때 커스텀 가능
+  final TextStyle? textStyle;
+
+  const LinkButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.iconPath,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.textStyle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm, // 8
+          vertical: AppSpacing.smd, // 10
+        ),
+        decoration: BoxDecoration(
+          color: backgroundColor ?? AppColors.white,
+          borderRadius: AppRadius.allSmall, // 4.r
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              iconPath ?? 'assets/icons/link.svg',
+              width: AppSizes.iconSmall, // 16.w
+              height: AppSizes.iconSmall,
+              colorFilter: ColorFilter.mode(
+                foregroundColor ?? AppColors.subColor2,
+                BlendMode.srcIn,
+              ),
+            ),
+            SizedBox(width: AppSpacing.xs), // 4.w
+            Text(text, style: textStyle ?? AppTextStyles.metaMedium12),
+          ],
+        ),
+      ),
+    );
   }
 }

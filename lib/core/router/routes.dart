@@ -30,6 +30,9 @@ class AppRoutes {
   static const String schedule = '/schedule';
   static const String myPage = '/my-page';
 
+  /// 알림 화면 경로 (모든 탭에서 접근 가능)
+  static const String notifications = '/notifications';
+
   /// 홈 탭 하위 경로들
   static const String snsContentsList = '/home/sns-contents';
   static const String snsContentDetail = '/home/sns-contents/detail/:contentId';
@@ -102,10 +105,8 @@ class NavigationIcons {
   static const String homeInactive = '$_basePath/home_inactive.svg';
 
   // 코스마켓 탭 아이콘
-  static const String courseMarketActive =
-      '$_basePath/course_market_active.svg';
-  static const String courseMarketInactive =
-      '$_basePath/course_market_inactive.svg';
+  static const String marketActive = '$_basePath/market_active.svg';
+  static const String marketInactive = '$_basePath/market_inactive.svg';
 
   // 지도 탭 아이콘
   static const String mapActive = '$_basePath/map_active.svg';
@@ -125,7 +126,7 @@ class NavigationIcons {
       case 0:
         return homeActive;
       case 1:
-        return courseMarketActive;
+        return marketActive;
       case 2:
         return mapActive;
       case 3:
@@ -143,7 +144,7 @@ class NavigationIcons {
       case 0:
         return homeInactive;
       case 1:
-        return courseMarketInactive;
+        return marketInactive;
       case 2:
         return mapInactive;
       case 3:

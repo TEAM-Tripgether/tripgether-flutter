@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/buttons/social_login_button.dart';
+import '../../../../shared/widgets/common/app_snackbar.dart';
 
 /// 소셜 로그인 섹션 위젯
 ///
@@ -36,11 +37,11 @@ class SocialLoginSection extends StatelessWidget {
     return Column(
       children: [
         /// 구글 로그인 버튼
-        /// 밝은 회색 배경 + 어두운 텍스트 + 구글 로고
+        /// 밝은 회색 배경 + 검정 텍스트 + 구글 로고
         SocialLoginButton(
           text: l10n.signInWithGoogle,
           backgroundColor: AppColorPalette.googleButton, // #F1F1F1
-          textColor: AppColors.neutral10, // 검정에 가까운 어두운 회색
+          textColor: AppColors.textColor1, // 검정 텍스트 (Medium16)
           onPressed: onGoogleLogin,
           isLoading: isGoogleLoading,
           // 구글 SVG 아이콘 (AppSizes.iconMedium = 20px)
@@ -59,7 +60,7 @@ class SocialLoginSection extends StatelessWidget {
         SocialLoginButton(
           text: l10n.signInWithKakao,
           backgroundColor: AppColorPalette.kakaoButton, // #FEE500
-          textColor: AppColors.neutral10, // 검정 텍스트
+          textColor: AppColors.textColor1, // 검정 텍스트 (Medium16)
           onPressed: () => _showComingSoon(context, l10n),
           // 카카오 SVG 아이콘 (AppSizes.iconMedium = 20px)
           icon: SvgPicture.asset(
@@ -77,7 +78,7 @@ class SocialLoginSection extends StatelessWidget {
         SocialLoginButton(
           text: l10n.signInWithNaver,
           backgroundColor: AppColorPalette.naverButton, // #03C75A
-          textColor: AppColors.onPrimary, // 흰색 텍스트
+          textColor: AppColors.white, // 흰색 텍스트 (Medium16)
           onPressed: () => _showComingSoon(context, l10n),
           // 네이버 SVG 아이콘 (AppSizes.iconMedium = 20px)
           icon: SvgPicture.asset(
@@ -94,12 +95,10 @@ class SocialLoginSection extends StatelessWidget {
   ///
   /// 카카오, 네이버 로그인 버튼 클릭 시 호출됩니다.
   void _showComingSoon(BuildContext context, AppLocalizations l10n) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.comingSoon),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
+    AppSnackBar.showInfo(
+      context,
+      l10n.comingSoon,
+      duration: const Duration(seconds: 2),
     );
   }
 }

@@ -105,8 +105,8 @@ class _LoginFormState extends State<LoginForm> {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next, // 다음 필드로 이동
             validator: (value) => _validateEmail(value, context),
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.onPrimary, // 흰색 텍스트
+            style: AppTextStyles.bodyMedium16.copyWith(
+              color: AppColors.white, // 흰색 텍스트
             ),
             decoration: InputDecoration(
               labelText: l10n.emailLabel,
@@ -117,22 +117,22 @@ class _LoginFormState extends State<LoginForm> {
                 bottom: AppSpacing.sm,
                 left: AppSpacing.sm,
               ),
-              labelStyle: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.outline, // 밝은 회색 라벨
+              labelStyle: AppTextStyles.bodyRegular14.copyWith(
+                color: AppColors.subColor2, // 밝은 회색 라벨
               ),
-              hintStyle: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.outline, // 밝은 회색 힌트
+              hintStyle: AppTextStyles.bodyRegular14.copyWith(
+                color: AppColors.subColor2, // 밝은 회색 힌트
               ),
               // 하단 라인만 표시 (박스 제거)
               border: UnderlineInputBorder(
-                borderSide: BorderSide(color: AppColors.outline),
+                borderSide: BorderSide(color: AppColors.subColor2),
               ),
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: AppColors.outline),
+                borderSide: BorderSide(color: AppColors.subColor2),
               ),
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: AppColors.onPrimary, // 포커스 시 흰색
+                  color: AppColors.white, // 포커스 시 흰색
                   width: AppSizes.borderMedium,
                 ),
               ),
@@ -145,7 +145,7 @@ class _LoginFormState extends State<LoginForm> {
                   width: AppSizes.borderMedium,
                 ),
               ),
-              errorStyle: AppTextStyles.bodySmall.copyWith(
+              errorStyle: AppTextStyles.metaMedium12.copyWith(
                 color: AppColors.errorContainer, // 연한 핑크 에러 메시지
               ),
             ),
@@ -160,8 +160,8 @@ class _LoginFormState extends State<LoginForm> {
             textInputAction: TextInputAction.done, // 완료 버튼
             onFieldSubmitted: (_) => _handleLogin(), // 엔터 시 로그인
             validator: (value) => _validatePassword(value, context),
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.onPrimary, // 흰색 텍스트
+            style: AppTextStyles.bodyMedium16.copyWith(
+              color: AppColors.white, // 흰색 텍스트
             ),
             decoration: InputDecoration(
               labelText: l10n.passwordLabel,
@@ -172,17 +172,17 @@ class _LoginFormState extends State<LoginForm> {
                 bottom: AppSpacing.sm,
                 left: AppSpacing.sm,
               ),
-              labelStyle: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.outline, // 밝은 회색 라벨
+              labelStyle: AppTextStyles.bodyRegular14.copyWith(
+                color: AppColors.subColor2, // 밝은 회색 라벨
               ),
-              hintStyle: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.outline, // 밝은 회색 힌트
+              hintStyle: AppTextStyles.bodyRegular14.copyWith(
+                color: AppColors.subColor2, // 밝은 회색 힌트
               ),
               // 비밀번호 보기/숨기기 토글 버튼 (suffixIcon만 유지)
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.outline, // 밝은 회색 아이콘
+                  color: AppColors.subColor2, // 밝은 회색 아이콘
                   size: AppSizes.iconMedium,
                 ),
                 onPressed: () {
@@ -193,14 +193,14 @@ class _LoginFormState extends State<LoginForm> {
               ),
               // 하단 라인만 표시 (박스 제거)
               border: UnderlineInputBorder(
-                borderSide: BorderSide(color: AppColors.outline),
+                borderSide: BorderSide(color: AppColors.subColor2),
               ),
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: AppColors.outline),
+                borderSide: BorderSide(color: AppColors.subColor2),
               ),
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: AppColors.onPrimary, // 포커스 시 흰색
+                  color: AppColors.white, // 포커스 시 흰색
                   width: AppSizes.borderMedium,
                 ),
               ),
@@ -213,7 +213,7 @@ class _LoginFormState extends State<LoginForm> {
                   width: AppSizes.borderMedium,
                 ),
               ),
-              errorStyle: AppTextStyles.bodySmall.copyWith(
+              errorStyle: AppTextStyles.metaMedium12.copyWith(
                 color: AppColors.errorContainer, // 연한 핑크 에러 메시지
               ),
             ),
@@ -239,15 +239,15 @@ class _LoginFormState extends State<LoginForm> {
                         });
                       },
                       // 체크박스 색상: 흰색 테두리, 선택 시 흰색 배경
-                      checkColor: AppColors.gradientMiddle, // 체크마크 색상
+                      checkColor: AppColors.gradient2, // 체크마크 색상
                       fillColor: WidgetStateProperty.resolveWith((states) {
                         if (states.contains(WidgetState.selected)) {
-                          return AppColors.onPrimary; // 선택 시 흰색
+                          return AppColors.white; // 선택 시 흰색
                         }
                         return Colors.transparent; // 미선택 시 투명
                       }),
                       side: BorderSide(
-                        color: AppColors.outline, // 밝은 회색 테두리
+                        color: AppColors.subColor2, // 밝은 회색 테두리
                         width: AppSizes.borderThin,
                       ),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -256,8 +256,8 @@ class _LoginFormState extends State<LoginForm> {
                   SizedBox(width: AppSpacing.xs),
                   Text(
                     l10n.autoLogin,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.outline, // 밝은 회색 텍스트
+                    style: AppTextStyles.bodyRegular14.copyWith(
+                      color: AppColors.subColor2, // 밝은 회색 텍스트
                     ),
                   ),
                 ],

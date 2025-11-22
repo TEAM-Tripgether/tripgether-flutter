@@ -101,12 +101,14 @@ class ProfileAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         // 테두리 설정
-        border: showBorder ? Border.all(color: Colors.white, width: 2.w) : null,
+        border: showBorder
+            ? Border.all(color: AppColors.white, width: 2.w)
+            : null,
         // 그림자 효과 (테두리 있을 때만)
         boxShadow: showBorder
             ? [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
+                  color: AppColors.shadow.withValues(alpha: 0.1),
                   blurRadius: 8.r,
                   offset: Offset(0, 2.h),
                 ),
@@ -148,13 +150,13 @@ class ProfileAvatar extends StatelessWidget {
   /// 이미지 로딩 중에 표시되는 스켈레톤 효과
   Widget _buildShimmerPlaceholder() {
     return Shimmer.fromColors(
-      baseColor: AppColors.shimmerBase,
+      baseColor: AppColors.subColor2.withValues(alpha: 0.3),
       highlightColor: AppColors.shimmerHighlight,
       child: Container(
         width: size.value.w,
         height: size.value.h,
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: AppColors.white,
           shape: BoxShape.circle,
         ),
       ),
@@ -169,13 +171,13 @@ class ProfileAvatar extends StatelessWidget {
       width: size.value.w,
       height: size.value.h,
       decoration: BoxDecoration(
-        color: backgroundColor ?? Colors.grey[200],
+        color: backgroundColor ?? AppColors.backgroundLight,
         shape: BoxShape.circle,
       ),
       child: Icon(
         Icons.person,
         size: size.value * 0.5,
-        color: Colors.grey[400],
+        color: AppColors.subColor2,
       ),
     );
   }
@@ -191,7 +193,7 @@ class ProfileAvatar extends StatelessWidget {
 ///   imageUrl: user.profileImageUrl,
 ///   size: ProfileAvatarSize.medium,
 ///   badgeIcon: Icons.verified,
-///   badgeColor: Colors.blue,
+///   badgeColor: AppColors.mainColor,
 /// )
 /// ```
 class ProfileAvatarWithBadge extends StatelessWidget {
@@ -220,7 +222,7 @@ class ProfileAvatarWithBadge extends StatelessWidget {
     this.showBorder = false,
     this.onTap,
     required this.badgeIcon,
-    this.badgeColor = AppColors.primary,
+    this.badgeColor = AppColors.mainColor,
   });
 
   @override
@@ -245,9 +247,13 @@ class ProfileAvatarWithBadge extends StatelessWidget {
             decoration: BoxDecoration(
               color: badgeColor,
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2.w),
+              border: Border.all(color: AppColors.white, width: 2.w),
             ),
-            child: Icon(badgeIcon, size: size.value * 0.2, color: Colors.white),
+            child: Icon(
+              badgeIcon,
+              size: size.value * 0.2,
+              color: AppColors.white,
+            ),
           ),
         ),
       ],
@@ -305,12 +311,12 @@ class ProfileAvatarWithEdit extends StatelessWidget {
               width: size.value * 0.3,
               height: size.value * 0.3,
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: AppColors.mainColor,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2.w),
+                border: Border.all(color: AppColors.white, width: 2.w),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
+                    color: AppColors.shadow.withValues(alpha: 0.2),
                     blurRadius: 4.r,
                     offset: Offset(0, 2.h),
                   ),
@@ -319,7 +325,7 @@ class ProfileAvatarWithEdit extends StatelessWidget {
               child: Icon(
                 Icons.camera_alt,
                 size: size.value * 0.18,
-                color: Colors.white,
+                color: AppColors.white,
               ),
             ),
           ),

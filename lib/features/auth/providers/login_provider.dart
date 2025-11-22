@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tripgether/core/services/auth/google_auth_service.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';
 import 'package:tripgether/features/auth/data/models/auth_request.dart';
@@ -43,7 +44,7 @@ class LoginNotifier extends _$LoginNotifier {
     try {
       // 로딩 상태는 UserNotifier가 관리하므로 여기서는 불필요
 
-      // TODO: 실제 로그인 API 호출
+      // TODO: 실제 자체 로그인 API 호출
       // final response = await ref.read(authServiceProvider).login(
       //   email: email,
       //   password: password,
@@ -82,11 +83,13 @@ class LoginNotifier extends _$LoginNotifier {
   /// 2. 사용자가 Google 계정을 선택하고 권한 동의
   /// 3. 로그인 성공 시 사용자 정보 및 토큰 획득
   ///
-  /// Returns: (성공 여부, 최초 로그인 여부)
-  /// - (true, true): 최초 로그인 성공 → 온보딩 필요
-  /// - (true, false): 기존 사용자 로그인 성공 → 홈으로 이동
+  /// Returns: (성공 여부, 온보딩 필요 여부)
+  /// - (true, true): 로그인 성공 + 온보딩 필요 → 온보딩 화면으로
+  /// - (true, false): 로그인 성공 + 온보딩 완료 → 홈으로 이동
   /// - (false, false): 로그인 실패 또는 취소
-  Future<(bool success, bool isFirstLogin)> loginWithGoogle() async {
+  ///
+  /// Throws: 백엔드 에러 메시지를 포함한 Exception
+  Future<(bool success, bool requiresOnboarding)> loginWithGoogle() async {
     debugPrint('[LoginProvider] 🔄 구글 로그인 시작...');
 
     try {
@@ -168,16 +171,56 @@ class LoginNotifier extends _$LoginNotifier {
       debugPrint('[LoginProvider] ✅ 사용자 정보 저장 완료 (Secure Storage)');
       debugPrint('  📁 저장 항목: User, Access Token, Refresh Token');
 
+      // 6. 온보딩 상태 저장 (서버 응답 기반)
+      const storage = FlutterSecureStorage();
+      if (authResponse.requiresOnboarding) {
+        // 온보딩이 필요한 경우: 서버가 제공한 currentStep 저장
+        // ✅ Null-safe: 빈 문자열인 경우 기본값 'TERMS' 사용
+        final stepToSave = authResponse.onboardingStep.isEmpty
+            ? 'TERMS'
+            : authResponse.onboardingStep;
+
+        await storage.write(key: 'onboardingStep', value: stepToSave);
+        debugPrint(
+          '[LoginProvider] 🎯 온보딩 필요 → currentStep: $stepToSave${stepToSave != authResponse.onboardingStep ? ' (기본값 적용)' : ''}',
+        );
+      } else {
+        // 온보딩 완료된 경우: COMPLETED 저장
+        await storage.write(key: 'onboardingStep', value: 'COMPLETED');
+        debugPrint('[LoginProvider] ✅ 온보딩 완료 → COMPLETED 저장');
+      }
+
       debugPrint('[LoginProvider] ✅ 구글 로그인 성공!');
       debugPrint('  👤 사용자: ${googleUser.email}');
       debugPrint('  🆕 최초 로그인 여부: ${authResponse.isFirstLogin}');
-      debugPrint('  🏠 이동할 화면: ${authResponse.isFirstLogin ? "온보딩" : "홈"}');
+      debugPrint('  📋 온보딩 필요: ${authResponse.requiresOnboarding}');
+      debugPrint('  📍 현재 단계: ${authResponse.onboardingStep}');
+      debugPrint(
+        '  🏠 이동할 화면: ${authResponse.requiresOnboarding ? "온보딩" : "홈"}',
+      );
 
-      // 성공 상태와 최초 로그인 여부 반환
-      return (true, authResponse.isFirstLogin);
-    } catch (e) {
-      // 취소 예외 감지: 사용자가 로그인을 취소한 경우
+      // 성공 상태와 온보딩 필요 여부 반환
+      return (true, authResponse.requiresOnboarding);
+    } on Exception catch (e) {
+      // AuthApiService에서 던진 Exception을 그대로 전파
+      // 이미 ApiError로 파싱된 메시지를 포함
       final errorString = e.toString();
+
+      debugPrint('[LoginProvider] ❌ 서버 API 호출 중 에러 발생');
+      debugPrint('[LoginProvider] ❌ 에러 타입: ${e.runtimeType}');
+      debugPrint('[LoginProvider] ❌ 에러 메시지: $errorString');
+
+      // 추가 디버깅 정보
+      if (errorString.contains('상태 코드')) {
+        debugPrint('[LoginProvider] ❌ HTTP 상태 코드 에러 감지');
+      } else if (errorString.contains('연결') || errorString.contains('네트워크')) {
+        debugPrint('[LoginProvider] ❌ 네트워크 연결 문제 감지');
+      } else if (errorString.contains('시간 초과') ||
+          errorString.contains('timeout')) {
+        debugPrint('[LoginProvider] ❌ 타임아웃 에러 감지');
+      }
+
+      // 취소 예외 감지: 사용자가 로그인을 취소한 경우
       if (errorString.contains('canceled') ||
           errorString.contains('cancelled') ||
           errorString.contains('GoogleSignInExceptionCode.canceled')) {
@@ -186,9 +229,19 @@ class LoginNotifier extends _$LoginNotifier {
         return (false, false);
       }
 
-      // 실제 에러: (false, false) 반환
-      debugPrint('[LoginProvider] ❌ 구글 로그인 실패: $e');
-      return (false, false);
+      // Exception에서 'Exception: ' 접두사 제거 후 throw
+      final message = errorString.replaceFirst('Exception: ', '');
+      debugPrint('[LoginProvider] ❌ 최종 처리된 메시지: $message');
+      debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      throw Exception(message);
+    } catch (e) {
+      // 기타 예상치 못한 에러
+      debugPrint('[LoginProvider] ❌ 예상치 못한 에러 발생');
+      debugPrint('[LoginProvider] ❌ 에러 타입: ${e.runtimeType}');
+      debugPrint('[LoginProvider] ❌ 에러 내용: $e');
+      debugPrint('[LoginProvider] ❌ Stack trace 필요시 디버거로 확인');
+      debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      throw Exception('로그인 중 오류가 발생했습니다.');
     }
   }
 

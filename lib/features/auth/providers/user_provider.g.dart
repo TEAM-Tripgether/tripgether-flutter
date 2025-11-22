@@ -64,7 +64,7 @@ final refreshTokenProvider = AutoDisposeFutureProvider<String?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RefreshTokenRef = AutoDisposeFutureProviderRef<String?>;
-String _$userNotifierHash() => r'6e0f19de441a088e7938c9ff42816eb9234fe752';
+String _$userNotifierHash() => r'44e1e9c99e6300a2ea6bbe420e43d1e49f701ea3';
 
 /// 사용자 정보 상태 관리 Provider
 ///

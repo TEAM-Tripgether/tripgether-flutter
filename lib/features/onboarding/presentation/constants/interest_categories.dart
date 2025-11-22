@@ -1,8 +1,21 @@
-// 관심사 카테고리 상수
+// ⚠️ DEPRECATED: 하드코딩된 관심사 카테고리 데이터
 //
-// UI에서만 사용하는 관심사 카테고리 목록
-// 14개 카테고리, 각 카테고리당 여러 항목 포함
+// **사용 금지**: 이 파일은 더 이상 사용되지 않습니다.
+// **대체**: GET /api/interests API 사용 (lib/features/onboarding/providers/interest_provider.dart)
+//
+// **변경 이유**:
+// - 서버 DB와 클라이언트 데이터 동기화 문제 해결
+// - 카테고리 추가/수정 시 앱 업데이트 불필요
+// - Redis 캐싱으로 빠른 응답 보장
+//
+// **마이그레이션 가이드**:
+// 1. `ref.watch(interestsProvider)` 사용하여 API 데이터 로드
+// 2. `InterestCategoryDto` 및 `InterestItemDto` 사용
+// 3. 관심사 ID는 UUID 형식 (예: "550e8400-e29b-41d4-a716-446655440000")
+//
+// **삭제 예정일**: 2025-02-01 (모든 코드가 API로 마이그레이션된 후)
 
+@Deprecated('Use GET /api/interests API instead. See interest_provider.dart')
 class InterestCategory {
   final String id;
   final String name;
@@ -15,7 +28,10 @@ class InterestCategory {
   });
 }
 
-/// 14개 관심사 카테고리 (스크린샷 기준 순서로 재정렬)
+/// 14개 관심사 카테고리 (하드코딩)
+///
+/// ⚠️ DEPRECATED: API 사용 권장
+@Deprecated('Use interestsProvider from interest_provider.dart')
 const List<InterestCategory> interestCategories = [
   InterestCategory(
     id: 'food',

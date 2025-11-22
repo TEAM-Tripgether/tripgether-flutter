@@ -6,7 +6,6 @@ part 'auth_response.g.dart';
 /// 인증 API 응답 데이터 모델
 ///
 /// 소셜 로그인 및 토큰 재발급 API 응답 시 사용됩니다.
-/// API 명세서: claudedocs/TRIPGETHER_API_SPECIFICATION.md 참고
 ///
 /// **Freezed 자동 생성**:
 /// - `copyWith()`: 불변 객체 업데이트 (토큰 재발급 시 유용)
@@ -38,6 +37,25 @@ class AuthResponse with _$AuthResponse {
     ///
     /// 최초 로그인 시 추가 프로필 설정 화면으로 이동할 수 있습니다.
     required bool isFirstLogin,
+
+    /// 온보딩 필요 여부
+    ///
+    /// - true: 온보딩이 완료되지 않아 온보딩 화면으로 이동 필요
+    /// - false: 온보딩 완료, 홈 화면으로 이동
+    required bool requiresOnboarding,
+
+    /// 현재 온보딩 단계
+    ///
+    /// **가능한 값**:
+    /// - "TERMS": 약관 동의 필요
+    /// - "NAME": 이름 입력 필요
+    /// - "BIRTH_DATE": 생년월일 입력 필요
+    /// - "GENDER": 성별 선택 필요
+    /// - "INTERESTS": 관심사 선택 필요
+    /// - "COMPLETED": 온보딩 완료
+    ///
+    /// requiresOnboarding이 true일 때만 의미 있는 값
+    required String onboardingStep,
   }) = _AuthResponse;
 
   /// Access Token이 유효한지 확인 (간단한 검증)
