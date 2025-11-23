@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tripgether/core/errors/api_error.dart';
 import 'package:tripgether/core/utils/api_logger.dart';
 import '../data/models/interest_response.dart';
@@ -15,6 +16,34 @@ class InterestApiService {
 
   InterestApiService(this._dio);
 
+  /// Mock API 사용 여부
+  ///
+  /// **우선순위**:
+  /// 1. dart-define: `--dart-define=USE_MOCK_API=true`
+  /// 2. .env: `USE_MOCK_API=true`
+  /// 3. 기본값: true (Mock 모드)
+  bool get _useMockApi {
+    // 1순위: dart-define 확인
+    const dartDefine = String.fromEnvironment('USE_MOCK_API');
+    if (dartDefine.isNotEmpty) {
+      debugPrint(
+        '[InterestApiService] 🔧 USE_MOCK_API from dart-define: $dartDefine',
+      );
+      return dartDefine.toLowerCase() == 'true';
+    }
+
+    // 2순위: .env 확인
+    final envValue = dotenv.env['USE_MOCK_API'];
+    if (envValue != null) {
+      debugPrint('[InterestApiService] 🔧 USE_MOCK_API from .env: $envValue');
+      return envValue.toLowerCase() == 'true';
+    }
+
+    // 3순위: 기본값 (Mock 모드)
+    debugPrint('[InterestApiService] 🔧 USE_MOCK_API using default: true');
+    return true;
+  }
+
   /// 전체 관심사 목록 조회
   ///
   /// GET /api/interests
@@ -24,10 +53,8 @@ class InterestApiService {
   ///
   /// **인증**: Dio Interceptor가 자동으로 JWT Bearer Token 추가
   Future<GetAllInterestsResponse> getAllInterests() async {
-    // USE_MOCK_API 환경 변수 활용 (기존 프로젝트 방식과 통일)
-    const useMockApi = bool.fromEnvironment('USE_MOCK_API', defaultValue: true);
-
-    if (useMockApi) {
+    // USE_MOCK_API 환경 변수 활용 (우선순위: dart-define → .env → defaultValue)
+    if (_useMockApi) {
       return _mockGetAllInterests();
     }
 
@@ -55,12 +82,8 @@ class InterestApiService {
   ///
   /// GET /api/interests/{interestId}
   Future<GetInterestByIdResponse> getInterestById(String interestId) async {
-    const useRealApi = bool.fromEnvironment(
-      'USE_MOCK_API',
-      defaultValue: false,
-    );
-
-    if (!useRealApi) {
+    // Mock 모드에서는 상세 조회 미지원
+    if (_useMockApi) {
       throw UnimplementedError('Mock 모드에서는 관심사 상세 조회를 지원하지 않습니다');
     }
 
@@ -88,12 +111,8 @@ class InterestApiService {
   Future<GetInterestsByCategoryResponse> getInterestsByCategory(
     String category,
   ) async {
-    const useRealApi = bool.fromEnvironment(
-      'USE_MOCK_API',
-      defaultValue: false,
-    );
-
-    if (!useRealApi) {
+    // Mock 모드에서는 카테고리별 조회 미지원
+    if (_useMockApi) {
       throw UnimplementedError('Mock 모드에서는 카테고리별 조회를 지원하지 않습니다');
     }
 

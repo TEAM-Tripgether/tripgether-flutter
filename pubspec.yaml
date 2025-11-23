@@ -4,7 +4,7 @@ description: "Tripgether - Share your travel moments and discover local places t
 publish_to: 'none' 
 
 
-version: 1.2.3
+version: 1.2.7
 
 environment:
   sdk: ^3.9.2

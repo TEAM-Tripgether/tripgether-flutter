@@ -67,7 +67,10 @@ app.*.map.json
 /ios/Flutter/GoogleEnv.xcconfig
 
 # Claude Code (프로젝트 설정 파일과 캐시)
-.claude/
+/.claude/settings.local.json
 .claude-plugins/
 .claudedocs/
 CLAUDE.md
+
+#claude
+
