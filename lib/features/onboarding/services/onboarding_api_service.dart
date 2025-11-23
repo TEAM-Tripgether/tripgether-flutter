@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:tripgether/core/errors/api_error.dart';
 import 'package:tripgether/core/utils/api_logger.dart';
 import '../data/models/onboarding_response.dart';
 
@@ -120,13 +119,10 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
-      ApiLogger.logDioError(e, context: 'OnboardingApiService.agreeTerms');
-      if (e.response != null) {
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      } else {
-        throw Exception('네트워크 연결을 확인해주세요.');
-      }
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'OnboardingApiService.agreeTerms',
+      );
     } catch (e) {
       ApiLogger.logException(e, context: 'OnboardingApiService.agreeTerms');
       rethrow;
@@ -159,13 +155,10 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
-      ApiLogger.logDioError(e, context: 'OnboardingApiService.updateName');
-      if (e.response != null) {
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      } else {
-        throw Exception('네트워크 연결을 확인해주세요.');
-      }
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'OnboardingApiService.updateName',
+      );
     } catch (e) {
       ApiLogger.logException(e, context: 'OnboardingApiService.updateName');
       rethrow;
@@ -198,13 +191,10 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
-      ApiLogger.logDioError(e, context: 'OnboardingApiService.updateBirthDate');
-      if (e.response != null) {
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      } else {
-        throw Exception('네트워크 연결을 확인해주세요.');
-      }
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'OnboardingApiService.updateBirthDate',
+      );
     } catch (e) {
       ApiLogger.logException(
         e,
@@ -240,13 +230,10 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
-      ApiLogger.logDioError(e, context: 'OnboardingApiService.updateGender');
-      if (e.response != null) {
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      } else {
-        throw Exception('네트워크 연결을 확인해주세요.');
-      }
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'OnboardingApiService.updateGender',
+      );
     } catch (e) {
       ApiLogger.logException(e, context: 'OnboardingApiService.updateGender');
       rethrow;
@@ -279,13 +266,10 @@ class OnboardingApiService {
 
       return OnboardingResponse.fromJson(response.data);
     } on DioException catch (e) {
-      ApiLogger.logDioError(e, context: 'OnboardingApiService.updateInterests');
-      if (e.response != null) {
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      } else {
-        throw Exception('네트워크 연결을 확인해주세요.');
-      }
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'OnboardingApiService.updateInterests',
+      );
     } catch (e) {
       ApiLogger.logException(
         e,

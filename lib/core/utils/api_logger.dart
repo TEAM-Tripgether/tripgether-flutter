@@ -116,4 +116,64 @@ class ApiLogger {
       debugPrint('[$context] 🔄 ${message ?? '시작'}');
     }
   }
+
+  /// DioException을 처리하고 적절한 Exception을 throw
+  ///
+  /// **기능**:
+  /// - 타임아웃 에러 별도 메시지
+  /// - Refresh Token 에러 감지 및 커스텀 메시지
+  /// - ApiError 기반 에러 메시지 추출 (백엔드 response message 사용)
+  /// - 네트워크 에러 분류 처리
+  ///
+  /// **에러 메시지 흐름**:
+  /// 1. Service Layer: throwFromDioError → Exception(apiError.message)
+  /// 2. Notifier Layer: rethrow
+  /// 3. Page Layer: handleError 호출
+  /// 4. Error Handler: AppSnackBar.showError(context, message)
+  ///
+  /// **사용 예시**:
+  /// ```dart
+  /// try {
+  ///   final response = await dio.get('/api/data');
+  ///   return response.data;
+  /// } on DioException catch (e) {
+  ///   ApiLogger.throwFromDioError(e, context: 'ContentDataSource.getData');
+  /// }
+  /// ```
+  ///
+  /// [e] DioException 객체
+  /// [context] 에러 발생 위치 (예: 'AuthApiService.signIn')
+  /// [checkRefreshTokenError] true일 경우 Refresh Token 에러 특수 처리
+  static Never throwFromDioError(
+    DioException e, {
+    required String context,
+    bool checkRefreshTokenError = false,
+  }) {
+    // 1. debugPrint 로깅 (개발자용)
+    logDioError(e, context: context);
+
+    // 2. 타임아웃 에러 처리
+    if (e.type == DioExceptionType.connectionTimeout) {
+      throw Exception('연결 시간 초과: 서버에 연결할 수 없습니다.');
+    }
+    if (e.type == DioExceptionType.receiveTimeout) {
+      throw Exception('응답 시간 초과: 서버 응답이 없습니다.');
+    }
+
+    // 3. 서버 응답이 있는 경우 (백엔드 메시지 사용)
+    if (e.response != null) {
+      final apiError = ApiError.fromDioError(e.response!.data);
+
+      // 3-1. Refresh Token 에러 특수 처리 (선택적)
+      if (checkRefreshTokenError && apiError.isTokenError) {
+        throw Exception(apiError.message);
+      }
+
+      // 3-2. 백엔드 메시지 그대로 throw
+      throw Exception(apiError.message);
+    }
+
+    // 4. 네트워크 에러 (응답 없음)
+    throw Exception('네트워크 연결을 확인해주세요.');
+  }
 }

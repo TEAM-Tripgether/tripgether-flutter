@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:tripgether/core/errors/api_error.dart';
 import 'package:tripgether/core/utils/api_logger.dart';
 import 'package:tripgether/core/services/fcm/firebase_messaging_service.dart';
 import 'package:tripgether/core/services/device_info_service.dart';
@@ -396,18 +395,7 @@ class AuthApiService {
         throw Exception('로그인 실패: 상태 코드 ${response.statusCode}');
       }
     } on DioException catch (e) {
-      // Dio 관련 에러 처리
-      if (e.type == DioExceptionType.connectionTimeout) {
-        throw Exception('연결 시간 초과: 서버에 연결할 수 없습니다.');
-      } else if (e.type == DioExceptionType.receiveTimeout) {
-        throw Exception('응답 시간 초과: 서버 응답이 없습니다.');
-      } else if (e.response != null) {
-        ApiLogger.logDioError(e, context: 'AuthApiService.signIn');
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      } else {
-        throw Exception('네트워크 오류: ${e.message}');
-      }
+      ApiLogger.throwFromDioError(e, context: 'AuthApiService.signIn');
     } catch (e) {
       ApiLogger.logException(e, context: 'AuthApiService.signIn');
       rethrow;
@@ -453,26 +441,12 @@ class AuthApiService {
         throw Exception('토큰 재발급 실패: 상태 코드 ${response.statusCode}');
       }
     } on DioException catch (e) {
-      // Dio 관련 에러 처리
       debugPrint('[AuthApiService - Real] ❌ Dio 에러: ${e.type}');
-
-      if (e.response != null) {
-        ApiLogger.logDioError(e, context: 'AuthApiService.reissueToken');
-        final apiError = ApiError.fromDioError(e.response!.data);
-
-        // Refresh Token 관련 에러는 재로그인 필요
-        if (apiError.code == 'REFRESH_TOKEN_NOT_FOUND' ||
-            apiError.code == 'INVALID_REFRESH_TOKEN' ||
-            apiError.code == 'EXPIRED_REFRESH_TOKEN') {
-          throw Exception('${apiError.message} 다시 로그인해주세요.');
-        }
-
-        throw Exception(apiError.message);
-      } else if (e.type == DioExceptionType.connectionTimeout) {
-        throw Exception('연결 시간 초과: 서버에 연결할 수 없습니다.');
-      } else {
-        throw Exception('네트워크 오류: ${e.message}');
-      }
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'AuthApiService.reissueToken',
+        checkRefreshTokenError: true,
+      );
     } catch (e) {
       ApiLogger.logException(e, context: 'AuthApiService.reissueToken');
       rethrow;
