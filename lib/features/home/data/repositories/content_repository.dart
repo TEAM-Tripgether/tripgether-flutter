@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../../../core/models/content_model.dart';
 import '../data_sources/content_data_source.dart';
 import '../data_sources/mock_content_data_source.dart';
@@ -14,10 +16,35 @@ class ContentRepository {
     if (dataSource != null) {
       _dataSource = dataSource;
     } else {
-      // 환경 변수에 따라 데이터 소스 선택
-      const useMock = bool.fromEnvironment('USE_MOCK_API', defaultValue: true);
-      _dataSource = useMock ? MockContentDataSource() : ApiContentDataSource();
+      // 환경 변수에 따라 데이터 소스 선택 (우선순위: dart-define → .env → 기본값)
+      _dataSource = _useMockApi() ? MockContentDataSource() : ApiContentDataSource();
     }
+  }
+
+  /// Mock API 사용 여부
+  ///
+  /// **우선순위**:
+  /// 1. dart-define: `--dart-define=USE_MOCK_API=true`
+  /// 2. .env: `USE_MOCK_API=true`
+  /// 3. 기본값: true (Mock 모드)
+  bool _useMockApi() {
+    // 1순위: dart-define 확인
+    const dartDefine = String.fromEnvironment('USE_MOCK_API');
+    if (dartDefine.isNotEmpty) {
+      debugPrint('[ContentRepository] 🔧 USE_MOCK_API from dart-define: $dartDefine');
+      return dartDefine.toLowerCase() == 'true';
+    }
+
+    // 2순위: .env 확인
+    final envValue = dotenv.env['USE_MOCK_API'];
+    if (envValue != null) {
+      debugPrint('[ContentRepository] 🔧 USE_MOCK_API from .env: $envValue');
+      return envValue.toLowerCase() == 'true';
+    }
+
+    // 3순위: 기본값 (Mock 모드)
+    debugPrint('[ContentRepository] 🔧 USE_MOCK_API using default: true');
+    return true;
   }
 
   /// 모든 콘텐츠 목록 조회
