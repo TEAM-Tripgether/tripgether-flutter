@@ -1,11 +1,34 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-23T07:08:53Z",
-    "currentVersion": "1.2.1",
+    "lastUpdated": "2025-11-23T07:28:44Z",
+    "currentVersion": "1.2.2",
     "projectType": "flutter",
-    "totalReleases": 32
+    "totalReleases": 33
   },
   "releases": [
+    {
+      "version": "1.2.2",
+      "project_type": "flutter",
+      "date": "2025-11-23",
+      "pr_number": 93,
+      "raw_summary": "Summary by CodeRabbit\n\n\n문서\n\n최신 버전 배지 정보가 업데이트되었습니다.\n\n\n\n작업\n\n애플리케이션 버전이 1.2.2로 업그레이드되었습니다.\n빌드 버전 코드가 54에서 55로 증가했습니다.\nCI/CD 빌드 파이프라인 구성이 변경되었습니다.\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "문서": {
+          "title": "문서",
+          "items": [
+            "최신 버전 배지 정보가 업데이트되었습니다."
+          ]
+        },
+        "작업": {
+          "title": "작업",
+          "items": [
+            "애플리케이션 버전이 1.2.2로 업그레이드되었습니다.",
+            "빌드 버전 코드가 54에서 55로 증가했습니다.",
+            "CI/CD 빌드 파이프라인 구성이 변경되었습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.1",
       "project_type": "flutter",
