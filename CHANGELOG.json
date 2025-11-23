@@ -1,11 +1,33 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-23T07:28:44Z",
-    "currentVersion": "1.2.2",
+    "lastUpdated": "2025-11-23T07:41:08Z",
+    "currentVersion": "1.2.3",
     "projectType": "flutter",
-    "totalReleases": 33
+    "totalReleases": 34
   },
   "releases": [
+    {
+      "version": "1.2.3",
+      "project_type": "flutter",
+      "date": "2025-11-23",
+      "pr_number": 94,
+      "raw_summary": "Summary by CodeRabbit\n\n\nChores\n\n버전을 1.2.3으로 업데이트했습니다.\n빌드 워크플로우 설정을 개선했습니다.\n\n\n\nDocumentation\n\n최신 버전 정보를 업데이트했습니다.\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전을 1.2.3으로 업데이트했습니다.",
+            "빌드 워크플로우 설정을 개선했습니다."
+          ]
+        },
+        "documentation": {
+          "title": "Documentation",
+          "items": [
+            "최신 버전 정보를 업데이트했습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.2",
       "project_type": "flutter",
