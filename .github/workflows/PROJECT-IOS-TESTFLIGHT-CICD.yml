@@ -180,6 +180,7 @@ jobs:
             .env
             ios/Flutter/Secrets.xcconfig
             pubspec.yaml
+            pubspec.lock
             lib/
             assets/
           retention-days: 1
