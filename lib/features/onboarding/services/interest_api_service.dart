@@ -26,7 +26,9 @@ class InterestApiService {
     // 1순위: dart-define 확인
     const dartDefine = String.fromEnvironment('USE_MOCK_API');
     if (dartDefine.isNotEmpty) {
-      debugPrint('[InterestApiService] 🔧 USE_MOCK_API from dart-define: $dartDefine');
+      debugPrint(
+        '[InterestApiService] 🔧 USE_MOCK_API from dart-define: $dartDefine',
+      );
       return dartDefine.toLowerCase() == 'true';
     }
 

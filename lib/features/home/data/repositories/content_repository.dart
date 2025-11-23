@@ -17,7 +17,9 @@ class ContentRepository {
       _dataSource = dataSource;
     } else {
       // 환경 변수에 따라 데이터 소스 선택 (우선순위: dart-define → .env → 기본값)
-      _dataSource = _useMockApi() ? MockContentDataSource() : ApiContentDataSource();
+      _dataSource = _useMockApi()
+          ? MockContentDataSource()
+          : ApiContentDataSource();
     }
   }
 
@@ -31,7 +33,9 @@ class ContentRepository {
     // 1순위: dart-define 확인
     const dartDefine = String.fromEnvironment('USE_MOCK_API');
     if (dartDefine.isNotEmpty) {
-      debugPrint('[ContentRepository] 🔧 USE_MOCK_API from dart-define: $dartDefine');
+      debugPrint(
+        '[ContentRepository] 🔧 USE_MOCK_API from dart-define: $dartDefine',
+      );
       return dartDefine.toLowerCase() == 'true';
     }
 
