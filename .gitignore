@@ -53,6 +53,11 @@ app.*.map.json
 # Android 환경 변수 설정 파일 (빌드 시 자동 생성됨 - Git에 업로드 금지)
 /android/local.properties
 
+# Android 키스토어 및 서명 관련 파일 (보안 - Git에 업로드 금지)
+/android/key.properties
+/android/app/keystore/*.jks
+/android/app/keystore/*.keystore
+
 # iOS/macOS build artifacts
 /ios/build/
 /macos/build/
