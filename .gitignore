@@ -17,6 +17,9 @@ migrate_working_dir/
 .env.local
 .env.*.local
 
+#claude
+/.claude/settings.local.json
+
 # IntelliJ related
 *.iml
 *.ipr
