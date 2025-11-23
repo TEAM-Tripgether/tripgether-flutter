@@ -1,11 +1,35 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-23T07:41:08Z",
-    "currentVersion": "1.2.3",
+    "lastUpdated": "2025-11-23T09:05:57Z",
+    "currentVersion": "1.2.7",
     "projectType": "flutter",
-    "totalReleases": 34
+    "totalReleases": 35
   },
   "releases": [
+    {
+      "version": "1.2.7",
+      "project_type": "flutter",
+      "date": "2025-11-23",
+      "pr_number": 95,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트 v1.2.7\n\n\n새로운 기능\n\n개발 환경별 API 모드 설정 지원 추가 (Mock/실시간 API 자동 선택)\nAI 기반 개발 워크플로우 가이드 추가 (분석, 설계, 구현, 테스트, 리뷰 등)\n\n\n\nChores\n\n버전 업데이트 (1.2.3 → 1.2.7)\n크로스 플랫폼 개발 유틸리티 모듈 추가\n프로젝트 문서화 및 개발자 가이드 강화\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "개발 환경별 API 모드 설정 지원 추가 (Mock/실시간 API 자동 선택)",
+            "AI 기반 개발 워크플로우 가이드 추가 (분석, 설계, 구현, 테스트, 리뷰 등)"
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "버전 업데이트 (1.2.3 → 1.2.7)",
+            "크로스 플랫폼 개발 유틸리티 모듈 추가",
+            "프로젝트 문서화 및 개발자 가이드 강화"
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.3",
       "project_type": "flutter",
