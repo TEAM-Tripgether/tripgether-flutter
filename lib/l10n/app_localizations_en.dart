@@ -543,6 +543,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapMyLocationTooltip => 'Go to my location';
 
   @override
+  String get mapToggleMapType => 'Toggle map type';
+
+  @override
   String get mapPlaceholder => 'Map feature coming soon';
 
   @override

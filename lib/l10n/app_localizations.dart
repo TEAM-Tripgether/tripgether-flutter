@@ -1070,6 +1070,12 @@ abstract class AppLocalizations {
   /// **'내 위치로 이동'**
   String get mapMyLocationTooltip;
 
+  /// 지도 타입 변경 버튼 툴팁 (일반/위성)
+  ///
+  /// In ko, this message translates to:
+  /// **'지도 타입 변경'**
+  String get mapToggleMapType;
+
   /// 지도 화면 플레이스홀더 메시지
   ///
   /// In ko, this message translates to:
