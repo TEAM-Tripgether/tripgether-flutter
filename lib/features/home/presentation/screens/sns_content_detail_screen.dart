@@ -116,11 +116,13 @@ class SnsContentDetailScreen extends StatelessWidget {
               imageUrls: place.photoUrls,
               onTap: () {
                 // 장소 상세 화면으로 이동 (:placeId 파라미터 치환)
+                // PlaceModel 객체를 extra로 전달하여 저장되지 않은 장소도 조회 가능하게 함
                 context.push(
                   AppRoutes.placeDetail.replaceAll(
                     ':placeId',
                     place.placeId,
                   ),
+                  extra: place,
                 );
               },
             ),

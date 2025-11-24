@@ -13,6 +13,7 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/notifications/presentation/screens/notification_screen.dart';
 import '../../core/models/content_model.dart';
+import '../../core/models/place_model.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
 import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
@@ -205,12 +206,35 @@ class AppRouter {
     /// - SNS 콘텐츠 상세 화면에서 장소 카드 클릭 시
     /// - 홈 화면의 저장한 장소 목록에서 클릭 시
     /// - 지도 화면에서 마커 클릭 시 (향후)
+    ///
+    /// [state.extra]로 PlaceModel을 전달할 수 있습니다:
+    /// - extra가 PlaceModel인 경우: 해당 장소 정보를 직접 사용 (저장되지 않은 장소도 조회 가능)
+    /// - extra가 없는 경우: placeId로 저장된 장소 목록에서 조회
     GoRoute(
       path: AppRoutes.placeDetail,
       pageBuilder: (context, state) {
         final placeId = state.pathParameters['placeId']!;
+        PlaceModel? place;
+
+        // state.extra 타입 안전성 체크
+        if (state.extra is Map<String, dynamic>) {
+          try {
+            place = PlaceModel.fromJson(
+              state.extra as Map<String, dynamic>,
+            );
+          } catch (e) {
+            debugPrint('[Router] PlaceModel 파싱 실패: $e');
+            place = null;
+          }
+        } else if (state.extra is PlaceModel) {
+          place = state.extra as PlaceModel;
+        }
+
         return NoTransitionPage(
-          child: PlaceDetailScreen(placeId: placeId),
+          child: PlaceDetailScreen(
+            placeId: placeId,
+            initialPlace: place,
+          ),
         );
       },
     ),

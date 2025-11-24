@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/models/place_model.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -24,15 +25,40 @@ import '../providers/place_detail_provider.dart';
 ///
 /// 장소의 상세 정보를 표시하고, 관련 컨텐츠 및 다른 장소들을 보여줍니다.
 /// "지도에서 보기" 버튼을 통해 Map 탭으로 이동할 수 있습니다.
+///
+/// [placeId]: 장소 고유 ID (필수)
+/// [initialPlace]: 초기 장소 정보 (선택). 전달되면 네트워크 조회 없이 즉시 표시됩니다.
+///                 SNS 콘텐츠에서 넘어온 저장되지 않은 장소를 조회할 때 사용합니다.
 class PlaceDetailScreen extends ConsumerWidget {
   /// 장소 ID
   final String placeId;
 
-  const PlaceDetailScreen({super.key, required this.placeId});
+  /// 초기 장소 정보 (선택)
+  /// SNS 콘텐츠에서 전달된 장소 정보를 직접 사용하여 저장되지 않은 장소도 조회 가능
+  final PlaceModel? initialPlace;
+
+  const PlaceDetailScreen({
+    super.key,
+    required this.placeId,
+    this.initialPlace,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+
+    // initialPlace가 제공된 경우 즉시 표시 (저장되지 않은 장소도 조회 가능)
+    if (initialPlace != null) {
+      return Scaffold(
+        appBar: CommonAppBar.forSubPage(
+          title: '',
+          rightActions: const [], // 알림 아이콘 제거
+        ),
+        body: _buildPlaceDetail(context, ref, l10n, initialPlace!),
+      );
+    }
+
+    // initialPlace가 없는 경우 Provider를 통해 저장된 장소 조회
     final placeAsync = ref.watch(placeDetailProvider(placeId));
 
     return Scaffold(
