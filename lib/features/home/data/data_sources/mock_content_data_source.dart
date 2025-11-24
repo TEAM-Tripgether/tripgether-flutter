@@ -115,16 +115,36 @@ class MockContentDataSource implements ContentDataSource {
       return _cachedPlaces!;
     }
 
-    // 모든 콘텐츠에서 장소 추출
-    final contents = await _getAllContents();
-    final allPlaces = <PlaceModel>[];
+    // 백엔드 API 응답 구조에 맞는 Mock 데이터
+    // GET /api/place/{id} 응답 형식
+    final mockPlaceData = {
+      "placeId": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "제주 카페 쿠모",
+      "address": "제주특별자치도 제주시 애월읍",
+      "country": "KR",
+      "latitude": 33.4996213,
+      "longitude": 126.5311884,
+      "businessType": "카페",
+      "category": "카페",
+      "phone": "010-1234-5678",
+      "description": "제주 바다를 바라보며 커피를 즐길 수 있는 카페",
+      "types": ["cafe", "restaurant"],
+      "businessStatus": "OPERATIONAL",
+      "iconUrl":
+          "https://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
+      "rating": 4.5,
+      "userRatingsTotal": 123,
+      "photoUrls": [
+        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=80",
+        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80",
+      ],
+    };
 
-    for (final content in contents) {
-      allPlaces.addAll(content.places);
-    }
+    // PlaceModel.fromJson()으로 변환
+    final place = PlaceModel.fromJson(mockPlaceData);
 
-    _cachedPlaces = allPlaces;
-    return allPlaces;
+    _cachedPlaces = [place];
+    return _cachedPlaces!;
   }
 
   @override
