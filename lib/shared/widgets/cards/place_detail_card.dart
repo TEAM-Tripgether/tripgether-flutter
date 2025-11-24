@@ -51,96 +51,93 @@ class PlaceDetailCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(AppSpacing.sm), // 8
         decoration: BoxDecoration(
-          color: AppColors.backgroundLight,
+          color: AppColors.white,
           borderRadius: AppRadius.allMedium,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 텍스트 영역 (카테고리, 장소명, 주소, 리뷰)
-            Padding(
-              padding: EdgeInsets.all(AppSpacing.xsm),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 카테고리
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.subColor2.withValues(alpha: 0.2),
-                      borderRadius: AppRadius.allSmall,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.smd,
-                      vertical: AppSpacing.xxs,
-                    ),
-                    child: Text(
-                      category,
-                      style: AppTextStyles.metaMedium12.copyWith(
-                        color: AppColors.textColor1.withValues(alpha: 0.4),
-                      ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 카테고리
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.subColor2.withValues(alpha: 0.2),
+                    borderRadius: AppRadius.allSmall,
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSpacing.smd,
+                    vertical: AppSpacing.xxs,
+                  ),
+                  child: Text(
+                    category,
+                    style: AppTextStyles.metaMedium12.copyWith(
+                      color: AppColors.textColor1.withValues(alpha: 0.4),
                     ),
                   ),
+                ),
 
-                  AppSpacing.verticalSpaceXSM, // 6
-                  // 장소 이름
-                  Text(
-                    placeName,
-                    style: AppTextStyles.titleSemiBold14,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                AppSpacing.verticalSpaceXSM, // 6
+                // 장소 이름
+                Text(
+                  placeName,
+                  style: AppTextStyles.titleSemiBold14,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
 
-                  AppSpacing.verticalSpaceXS, // 4
-                  // 주소
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/location_on.svg',
-                        width: AppSizes.iconSmall,
-                        height: AppSizes.iconSmall,
-                        colorFilter: ColorFilter.mode(
-                          AppColors.mainColor,
-                          BlendMode.srcIn,
-                        ),
+                AppSpacing.verticalSpaceXS, // 4
+                // 주소
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/location_on.svg',
+                      width: AppSizes.iconSmall,
+                      height: AppSizes.iconSmall,
+                      colorFilter: ColorFilter.mode(
+                        AppColors.mainColor,
+                        BlendMode.srcIn,
                       ),
-                      AppSpacing.horizontalSpaceXS,
-                      Expanded(
-                        child: Text(
-                          address,
-                          style: AppTextStyles.metaMedium12.copyWith(
-                            color: AppColors.textColor1.withValues(alpha: 0.6),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  AppSpacing.verticalSpaceXS, // 4
-                  // 평점 및 리뷰 수
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/star.svg',
-                        width: AppSizes.iconSmall,
-                        height: AppSizes.iconSmall,
-                        colorFilter: ColorFilter.mode(
-                          AppColors.mainColor,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      SizedBox(width: AppSpacing.xs),
-                      Text(
-                        '$rating ($reviewCount)',
+                    ),
+                    AppSpacing.horizontalSpaceXS,
+                    Expanded(
+                      child: Text(
+                        address,
                         style: AppTextStyles.metaMedium12.copyWith(
                           color: AppColors.textColor1.withValues(alpha: 0.6),
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+
+                AppSpacing.verticalSpaceXS, // 4
+                // 평점 및 리뷰 수
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/star.svg',
+                      width: AppSizes.iconSmall,
+                      height: AppSizes.iconSmall,
+                      colorFilter: ColorFilter.mode(
+                        AppColors.mainColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    SizedBox(width: AppSpacing.xs),
+                    Text(
+                      '$rating ($reviewCount)',
+                      style: AppTextStyles.metaMedium12.copyWith(
+                        color: AppColors.textColor1.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
 
             AppSpacing.verticalSpaceSM, // 8
@@ -155,7 +152,7 @@ class PlaceDetailCard extends StatelessWidget {
   /// 가로 스크롤 이미지 리스트
   Widget _buildImageList() {
     return SizedBox(
-      height: 80.h,
+      height: 84.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: imageUrls.length,
@@ -188,7 +185,7 @@ class PlaceDetailCard extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: AppColors.subColor2.withValues(alpha: 0.3),
       highlightColor: AppColors.shimmerHighlight,
-      child: Container(width: 100.w, height: 80.h, color: AppColors.white),
+      child: Container(width: 104.w, height: 84.h, color: AppColors.white),
     );
   }
 

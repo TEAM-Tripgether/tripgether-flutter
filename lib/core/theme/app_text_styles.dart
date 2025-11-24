@@ -112,11 +112,27 @@ class AppTextStyles {
     color: AppColors.textColor1,
   );
 
+  /// 중간 본문 텍스트 (Medium, 15px)
+  /// 사용처: 장소 설명, 강조된 본문
+  static TextStyle bodyMedium15 = TextStyle(
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15.sp,
+    color: AppColors.textColor1,
+  );
+
   /// 중간 본문 텍스트 (Medium, 14px)
   /// 사용처: 강조된 일반 본문, 사용자 정보
   static TextStyle bodyMedium14 = TextStyle(
     fontFamily: 'Pretendard-Medium',
     fontSize: 14.sp,
+    color: AppColors.textColor1,
+  );
+
+  /// 작은 본문 텍스트 (Medium, 13px)
+  /// 사용처: 주소, 별점, 부가 정보
+  static TextStyle bodyMedium13 = TextStyle(
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 13.sp,
     color: AppColors.textColor1,
   );
 

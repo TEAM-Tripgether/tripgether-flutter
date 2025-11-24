@@ -1136,6 +1136,12 @@ abstract class AppLocalizations {
   /// **'위치 정보가 없습니다'**
   String get placeDetailNoLocation;
 
+  /// 주소 복사 완료 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'주소가 복사되었습니다'**
+  String get addressCopied;
+
   /// 장소 설명 섹션 제목
   ///
   /// In ko, this message translates to:

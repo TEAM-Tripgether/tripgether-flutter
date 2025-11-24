@@ -1,33 +1,36 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shimmer/shimmer.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
+import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
+import '../../../../shared/widgets/place_detail/place_info_header.dart';
+import '../../../../shared/widgets/place_detail/place_mini_map.dart';
+import '../../../../shared/widgets/place_detail/place_info_section.dart';
+import '../../../../shared/widgets/place_detail/place_photo_gallery.dart';
+import '../../../../shared/widgets/cards/sns_content_card.dart';
+import '../../../../shared/widgets/cards/place_detail_card.dart';
+import '../../../../shared/widgets/layout/section_header.dart';
 import '../../../map/presentation/providers/map_provider.dart';
 import '../providers/place_detail_provider.dart';
 
 /// 장소 상세 화면
 ///
-/// 장소의 상세 정보를 표시하고, Google Maps에 마커를 표시합니다.
+/// 장소의 상세 정보를 표시하고, 관련 컨텐츠 및 다른 장소들을 보여줍니다.
 /// "지도에서 보기" 버튼을 통해 Map 탭으로 이동할 수 있습니다.
 class PlaceDetailScreen extends ConsumerWidget {
   /// 장소 ID
   final String placeId;
 
-  const PlaceDetailScreen({
-    super.key,
-    required this.placeId,
-  });
+  const PlaceDetailScreen({super.key, required this.placeId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,9 +38,7 @@ class PlaceDetailScreen extends ConsumerWidget {
     final placeAsync = ref.watch(placeDetailProvider(placeId));
 
     return Scaffold(
-      appBar: CommonAppBar.forSubPage(
-        title: l10n.placeDetailTitle,
-      ),
+      appBar: CommonAppBar.forSubPage(title: l10n.placeDetailTitle),
       body: placeAsync.when(
         data: (place) {
           if (place == null) {
@@ -62,237 +63,196 @@ class PlaceDetailScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 이미지 갤러리
-          if (place.photoUrls.isNotEmpty) _buildImageGallery(place.photoUrls),
-
-          // 장소 기본 정보
+          // 1. 장소 기본 정보 헤더 (카테고리, 이름, 설명) - 패딩 있음
           Padding(
             padding: EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 카테고리
-                if (place.category != null) ...[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.subColor2.withValues(alpha: 0.2),
-                      borderRadius: AppRadius.allSmall,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.smd,
-                      vertical: AppSpacing.xxs,
-                    ),
-                    child: Text(
-                      place.category!,
-                      style: AppTextStyles.metaMedium12.copyWith(
-                        color: AppColors.textColor1.withValues(alpha: 0.4),
-                      ),
-                    ),
-                  ),
-                  AppSpacing.verticalSpaceSM,
-                ],
-
-                // 장소 이름
-                Text(
-                  place.name,
-                  style: AppTextStyles.titleBold24,
-                ),
-
-                AppSpacing.verticalSpaceSM,
-
-                // 평점 및 리뷰 수
-                if (place.rating != null) ...[
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/star.svg',
-                        width: AppSizes.iconDefault,
-                        height: AppSizes.iconDefault,
-                        colorFilter: ColorFilter.mode(
-                          AppColors.mainColor,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      SizedBox(width: AppSpacing.xs),
-                      Text(
-                        '${place.rating} (${place.userRatingsTotal ?? 0})',
-                        style: AppTextStyles.bodyRegular14.copyWith(
-                          color: AppColors.textColor1.withValues(alpha: 0.6),
-                        ),
-                      ),
-                    ],
-                  ),
-                  AppSpacing.verticalSpaceSM,
-                ],
-
-                // 주소
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/location_on.svg',
-                      width: AppSizes.iconDefault,
-                      height: AppSizes.iconDefault,
-                      colorFilter: ColorFilter.mode(
-                        AppColors.mainColor,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    SizedBox(width: AppSpacing.xs),
-                    Expanded(
-                      child: Text(
-                        place.address,
-                        style: AppTextStyles.bodyRegular14,
-                      ),
-                    ),
-                  ],
-                ),
-
-                // 전화번호
-                if (place.phone != null) ...[
-                  AppSpacing.verticalSpaceSM,
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.phone_outlined,
-                        size: AppSizes.iconDefault,
-                        color: AppColors.mainColor,
-                      ),
-                      SizedBox(width: AppSpacing.xs),
-                      Text(
-                        place.phone!,
-                        style: AppTextStyles.bodyRegular14,
-                      ),
-                    ],
-                  ),
-                ],
-
-                // 설명
-                if (place.description != null) ...[
-                  AppSpacing.verticalSpaceMD,
-                  Text(
-                    l10n.placeDetailDescription,
-                    style: AppTextStyles.titleSemiBold16,
-                  ),
-                  AppSpacing.verticalSpaceXS,
-                  Text(
-                    place.description!,
-                    style: AppTextStyles.bodyRegular14.copyWith(
-                      color: AppColors.textColor1.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
-
-                AppSpacing.verticalSpaceMD,
-
-                // Google Maps 미니맵
-                _buildMiniMap(context, l10n, place),
-
-                AppSpacing.verticalSpaceLG,
-
-                // 액션 버튼들
-                _buildActionButtons(context, ref, l10n, place),
-              ],
+            child: PlaceInfoHeader(
+              category: place.category,
+              name: place.name,
+              description: place.description,
             ),
+          ),
+
+          // 2. Google Maps 미니맵 - 패딩 있음
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: PlaceMiniMap(
+              latitude: place.latitude,
+              longitude: place.longitude,
+              placeName: place.name,
+              placeId: place.placeId,
+              height: 240.h,
+            ),
+          ),
+
+          AppSpacing.verticalSpaceLG, // 지도 → 구분선 간격
+          // 3. 구분선 - 패딩 없음 (앱 양 끝으로 뻗음)
+          const SectionDivider.thick(),
+
+          AppSpacing.verticalSpaceLG, // 구분선 → 상세 정보 간격
+          // 4. 장소 상세 정보 (주소, 전화, 별점) - 패딩 있음 (헤더보다 8px 더 들어감)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+            child: PlaceInfoSection(
+              address: place.address,
+              phone: place.phone,
+              rating: place.rating?.toDouble(),
+              reviewCount: place.userRatingsTotal,
+              onPhoneTap: place.phone != null
+                  ? () {
+                      // TODO: 전화 기능 구현
+                      debugPrint('[PlaceDetailScreen] 전화: ${place.phone}');
+                    }
+                  : null,
+              onAddressTap: () async {
+                // 주소를 클립보드에 복사
+                await Clipboard.setData(ClipboardData(text: place.address));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.addressCopied),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+
+          AppSpacing.verticalSpaceLG, // 상세 정보 → 사진 간격
+          // 5. 장소 사진 갤러리 (가로 스크롤) - PlacePhotoGallery 내부에 패딩 있음
+          if (place.photoUrls.isNotEmpty) ...[
+            PlacePhotoGallery(
+              photoUrls: place.photoUrls,
+              placeName: place.name,
+              onPhotoTap: (index) {
+                // TODO: 전체화면 갤러리로 이동
+                debugPrint('[PlaceDetailScreen] 사진 탭: index $index');
+              },
+            ),
+            AppSpacing.verticalSpaceXXL,
+          ],
+
+          // 6. 이 장소를 포함한 SNS 컨텐츠 섹션 - 패딩 있음
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: _buildRelatedContentsSection(context, ref, l10n),
+          ),
+
+          AppSpacing.verticalSpaceXXL,
+
+          // 7. 같은 컨텐츠의 다른 장소들 섹션 - 패딩 있음
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: _buildOtherPlacesSection(context, ref, l10n),
+          ),
+
+          AppSpacing.verticalSpaceXXL,
+
+          // 8. 액션 버튼들 - 패딩 있음
+          Padding(
+            padding: EdgeInsets.all(AppSpacing.lg),
+            child: _buildActionButtons(context, ref, l10n, place),
           ),
         ],
       ),
     );
   }
 
-  /// 이미지 갤러리 (PageView)
-  Widget _buildImageGallery(List<String> imageUrls) {
-    return SizedBox(
-      height: 300.h,
-      child: PageView.builder(
-        itemCount: imageUrls.length,
-        itemBuilder: (context, index) {
-          return CachedNetworkImage(
-            imageUrl: imageUrls[index],
-            fit: BoxFit.cover,
-            placeholder: (context, url) => _buildImageShimmer(),
-            errorWidget: (context, url, error) => _buildImageError(),
-          );
-        },
-      ),
-    );
-  }
-
-  /// 이미지 로딩 Shimmer
-  Widget _buildImageShimmer() {
-    return Shimmer.fromColors(
-      baseColor: AppColors.subColor2.withValues(alpha: 0.3),
-      highlightColor: AppColors.shimmerHighlight,
-      child: Container(color: AppColors.white),
-    );
-  }
-
-  /// 이미지 에러 플레이스홀더
-  Widget _buildImageError() {
-    return Container(
-      color: AppColors.imagePlaceholder,
-      child: Center(
-        child: Icon(
-          Icons.image_outlined,
-          size: AppSizes.iconLarge,
-          color: AppColors.white,
-        ),
-      ),
-    );
-  }
-
-  /// Google Maps 미니맵
-  Widget _buildMiniMap(
+  /// 관련 SNS 컨텐츠 섹션
+  Widget _buildRelatedContentsSection(
     BuildContext context,
+    WidgetRef ref,
     AppLocalizations l10n,
-    place,
   ) {
-    // 위치 정보 없음
-    if (place.latitude == null || place.longitude == null) {
-      return Container(
-        height: 200.h,
-        decoration: BoxDecoration(
-          color: AppColors.backgroundLight,
-          borderRadius: AppRadius.allMedium,
-        ),
-        child: Center(
-          child: Text(
-            l10n.placeDetailNoLocation,
-            style: AppTextStyles.bodyRegular14.copyWith(
-              color: AppColors.textColor1.withValues(alpha: 0.6),
-            ),
-          ),
-        ),
-      );
-    }
+    final relatedContentsAsync = ref.watch(relatedContentsProvider(placeId));
 
-    final position = LatLng(place.latitude!, place.longitude!);
+    return relatedContentsAsync.when(
+      data: (contents) {
+        if (contents.isEmpty) return const SizedBox.shrink();
 
-    return ClipRRect(
-      borderRadius: AppRadius.allMedium,
-      child: SizedBox(
-        height: 200.h,
-        child: GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: position,
-            zoom: 16.0,
-          ),
-          markers: {
-            Marker(
-              markerId: MarkerId(place.placeId),
-              position: position,
-              infoWindow: InfoWindow(title: place.name),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SectionHeader(title: '이 장소를 포함한 컨텐츠', showMoreButton: false),
+            AppSpacing.verticalSpaceMD,
+            SizedBox(
+              height: 180.h,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: contents.length,
+                separatorBuilder: (_, __) => AppSpacing.horizontalSpaceMD,
+                itemBuilder: (context, index) {
+                  return SnsContentCard(
+                    content: contents[index],
+                    width: 140.w,
+                    onTap: () {
+                      context.push(
+                        '${AppRoutes.snsContentDetail}/${contents[index].contentId}',
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          },
-          zoomControlsEnabled: false,
-          myLocationButtonEnabled: false,
-          mapToolbarEnabled: false,
-          scrollGesturesEnabled: false,
-          zoomGesturesEnabled: false,
-          tiltGesturesEnabled: false,
-          rotateGesturesEnabled: false,
-        ),
-      ),
+          ],
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
+  /// 같은 컨텐츠의 다른 장소들 섹션
+  Widget _buildOtherPlacesSection(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) {
+    final otherPlacesAsync = ref.watch(otherPlacesProvider(placeId));
+
+    return otherPlacesAsync.when(
+      data: (places) {
+        if (places.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SectionHeader(title: '함께 저장된 다른 장소', showMoreButton: false),
+            AppSpacing.verticalSpaceMD,
+            SizedBox(
+              height: 240.h,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: places.length,
+                separatorBuilder: (_, __) => AppSpacing.horizontalSpaceMD,
+                itemBuilder: (context, index) {
+                  final place = places[index];
+                  return SizedBox(
+                    width: 200.w,
+                    child: PlaceDetailCard(
+                      category: place.category ?? '',
+                      placeName: place.name,
+                      address: place.address,
+                      rating: place.rating?.toDouble() ?? 0.0,
+                      reviewCount: place.userRatingsTotal ?? 0,
+                      imageUrls: place.photoUrls,
+                      onTap: () {
+                        // 다른 장소 상세 화면으로 이동
+                        context.push(
+                          '${AppRoutes.placeDetail}/${place.placeId}',
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 
@@ -316,11 +276,9 @@ class PlaceDetailScreen extends ConsumerWidget {
 
               // 지도 이동 및 마커 표시
               final position = LatLng(place.latitude!, place.longitude!);
-              ref.read(mapControllerProvider.notifier).moveToPlaceWithMarker(
-                    place.placeId,
-                    position,
-                    place.name,
-                  );
+              ref
+                  .read(mapControllerProvider.notifier)
+                  .moveToPlaceWithMarker(place.placeId, position, place.name);
             },
             isFullWidth: true,
           ),
@@ -389,10 +347,7 @@ class PlaceDetailScreen extends ConsumerWidget {
               color: AppColors.subColor2,
             ),
             AppSpacing.verticalSpaceMD,
-            Text(
-              '장소를 찾을 수 없습니다',
-              style: AppTextStyles.titleSemiBold16,
-            ),
+            Text('장소를 찾을 수 없습니다', style: AppTextStyles.titleSemiBold16),
           ],
         ),
       ),

@@ -985,6 +985,11 @@
     "description": "Message when location info is missing"
   },
 
+  "addressCopied": "Address copied to clipboard",
+  "@addressCopied": {
+    "description": "Address copy success message"
+  },
+
   "placeDetailDescription": "Description",
   "@placeDetailDescription": {
     "description": "Place description section title"

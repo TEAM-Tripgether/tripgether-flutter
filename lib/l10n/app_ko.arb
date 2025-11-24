@@ -985,6 +985,11 @@
     "description": "위치 정보 없을 때 표시 메시지"
   },
 
+  "addressCopied": "주소가 복사되었습니다",
+  "@addressCopied": {
+    "description": "주소 복사 완료 메시지"
+  },
+
   "placeDetailDescription": "설명",
   "@placeDetailDescription": {
     "description": "장소 설명 섹션 제목"

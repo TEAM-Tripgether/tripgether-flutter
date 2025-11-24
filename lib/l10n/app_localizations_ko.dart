@@ -568,6 +568,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get placeDetailNoLocation => '위치 정보가 없습니다';
 
   @override
+  String get addressCopied => '주소가 복사되었습니다';
+
+  @override
   String get placeDetailDescription => '설명';
 
   @override

@@ -576,6 +576,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get placeDetailNoLocation => 'Location information not available';
 
   @override
+  String get addressCopied => 'Address copied to clipboard';
+
+  @override
   String get placeDetailDescription => 'Description';
 
   @override
