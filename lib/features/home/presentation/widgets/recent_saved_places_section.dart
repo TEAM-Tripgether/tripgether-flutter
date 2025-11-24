@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/errors/refresh_token_exception.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/utils/token_error_handler.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cards/place_detail_card.dart';
 import '../../../../shared/widgets/layout/section_header.dart';
@@ -83,6 +85,17 @@ class RecentSavedPlacesSection extends ConsumerWidget {
             ),
             error: (error, stack) {
               debugPrint('장소 데이터 로드 실패: $error');
+
+              // RefreshTokenException (TOKEN_BLACKLISTED 포함) 처리
+              if (error is RefreshTokenException) {
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  await handleTokenError(context, ref, error);
+                });
+                // 에러 처리 중이므로 빈 Container 반환
+                return const SizedBox.shrink();
+              }
+
+              // 일반 에러 표시
               return SizedBox(
                 height: 150.h,
                 child: Center(

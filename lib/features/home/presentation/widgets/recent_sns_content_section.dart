@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../../core/errors/refresh_token_exception.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/utils/token_error_handler.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cards/sns_content_card.dart';
 import '../../../../shared/widgets/layout/section_header.dart';
@@ -20,7 +22,7 @@ class RecentSnsContentSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final contentListAsync = ref.watch(completedContentsProvider);
+    final contentListAsync = ref.watch(contentListProvider);
 
     return Padding(
       padding: EdgeInsets.only(
@@ -83,25 +85,37 @@ class RecentSnsContentSection extends ConsumerWidget {
                 );
               },
               loading: () => _buildLoadingShimmer(),
-              error: (error, stack) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: AppColors.error,
-                      size: AppSizes.iconLarge,
-                    ),
-                    AppSpacing.verticalSpaceXS,
-                    Text(
-                      l10n.cannotLoadContent,
-                      style: AppTextStyles.caption12.copyWith(
-                        color: AppColors.textColor1.withValues(alpha: 0.7),
+              error: (error, stack) {
+                // RefreshTokenException (TOKEN_BLACKLISTED 포함) 처리
+                if (error is RefreshTokenException) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    await handleTokenError(context, ref, error);
+                  });
+                  // 에러 처리 중이므로 빈 Container 반환
+                  return const SizedBox.shrink();
+                }
+
+                // 일반 에러 표시
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: AppColors.error,
+                        size: AppSizes.iconLarge,
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                      AppSpacing.verticalSpaceXS,
+                      Text(
+                        l10n.cannotLoadContent,
+                        style: AppTextStyles.caption12.copyWith(
+                          color: AppColors.textColor1.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],
