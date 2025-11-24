@@ -26,7 +26,10 @@ import '../../../../shared/widgets/layout/section_header.dart';
 ///
 /// 사용 예시:
 /// ```dart
-/// context.push('/home/sns-contents/detail/${content.contentId}');
+/// context.push(
+///   AppRoutes.snsContentDetail.replaceAll(':contentId', content.contentId),
+///   extra: content,
+/// );
 /// ```
 class SnsContentDetailScreen extends StatelessWidget {
   /// 표시할 콘텐츠 모델

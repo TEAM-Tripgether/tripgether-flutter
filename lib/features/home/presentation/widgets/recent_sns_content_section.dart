@@ -75,7 +75,10 @@ class RecentSnsContentSection extends ConsumerWidget {
                         onTap: () {
                           // SNS 콘텐츠 상세 화면으로 이동 (ContentModel을 extra로 전달)
                           context.push(
-                            '/home/sns-contents/detail/${content.contentId}',
+                            AppRoutes.snsContentDetail.replaceAll(
+                              ':contentId',
+                              content.contentId,
+                            ),
                             extra: content,
                           );
                         },

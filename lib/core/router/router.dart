@@ -135,6 +135,70 @@ class AppRouter {
           NoTransitionPage(child: const NotificationScreen()),
     ),
 
+    /// SNS 콘텐츠 상세 화면 라우트 (독립 라우트)
+    ///
+    /// 어디서든 접근 가능한 독립적인 SNS 콘텐츠 상세 화면입니다.
+    /// - 홈 화면의 SNS 콘텐츠 카드 클릭 시
+    /// - SNS 콘텐츠 목록 화면에서 클릭 시
+    /// - 외부 공유로 받은 링크 (향후)
+    GoRoute(
+      path: AppRoutes.snsContentDetail,
+      pageBuilder: (context, state) {
+        final contentId = state.pathParameters['contentId']!;
+        ContentModel? content;
+
+        // state.extra 타입 안전성 체크
+        if (state.extra is Map<String, dynamic>) {
+          try {
+            content = ContentModel.fromJson(
+              state.extra as Map<String, dynamic>,
+            );
+          } catch (e) {
+            debugPrint('[Router] ContentModel 파싱 실패: $e');
+            content = null;
+          }
+        } else if (state.extra is ContentModel) {
+          content = state.extra as ContentModel;
+        }
+
+        // state.extra가 null이거나 잘못된 타입일 경우 에러 페이지 표시
+        if (content == null) {
+          return NoTransitionPage(
+            child: Scaffold(
+              appBar: AppBar(title: const Text('오류')),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: AppSizes.iconError,
+                      color: AppColors.subColor2,
+                    ),
+                    AppSpacing.verticalSpaceLG,
+                    Text(
+                      '콘텐츠를 찾을 수 없습니다',
+                      style: AppTextStyles.summaryBold18,
+                    ),
+                    AppSpacing.verticalSpaceSM,
+                    Text(
+                      'Content ID: $contentId',
+                      style: AppTextStyles.bodyRegular14
+                          .copyWith(color: AppColors.subColor2),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        return NoTransitionPage(
+          child: SnsContentDetailScreen(content: content),
+        );
+      },
+    ),
+
     /// 장소 상세 화면 라우트 (독립 라우트)
     ///
     /// 어디서든 접근 가능한 독립적인 장소 상세 화면입니다.
@@ -190,67 +254,6 @@ class AppRouter {
                       child: const SnsContentsListScreen(),
                     );
                   },
-                  routes: [
-                    // SNS 콘텐츠 상세 화면
-                    GoRoute(
-                      path: 'detail/:contentId',
-                      pageBuilder: (context, state) {
-                        final contentId = state.pathParameters['contentId']!;
-                        ContentModel? content;
-
-                        // state.extra 타입 안전성 체크
-                        if (state.extra is Map<String, dynamic>) {
-                          try {
-                            content = ContentModel.fromJson(
-                              state.extra as Map<String, dynamic>,
-                            );
-                          } catch (e) {
-                            // JSON 파싱 실패 시 에러 페이지 표시
-                            debugPrint('[Router] ContentModel 파싱 실패: $e');
-                            content = null;
-                          }
-                        } else if (state.extra is ContentModel) {
-                          content = state.extra as ContentModel;
-                        }
-
-                        // state.extra가 null이거나 잘못된 타입일 경우 에러 페이지 표시
-                        if (content == null) {
-                          return NoTransitionPage(
-                            child: Scaffold(
-                              appBar: AppBar(title: const Text('오류')),
-                              body: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.error_outline,
-                                      size: AppSizes.iconError,
-                                      color: AppColors.subColor2,
-                                    ),
-                                    AppSpacing.verticalSpaceLG,
-                                    Text(
-                                      '콘텐츠를 찾을 수 없습니다',
-                                      style: AppTextStyles.summaryBold18,
-                                    ),
-                                    AppSpacing.verticalSpaceSM,
-                                    Text(
-                                      'Content ID: $contentId',
-                                      style: AppTextStyles.bodyRegular14
-                                          .copyWith(color: AppColors.subColor2),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-
-                        return NoTransitionPage(
-                          child: SnsContentDetailScreen(content: content),
-                        );
-                      },
-                    ),
-                  ],
                 ),
               ],
             ), // GoRoute(AppRoutes.home) 닫기

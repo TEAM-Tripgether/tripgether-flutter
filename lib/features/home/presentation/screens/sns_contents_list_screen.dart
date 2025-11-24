@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/models/content_model.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -308,7 +309,10 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
                     logoIconSize: AppSizes.iconDefault,
                     onTap: () {
                       context.push(
-                        '/home/sns-contents/detail/${content.contentId}',
+                        AppRoutes.snsContentDetail.replaceAll(
+                          ':contentId',
+                          content.contentId,
+                        ),
                         extra: content,
                       );
                     },
