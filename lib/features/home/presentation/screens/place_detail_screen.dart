@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -19,7 +18,6 @@ import '../../../../shared/widgets/place_detail/place_photo_gallery.dart';
 import '../../../../shared/widgets/cards/sns_content_card.dart';
 import '../../../../shared/widgets/cards/place_detail_card.dart';
 import '../../../../shared/widgets/layout/section_header.dart';
-import '../../../map/presentation/providers/map_provider.dart';
 import '../providers/place_detail_provider.dart';
 
 /// 장소 상세 화면
@@ -266,73 +264,13 @@ class PlaceDetailScreen extends ConsumerWidget {
     AppLocalizations l10n,
     place,
   ) {
-    return Column(
-      children: [
-        // 지도에서 보기 버튼
-        if (place.latitude != null && place.longitude != null)
-          PrimaryButton(
-            text: l10n.viewOnMap,
-            icon: Icons.map_outlined,
-            onPressed: () {
-              // Map 탭으로 이동
-              context.go(AppRoutes.map);
-
-              // 지도 이동 및 마커 표시
-              final position = LatLng(place.latitude!, place.longitude!);
-              ref
-                  .read(mapControllerProvider.notifier)
-                  .moveToPlaceWithMarker(place.placeId, position, place.name);
-            },
-            isFullWidth: true,
-          ),
-
-        AppSpacing.verticalSpaceSM,
-
-        // 길찾기 버튼
-        if (place.latitude != null && place.longitude != null)
-          SecondaryButton(
-            text: l10n.getDirections,
-            icon: Icons.directions_outlined,
-            onPressed: () {
-              // TODO: 길찾기 기능 구현 (Google Maps 앱 실행)
-              debugPrint('[PlaceDetailScreen] 길찾기: ${place.name}');
-            },
-            isFullWidth: true,
-          ),
-
-        AppSpacing.verticalSpaceSM,
-
-        // 전화/공유 버튼들
-        Row(
-          children: [
-            // 전화하기
-            if (place.phone != null)
-              Expanded(
-                child: SecondaryButton(
-                  text: l10n.placeDetailCall,
-                  icon: Icons.phone_outlined,
-                  onPressed: () {
-                    // TODO: 전화 기능 구현
-                    debugPrint('[PlaceDetailScreen] 전화: ${place.phone}');
-                  },
-                ),
-              ),
-            if (place.phone != null) SizedBox(width: AppSpacing.sm),
-
-            // 공유하기
-            Expanded(
-              child: SecondaryButton(
-                text: l10n.placeDetailShare,
-                icon: Icons.share_outlined,
-                onPressed: () {
-                  // TODO: 공유 기능 구현
-                  debugPrint('[PlaceDetailScreen] 공유: ${place.name}');
-                },
-              ),
-            ),
-          ],
-        ),
-      ],
+    return PrimaryButton(
+      text: '저장하기',
+      onPressed: () {
+        // TODO: 장소 저장 기능 구현
+        debugPrint('[PlaceDetailScreen] 장소 저장: ${place.name}');
+      },
+      isFullWidth: true,
     );
   }
 
