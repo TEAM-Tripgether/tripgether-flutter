@@ -24,4 +24,9 @@ abstract class ContentDataSource {
 
   /// 콘텐츠 삭제
   Future<void> deleteContent(String contentId);
+
+  /// 공유된 URL 분석 요청
+  /// POST /api/content/analyze
+  /// 외부에서 공유된 URL을 백엔드로 전송하여 콘텐츠 분석 및 장소 추출 요청
+  Future<ContentModel> analyzeSharedUrl({required String snsUrl});
 }

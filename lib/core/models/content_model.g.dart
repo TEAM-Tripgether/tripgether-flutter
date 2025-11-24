@@ -9,7 +9,7 @@ part of 'content_model.dart';
 _$ContentModelImpl _$$ContentModelImplFromJson(Map<String, dynamic> json) =>
     _$ContentModelImpl(
       contentId: json['contentId'] as String,
-      platform: json['platform'] as String,
+      platform: json['platform'] as String? ?? 'UNKNOWN',
       status: json['status'] as String? ?? 'PENDING',
       platformUploader: json['platformUploader'] as String?,
       caption: json['caption'] as String?,

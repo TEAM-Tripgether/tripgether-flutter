@@ -15,7 +15,8 @@ class ContentModel with _$ContentModel {
     required String contentId,
 
     /// 플랫폼 (INSTAGRAM, YOUTUBE, TIKTOK 등)
-    required String platform,
+    /// PENDING 상태일 때는 null일 수 있음
+    @Default('UNKNOWN') String platform,
 
     /// 처리 상태 (PENDING: 분석 중, COMPLETED: 분석 완료, ERROR: 오류)
     @Default('PENDING') String status,

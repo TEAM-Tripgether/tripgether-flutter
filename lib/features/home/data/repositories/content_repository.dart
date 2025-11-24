@@ -123,4 +123,16 @@ class ContentRepository {
     final contents = await getContents();
     return contents.where((c) => c.platform == platform).toList();
   }
+
+  /// 공유된 URL 분석 요청
+  /// 외부에서 공유된 URL을 백엔드로 전송하여 콘텐츠 분석 및 장소 추출 요청
+  Future<ContentModel> analyzeSharedUrl({required String snsUrl}) async {
+    try {
+      debugPrint('📤 [ContentRepository] URL 분석 요청: $snsUrl');
+      return await _dataSource.analyzeSharedUrl(snsUrl: snsUrl);
+    } catch (e) {
+      debugPrint('❌ [ContentRepository] URL 분석 실패: $e');
+      rethrow;
+    }
+  }
 }

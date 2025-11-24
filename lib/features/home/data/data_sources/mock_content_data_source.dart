@@ -107,6 +107,39 @@ class MockContentDataSource implements ContentDataSource {
     _cachedContents?.removeWhere((c) => c.contentId == contentId);
   }
 
+  @override
+  Future<ContentModel> analyzeSharedUrl({required String snsUrl}) async {
+    // Mock에서는 즉시 PENDING 상태의 콘텐츠를 반환
+    final newContent = ContentModel(
+      contentId: DateTime.now().millisecondsSinceEpoch.toString(),
+      platform: 'INSTAGRAM',
+      status: ContentStatus.pending,
+      originalUrl: snsUrl,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    _cachedContents ??= [];
+    _cachedContents!.add(newContent);
+
+    // 3초 후 상태를 COMPLETED로 변경 (백엔드 분석 시뮬레이션)
+    Future.delayed(const Duration(seconds: 3), () {
+      final index = _cachedContents!.indexWhere(
+        (c) => c.contentId == newContent.contentId,
+      );
+      if (index != -1) {
+        _cachedContents![index] = newContent.copyWith(
+          status: ContentStatus.completed,
+          title: 'Mock 분석 완료: ${snsUrl.substring(0, 30)}...',
+          summary: 'URL 분석이 완료되었습니다.',
+          platformUploader: 'mock_user',
+        );
+      }
+    });
+
+    return newContent;
+  }
+
   /// 캐시 초기화 (테스트용)
   void clearCache() {
     _cachedContents = null;

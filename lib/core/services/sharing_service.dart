@@ -566,6 +566,69 @@ class SharingService {
     }
   }
 
+  /// 대기 중인 URL 큐 조회
+  /// iOS/Android에서 저장된 공유 URL 목록을 반환
+  Future<List<String>> getPendingUrls() async {
+    debugPrint('[SharingService] 📥 대기 중인 URL 큐 조회 시작');
+    
+    try {
+      final result = await _channel.invokeMethod<List<dynamic>>('getPendingUrls');
+      
+      if (result == null || result.isEmpty) {
+        debugPrint('[SharingService] 대기 중인 URL 없음');
+        return [];
+      }
+      
+      final urls = result.cast<String>();
+      debugPrint('[SharingService] ✅ 대기 중인 URL ${urls.length}개 발견: $urls');
+      return urls;
+    } catch (error) {
+      debugPrint('[SharingService] ❌ URL 큐 조회 실패: $error');
+      return [];
+    }
+  }
+
+  /// URL 큐에서 특정 URL 제거
+  /// 처리 완료된 URL을 큐에서 삭제
+  Future<bool> removeUrlFromQueue(String url) async {
+    try {
+      final success = await _channel.invokeMethod<bool>(
+        'removeUrlFromQueue',
+        {'url': url},
+      );
+      
+      if (success == true) {
+        debugPrint('[SharingService] ✅ URL 큐에서 제거 완료: $url');
+      } else {
+        debugPrint('[SharingService] ⚠️ URL 큐에서 제거 실패: $url');
+      }
+      
+      return success ?? false;
+    } catch (error) {
+      debugPrint('[SharingService] ❌ URL 제거 중 오류: $error');
+      return false;
+    }
+  }
+
+  /// URL 큐 전체 초기화
+  /// 모든 대기 중인 URL을 삭제
+  Future<bool> clearUrlQueue() async {
+    try {
+      final success = await _channel.invokeMethod<bool>('clearUrlQueue');
+      
+      if (success == true) {
+        debugPrint('[SharingService] ✅ URL 큐 전체 초기화 완료');
+      } else {
+        debugPrint('[SharingService] ⚠️ URL 큐 초기화 실패');
+      }
+      
+      return success ?? false;
+    } catch (error) {
+      debugPrint('[SharingService] ❌ URL 큐 초기화 중 오류: $error');
+      return false;
+    }
+  }
+
   /// 파일 크기를 사람이 읽기 쉬운 형태로 변환
   String formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes B';

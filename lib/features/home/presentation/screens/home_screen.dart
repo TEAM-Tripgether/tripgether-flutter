@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tripgether/core/theme/app_colors.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/services/sharing_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/inputs/search_bar.dart';
@@ -15,6 +16,8 @@ import '../../../debug/share_extension_log_screen.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/providers/user_provider.dart';
+import '../../data/repositories/content_repository.dart';
+import '../providers/content_provider.dart';
 import '../widgets/recent_sns_content_section.dart';
 import '../widgets/recent_saved_places_section.dart';
 
@@ -37,12 +40,76 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   int get tabIndex => 0; // 홈 탭 (인덱스 0)
 
   @override
+  void initState() {
+    super.initState();
+    // 화면 로드 시 대기 중인 URL 큐 처리
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _processQueuedUrls();
+    });
+  }
+
+  @override
   Future<void> onRefreshData() async {
     // 홈 화면 데이터 새로고침
     if (mounted) {
       setState(() {
         // 데이터 새로고침 로직
       });
+      // 새로고침 시에도 대기 중인 URL 처리
+      await _processQueuedUrls();
+    }
+  }
+
+  /// 대기 중인 공유 URL 큐 처리
+  /// Share Extension에서 저장한 URL들을 백엔드로 전송
+  Future<void> _processQueuedUrls() async {
+    try {
+      debugPrint('[HomeScreen] 📥 공유 URL 큐 처리 시작');
+      
+      // SharingService에서 대기 중인 URL 가져오기
+      final sharingService = SharingService.instance;
+      final pendingUrls = await sharingService.getPendingUrls();
+      
+      if (pendingUrls.isEmpty) {
+        debugPrint('[HomeScreen] 대기 중인 URL 없음');
+        return;
+      }
+      
+      debugPrint('[HomeScreen] 📋 대기 중인 URL ${pendingUrls.length}개 발견');
+      
+      // ContentRepository 가져오기
+      final contentRepository = ref.read(contentRepositoryProvider);
+      
+      int successCount = 0;
+      int failureCount = 0;
+      
+      // 각 URL을 순차적으로 처리
+      for (final url in pendingUrls) {
+        try {
+          debugPrint('[HomeScreen] 📤 URL 전송 중: $url');
+          
+          // 백엔드로 URL 분석 요청
+          await contentRepository.analyzeSharedUrl(snsUrl: url);
+          
+          debugPrint('[HomeScreen] ✅ URL 전송 성공: $url');
+          successCount++;
+          
+          // 성공한 URL은 큐에서 제거
+          await sharingService.removeUrlFromQueue(url);
+        } catch (e) {
+          debugPrint('[HomeScreen] ❌ URL 전송 실패: $url - $e');
+          failureCount++;
+        }
+      }
+      
+      debugPrint('[HomeScreen] 📊 처리 결과: 성공 ${successCount}개, 실패 ${failureCount}개');
+      
+      // 처리 후 콘텐츠 목록 새로고침
+      if (successCount > 0) {
+        ref.invalidate(contentListProvider);
+      }
+    } catch (e) {
+      debugPrint('[HomeScreen] ❌ URL 큐 처리 중 오류: $e');
     }
   }
 

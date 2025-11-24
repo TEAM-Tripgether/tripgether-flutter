@@ -155,4 +155,46 @@ class ApiContentDataSource implements ContentDataSource {
       rethrow;
     }
   }
+
+  @override
+  Future<ContentModel> analyzeSharedUrl({required String snsUrl}) async {
+    try {
+      debugPrint('📤 [ContentRepository] URL 분석 요청: $snsUrl');
+      
+      final response = await dio.post(
+        '$baseUrl/api/content/analyze',
+        options: Options(headers: {'Content-Type': 'application/json'}),
+        data: {'snsUrl': snsUrl},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // API 응답 데이터 파싱
+        final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+        
+        // contentId와 platform이 null일 수 있으므로 안전하게 처리
+        final contentId = responseData['contentId'] as String? ?? '';
+        final platform = responseData['platform'] as String? ?? 'UNKNOWN';
+        final status = responseData['status'] as String? ?? 'PENDING';
+        
+        // 필수 필드가 없으면 기본값으로 ContentModel 생성
+        return ContentModel.fromJson({
+          ...responseData,
+          'contentId': contentId,
+          'platform': platform,
+          'status': status,
+        });
+      } else {
+        throw Exception('Failed to analyze shared URL: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'ApiContentDataSource.analyzeSharedUrl',
+      );
+    } catch (e) {
+      debugPrint('[ApiContentDataSource.analyzeSharedUrl] ❌ 예외 발생: $e');
+      ApiLogger.logException(e, context: 'ApiContentDataSource.analyzeSharedUrl');
+      rethrow;
+    }
+  }
 }
