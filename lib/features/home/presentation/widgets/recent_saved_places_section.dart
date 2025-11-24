@@ -76,8 +76,10 @@ class RecentSavedPlacesSection extends ConsumerWidget {
                       onTap: () {
                         // 장소 상세 화면으로 이동
                         context.push(
-                          AppRoutes.placeDetail
-                              .replaceFirst(':placeId', place.placeId),
+                          AppRoutes.placeDetail.replaceAll(
+                            ':placeId',
+                            place.placeId,
+                          ),
                         );
                       },
                     ),

@@ -135,6 +135,22 @@ class AppRouter {
           NoTransitionPage(child: const NotificationScreen()),
     ),
 
+    /// 장소 상세 화면 라우트 (독립 라우트)
+    ///
+    /// 어디서든 접근 가능한 독립적인 장소 상세 화면입니다.
+    /// - SNS 콘텐츠 상세 화면에서 장소 카드 클릭 시
+    /// - 홈 화면의 저장한 장소 목록에서 클릭 시
+    /// - 지도 화면에서 마커 클릭 시 (향후)
+    GoRoute(
+      path: AppRoutes.placeDetail,
+      pageBuilder: (context, state) {
+        final placeId = state.pathParameters['placeId']!;
+        return NoTransitionPage(
+          child: PlaceDetailScreen(placeId: placeId),
+        );
+      },
+    ),
+
     /// StatefulShellRoute: 상태를 유지하는 바텀 네비게이션 레이아웃
     ///
     /// IndexedStack을 사용하여 각 탭의 상태를 독립적으로 유지합니다.
@@ -235,16 +251,6 @@ class AppRouter {
                       },
                     ),
                   ],
-                ),
-                // 저장한 장소 상세 화면
-                GoRoute(
-                  path: 'saved-places/:placeId',
-                  pageBuilder: (context, state) {
-                    final placeId = state.pathParameters['placeId']!;
-                    return NoTransitionPage(
-                      child: PlaceDetailScreen(placeId: placeId),
-                    );
-                  },
                 ),
               ],
             ), // GoRoute(AppRoutes.home) 닫기
