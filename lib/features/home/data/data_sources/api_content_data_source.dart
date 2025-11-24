@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tripgether/core/utils/api_logger.dart';
 import '../../../../core/models/content_model.dart';
