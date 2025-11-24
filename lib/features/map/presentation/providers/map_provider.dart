@@ -53,6 +53,26 @@ class MapController extends _$MapController {
     await moveToLocation(defaultLocation, zoom: 15.0);
   }
 
+  /// 장소로 이동하며 마커 추가
+  ///
+  /// [placeId] 장소 고유 ID
+  /// [position] 장소 위치
+  /// [title] 장소 이름
+  /// [zoom] 줌 레벨 (선택 사항, 기본값: 16.0)
+  Future<void> moveToPlaceWithMarker(
+    String placeId,
+    LatLng position,
+    String title, {
+    double zoom = 16.0,
+  }) async {
+    // 기존 마커 제거 후 새 마커 추가
+    ref.read(mapMarkersProvider.notifier).clearMarkers();
+    ref.read(mapMarkersProvider.notifier).addMarker(placeId, position, title);
+
+    // 해당 위치로 이동
+    await moveToLocation(position, zoom: zoom);
+  }
+
   /// Dispose 시 컨트롤러 정리
   void disposeController() {
     _controller?.dispose();
@@ -84,5 +104,44 @@ class MapTypeState extends _$MapTypeState {
   /// 지도 타입 토글 (일반 ↔ 위성)
   void toggle() {
     state = state == MapType.normal ? MapType.satellite : MapType.normal;
+  }
+}
+
+/// 지도 마커 상태 관리
+///
+/// 지도에 표시할 마커들을 관리합니다.
+/// PlaceDetailScreen의 "지도에서 보기" 버튼으로 전환 시
+/// 해당 장소의 마커를 지도에 표시합니다.
+@riverpod
+class MapMarkers extends _$MapMarkers {
+  @override
+  Set<Marker> build() {
+    return {};
+  }
+
+  /// 마커 추가
+  ///
+  /// [markerId] 마커 고유 ID (일반적으로 placeId 사용)
+  /// [position] 마커 위치
+  /// [title] 마커 제목 (InfoWindow에 표시)
+  void addMarker(String markerId, LatLng position, String title) {
+    final marker = Marker(
+      markerId: MarkerId(markerId),
+      position: position,
+      infoWindow: InfoWindow(title: title),
+    );
+    state = {...state, marker};
+  }
+
+  /// 모든 마커 제거
+  void clearMarkers() {
+    state = {};
+  }
+
+  /// 특정 마커 제거
+  ///
+  /// [markerId] 제거할 마커 ID
+  void removeMarker(String markerId) {
+    state = state.where((marker) => marker.markerId.value != markerId).toSet();
   }
 }

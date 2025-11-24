@@ -6,7 +6,7 @@ part of 'map_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$mapControllerHash() => r'980dc600695170d0e51c8782e68cc2b450ce3650';
+String _$mapControllerHash() => r'5dec08a847e911baf3e9cc19b3ad5f6a21e9fdc8';
 
 /// 지도 컨트롤러 상태 관리
 ///
@@ -47,5 +47,27 @@ final mapTypeStateProvider =
     );
 
 typedef _$MapTypeState = AutoDisposeNotifier<MapType>;
+String _$mapMarkersHash() => r'8b7d808be48f24b97d1bad00a1444e3133810a01';
+
+/// 지도 마커 상태 관리
+///
+/// 지도에 표시할 마커들을 관리합니다.
+/// PlaceDetailScreen의 "지도에서 보기" 버튼으로 전환 시
+/// 해당 장소의 마커를 지도에 표시합니다.
+///
+/// Copied from [MapMarkers].
+@ProviderFor(MapMarkers)
+final mapMarkersProvider =
+    AutoDisposeNotifierProvider<MapMarkers, Set<Marker>>.internal(
+      MapMarkers.new,
+      name: r'mapMarkersProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$mapMarkersHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$MapMarkers = AutoDisposeNotifier<Set<Marker>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

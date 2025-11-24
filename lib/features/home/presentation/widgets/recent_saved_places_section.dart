@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/errors/refresh_token_exception.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -72,7 +74,11 @@ class RecentSavedPlacesSection extends ConsumerWidget {
                       reviewCount: place.userRatingsTotal ?? 0,
                       imageUrls: place.photoUrls,
                       onTap: () {
-                        debugPrint('장소 상세 화면으로 이동: ${place.placeId}');
+                        // 장소 상세 화면으로 이동
+                        context.push(
+                          AppRoutes.placeDetail
+                              .replaceFirst(':placeId', place.placeId),
+                        );
                       },
                     ),
                   );

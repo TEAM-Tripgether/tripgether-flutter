@@ -965,6 +965,31 @@
     "description": "Get directions button at bottom of place detail screen"
   },
 
+  "placeDetailTitle": "Place Details",
+  "@placeDetailTitle": {
+    "description": "Place detail screen title"
+  },
+
+  "placeDetailShare": "Share",
+  "@placeDetailShare": {
+    "description": "Share place button"
+  },
+
+  "placeDetailCall": "Call",
+  "@placeDetailCall": {
+    "description": "Call place button"
+  },
+
+  "placeDetailNoLocation": "Location information not available",
+  "@placeDetailNoLocation": {
+    "description": "Message when location info is missing"
+  },
+
+  "placeDetailDescription": "Description",
+  "@placeDetailDescription": {
+    "description": "Place description section title"
+  },
+
   "comingSoon": "Coming Soon",
   "@comingSoon": {
     "description": "Feature under preparation message"

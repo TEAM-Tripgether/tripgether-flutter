@@ -16,6 +16,7 @@ import '../../core/models/content_model.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
 import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
+import '../../features/home/presentation/screens/place_detail_screen.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/course_market/presentation/screens/course_search_screen.dart';
 import '../../features/course_market/presentation/screens/popular_courses_screen.dart';
@@ -234,6 +235,16 @@ class AppRouter {
                       },
                     ),
                   ],
+                ),
+                // 저장한 장소 상세 화면
+                GoRoute(
+                  path: 'saved-places/:placeId',
+                  pageBuilder: (context, state) {
+                    final placeId = state.pathParameters['placeId']!;
+                    return NoTransitionPage(
+                      child: PlaceDetailScreen(placeId: placeId),
+                    );
+                  },
                 ),
               ],
             ), // GoRoute(AppRoutes.home) 닫기

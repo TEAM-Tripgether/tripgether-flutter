@@ -556,6 +556,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get getDirections => '길찾기';
 
   @override
+  String get placeDetailTitle => '장소 상세';
+
+  @override
+  String get placeDetailShare => '공유하기';
+
+  @override
+  String get placeDetailCall => '전화하기';
+
+  @override
+  String get placeDetailNoLocation => '위치 정보가 없습니다';
+
+  @override
+  String get placeDetailDescription => '설명';
+
+  @override
   String get comingSoon => '준비 중입니다';
 
   @override

@@ -1112,6 +1112,36 @@ abstract class AppLocalizations {
   /// **'길찾기'**
   String get getDirections;
 
+  /// 장소 상세 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'장소 상세'**
+  String get placeDetailTitle;
+
+  /// 장소 공유 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'공유하기'**
+  String get placeDetailShare;
+
+  /// 장소 전화 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'전화하기'**
+  String get placeDetailCall;
+
+  /// 위치 정보 없을 때 표시 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'위치 정보가 없습니다'**
+  String get placeDetailNoLocation;
+
+  /// 장소 설명 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'설명'**
+  String get placeDetailDescription;
+
   /// 기능 준비 중 메시지
   ///
   /// In ko, this message translates to:

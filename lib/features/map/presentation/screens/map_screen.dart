@@ -31,6 +31,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final l10n = AppLocalizations.of(context);
     final initialPosition = ref.watch(initialCameraPositionProvider);
     final mapType = ref.watch(mapTypeStateProvider);
+    final markers = ref.watch(mapMarkersProvider);
 
     return Scaffold(
       // 지도 화면에 최적화된 커스텀 AppBar
@@ -80,6 +81,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       body: GoogleMap(
         initialCameraPosition: initialPosition,
         mapType: mapType,
+        markers: markers, // 장소 마커 표시
         myLocationEnabled: true, // 내 위치 표시
         myLocationButtonEnabled: false, // 기본 버튼 숨김 (커스텀 버튼 사용)
         zoomControlsEnabled: false, // 기본 줌 컨트롤 숨김

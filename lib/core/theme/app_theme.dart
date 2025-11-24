@@ -28,7 +28,7 @@ class AppTheme {
       /// 시스템 UI 오버레이 (상태바 스타일)
       appBarTheme: AppBarTheme(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        titleTextStyle: AppTextStyles.titleBold24.copyWith(
+        titleTextStyle: AppTextStyles.greetingBold20.copyWith(
           color: AppColors.textColor1,
         ),
       ),

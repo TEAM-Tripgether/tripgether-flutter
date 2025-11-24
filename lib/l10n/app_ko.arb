@@ -965,6 +965,31 @@
     "description": "장소 상세 화면 하단의 길찾기 버튼"
   },
 
+  "placeDetailTitle": "장소 상세",
+  "@placeDetailTitle": {
+    "description": "장소 상세 화면 제목"
+  },
+
+  "placeDetailShare": "공유하기",
+  "@placeDetailShare": {
+    "description": "장소 공유 버튼"
+  },
+
+  "placeDetailCall": "전화하기",
+  "@placeDetailCall": {
+    "description": "장소 전화 버튼"
+  },
+
+  "placeDetailNoLocation": "위치 정보가 없습니다",
+  "@placeDetailNoLocation": {
+    "description": "위치 정보 없을 때 표시 메시지"
+  },
+
+  "placeDetailDescription": "설명",
+  "@placeDetailDescription": {
+    "description": "장소 설명 섹션 제목"
+  },
+
   "comingSoon": "준비 중입니다",
   "@comingSoon": {
     "description": "기능 준비 중 메시지"

@@ -564,6 +564,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get getDirections => 'Get Directions';
 
   @override
+  String get placeDetailTitle => 'Place Details';
+
+  @override
+  String get placeDetailShare => 'Share';
+
+  @override
+  String get placeDetailCall => 'Call';
+
+  @override
+  String get placeDetailNoLocation => 'Location information not available';
+
+  @override
+  String get placeDetailDescription => 'Description';
+
+  @override
   String get comingSoon => 'Coming Soon';
 
   @override
