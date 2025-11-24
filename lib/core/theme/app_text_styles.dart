@@ -92,6 +92,14 @@ class AppTextStyles {
     color: AppColors.textColor1,
   );
 
+  /// 더 작은 제목 (SemiBold, 13px)
+  /// 사용처: 콘텐츠 제목, 장소 이름, 게시물 작성자
+  static TextStyle titleSemiBold13 = TextStyle(
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 13.sp,
+    color: AppColors.textColor1,
+  );
+
   // ============================================================================
   // 본문 텍스트 (Body Text)
   // ============================================================================

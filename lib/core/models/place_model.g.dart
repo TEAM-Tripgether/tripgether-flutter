@@ -6,40 +6,44 @@ part of 'place_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PlaceModelImpl _$$PlaceModelImplFromJson(Map<String, dynamic> json) =>
-    _$PlaceModelImpl(
-      placeId: json['placeId'] as String,
-      position: (json['position'] as num?)?.toInt() ?? 0,
-      name: json['name'] as String,
-      address: json['address'] as String,
-      country: json['country'] as String? ?? 'KR',
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
-      businessType: json['businessType'] as String?,
-      category: json['category'] as String?,
-      phone: json['phone'] as String?,
-      description: json['description'] as String?,
-      types:
-          (json['types'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-          const [],
-      businessStatus: json['businessStatus'] as String? ?? 'OPERATIONAL',
-      iconUrl: json['iconUrl'] as String?,
-      rating: (json['rating'] as num?)?.toDouble(),
-      userRatingsTotal: (json['userRatingsTotal'] as num?)?.toInt(),
-      photoUrls:
-          (json['photoUrls'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-      createdAt: json['createdAt'] == null
-          ? null
-          : DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] == null
-          ? null
-          : DateTime.parse(json['updatedAt'] as String),
-      createdBy: json['createdBy'] as String? ?? 'system',
-      updatedBy: json['updatedBy'] as String? ?? 'system',
-    );
+_$PlaceModelImpl _$$PlaceModelImplFromJson(
+  Map<String, dynamic> json,
+) => _$PlaceModelImpl(
+  placeId: json['placeId'] as String,
+  position: (json['position'] as num?)?.toInt() ?? 0,
+  name: json['name'] as String,
+  address: json['address'] as String,
+  country: json['country'] as String? ?? 'KR',
+  latitude: (json['latitude'] as num?)?.toDouble(),
+  longitude: (json['longitude'] as num?)?.toDouble(),
+  businessType: json['businessType'] as String?,
+  category: json['category'] as String?,
+  phone: json['phone'] as String?,
+  description: json['description'] as String?,
+  types:
+      (json['types'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  businessStatus: json['businessStatus'] as String? ?? 'OPERATIONAL',
+  iconUrl: json['iconUrl'] as String?,
+  rating: (json['rating'] as num?)?.toDouble(),
+  userRatingsTotal: (json['userRatingsTotal'] as num?)?.toInt(),
+  photoUrls:
+      (json['photoUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  businessHours:
+      (json['businessHours'] as List<dynamic>?)
+          ?.map((e) => BusinessHourModel.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  createdAt: json['createdAt'] == null
+      ? null
+      : DateTime.parse(json['createdAt'] as String),
+  updatedAt: json['updatedAt'] == null
+      ? null
+      : DateTime.parse(json['updatedAt'] as String),
+  createdBy: json['createdBy'] as String? ?? 'system',
+  updatedBy: json['updatedBy'] as String? ?? 'system',
+);
 
 Map<String, dynamic> _$$PlaceModelImplToJson(_$PlaceModelImpl instance) =>
     <String, dynamic>{
@@ -60,6 +64,7 @@ Map<String, dynamic> _$$PlaceModelImplToJson(_$PlaceModelImpl instance) =>
       'rating': instance.rating,
       'userRatingsTotal': instance.userRatingsTotal,
       'photoUrls': instance.photoUrls,
+      'businessHours': instance.businessHours,
       'createdAt': instance.createdAt?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
       'createdBy': instance.createdBy,

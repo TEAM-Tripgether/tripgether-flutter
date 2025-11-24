@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'business_hour_model.dart';
 
 part 'place_model.freezed.dart';
 part 'place_model.g.dart';
@@ -66,6 +67,9 @@ class PlaceModel with _$PlaceModel {
 
     /// 사진 URL 리스트
     @Default([]) List<String> photoUrls,
+
+    /// 영업시간 목록
+    @Default([]) List<BusinessHourModel> businessHours,
 
     /// 생성 일시
     DateTime? createdAt,
