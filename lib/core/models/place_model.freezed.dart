@@ -22,9 +22,13 @@ PlaceModel _$PlaceModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PlaceModel {
   /// 장소 고유 ID
+  /// GET /api/content/place/saved: "placeId" 필드 사용
+  /// POST /api/content/analyze: "id" 필드 사용 (places 배열 내)
+  @JsonKey(name: 'placeId')
   String get placeId => throw _privateConstructorUsedError;
 
   /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   int get position => throw _privateConstructorUsedError;
 
   /// 장소명
@@ -34,13 +38,16 @@ mixin _$PlaceModel {
   String get address => throw _privateConstructorUsedError;
 
   /// 국가 코드 (KR, US 등)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   String get country => throw _privateConstructorUsedError;
 
   /// 위도
-  double get latitude => throw _privateConstructorUsedError;
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
+  double? get latitude => throw _privateConstructorUsedError;
 
   /// 경도
-  double get longitude => throw _privateConstructorUsedError;
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
+  double? get longitude => throw _privateConstructorUsedError;
 
   /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
   String? get businessType => throw _privateConstructorUsedError;
@@ -102,13 +109,13 @@ abstract class $PlaceModelCopyWith<$Res> {
   ) = _$PlaceModelCopyWithImpl<$Res, PlaceModel>;
   @useResult
   $Res call({
-    String placeId,
+    @JsonKey(name: 'placeId') String placeId,
     int position,
     String name,
     String address,
     String country,
-    double latitude,
-    double longitude,
+    double? latitude,
+    double? longitude,
     String? businessType,
     String? category,
     String? phone,
@@ -146,8 +153,8 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
     Object? name = null,
     Object? address = null,
     Object? country = null,
-    Object? latitude = null,
-    Object? longitude = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
     Object? businessType = freezed,
     Object? category = freezed,
     Object? phone = freezed,
@@ -185,14 +192,14 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
                 ? _value.country
                 : country // ignore: cast_nullable_to_non_nullable
                       as String,
-            latitude: null == latitude
+            latitude: freezed == latitude
                 ? _value.latitude
                 : latitude // ignore: cast_nullable_to_non_nullable
-                      as double,
-            longitude: null == longitude
+                      as double?,
+            longitude: freezed == longitude
                 ? _value.longitude
                 : longitude // ignore: cast_nullable_to_non_nullable
-                      as double,
+                      as double?,
             businessType: freezed == businessType
                 ? _value.businessType
                 : businessType // ignore: cast_nullable_to_non_nullable
@@ -265,13 +272,13 @@ abstract class _$$PlaceModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    String placeId,
+    @JsonKey(name: 'placeId') String placeId,
     int position,
     String name,
     String address,
     String country,
-    double latitude,
-    double longitude,
+    double? latitude,
+    double? longitude,
     String? businessType,
     String? category,
     String? phone,
@@ -308,8 +315,8 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
     Object? name = null,
     Object? address = null,
     Object? country = null,
-    Object? latitude = null,
-    Object? longitude = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
     Object? businessType = freezed,
     Object? category = freezed,
     Object? phone = freezed,
@@ -347,14 +354,14 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
             ? _value.country
             : country // ignore: cast_nullable_to_non_nullable
                   as String,
-        latitude: null == latitude
+        latitude: freezed == latitude
             ? _value.latitude
             : latitude // ignore: cast_nullable_to_non_nullable
-                  as double,
-        longitude: null == longitude
+                  as double?,
+        longitude: freezed == longitude
             ? _value.longitude
             : longitude // ignore: cast_nullable_to_non_nullable
-                  as double,
+                  as double?,
         businessType: freezed == businessType
             ? _value.businessType
             : businessType // ignore: cast_nullable_to_non_nullable
@@ -420,13 +427,13 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PlaceModelImpl implements _PlaceModel {
   const _$PlaceModelImpl({
-    required this.placeId,
-    required this.position,
+    @JsonKey(name: 'placeId') required this.placeId,
+    this.position = 0,
     required this.name,
     required this.address,
     this.country = 'KR',
-    required this.latitude,
-    required this.longitude,
+    this.latitude,
+    this.longitude,
     this.businessType,
     this.category,
     this.phone,
@@ -448,11 +455,16 @@ class _$PlaceModelImpl implements _PlaceModel {
       _$$PlaceModelImplFromJson(json);
 
   /// 장소 고유 ID
+  /// GET /api/content/place/saved: "placeId" 필드 사용
+  /// POST /api/content/analyze: "id" 필드 사용 (places 배열 내)
   @override
+  @JsonKey(name: 'placeId')
   final String placeId;
 
   /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
+  @JsonKey()
   final int position;
 
   /// 장소명
@@ -464,17 +476,20 @@ class _$PlaceModelImpl implements _PlaceModel {
   final String address;
 
   /// 국가 코드 (KR, US 등)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
   @JsonKey()
   final String country;
 
   /// 위도
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
-  final double latitude;
+  final double? latitude;
 
   /// 경도
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
-  final double longitude;
+  final double? longitude;
 
   /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
   @override
@@ -642,13 +657,13 @@ class _$PlaceModelImpl implements _PlaceModel {
 
 abstract class _PlaceModel implements PlaceModel {
   const factory _PlaceModel({
-    required final String placeId,
-    required final int position,
+    @JsonKey(name: 'placeId') required final String placeId,
+    final int position,
     required final String name,
     required final String address,
     final String country,
-    required final double latitude,
-    required final double longitude,
+    final double? latitude,
+    final double? longitude,
     final String? businessType,
     final String? category,
     final String? phone,
@@ -669,10 +684,14 @@ abstract class _PlaceModel implements PlaceModel {
       _$PlaceModelImpl.fromJson;
 
   /// 장소 고유 ID
+  /// GET /api/content/place/saved: "placeId" 필드 사용
+  /// POST /api/content/analyze: "id" 필드 사용 (places 배열 내)
   @override
+  @JsonKey(name: 'placeId')
   String get placeId;
 
   /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
   int get position;
 
@@ -685,16 +704,19 @@ abstract class _PlaceModel implements PlaceModel {
   String get address;
 
   /// 국가 코드 (KR, US 등)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
   String get country;
 
   /// 위도
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
-  double get latitude;
+  double? get latitude;
 
   /// 경도
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
-  double get longitude;
+  double? get longitude;
 
   /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
   @override

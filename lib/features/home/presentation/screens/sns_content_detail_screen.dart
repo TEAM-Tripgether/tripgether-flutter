@@ -262,7 +262,7 @@ class SnsContentDetailScreen extends StatelessWidget {
         children: [
           // 플랫폼 아이콘
           SvgPicture.asset(
-            PlatformIconMapper.getIconPath(content.platform),
+            PlatformIconMapper.getIconPath(content.platform ?? 'INSTAGRAM'),
             width: AppSizes.iconMedium,
             height: AppSizes.iconMedium,
           ),

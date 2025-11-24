@@ -35,14 +35,18 @@ class AuthResponse with _$AuthResponse {
     /// - true: 회원가입 (최초 로그인)
     /// - false: 기존 회원 로그인
     ///
-    /// 최초 로그인 시 추가 프로필 설정 화면으로 이동할 수 있습니다.
-    required bool isFirstLogin,
+    /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않을 수 있음**
+    /// - 재발급 시에는 기존 회원이므로 항상 false
+    @Default(false) bool isFirstLogin,
 
     /// 온보딩 필요 여부
     ///
     /// - true: 온보딩이 완료되지 않아 온보딩 화면으로 이동 필요
     /// - false: 온보딩 완료, 홈 화면으로 이동
-    required bool requiresOnboarding,
+    ///
+    /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않음**
+    /// - 재발급 시에는 이미 온보딩 완료 상태이므로 항상 false
+    @Default(false) bool requiresOnboarding,
 
     /// 현재 온보딩 단계
     ///
@@ -54,8 +58,9 @@ class AuthResponse with _$AuthResponse {
     /// - "INTERESTS": 관심사 선택 필요
     /// - "COMPLETED": 온보딩 완료
     ///
-    /// requiresOnboarding이 true일 때만 의미 있는 값
-    required String onboardingStep,
+    /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않음**
+    /// - 재발급 시에는 항상 "COMPLETED"
+    @Default('COMPLETED') String onboardingStep,
   }) = _AuthResponse;
 
   /// Access Token이 유효한지 확인 (간단한 검증)

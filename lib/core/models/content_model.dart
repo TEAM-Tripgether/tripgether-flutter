@@ -12,12 +12,18 @@ part 'content_model.g.dart';
 class ContentModel with _$ContentModel {
   const factory ContentModel({
     /// 콘텐츠 고유 ID
-    required String contentId,
+    /// Backend API는 "id"를 사용하지만 Flutter에서는 명확성을 위해 contentId 사용
+    @JsonKey(name: 'id') required String contentId,
+
+    /// 회원 ID (백엔드 응답용, 프론트엔드에서는 미사용)
+    /// POST /api/content/analyze PENDING 응답: "memberId": null
+    String? memberId,
 
     /// 플랫폼 (INSTAGRAM, YOUTUBE, TIKTOK 등)
-    required String platform,
+    /// POST /api/content/analyze PENDING 응답에는 포함되지 않음
+    String? platform,
 
-    /// 처리 상태 (PENDING: 분석 중, COMPLETED: 분석 완료, ERROR: 오류)
+    /// 처리 상태 (PENDING: 분석 중, COMPLETED: 분석 완료, FAILED: 실패)
     @Default('PENDING') String status,
 
     /// 플랫폼 업로더 (Instagram 계정명, YouTube 채널명 등)
@@ -66,10 +72,20 @@ class ContentModel with _$ContentModel {
 }
 
 /// 콘텐츠 상태 상수
+///
+/// 백엔드 API 명세(docs/BackendAPI.md)에 따른 상태값
 class ContentStatus {
+  /// 분석 대기 중 (요청이 접수되었으나 아직 시작되지 않음)
   static const String pending = 'PENDING';
+
+  /// 분석 진행 중 (AI가 현재 분석 중)
+  static const String analyzing = 'ANALYZING';
+
+  /// 분석 완료 (장소 추출 성공)
   static const String completed = 'COMPLETED';
-  static const String error = 'ERROR';
+
+  /// 분석 실패 (오류 발생)
+  static const String failed = 'FAILED';
 }
 
 /// 플랫폼 상수

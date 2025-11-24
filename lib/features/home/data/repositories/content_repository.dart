@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../../../core/models/content_model.dart';
+import '../../../../core/models/place_model.dart';
 import '../data_sources/content_data_source.dart';
 import '../data_sources/mock_content_data_source.dart';
 import '../data_sources/api_content_data_source.dart';
@@ -9,6 +10,7 @@ import '../data_sources/api_content_data_source.dart';
 ///
 /// 환경 변수에 따라 Mock 또는 API 데이터 소스를 사용합니다.
 /// Repository Pattern을 통해 데이터 소스를 추상화합니다.
+/// 백엔드 API 명세(docs/BackendAPI.md)에 따라 구현되었습니다.
 class ContentRepository {
   late final ContentDataSource _dataSource;
 
@@ -51,76 +53,74 @@ class ContentRepository {
     return true;
   }
 
-  /// 모든 콘텐츠 목록 조회
-  Future<List<ContentModel>> getContents() async {
+  /// 공유된 SNS URL 분석 요청
+  ///
+  /// Share Extension에서 받은 URL을 백엔드로 전송하여 AI 분석을 시작합니다.
+  /// 백엔드에서 중복 URL 체크, UUID 생성, AI 분석 등을 처리합니다.
+  ///
+  /// [snsUrl] 분석할 SNS URL (Instagram, YouTube, TikTok 등)
+  /// Returns: PENDING 상태의 ContentModel (분석 진행 중)
+  Future<ContentModel> analyzeSharedUrl(String snsUrl) async {
     try {
-      return await _dataSource.getContents();
+      debugPrint('📤 [ContentRepository] URL 분석 요청: $snsUrl');
+      final result = await _dataSource.analyzeSharedUrl(snsUrl: snsUrl);
+      debugPrint('✅ [ContentRepository] URL 분석 요청 완료: ${result.contentId}');
+      return result;
     } catch (e) {
-      // 에러 처리 및 로깅
+      debugPrint('❌ [ContentRepository] URL 분석 실패: $e');
       rethrow;
     }
   }
 
-  /// 특정 콘텐츠 조회
+  /// 최근 콘텐츠 목록 조회 (최신 10개)
+  ///
+  /// 사용자의 최근 공유된 콘텐츠 목록을 조회합니다.
+  /// HomeScreen의 "최근 SNS 콘텐츠" 섹션에서 사용됩니다.
+  Future<List<ContentModel>> getRecentContents() async {
+    try {
+      return await _dataSource.getRecentContents();
+    } catch (e) {
+      debugPrint('❌ [ContentRepository] 최근 콘텐츠 조회 실패: $e');
+      rethrow;
+    }
+  }
+
+  /// 특정 콘텐츠 상세 조회
+  ///
+  /// 특정 콘텐츠의 상세 정보와 추출된 장소 목록을 조회합니다.
+  /// 콘텐츠 상세 화면에서 사용됩니다.
   Future<ContentModel> getContentById(String contentId) async {
     try {
       return await _dataSource.getContentById(contentId);
     } catch (e) {
+      debugPrint('❌ [ContentRepository] 콘텐츠 상세 조회 실패: $e');
       rethrow;
     }
   }
 
-  /// 콘텐츠 추가
-  Future<ContentModel> addContent({
-    required String url,
-    required String platform,
-  }) async {
+  /// 저장된 장소 목록 조회
+  ///
+  /// 사용자가 저장한 모든 장소 목록을 조회합니다.
+  /// HomeScreen의 "최근 저장한 장소" 섹션에서 사용됩니다.
+  Future<List<PlaceModel>> getSavedPlaces() async {
     try {
-      return await _dataSource.addContent(url: url, platform: platform);
+      return await _dataSource.getSavedPlaces();
     } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// 콘텐츠 상태 업데이트
-  Future<ContentModel> updateContentStatus({
-    required String contentId,
-    required String status,
-  }) async {
-    try {
-      return await _dataSource.updateContentStatus(
-        contentId: contentId,
-        status: status,
-      );
-    } catch (e) {
+      debugPrint('❌ [ContentRepository] 저장된 장소 조회 실패: $e');
       rethrow;
     }
   }
 
   /// 콘텐츠 삭제
+  ///
+  /// 특정 콘텐츠를 삭제합니다.
   Future<void> deleteContent(String contentId) async {
     try {
       await _dataSource.deleteContent(contentId);
+      debugPrint('✅ [ContentRepository] 콘텐츠 삭제 완료: $contentId');
     } catch (e) {
+      debugPrint('❌ [ContentRepository] 콘텐츠 삭제 실패: $e');
       rethrow;
     }
-  }
-
-  /// PENDING 상태인 콘텐츠만 필터링
-  Future<List<ContentModel>> getPendingContents() async {
-    final contents = await getContents();
-    return contents.where((c) => c.status == ContentStatus.pending).toList();
-  }
-
-  /// COMPLETED 상태인 콘텐츠만 필터링
-  Future<List<ContentModel>> getCompletedContents() async {
-    final contents = await getContents();
-    return contents.where((c) => c.status == ContentStatus.completed).toList();
-  }
-
-  /// 특정 플랫폼의 콘텐츠만 필터링
-  Future<List<ContentModel>> getContentsByPlatform(String platform) async {
-    final contents = await getContents();
-    return contents.where((c) => c.platform == platform).toList();
   }
 }

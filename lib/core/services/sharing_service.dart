@@ -765,6 +765,64 @@ class SharingService {
     }
   }
 
+  /// 대기 중인 공유 URL 목록 조회
+  ///
+  /// Share Extension에서 저장한 URL 큐를 읽어옵니다.
+  /// HomeScreen에서 앱 진입 시 호출하여 백엔드로 전송할 URL 목록을 가져옵니다.
+  Future<List<String>> getPendingUrls() async {
+    try {
+      debugPrint('[SharingService] 📥 대기 중인 URL 큐 조회 시작');
+
+      if (Platform.isIOS) {
+        // iOS: MethodChannel을 통해 UserDefaults에서 큐 읽기
+        final result = await _channel.invokeMethod<List<dynamic>>('getPendingUrls');
+
+        if (result == null || result.isEmpty) {
+          debugPrint('[SharingService] ✅ 대기 중인 URL 없음');
+          return [];
+        }
+
+        final urls = result.map((item) => item.toString()).toList();
+        debugPrint('[SharingService] ✅ 대기 중인 URL ${urls.length}개 발견: $urls');
+        return urls;
+      } else if (Platform.isAndroid) {
+        // Android: SharedPreferences에서 큐 읽기
+        final result = await _channel.invokeMethod<List<dynamic>>('getPendingUrls');
+
+        if (result == null || result.isEmpty) {
+          debugPrint('[SharingService] ✅ 대기 중인 URL 없음 (Android)');
+          return [];
+        }
+
+        final urls = result.map((item) => item.toString()).toList();
+        debugPrint('[SharingService] ✅ 대기 중인 URL ${urls.length}개 발견 (Android): $urls');
+        return urls;
+      }
+
+      return [];
+    } catch (e) {
+      debugPrint('[SharingService] ❌ URL 큐 조회 실패: $e');
+      return [];
+    }
+  }
+
+  /// URL 큐 전체 삭제
+  ///
+  /// 백엔드로 성공적으로 전송한 후 호출하여 큐를 비웁니다.
+  Future<void> clearQueue() async {
+    try {
+      debugPrint('[SharingService] 🗑️ URL 큐 삭제 시작');
+
+      if (Platform.isIOS || Platform.isAndroid) {
+        await _channel.invokeMethod('clearPendingUrls');
+        debugPrint('[SharingService] ✅ URL 큐 삭제 완료');
+      }
+    } catch (e) {
+      debugPrint('[SharingService] ❌ URL 큐 삭제 실패: $e');
+      rethrow;
+    }
+  }
+
   /// 서비스 종료 및 리소스 정리
   void dispose() {
     debugPrint('[SharingService] 서비스 종료 시작');

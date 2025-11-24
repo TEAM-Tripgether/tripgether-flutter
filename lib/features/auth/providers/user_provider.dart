@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tripgether/core/services/auth/google_auth_service.dart';
+import 'package:tripgether/core/services/auth/token_manager.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';
 
 part 'user_provider.g.dart';
@@ -48,25 +49,8 @@ class UserNotifier extends _$UserNotifier {
   /// 사용자 정보 저장 키
   static const String _userKey = 'user_info';
 
-  /// Access Token 저장 키
-  static const String _accessTokenKey = 'access_token';
-
-  /// Refresh Token 저장 키
-  static const String _refreshTokenKey = 'refresh_token';
-
-  // ══════════════════════════════════════════════════════════════════════════
-  // 메모리 캐시 (Race Condition 해결)
-  // ══════════════════════════════════════════════════════════════════════════
-
-  /// Access Token 메모리 캐시
-  ///
-  /// FlutterSecureStorage의 비동기 저장 지연 문제를 해결하기 위한 메모리 캐시입니다.
-  /// - 토큰 저장 시 즉시 메모리에 캐싱 (동기)
-  /// - 토큰 읽기 시 메모리 캐시 우선 확인 (즉시 반환)
-  String? _accessTokenCache;
-
-  /// Refresh Token 메모리 캐시
-  String? _refreshTokenCache;
+  /// TokenManager 인스턴스 (JWT 토큰 중앙 관리)
+  final TokenManager _tokenManager = TokenManager();
 
   /// Provider 초기화
   ///
@@ -83,14 +67,7 @@ class UserNotifier extends _$UserNotifier {
     debugPrint('[UserNotifier] 📱 Provider 초기화 시작');
 
     try {
-      // 1. 메모리 캐시에 토큰 미리 로드 (앱 시작 시)
-      _accessTokenCache = await _storage.read(key: _accessTokenKey);
-      _refreshTokenCache = await _storage.read(key: _refreshTokenKey);
-      debugPrint(
-        '[UserNotifier] 🔑 토큰 메모리 캐시 초기화 완료 (Access: ${_accessTokenCache != null}, Refresh: ${_refreshTokenCache != null})',
-      );
-
-      // 2. Secure Storage에서 사용자 정보 로드
+      // Secure Storage에서 사용자 정보 로드
       final user = await _loadUserFromStorage();
 
       if (user != null) {
@@ -187,10 +164,9 @@ class UserNotifier extends _$UserNotifier {
       await GoogleAuthService.disconnect();
       debugPrint('[UserNotifier] 🚪 Google 세션 연결 해제 완료');
 
-      // 2. ⭐ 메모리 캐시 초기화 (즉시 토큰 무효화)
-      _accessTokenCache = null;
-      _refreshTokenCache = null;
-      debugPrint('[UserNotifier] 🧹 메모리 캐시 초기화 완료');
+      // 2. ⭐ TokenManager로 토큰 삭제 (메모리 캐시 + Storage)
+      await _tokenManager.deleteTokens();
+      debugPrint('[UserNotifier] 🧹 토큰 삭제 완료 (TokenManager)');
 
       // 3. ⭐ 모든 Secure Storage 데이터 완전 삭제
       // iOS Keychain과 Android EncryptedSharedPreferences의
@@ -321,15 +297,15 @@ class UserNotifier extends _$UserNotifier {
     }
   }
 
-  /// Secure Storage에 JWT 토큰 저장
+  /// JWT 토큰 저장 (TokenManager 사용)
   ///
   /// **저장 내용**:
   /// - Access Token: API 요청 시 Authorization 헤더에 사용
   /// - Refresh Token: Access Token 만료 시 재발급에 사용
   ///
-  /// **메모리 캐싱**:
+  /// **TokenManager 동작**:
   /// - 먼저 메모리 캐시에 즉시 저장 (동기) → 즉시 사용 가능
-  /// - 그 다음 Secure Storage에 비동기로 저장 → 영구 보관
+  /// - 그 다음 FlutterSecureStorage에 비동기 저장 → 영구 보관
   ///
   /// [accessToken] JWT Access Token (유효기간: 1시간)
   /// [refreshToken] JWT Refresh Token (유효기간: 7일)
@@ -338,65 +314,37 @@ class UserNotifier extends _$UserNotifier {
     required String refreshToken,
   }) async {
     try {
-      // 1. 먼저 메모리 캐시에 즉시 저장 (동기)
-      _accessTokenCache = accessToken;
-      _refreshTokenCache = refreshToken;
+      // TokenManager로 토큰 저장 (메모리 캐시 + Storage 자동 관리)
+      await _tokenManager.saveAccessToken(accessToken);
+      await _tokenManager.saveRefreshToken(refreshToken);
 
-      // 2. 그 다음 Secure Storage에 비동기로 저장
-      await _storage.write(key: _accessTokenKey, value: accessToken);
-      await _storage.write(key: _refreshTokenKey, value: refreshToken);
-
-      debugPrint('[UserNotifier] 🔑 토큰 저장 완료 (메모리 + 저장소)');
+      debugPrint('[UserNotifier] 🔑 토큰 저장 완료 (TokenManager)');
     } catch (e) {
       debugPrint('[UserNotifier] ⚠️ 토큰 저장 실패: $e');
       rethrow;
     }
   }
 
-  /// Access Token 읽기 (메모리 캐시 우선)
+  /// Access Token 읽기 (TokenManager 사용)
   ///
-  /// **읽기 순서**:
+  /// **TokenManager 동작**:
   /// 1. 메모리 캐시에서 먼저 확인 → 있으면 즉시 반환 (동기)
-  /// 2. 없으면 Secure Storage에서 읽기 → 읽은 값을 메모리에 캐싱
+  /// 2. 없으면 FlutterSecureStorage에서 읽기 → 캐시 후 반환
   ///
   /// Returns: Access Token 또는 null
   Future<String?> getAccessToken() async {
-    // 1. 메모리 캐시에서 먼저 확인 (즉시 반환)
-    if (_accessTokenCache != null) {
-      return _accessTokenCache;
-    }
-
-    // 2. 메모리에 없으면 Secure Storage에서 읽기
-    try {
-      _accessTokenCache = await _storage.read(key: _accessTokenKey);
-      return _accessTokenCache;
-    } catch (e) {
-      debugPrint('[UserNotifier] ❌ Access Token 읽기 실패: $e');
-      return null;
-    }
+    return await _tokenManager.getAccessToken();
   }
 
-  /// Refresh Token 읽기 (메모리 캐시 우선)
+  /// Refresh Token 읽기 (TokenManager 사용)
   ///
-  /// **읽기 순서**:
+  /// **TokenManager 동작**:
   /// 1. 메모리 캐시에서 먼저 확인 → 있으면 즉시 반환 (동기)
-  /// 2. 없으면 Secure Storage에서 읽기 → 읽은 값을 메모리에 캐싱
+  /// 2. 없으면 FlutterSecureStorage에서 읽기 → 캐시 후 반환
   ///
   /// Returns: Refresh Token 또는 null
   Future<String?> getRefreshToken() async {
-    // 1. 메모리 캐시에서 먼저 확인 (즉시 반환)
-    if (_refreshTokenCache != null) {
-      return _refreshTokenCache;
-    }
-
-    // 2. 메모리에 없으면 Secure Storage에서 읽기
-    try {
-      _refreshTokenCache = await _storage.read(key: _refreshTokenKey);
-      return _refreshTokenCache;
-    } catch (e) {
-      debugPrint('[UserNotifier] ❌ Refresh Token 읽기 실패: $e');
-      return null;
-    }
+    return await _tokenManager.getRefreshToken();
   }
 }
 
@@ -414,8 +362,8 @@ class UserNotifier extends _$UserNotifier {
 @riverpod
 Future<String?> accessToken(Ref ref) async {
   try {
-    // UserNotifier의 storage 인스턴스 재사용 (메모리 효율)
-    return await UserNotifier._storage.read(key: UserNotifier._accessTokenKey);
+    // TokenManager를 통한 중앙화된 토큰 읽기 (메모리 캐시 우선)
+    return await TokenManager().getAccessToken();
   } catch (e) {
     debugPrint('[AccessTokenProvider] ❌ Access Token 읽기 실패: $e');
     return null;
@@ -436,8 +384,8 @@ Future<String?> accessToken(Ref ref) async {
 @riverpod
 Future<String?> refreshToken(Ref ref) async {
   try {
-    // UserNotifier의 storage 인스턴스 재사용 (메모리 효율)
-    return await UserNotifier._storage.read(key: UserNotifier._refreshTokenKey);
+    // TokenManager를 통한 중앙화된 토큰 읽기 (메모리 캐시 우선)
+    return await TokenManager().getRefreshToken();
   } catch (e) {
     debugPrint('[RefreshTokenProvider] ❌ Refresh Token 읽기 실패: $e');
     return null;

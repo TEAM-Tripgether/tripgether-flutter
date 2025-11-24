@@ -102,6 +102,80 @@ class AuthApiService {
   // Public API Methods
   // ════════════════════════════════════════════════════════════════════════
 
+  /// Interceptor에서 사용하기 위한 토큰 재발급 메서드
+  ///
+  /// **주의**: AuthInterceptor 내부에서만 사용하세요.
+  /// - Interceptor가 없는 별도 Dio 인스턴스를 생성하여 Circular Dependency 방지
+  /// - ApiLogger를 사용하지 않음 (Interceptor 내부 호출이므로)
+  ///
+  /// **사용처**:
+  /// - AuthInterceptor.onError()에서 401 EXPIRED_ACCESS_TOKEN 감지 시 호출
+  ///
+  /// [refreshToken] Refresh Token 문자열
+  /// [baseUrl] API Base URL
+  /// [timeout] 타임아웃 (밀리초, 기본 10000ms)
+  ///
+  /// Returns: AuthResponse (새로운 accessToken, refreshToken)
+  /// Throws: Exception - 재발급 실패 시
+  static Future<AuthResponse> reissueTokenWithoutInterceptor({
+    required String refreshToken,
+    required String baseUrl,
+    int timeout = 10000,
+  }) async {
+    debugPrint(
+      '[AuthApiService.reissueTokenWithoutInterceptor] 🔄 토큰 재발급 시작',
+    );
+    debugPrint('[AuthApiService.reissueTokenWithoutInterceptor] URL: $baseUrl');
+
+    try {
+      // Interceptor 없는 별도 Dio 인스턴스 생성
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: baseUrl,
+          connectTimeout: Duration(milliseconds: timeout),
+          receiveTimeout: Duration(milliseconds: timeout),
+          headers: {'Content-Type': 'application/json'},
+        ),
+      );
+
+      // POST 요청 전송
+      final response = await dio.post(
+        '/api/auth/reissue',
+        data: AuthRequest.reissue(refreshToken: refreshToken).toJson(),
+      );
+
+      debugPrint(
+        '[AuthApiService.reissueTokenWithoutInterceptor] ✅ 응답 상태: ${response.statusCode}',
+      );
+
+      // 성공 응답 처리
+      if (response.statusCode == 200) {
+        final authResponse =
+            AuthResponse.fromJson(response.data as Map<String, dynamic>);
+        debugPrint(
+          '[AuthApiService.reissueTokenWithoutInterceptor] ✅ 토큰 재발급 성공',
+        );
+        return authResponse;
+      } else {
+        throw Exception('토큰 재발급 실패: 상태 코드 ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      // ⚠️ 주의: ApiLogger 사용하지 않음 (Circular Dependency 방지)
+      debugPrint(
+        '[AuthApiService.reissueTokenWithoutInterceptor] ❌ DioException: ${e.type}',
+      );
+      debugPrint(
+        '[AuthApiService.reissueTokenWithoutInterceptor] 메시지: ${e.message}',
+      );
+      rethrow;
+    } catch (e) {
+      debugPrint(
+        '[AuthApiService.reissueTokenWithoutInterceptor] ❌ 예외 발생: $e',
+      );
+      rethrow;
+    }
+  }
+
   /// 소셜 로그인 API
   ///
   /// Google OAuth 인증 후 백엔드에 사용자 정보 + FCM 정보를 전송하여 JWT 토큰을 발급받습니다.
@@ -445,7 +519,6 @@ class AuthApiService {
       ApiLogger.throwFromDioError(
         e,
         context: 'AuthApiService.reissueToken',
-        checkRefreshTokenError: true,
       );
     } catch (e) {
       ApiLogger.logException(e, context: 'AuthApiService.reissueToken');

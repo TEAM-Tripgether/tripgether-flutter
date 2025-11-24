@@ -9,12 +9,12 @@ part of 'place_model.dart';
 _$PlaceModelImpl _$$PlaceModelImplFromJson(Map<String, dynamic> json) =>
     _$PlaceModelImpl(
       placeId: json['placeId'] as String,
-      position: (json['position'] as num).toInt(),
+      position: (json['position'] as num?)?.toInt() ?? 0,
       name: json['name'] as String,
       address: json['address'] as String,
       country: json['country'] as String? ?? 'KR',
-      latitude: (json['latitude'] as num).toDouble(),
-      longitude: (json['longitude'] as num).toDouble(),
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
       businessType: json['businessType'] as String?,
       category: json['category'] as String?,
       phone: json['phone'] as String?,

@@ -210,13 +210,14 @@ class SnsContentCard extends StatelessWidget {
   /// 플랫폼 아이콘
   Widget _buildPlatformIcon() {
     final baseSize = iconSize ?? AppSizes.iconSmall;
+    final platform = content.platform ?? 'INSTAGRAM'; // 기본값: Instagram
     // YouTube 아이콘은 75% 크기로 축소
-    final size = content.platform.toUpperCase() == 'YOUTUBE'
+    final size = platform.toUpperCase() == 'YOUTUBE'
         ? baseSize * 0.75
         : baseSize;
 
     return SvgPicture.asset(
-      PlatformIconMapper.getIconPath(content.platform),
+      PlatformIconMapper.getIconPath(platform),
       width: size,
       height: size,
     );
@@ -241,8 +242,9 @@ class SnsContentCard extends StatelessWidget {
   /// showTextOverlay가 false일 때 좌측 하단에 로고만 배치
   Widget _buildPlatformLogoOnly() {
     final baseSize = logoIconSize ?? AppSizes.iconSmall;
+    final platform = content.platform ?? 'INSTAGRAM'; // 기본값: Instagram
     // YouTube 아이콘은 75% 크기로 축소
-    final size = content.platform.toUpperCase() == 'YOUTUBE'
+    final size = platform.toUpperCase() == 'YOUTUBE'
         ? baseSize * 0.75
         : baseSize;
     final padding = logoPadding ?? EdgeInsets.all(AppSpacing.sm);
@@ -251,7 +253,7 @@ class SnsContentCard extends StatelessWidget {
       left: padding.left,
       bottom: padding.bottom,
       child: SvgPicture.asset(
-        PlatformIconMapper.getIconPath(content.platform),
+        PlatformIconMapper.getIconPath(platform),
         width: size,
         height: size,
       ),

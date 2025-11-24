@@ -6,6 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tripgether/core/theme/app_colors.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/services/sharing_service.dart';
+import '../../../../core/errors/refresh_token_exception.dart';
+import '../../../../core/utils/token_error_handler.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/inputs/search_bar.dart';
@@ -15,6 +18,7 @@ import '../../../debug/share_extension_log_screen.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/providers/user_provider.dart';
+import '../../data/repositories/content_repository.dart';
 import '../widgets/recent_sns_content_section.dart';
 import '../widgets/recent_saved_places_section.dart';
 
@@ -29,6 +33,20 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with AutomaticKeepAliveClientMixin, RefreshableTabMixin {
+  // ════════════════════════════════════════════════════════════════════════
+  // 라이프사이클
+  // ════════════════════════════════════════════════════════════════════════
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 앱 진입 시 Share Extension 큐 처리
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _processPendingSharedUrls();
+    });
+  }
+
   // ════════════════════════════════════════════════════════════════════════
   // RefreshableTabMixin 필수 구현
   // ════════════════════════════════════════════════════════════════════════
@@ -52,6 +70,83 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   bool get wantKeepAlive => true; // 탭 전환 시 상태 유지
+
+  // ════════════════════════════════════════════════════════════════════════
+  // Share Extension 큐 처리
+  // ════════════════════════════════════════════════════════════════════════
+
+  /// Share Extension에서 저장한 URL 큐를 읽어 백엔드로 전송
+  ///
+  /// 앱 진입 시 자동으로 호출되어 외부 앱에서 공유된 URL들을 처리합니다.
+  /// 각 URL을 POST /api/content/analyze로 전송하여 AI 분석을 시작합니다.
+  Future<void> _processPendingSharedUrls() async {
+    try {
+      debugPrint('═══════════════════════════════════════════════════════');
+      debugPrint('[HomeScreen] 📥 공유 URL 큐 처리 시작');
+
+      // 1. SharingService에서 URL 큐 읽기
+      final sharingService = SharingService.instance;
+      final pendingUrls = await sharingService.getPendingUrls();
+
+      if (pendingUrls.isEmpty) {
+        debugPrint('[HomeScreen] ✅ 처리할 URL 없음');
+        debugPrint('═══════════════════════════════════════════════════════');
+        return;
+      }
+
+      debugPrint('[HomeScreen] 📋 대기 중인 URL ${pendingUrls.length}개 발견');
+
+      // 2. ContentRepository 생성
+      final repository = ContentRepository();
+
+      // 3. 각 URL을 백엔드로 전송
+      int successCount = 0;
+      int failCount = 0;
+
+      for (final url in pendingUrls) {
+        try {
+          debugPrint('[HomeScreen] 📤 URL 전송 중: $url');
+
+          final result = await repository.analyzeSharedUrl(url);
+
+          debugPrint(
+            '[HomeScreen] ✅ URL 전송 성공: ${result.contentId} (${result.status})',
+          );
+          successCount++;
+        } on RefreshTokenException catch (e) {
+          // Refresh Token 에러 → 자동 로그아웃 처리
+          debugPrint('[HomeScreen] 🚨 Refresh Token 에러 감지: $e');
+          if (mounted) {
+            await handleTokenError(context, ref, e);
+          }
+          return; // 토큰 에러 발생 시 큐 처리 중단하고 종료
+        } catch (e) {
+          debugPrint('[HomeScreen] ❌ URL 전송 실패: $url - $e');
+          failCount++;
+        }
+      }
+
+      // 4. 성공적으로 처리했으면 큐 삭제
+      if (successCount > 0) {
+        await sharingService.clearQueue();
+        debugPrint('[HomeScreen] 🗑️ URL 큐 삭제 완료 ($successCount개 성공)');
+      }
+
+      debugPrint('[HomeScreen] 📊 처리 결과: 성공 $successCount개, 실패 $failCount개');
+      debugPrint('═══════════════════════════════════════════════════════');
+
+      // 5. UI 새로고침 (최근 콘텐츠 목록 업데이트)
+      if (mounted && successCount > 0) {
+        setState(() {
+          // 새로운 콘텐츠가 추가되었으므로 UI 갱신
+        });
+      }
+    } catch (e, stackTrace) {
+      debugPrint('[HomeScreen] ❌ URL 큐 처리 중 오류 발생: $e');
+      debugPrint('StackTrace: $stackTrace');
+      debugPrint('═══════════════════════════════════════════════════════');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

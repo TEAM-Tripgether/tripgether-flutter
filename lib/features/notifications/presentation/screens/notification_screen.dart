@@ -1,17 +1,20 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/services/sharing_service.dart';
+import '../../../../core/services/fcm/firebase_messaging_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/shared_data_parser.dart';
+import '../../../../core/utils/token_error_handler.dart';
+import '../../../../core/errors/refresh_token_exception.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/empty_state.dart';
 import '../../domain/models/notification_item.dart';
+import '../../../home/presentation/providers/content_provider.dart';
 
 /// 알림 화면 위젯
 /// 외부 앱에서 공유된 링크 및 데이터를 표시하는 전용 페이지
@@ -29,6 +32,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   /// 공유 데이터 스트림 구독
   StreamSubscription<SharedData>? _sharingSubscription;
 
+  /// FCM 콘텐츠 완료 알림 스트림 구독
+  StreamSubscription<String>? _fcmSubscription;
+
   /// 알림 아이템 리스트
   final List<NotificationItem> _notifications = [];
 
@@ -40,6 +46,10 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     super.initState();
     // 공유 서비스 초기화 및 데이터 스트림 구독
     _initializeSharingService();
+    // FCM 알림 리스너 초기화
+    _initializeFcmListener();
+    // 기존 PENDING 알림들 상태 체크
+    _checkPendingNotifications();
   }
 
   /// 공유 서비스 초기화 및 스트림 구독 설정
@@ -68,8 +78,92 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     }
   }
 
+  /// FCM 알림 리스너 초기화
+  ///
+  /// FirebaseMessagingService의 contentCompletedStream을 구독하여
+  /// 백엔드에서 콘텐츠 분석 완료 알림을 받으면 자동으로 UI를 업데이트합니다.
+  void _initializeFcmListener() {
+    _fcmSubscription =
+        FirebaseMessagingService.contentCompletedStream.listen((contentId) {
+      debugPrint('[NotificationScreen] FCM 알림 수신 - contentId: $contentId');
+      _handleContentCompleted(contentId);
+    });
+  }
+
+  /// 기존 PENDING 알림들의 상태 체크
+  ///
+  /// NotificationScreen 진입 시 PENDING 상태 알림들이 백엔드에서 완료되었는지 확인합니다.
+  /// GET /api/content/{contentId}를 호출하여 status를 체크하고,
+  /// COMPLETED 상태면 알림 UI를 업데이트합니다.
+  Future<void> _checkPendingNotifications() async {
+    // 첫 프레임 렌더링 후 실행
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+
+      debugPrint('═══════════════════════════════════════════════════════');
+      debugPrint('[NotificationScreen] 🔄 PENDING 알림 상태 체크 시작');
+
+      // PENDING 상태인 알림들 필터링
+      final pendingNotifications = _notifications.where((n) => n.isPending).toList();
+
+      if (pendingNotifications.isEmpty) {
+        debugPrint('[NotificationScreen] ✅ 체크할 PENDING 알림 없음');
+        debugPrint('═══════════════════════════════════════════════════════');
+        return;
+      }
+
+      debugPrint('[NotificationScreen] 📋 체크할 PENDING 알림 ${pendingNotifications.length}개');
+
+      int completedCount = 0;
+      int stillPendingCount = 0;
+
+      // 각 PENDING 알림의 contentId로 API 호출
+      for (final notification in pendingNotifications) {
+        // contentId가 null이면 스킵
+        final contentId = notification.contentId;
+        if (contentId == null) {
+          debugPrint('[NotificationScreen] ⚠️ contentId가 null - 스킵');
+          stillPendingCount++;
+          continue;
+        }
+
+        try {
+          debugPrint('[NotificationScreen] 📤 상태 확인 중: $contentId');
+
+          // GET /api/content/{contentId} 호출
+          final content = await ref.read(contentDetailProvider(contentId).future);
+
+          debugPrint('[NotificationScreen] 📥 응답 수신 - status: ${content.status}');
+
+          // COMPLETED 상태면 알림 업데이트
+          if (content.status == 'COMPLETED') {
+            debugPrint('[NotificationScreen] ✅ 완료됨 → UI 업데이트');
+            _handleContentCompleted(contentId);
+            completedCount++;
+          } else {
+            debugPrint('[NotificationScreen] ⏳ 여전히 ${content.status} 상태');
+            stillPendingCount++;
+          }
+        } on RefreshTokenException catch (e) {
+          // Refresh Token 에러 → 자동 로그아웃 처리
+          debugPrint('[NotificationScreen] 🚨 Refresh Token 에러 감지: $e');
+          if (mounted) {
+            await handleTokenError(context, ref, e);
+          }
+          return; // 로그아웃 후 더 이상 처리하지 않음
+        } catch (e) {
+          debugPrint('[NotificationScreen] ❌ 상태 체크 실패: $contentId - $e');
+          stillPendingCount++;
+        }
+      }
+
+      debugPrint('[NotificationScreen] 📊 체크 결과: 완료 $completedCount개, 진행중 $stillPendingCount개');
+      debugPrint('═══════════════════════════════════════════════════════');
+    });
+  }
+
   /// 공유 데이터 처리
-  void _handleSharedData(SharedData sharedData) {
+  void _handleSharedData(SharedData sharedData) async {
     debugPrint('[NotificationScreen] 공유 데이터 수신: ${sharedData.toString()}');
 
     // 텍스트 데이터가 있는 경우에만 처리
@@ -83,35 +177,49 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
       debugPrint('[NotificationScreen] 파싱 결과 - 작성자: $author, URL: $url');
 
-      // NotificationItem 생성
+      // 임시 알림 ID 생성
       final notificationId = DateTime.now().millisecondsSinceEpoch.toString();
-      final notification = NotificationItem(
-        id: notificationId,
-        author: author,
-        url: url,
-        receivedAt: DateTime.now(),
-        status: NotificationStatus.pending,
-      );
 
-      // 알림 리스트에 추가
-      setState(() {
-        _notifications.insert(0, notification); // 최신 알림을 상단에 추가
-      });
+      try {
+        // 백엔드로 URL 전송하고 contentId 받기
+        final contentProvider = ref.read(contentListProvider.notifier);
+        final contentId = await contentProvider.analyzeUrl(url);
 
-      // 환경 변수에 따라 처리 방식 결정
-      const useMockApi = bool.fromEnvironment(
-        'USE_MOCK_API',
-        defaultValue: true,
-      );
+        debugPrint('[NotificationScreen] contentId 수신: $contentId');
 
-      if (useMockApi) {
-        // Mock 모드: 5~10초 후 자동 완료
-        debugPrint('[NotificationScreen] Mock 모드: 자동 완료 타이머 시작');
-        _startAutoCompletionTimer(notificationId);
-      } else {
-        // 실제 API 모드: 백엔드로 URL 전송
-        debugPrint('[NotificationScreen] API 모드: 백엔드로 URL 전송');
-        _sendUrlToBackend(notificationId, url);
+        // NotificationItem 생성 (contentId 포함)
+        final notification = NotificationItem(
+          id: notificationId,
+          contentId: contentId, // ✅ 백엔드 UUID 저장
+          author: author,
+          url: url,
+          receivedAt: DateTime.now(),
+          status: NotificationStatus.pending,
+        );
+
+        // 알림 리스트에 추가
+        setState(() {
+          _notifications.insert(0, notification); // 최신 알림을 상단에 추가
+        });
+
+        debugPrint('[NotificationScreen] 알림 추가 완료 (PENDING 상태)');
+      } on RefreshTokenException catch (e) {
+        // Refresh Token 에러 → 자동 로그아웃 처리
+        debugPrint('[NotificationScreen] 🚨 Refresh Token 에러 감지: $e');
+        if (mounted) {
+          await handleTokenError(context, ref, e);
+        }
+      } catch (e) {
+        debugPrint('[NotificationScreen] URL 분석 요청 실패: $e');
+        // 에러 시 사용자에게 알림 표시 (SnackBar 등)
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('링크 분석 요청 중 오류가 발생했습니다: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
 
@@ -124,66 +232,42 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     }
   }
 
-  /// 백엔드로 URL 전송 (USE_MOCK_API=false일 때)
+  /// FCM 알림 수신 시 콘텐츠 완료 처리
   ///
-  /// [notificationId]: 알림 ID
-  /// [url]: 공유받은 URL
-  Future<void> _sendUrlToBackend(String notificationId, String url) async {
-    try {
-      // TODO: 실제 API 연동 구현
-      // - 로그인한 사용자 토큰 가져오기
-      // - POST /api/shared-content { url, token }
-      // - 응답 받으면 알림 상태를 completed로 변경
-
-      debugPrint('[NotificationScreen] 백엔드로 URL 전송: $url');
-
-      // 임시: API 연동 전까지는 바로 완료 처리
-      _completeNotification(notificationId);
-    } catch (e) {
-      debugPrint('[NotificationScreen] 백엔드 전송 실패: $e');
-      // 에러 발생 시에도 알림은 표시되도록 유지 (pending 상태)
-    }
-  }
-
-  /// 자동 완료 타이머 시작
+  /// [contentId]: 백엔드 콘텐츠 UUID
+  /// FCM 메시지로부터 contentId를 받아 GET /api/content/{contentId}를 호출하고
+  /// 알림 상태를 COMPLETED로 업데이트합니다.
   ///
-  /// [notificationId]: 완료 처리할 알림의 ID
-  void _startAutoCompletionTimer(String notificationId) {
-    // 5~10초 사이의 랜덤 시간 생성
-    final random = Random();
-    final delaySeconds = 5 + random.nextInt(6); // 5 + (0~5) = 5~10초
-
-    debugPrint(
-      '[NotificationScreen] 알림 $notificationId: $delaySeconds초 후 자동 완료',
-    );
-
-    // 타이머 시작
-    final timer = Timer(Duration(seconds: delaySeconds), () {
-      _completeNotification(notificationId);
-    });
-
-    // 타이머 Map에 저장 (dispose 시 정리용)
-    _completionTimers[notificationId] = timer;
-  }
-
-  /// 알림을 완료 상태로 변경
-  ///
-  /// [notificationId]: 완료 처리할 알림의 ID
-  void _completeNotification(String notificationId) {
+  /// **호출 시점**: FirebaseMessagingService.contentCompletedStream을 통해
+  /// 백엔드에서 분석 완료 FCM 메시지를 보내면 자동으로 호출됩니다.
+  Future<void> _handleContentCompleted(String contentId) async {
     if (!mounted) return;
 
-    setState(() {
-      final index = _notifications.indexWhere((n) => n.id == notificationId);
-      if (index != -1) {
-        _notifications[index] = _notifications[index].copyWith(
-          status: NotificationStatus.completed,
-        );
-        debugPrint('[NotificationScreen] 알림 $notificationId 완료 처리됨');
-      }
-    });
+    try {
+      debugPrint('[NotificationScreen] FCM 알림 수신 - contentId: $contentId');
 
-    // 타이머 제거
-    _completionTimers.remove(notificationId);
+      // GET /api/content/{contentId} 호출하여 전체 데이터 가져오기
+      final fullContent = await ref.read(contentDetailProvider(contentId).future);
+
+      debugPrint('[NotificationScreen] 콘텐츠 상세 조회 완료: ${fullContent.title}');
+
+      // 알림 상태 업데이트
+      setState(() {
+        final index = _notifications.indexWhere((n) => n.contentId == contentId);
+        if (index != -1) {
+          _notifications[index] = _notifications[index].copyWith(
+            status: NotificationStatus.completed,
+            contentTitle: fullContent.title,
+            contentSummary: fullContent.summary,
+            placeCount: fullContent.places.length,
+          );
+          debugPrint('[NotificationScreen] 알림 업데이트 완료 (COMPLETED)');
+        }
+      });
+    } catch (e) {
+      debugPrint('[NotificationScreen] FCM 처리 실패: $e');
+      // 에러 발생 시에도 알림은 PENDING 상태로 유지
+    }
   }
 
   @override
@@ -226,19 +310,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                         children: [
                           _buildSectionHeader(l10n.notificationSectionToday),
                           ..._notifications.map(
-                            (notification) => _buildNotificationItem(
-                              title: notification.title,
-                              username: notification.author,
-                              url: notification.url,
-                              status:
-                                  notification.status ==
-                                      NotificationStatus.pending
-                                  ? l10n.notificationStatusProcessing
-                                  : l10n.notificationStatusCheckButton,
-                              timestamp: notification.getRelativeTimestamp(
-                                l10n,
-                              ),
-                            ),
+                            (notification) => _buildNotificationItem(notification),
                           ),
                         ],
                       ),
@@ -273,15 +345,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   }
 
   /// 알림 카드 아이템 위젯
-  Widget _buildNotificationItem({
-    required String title,
-    required String username,
-    required String url,
-    required String status, // localized status string
-    required String timestamp,
-  }) {
+  Widget _buildNotificationItem(NotificationItem notification) {
     final l10n = AppLocalizations.of(context);
-    final isPending = status == l10n.notificationStatusProcessing;
+    final isPending = notification.isPending;
 
     return Stack(
       children: [
@@ -325,14 +391,15 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                           child: Text(
                             isPending
                                 ? l10n.aiAnalyzingLocation
-                                : l10n.aiAnalyzedLocations('N'),
+                                : l10n.aiAnalyzedLocations(
+                                    notification.placeCount?.toString() ?? '0'),
                             style: AppTextStyles.titleSemiBold16,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Text(
-                          timestamp,
+                          notification.getRelativeTimestamp(l10n),
                           style: AppTextStyles.bodyMedium12.copyWith(
                             color: AppColors.subColor2,
                           ),
@@ -340,9 +407,36 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                       ],
                     ),
                     AppSpacing.verticalSpaceXSM, // 6
+
+                    // COMPLETED 상태: 콘텐츠 제목 표시
+                    if (notification.isCompleted && notification.contentTitle != null) ...[
+                      Text(
+                        notification.contentTitle!,
+                        style: AppTextStyles.titleSemiBold14.copyWith(
+                          color: AppColors.textColor1,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      AppSpacing.verticalSpaceXS, // 4
+                    ],
+
+                    // COMPLETED 상태: 콘텐츠 요약 표시
+                    if (notification.isCompleted && notification.contentSummary != null) ...[
+                      Text(
+                        notification.contentSummary!,
+                        style: AppTextStyles.bodyRegular14.copyWith(
+                          color: AppColors.subColor2,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      AppSpacing.verticalSpaceXS, // 4
+                    ],
+
                     // Row 2: 작성자 정보
                     Text(
-                      l10n.authorPost(username),
+                      l10n.authorPost(notification.author),
                       style: AppTextStyles.bodyMedium14.copyWith(
                         color: AppColors.mainColor,
                       ),
@@ -358,7 +452,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                         // URL (왼쪽, 3줄까지)
                         Expanded(
                           child: Text(
-                            url,
+                            notification.url,
                             style: AppTextStyles.bodyMedium12.copyWith(
                               color: AppColors.subColor2,
                             ),
@@ -464,6 +558,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   void dispose() {
     // 스트림 구독 해제
     _sharingSubscription?.cancel();
+    _fcmSubscription?.cancel();
 
     // 모든 타이머 취소
     for (final timer in _completionTimers.values) {

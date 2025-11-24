@@ -55,7 +55,7 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
   @override
   Future<void> onRefreshData() async {
     // Riverpod provider 새로고침
-    ref.invalidate(completedContentsProvider);
+    ref.invalidate(contentListProvider);
   }
 
   @override
@@ -63,7 +63,7 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
     super.build(context); // AutomaticKeepAliveClientMixin 필수 호출
 
     final l10n = AppLocalizations.of(context);
-    final contentListAsync = ref.watch(completedContentsProvider);
+    final contentListAsync = ref.watch(contentListProvider);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -331,7 +331,7 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
             title: l10n.cannotLoadContent,
             message: l10n.networkError,
             action: TextButton(
-              onPressed: () => ref.invalidate(completedContentsProvider),
+              onPressed: () => ref.invalidate(contentListProvider),
               child: Text(
                 l10n.retry,
                 style: AppTextStyles.buttonMediumMedium14.copyWith(
@@ -396,7 +396,7 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
     }
 
     return contents
-        .where((content) => content.platform.toUpperCase() == platform)
+        .where((content) => content.platform?.toUpperCase() == platform)
         .toList();
   }
 

@@ -22,12 +22,19 @@ ContentModel _$ContentModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ContentModel {
   /// 콘텐츠 고유 ID
+  /// Backend API는 "id"를 사용하지만 Flutter에서는 명확성을 위해 contentId 사용
+  @JsonKey(name: 'id')
   String get contentId => throw _privateConstructorUsedError;
 
-  /// 플랫폼 (INSTAGRAM, YOUTUBE, TIKTOK 등)
-  String get platform => throw _privateConstructorUsedError;
+  /// 회원 ID (백엔드 응답용, 프론트엔드에서는 미사용)
+  /// POST /api/content/analyze PENDING 응답: "memberId": null
+  String? get memberId => throw _privateConstructorUsedError;
 
-  /// 처리 상태 (PENDING: 분석 중, COMPLETED: 분석 완료, ERROR: 오류)
+  /// 플랫폼 (INSTAGRAM, YOUTUBE, TIKTOK 등)
+  /// POST /api/content/analyze PENDING 응답에는 포함되지 않음
+  String? get platform => throw _privateConstructorUsedError;
+
+  /// 처리 상태 (PENDING: 분석 중, COMPLETED: 분석 완료, FAILED: 실패)
   String get status => throw _privateConstructorUsedError;
 
   /// 플랫폼 업로더 (Instagram 계정명, YouTube 채널명 등)
@@ -87,8 +94,9 @@ abstract class $ContentModelCopyWith<$Res> {
   ) = _$ContentModelCopyWithImpl<$Res, ContentModel>;
   @useResult
   $Res call({
-    String contentId,
-    String platform,
+    @JsonKey(name: 'id') String contentId,
+    String? memberId,
+    String? platform,
     String status,
     String? platformUploader,
     String? caption,
@@ -122,7 +130,8 @@ class _$ContentModelCopyWithImpl<$Res, $Val extends ContentModel>
   @override
   $Res call({
     Object? contentId = null,
-    Object? platform = null,
+    Object? memberId = freezed,
+    Object? platform = freezed,
     Object? status = null,
     Object? platformUploader = freezed,
     Object? caption = freezed,
@@ -144,10 +153,14 @@ class _$ContentModelCopyWithImpl<$Res, $Val extends ContentModel>
                 ? _value.contentId
                 : contentId // ignore: cast_nullable_to_non_nullable
                       as String,
-            platform: null == platform
+            memberId: freezed == memberId
+                ? _value.memberId
+                : memberId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            platform: freezed == platform
                 ? _value.platform
                 : platform // ignore: cast_nullable_to_non_nullable
-                      as String,
+                      as String?,
             status: null == status
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
@@ -220,8 +233,9 @@ abstract class _$$ContentModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    String contentId,
-    String platform,
+    @JsonKey(name: 'id') String contentId,
+    String? memberId,
+    String? platform,
     String status,
     String? platformUploader,
     String? caption,
@@ -254,7 +268,8 @@ class __$$ContentModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? contentId = null,
-    Object? platform = null,
+    Object? memberId = freezed,
+    Object? platform = freezed,
     Object? status = null,
     Object? platformUploader = freezed,
     Object? caption = freezed,
@@ -276,10 +291,14 @@ class __$$ContentModelImplCopyWithImpl<$Res>
             ? _value.contentId
             : contentId // ignore: cast_nullable_to_non_nullable
                   as String,
-        platform: null == platform
+        memberId: freezed == memberId
+            ? _value.memberId
+            : memberId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        platform: freezed == platform
             ? _value.platform
             : platform // ignore: cast_nullable_to_non_nullable
-                  as String,
+                  as String?,
         status: null == status
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
@@ -345,8 +364,9 @@ class __$$ContentModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ContentModelImpl implements _ContentModel {
   const _$ContentModelImpl({
-    required this.contentId,
-    required this.platform,
+    @JsonKey(name: 'id') required this.contentId,
+    this.memberId,
+    this.platform,
     this.status = 'PENDING',
     this.platformUploader,
     this.caption,
@@ -368,14 +388,22 @@ class _$ContentModelImpl implements _ContentModel {
       _$$ContentModelImplFromJson(json);
 
   /// 콘텐츠 고유 ID
+  /// Backend API는 "id"를 사용하지만 Flutter에서는 명확성을 위해 contentId 사용
   @override
+  @JsonKey(name: 'id')
   final String contentId;
 
-  /// 플랫폼 (INSTAGRAM, YOUTUBE, TIKTOK 등)
+  /// 회원 ID (백엔드 응답용, 프론트엔드에서는 미사용)
+  /// POST /api/content/analyze PENDING 응답: "memberId": null
   @override
-  final String platform;
+  final String? memberId;
 
-  /// 처리 상태 (PENDING: 분석 중, COMPLETED: 분석 완료, ERROR: 오류)
+  /// 플랫폼 (INSTAGRAM, YOUTUBE, TIKTOK 등)
+  /// POST /api/content/analyze PENDING 응답에는 포함되지 않음
+  @override
+  final String? platform;
+
+  /// 처리 상태 (PENDING: 분석 중, COMPLETED: 분석 완료, FAILED: 실패)
   @override
   @JsonKey()
   final String status;
@@ -453,7 +481,7 @@ class _$ContentModelImpl implements _ContentModel {
 
   @override
   String toString() {
-    return 'ContentModel(contentId: $contentId, platform: $platform, status: $status, platformUploader: $platformUploader, caption: $caption, thumbnailUrl: $thumbnailUrl, originalUrl: $originalUrl, title: $title, summary: $summary, lastCheckedAt: $lastCheckedAt, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy, updatedBy: $updatedBy, places: $places, metadata: $metadata)';
+    return 'ContentModel(contentId: $contentId, memberId: $memberId, platform: $platform, status: $status, platformUploader: $platformUploader, caption: $caption, thumbnailUrl: $thumbnailUrl, originalUrl: $originalUrl, title: $title, summary: $summary, lastCheckedAt: $lastCheckedAt, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy, updatedBy: $updatedBy, places: $places, metadata: $metadata)';
   }
 
   @override
@@ -463,6 +491,8 @@ class _$ContentModelImpl implements _ContentModel {
             other is _$ContentModelImpl &&
             (identical(other.contentId, contentId) ||
                 other.contentId == contentId) &&
+            (identical(other.memberId, memberId) ||
+                other.memberId == memberId) &&
             (identical(other.platform, platform) ||
                 other.platform == platform) &&
             (identical(other.status, status) || other.status == status) &&
@@ -494,6 +524,7 @@ class _$ContentModelImpl implements _ContentModel {
   int get hashCode => Object.hash(
     runtimeType,
     contentId,
+    memberId,
     platform,
     status,
     platformUploader,
@@ -527,8 +558,9 @@ class _$ContentModelImpl implements _ContentModel {
 
 abstract class _ContentModel implements ContentModel {
   const factory _ContentModel({
-    required final String contentId,
-    required final String platform,
+    @JsonKey(name: 'id') required final String contentId,
+    final String? memberId,
+    final String? platform,
     final String status,
     final String? platformUploader,
     final String? caption,
@@ -549,14 +581,22 @@ abstract class _ContentModel implements ContentModel {
       _$ContentModelImpl.fromJson;
 
   /// 콘텐츠 고유 ID
+  /// Backend API는 "id"를 사용하지만 Flutter에서는 명확성을 위해 contentId 사용
   @override
+  @JsonKey(name: 'id')
   String get contentId;
 
-  /// 플랫폼 (INSTAGRAM, YOUTUBE, TIKTOK 등)
+  /// 회원 ID (백엔드 응답용, 프론트엔드에서는 미사용)
+  /// POST /api/content/analyze PENDING 응답: "memberId": null
   @override
-  String get platform;
+  String? get memberId;
 
-  /// 처리 상태 (PENDING: 분석 중, COMPLETED: 분석 완료, ERROR: 오류)
+  /// 플랫폼 (INSTAGRAM, YOUTUBE, TIKTOK 등)
+  /// POST /api/content/analyze PENDING 응답에는 포함되지 않음
+  @override
+  String? get platform;
+
+  /// 처리 상태 (PENDING: 분석 중, COMPLETED: 분석 완료, FAILED: 실패)
   @override
   String get status;
 
