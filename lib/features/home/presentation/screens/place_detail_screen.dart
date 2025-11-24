@@ -38,7 +38,7 @@ class PlaceDetailScreen extends ConsumerWidget {
     final placeAsync = ref.watch(placeDetailProvider(placeId));
 
     return Scaffold(
-      appBar: CommonAppBar.forSubPage(title: l10n.placeDetailTitle),
+      appBar: CommonAppBar.forSubPage(title: ''),
       body: placeAsync.when(
         data: (place) {
           if (place == null) {
