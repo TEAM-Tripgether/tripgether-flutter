@@ -112,8 +112,13 @@ class SnsContentDetailScreen extends StatelessWidget {
               reviewCount: place.userRatingsTotal ?? 0,
               imageUrls: place.photoUrls,
               onTap: () {
-                // 장소 상세 화면으로 이동
-                context.push('${AppRoutes.placeDetail}/${place.placeId}');
+                // 장소 상세 화면으로 이동 (:placeId 파라미터 치환)
+                context.push(
+                  AppRoutes.placeDetail.replaceAll(
+                    ':placeId',
+                    place.placeId,
+                  ),
+                );
               },
             ),
           );
