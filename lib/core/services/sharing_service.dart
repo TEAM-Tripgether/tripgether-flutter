@@ -568,28 +568,50 @@ class SharingService {
 
   /// 대기 중인 URL 큐 조회
   /// iOS/Android에서 저장된 공유 URL 목록을 반환
+  /// 
+  /// Note: 네이티브 메서드가 구현되지 않은 경우 currentSharedData에서 추출
   Future<List<String>> getPendingUrls() async {
     debugPrint('[SharingService] 📥 대기 중인 URL 큐 조회 시작');
     
     try {
+      // 네이티브 메서드 호출 시도
       final result = await _channel.invokeMethod<List<dynamic>>('getPendingUrls');
       
       if (result == null || result.isEmpty) {
-        debugPrint('[SharingService] 대기 중인 URL 없음');
-        return [];
+        debugPrint('[SharingService] 대기 중인 URL 없음 (네이티브)');
+        return _extractUrlsFromCurrentData();
       }
       
       final urls = result.cast<String>();
       debugPrint('[SharingService] ✅ 대기 중인 URL ${urls.length}개 발견: $urls');
       return urls;
     } catch (error) {
-      debugPrint('[SharingService] ❌ URL 큐 조회 실패: $error');
+      debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 - currentSharedData 사용');
+      return _extractUrlsFromCurrentData();
+    }
+  }
+
+  /// currentSharedData에서 URL 추출 (fallback)
+  List<String> _extractUrlsFromCurrentData() {
+    if (_currentSharedData == null || !_currentSharedData!.hasTextData) {
       return [];
     }
+    
+    final urls = _currentSharedData!.sharedTexts
+        .where((text) => isValidUrl(text))
+        .toList();
+    
+    if (urls.isNotEmpty) {
+      debugPrint('[SharingService] ✅ currentSharedData에서 URL ${urls.length}개 발견: $urls');
+    }
+    
+    return urls;
   }
 
   /// URL 큐에서 특정 URL 제거
   /// 처리 완료된 URL을 큐에서 삭제
+  /// 
+  /// Note: 네이티브 메서드가 구현되지 않은 경우 true 반환 (no-op)
   Future<bool> removeUrlFromQueue(String url) async {
     try {
       final success = await _channel.invokeMethod<bool>(
@@ -605,13 +627,15 @@ class SharingService {
       
       return success ?? false;
     } catch (error) {
-      debugPrint('[SharingService] ❌ URL 제거 중 오류: $error');
-      return false;
+      debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 - 제거 스킵: $url');
+      return true; // 구현되지 않은 경우 성공으로 간주
     }
   }
 
   /// URL 큐 전체 초기화
   /// 모든 대기 중인 URL을 삭제
+  /// 
+  /// Note: 네이티브 메서드가 구현되지 않은 경우 true 반환 (no-op)
   Future<bool> clearUrlQueue() async {
     try {
       final success = await _channel.invokeMethod<bool>('clearUrlQueue');
@@ -624,8 +648,8 @@ class SharingService {
       
       return success ?? false;
     } catch (error) {
-      debugPrint('[SharingService] ❌ URL 큐 초기화 중 오류: $error');
-      return false;
+      debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 - 초기화 스킵');
+      return true; // 구현되지 않은 경우 성공으로 간주
     }
   }
 

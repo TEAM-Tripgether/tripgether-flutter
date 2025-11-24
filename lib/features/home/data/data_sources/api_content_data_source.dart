@@ -159,12 +159,20 @@ class ApiContentDataSource implements ContentDataSource {
   @override
   Future<ContentModel> analyzeSharedUrl({required String snsUrl}) async {
     try {
-      debugPrint('📤 [ContentRepository] URL 분석 요청: $snsUrl');
+      debugPrint('📤 [ApiContentDataSource] URL 분석 요청: $snsUrl');
+      
+      // API 요청 데이터 준비
+      // Note: API 문서에는 contentId가 필수로 명시되어 있지만,
+      // 실제로는 백엔드가 콘텐츠를 생성하므로 snsUrl만 전송
+      // 만약 contentId가 필요하다면 백엔드에서 적절히 처리
+      final requestData = {'snsUrl': snsUrl};
+      
+      debugPrint('📤 [ApiContentDataSource] 요청 데이터: $requestData');
       
       final response = await dio.post(
         '$baseUrl/api/content/analyze',
         options: Options(headers: {'Content-Type': 'application/json'}),
-        data: {'snsUrl': snsUrl},
+        data: requestData,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

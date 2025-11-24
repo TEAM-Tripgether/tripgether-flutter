@@ -88,28 +88,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         try {
           debugPrint('[HomeScreen] 📤 URL 전송 중: $url');
           
-          // 백엔드로 URL 분석 요청
-          await contentRepository.analyzeSharedUrl(snsUrl: url);
+          // 빈 문자열이거나 URL이 아닌 경우 스킵
+          if (url.trim().isEmpty || !sharingService.isValidUrl(url)) {
+            debugPrint('[HomeScreen] ⚠️ 유효하지 않은 URL 스킵: $url');
+            failureCount++;
+            continue;
+          }
           
-          debugPrint('[HomeScreen] ✅ URL 전송 성공: $url');
+          // 백엔드로 URL 분석 요청
+          final content = await contentRepository.analyzeSharedUrl(snsUrl: url);
+          
+          debugPrint(
+            '[HomeScreen] ✅ URL 전송 성공: $url (contentId: ${content.contentId}, status: ${content.status})',
+          );
           successCount++;
           
           // 성공한 URL은 큐에서 제거
           await sharingService.removeUrlFromQueue(url);
-        } catch (e) {
-          debugPrint('[HomeScreen] ❌ URL 전송 실패: $url - $e');
+        } catch (e, stackTrace) {
+          debugPrint('[HomeScreen] ❌ URL 전송 실패: $url');
+          debugPrint('[HomeScreen] 오류: $e');
+          debugPrint('[HomeScreen] 스택 트레이스: $stackTrace');
           failureCount++;
         }
       }
       
-      debugPrint('[HomeScreen] 📊 처리 결과: 성공 ${successCount}개, 실패 ${failureCount}개');
+      debugPrint('[HomeScreen] 📊 처리 결과: 성공 $successCount개, 실패 $failureCount개');
       
       // 처리 후 콘텐츠 목록 새로고침
       if (successCount > 0) {
         ref.invalidate(contentListProvider);
+        debugPrint('[HomeScreen] 콘텐츠 목록 새로고침 완료');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       debugPrint('[HomeScreen] ❌ URL 큐 처리 중 오류: $e');
+      debugPrint('[HomeScreen] 스택 트레이스: $stackTrace');
     }
   }
 
