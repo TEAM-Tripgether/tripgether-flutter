@@ -627,9 +627,15 @@ class SharingService {
         debugPrint('[SharingService] ⚠️ URL 큐에서 제거 실패: $url');
         return false;
       }
+    } on PlatformException catch (e) {
+      if (e.code == 'UNIMPLEMENTED' || e.message?.contains('not implemented') == true) {
+        debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 (제거 기능 제한): $url');
+        return false;
+      }
+      debugPrint('[SharingService] ❌ URL 제거 중 플랫폼 오류: $e');
+      rethrow;
     } catch (error) {
-      debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 (제거 기능 제한): $url');
-      // 구현되지 않은 경우: false 반환하지만 caller가 처리를 계속하도록 함
+      debugPrint('[SharingService] ❌ URL 제거 중 예상치 못한 오류: $error');
       return false;
     }
   }
@@ -650,8 +656,15 @@ class SharingService {
         debugPrint('[SharingService] ⚠️ URL 큐 초기화 실패');
         return false;
       }
+    } on PlatformException catch (e) {
+      if (e.code == 'UNIMPLEMENTED' || e.message?.contains('not implemented') == true) {
+        debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 (초기화 기능 제한)');
+        return false;
+      }
+      debugPrint('[SharingService] ❌ URL 큐 초기화 중 플랫폼 오류: $e');
+      rethrow;
     } catch (error) {
-      debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 (초기화 기능 제한)');
+      debugPrint('[SharingService] ❌ URL 큐 초기화 중 예상치 못한 오류: $error');
       return false;
     }
   }

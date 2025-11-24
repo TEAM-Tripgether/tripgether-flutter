@@ -183,7 +183,10 @@ class ApiContentDataSource implements ContentDataSource {
         // contentId는 필수 필드이므로 없으면 예외 발생
         final contentId = responseData['contentId'] as String?;
         if (contentId == null || contentId.isEmpty) {
-          throw Exception('API returned null or empty contentId');
+          throw Exception(
+            'API Contract Violation: /api/content/analyze must return non-null contentId. '
+            'Response: $responseData',
+          );
         }
         
         // platform과 status는 기본값 제공

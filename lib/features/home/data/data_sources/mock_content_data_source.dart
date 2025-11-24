@@ -107,6 +107,9 @@ class MockContentDataSource implements ContentDataSource {
     _cachedContents?.removeWhere((c) => c.contentId == contentId);
   }
 
+  /// Mock 분석 처리 지연 시간
+  static const Duration _mockAnalysisDelay = Duration(seconds: 3);
+
   @override
   Future<ContentModel> analyzeSharedUrl({required String snsUrl}) async {
     // Mock에서는 즉시 PENDING 상태의 콘텐츠를 반환
@@ -122,8 +125,8 @@ class MockContentDataSource implements ContentDataSource {
     _cachedContents ??= [];
     _cachedContents!.add(newContent);
 
-    // 3초 후 상태를 COMPLETED로 변경 (백엔드 분석 시뮬레이션)
-    Future.delayed(const Duration(seconds: 3), () {
+    // Mock 분석 지연 후 상태를 COMPLETED로 변경 (백엔드 분석 시뮬레이션)
+    Future.delayed(_mockAnalysisDelay, () {
       final index = _cachedContents!.indexWhere(
         (c) => c.contentId == newContent.contentId,
       );
