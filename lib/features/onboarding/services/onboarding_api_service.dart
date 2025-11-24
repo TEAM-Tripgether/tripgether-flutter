@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:tripgether/core/network/auth_interceptor.dart';
 import 'package:tripgether/core/utils/api_logger.dart';
 import '../data/models/onboarding_response.dart';
 
@@ -77,7 +78,10 @@ class OnboardingApiService {
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
         ),
-      );
+      ) {
+    // AuthInterceptor 추가 (JWT 토큰 자동 주입 + 갱신)
+    _dio.interceptors.add(AuthInterceptor(baseUrl: _baseUrl));
+  }
 
   // ══════════════════════════════════════════════════════════════════════════
   // API 메서드
@@ -95,8 +99,9 @@ class OnboardingApiService {
   /// ```
   ///
   /// **응답**: currentStep = "NAME" (다음 단계: 이름 입력)
+  ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
   Future<OnboardingResponse> agreeTerms({
-    required String accessToken,
     required bool isServiceTermsAndPrivacyAgreed,
     required bool isMarketingAgreed,
   }) async {
@@ -110,7 +115,6 @@ class OnboardingApiService {
     try {
       final response = await _dio.post(
         '/api/members/onboarding/terms',
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         data: {
           'isServiceTermsAndPrivacyAgreed': isServiceTermsAndPrivacyAgreed,
           'isMarketingAgreed': isMarketingAgreed,
@@ -138,8 +142,9 @@ class OnboardingApiService {
   /// ```
   ///
   /// **응답**: currentStep = "BIRTH_DATE" (다음 단계: 생년월일 입력)
+  ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
   Future<OnboardingResponse> updateName({
-    required String accessToken,
     required String name,
   }) async {
     if (_useMockData) {
@@ -149,7 +154,6 @@ class OnboardingApiService {
     try {
       final response = await _dio.post(
         '/api/members/onboarding/name',
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         data: {'name': name},
       );
 
@@ -174,8 +178,9 @@ class OnboardingApiService {
   /// ```
   ///
   /// **응답**: currentStep = "GENDER" (다음 단계: 성별 선택)
+  ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
   Future<OnboardingResponse> updateBirthDate({
-    required String accessToken,
     required String birthDate,
   }) async {
     if (_useMockData) {
@@ -185,7 +190,6 @@ class OnboardingApiService {
     try {
       final response = await _dio.post(
         '/api/members/onboarding/birth-date',
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         data: {'birthDate': birthDate},
       );
 
@@ -213,8 +217,9 @@ class OnboardingApiService {
   /// ```
   ///
   /// **응답**: currentStep = "INTERESTS" (다음 단계: 관심사 선택)
+  ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
   Future<OnboardingResponse> updateGender({
-    required String accessToken,
     required String gender,
   }) async {
     if (_useMockData) {
@@ -224,7 +229,6 @@ class OnboardingApiService {
     try {
       final response = await _dio.post(
         '/api/members/onboarding/gender',
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         data: {'gender': gender},
       );
 
@@ -249,8 +253,9 @@ class OnboardingApiService {
   /// ```
   ///
   /// **응답**: currentStep = "COMPLETED", onboardingStatus = "COMPLETED"
+  ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
   Future<OnboardingResponse> updateInterests({
-    required String accessToken,
     required List<String> interestIds,
   }) async {
     if (_useMockData) {
@@ -260,7 +265,6 @@ class OnboardingApiService {
     try {
       final response = await _dio.post(
         '/api/members/onboarding/interests',
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         data: {'interestIds': interestIds},
       );
 
