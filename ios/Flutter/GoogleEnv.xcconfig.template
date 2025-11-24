@@ -1,0 +1,6 @@
+// iOS Google Environment Variables Template
+// 이 파일을 'GoogleEnv.xcconfig'로 복사하고 실제 값을 입력하세요
+// GoogleEnv.xcconfig 파일은 .gitignore에 포함되어 있어 Git에 커밋되지 않습니다
+
+GOOGLE_URL_SCHEME=YOUR_GOOGLE_URL_SCHEME_HERE
+GOOGLE_MAPS_API_KEY=YOUR_IOS_GOOGLE_MAPS_API_KEY_HERE

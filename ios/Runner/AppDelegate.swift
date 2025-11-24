@@ -2,17 +2,29 @@ import Flutter
 import UIKit
 import UserNotifications
 import flutter_local_notifications
+import GoogleMaps
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
 
   private let hostAppBundleIdentifier = "com.tripgether.alom"
-  private let sharedKey = "ShareKey"
+
+  // Queue Keys
+  private let queueKey = "ShareQueue"
+  private let legacyKey = "ShareKey"  // 마이그레이션용
 
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Google Maps SDK 초기화
+    // Info.plist에서 GMSApiKey 읽기 (환경 변수로부터 주입됨)
+    if let apiKey = Bundle.main.object(forInfoDictionaryKey: "GMSApiKey") as? String {
+      GMSServices.provideAPIKey(apiKey)
+    } else {
+      fatalError("Google Maps API Key가 Info.plist에 설정되지 않았습니다")
+    }
+
     GeneratedPluginRegistrant.register(with: self)
 
     // Flutter Local Notifications Plugin 설정
@@ -29,6 +41,9 @@ import flutter_local_notifications
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self
     }
+
+    // Legacy 데이터 마이그레이션 (ShareKey → ShareQueue)
+    migrateOldShareKey()
 
     // Flutter Method Channel 설정
     if let controller = window?.rootViewController as? FlutterViewController {
@@ -66,6 +81,10 @@ import flutter_local_notifications
       getSharedData(result: result)
     case "clearSharedData":
       clearSharedData(result: result)
+    case "getPendingUrls":  // 큐 기능
+      getPendingUrls(result: result)
+    case "clearPendingUrls":  // 큐 기능
+      clearPendingUrls(result: result)
     case "getShareLog":
       getShareLog(result: result)
     case "clearShareLog":
@@ -79,7 +98,7 @@ import flutter_local_notifications
   private func getSharedData(result: @escaping FlutterResult) {
     let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
 
-    if let sharedData = userDefaults?.object(forKey: sharedKey) {
+    if let sharedData = userDefaults?.object(forKey: legacyKey) {
       if let texts = sharedData as? [String] {
         // 텍스트 데이터
         result(["texts": texts])
@@ -110,18 +129,18 @@ import flutter_local_notifications
     print("[AppDelegate] 공유 데이터 삭제 시작")
 
     // 삭제 전 데이터 존재 확인
-    let existsBefore = userDefaults?.object(forKey: sharedKey) != nil
+    let existsBefore = userDefaults?.object(forKey: legacyKey) != nil
     print("[AppDelegate] 삭제 전 데이터 존재: \(existsBefore)")
 
     // 데이터 삭제
-    userDefaults?.removeObject(forKey: sharedKey)
+    userDefaults?.removeObject(forKey: legacyKey)
 
     // 강제 동기화
     let syncSuccess = userDefaults?.synchronize() ?? false
     print("[AppDelegate] 동기화 성공: \(syncSuccess)")
 
     // 삭제 후 데이터 존재 확인
-    let existsAfter = userDefaults?.object(forKey: sharedKey) != nil
+    let existsAfter = userDefaults?.object(forKey: legacyKey) != nil
     print("[AppDelegate] 삭제 후 데이터 존재: \(existsAfter)")
 
     if existsAfter {
@@ -129,6 +148,91 @@ import flutter_local_notifications
       result(false)
     } else {
       print("[AppDelegate] ✅ 공유 데이터 삭제 완료")
+      result(true)
+    }
+  }
+
+  // MARK: - Queue Methods
+
+  /// Legacy "ShareKey" 데이터를 "ShareQueue"로 마이그레이션
+  /// 앱 시작 시 한 번만 실행되며, 기존 사용자의 데이터 손실 방지
+  private func migrateOldShareKey() {
+    let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
+
+    // Legacy 키에 데이터가 있는지 확인
+    guard let legacyData = userDefaults?.array(forKey: legacyKey) as? [String] else {
+      print("[AppDelegate] 🔄 마이그레이션 불필요 - Legacy 데이터 없음")
+      return
+    }
+
+    print("[AppDelegate] 🔄 Legacy 데이터 발견 - 마이그레이션 시작")
+    print("[AppDelegate] Legacy 데이터: \(legacyData.count)개 항목")
+
+    // 기존 큐 읽기
+    var queue = userDefaults?.array(forKey: queueKey) as? [[String]] ?? []
+
+    // Legacy 데이터를 큐에 추가
+    queue.append(legacyData)
+
+    // 큐 저장
+    userDefaults?.set(queue, forKey: queueKey)
+
+    // Legacy 키 삭제
+    userDefaults?.removeObject(forKey: legacyKey)
+
+    // 동기화
+    let syncSuccess = userDefaults?.synchronize() ?? false
+    print("[AppDelegate] 마이그레이션 완료 - 동기화: \(syncSuccess ? "성공" : "실패")")
+    print("[AppDelegate] ✅ Legacy 데이터가 큐로 이동됨 (큐 크기: \(queue.count))")
+  }
+
+  /// 큐에 저장된 모든 URL 가져오기 (2D 배열 → 1D 배열 변환)
+  /// - Parameter result: Flutter로 반환할 결과 ([String] 형태)
+  private func getPendingUrls(result: @escaping FlutterResult) {
+    let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
+
+    print("[AppDelegate] 📥 대기 중인 URL 큐 조회 시작")
+
+    guard let queue = userDefaults?.array(forKey: queueKey) as? [[String]] else {
+      print("[AppDelegate] ✅ 대기 중인 URL 큐 없음")
+      result([])
+      return
+    }
+
+    // 2D 배열을 1D 배열로 평탄화 (flatMap)
+    let urls = queue.flatMap { $0 }
+
+    print("[AppDelegate] ✅ 대기 중인 URL \(urls.count)개 발견 (큐 크기: \(queue.count))")
+    result(urls)
+  }
+
+  /// 큐 전체 삭제
+  /// - Parameter result: Flutter로 반환할 결과 (Bool)
+  private func clearPendingUrls(result: @escaping FlutterResult) {
+    let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
+
+    print("[AppDelegate] 🗑️ URL 큐 삭제 시작")
+
+    // 삭제 전 데이터 존재 확인
+    let existsBefore = userDefaults?.object(forKey: queueKey) != nil
+    print("[AppDelegate] 삭제 전 큐 존재: \(existsBefore)")
+
+    // 큐 삭제
+    userDefaults?.removeObject(forKey: queueKey)
+
+    // 강제 동기화
+    let syncSuccess = userDefaults?.synchronize() ?? false
+    print("[AppDelegate] 동기화 성공: \(syncSuccess)")
+
+    // 삭제 후 데이터 존재 확인
+    let existsAfter = userDefaults?.object(forKey: queueKey) != nil
+    print("[AppDelegate] 삭제 후 큐 존재: \(existsAfter)")
+
+    if existsAfter {
+      print("[AppDelegate] ⚠️ 경고: 큐가 삭제되지 않았습니다!")
+      result(false)
+    } else {
+      print("[AppDelegate] ✅ URL 큐 삭제 완료")
       result(true)
     }
   }

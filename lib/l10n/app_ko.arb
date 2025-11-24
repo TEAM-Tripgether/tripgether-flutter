@@ -930,6 +930,11 @@
     "description": "지도 화면 내 위치 버튼 툴팁"
   },
 
+  "mapToggleMapType": "지도 타입 변경",
+  "@mapToggleMapType": {
+    "description": "지도 타입 변경 버튼 툴팁 (일반/위성)"
+  },
+
   "mapPlaceholder": "지도 기능이 곧 추가될 예정입니다",
   "@mapPlaceholder": {
     "description": "지도 화면 플레이스홀더 메시지"

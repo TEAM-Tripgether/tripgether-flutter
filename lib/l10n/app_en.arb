@@ -930,6 +930,11 @@
     "description": "Map screen my location button tooltip"
   },
 
+  "mapToggleMapType": "Toggle map type",
+  "@mapToggleMapType": {
+    "description": "Map type toggle button tooltip (normal/satellite)"
+  },
+
   "mapPlaceholder": "Map feature coming soon",
   "@mapPlaceholder": {
     "description": "Map screen placeholder message"
