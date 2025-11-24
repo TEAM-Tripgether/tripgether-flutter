@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tripgether/shared/widgets/common/section_divider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/models/content_model.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -110,7 +112,8 @@ class SnsContentDetailScreen extends StatelessWidget {
               reviewCount: place.userRatingsTotal ?? 0,
               imageUrls: place.photoUrls,
               onTap: () {
-                debugPrint('장소 상세 화면으로 이동: ${place.placeId}');
+                // 장소 상세 화면으로 이동
+                context.push('${AppRoutes.placeDetail}/${place.placeId}');
               },
             ),
           );
