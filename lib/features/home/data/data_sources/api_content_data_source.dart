@@ -180,12 +180,19 @@ class ApiContentDataSource implements ContentDataSource {
         // API 응답 데이터 파싱
         final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
         
-        // contentId와 platform이 null일 수 있으므로 안전하게 처리
-        final contentId = responseData['contentId'] as String? ?? '';
+        // contentId는 필수 필드이므로 없으면 예외 발생
+        final contentId = responseData['contentId'] as String?;
+        if (contentId == null || contentId.isEmpty) {
+          throw Exception('API returned null or empty contentId');
+        }
+        
+        // platform과 status는 기본값 제공
         final platform = responseData['platform'] as String? ?? 'UNKNOWN';
         final status = responseData['status'] as String? ?? 'PENDING';
         
-        // 필수 필드가 없으면 기본값으로 ContentModel 생성
+        debugPrint('[ApiContentDataSource] ✅ 응답 파싱 성공: contentId=$contentId, platform=$platform, status=$status');
+        
+        // 기본값이 적용된 데이터로 ContentModel 생성
         return ContentModel.fromJson({
           ...responseData,
           'contentId': contentId,

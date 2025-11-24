@@ -611,7 +611,8 @@ class SharingService {
   /// URL 큐에서 특정 URL 제거
   /// 처리 완료된 URL을 큐에서 삭제
   /// 
-  /// Note: 네이티브 메서드가 구현되지 않은 경우 true 반환 (no-op)
+  /// Returns: true if successfully removed, false otherwise
+  /// Note: 네이티브 메서드가 구현되지 않은 경우 false 반환하지만 처리는 계속됨
   Future<bool> removeUrlFromQueue(String url) async {
     try {
       final success = await _channel.invokeMethod<bool>(
@@ -621,35 +622,37 @@ class SharingService {
       
       if (success == true) {
         debugPrint('[SharingService] ✅ URL 큐에서 제거 완료: $url');
+        return true;
       } else {
         debugPrint('[SharingService] ⚠️ URL 큐에서 제거 실패: $url');
+        return false;
       }
-      
-      return success ?? false;
     } catch (error) {
-      debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 - 제거 스킵: $url');
-      return true; // 구현되지 않은 경우 성공으로 간주
+      debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 (제거 기능 제한): $url');
+      // 구현되지 않은 경우: false 반환하지만 caller가 처리를 계속하도록 함
+      return false;
     }
   }
 
   /// URL 큐 전체 초기화
   /// 모든 대기 중인 URL을 삭제
   /// 
-  /// Note: 네이티브 메서드가 구현되지 않은 경우 true 반환 (no-op)
+  /// Returns: true if successfully cleared, false otherwise
+  /// Note: 네이티브 메서드가 구현되지 않은 경우 false 반환
   Future<bool> clearUrlQueue() async {
     try {
       final success = await _channel.invokeMethod<bool>('clearUrlQueue');
       
       if (success == true) {
         debugPrint('[SharingService] ✅ URL 큐 전체 초기화 완료');
+        return true;
       } else {
         debugPrint('[SharingService] ⚠️ URL 큐 초기화 실패');
+        return false;
       }
-      
-      return success ?? false;
     } catch (error) {
-      debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 - 초기화 스킵');
-      return true; // 구현되지 않은 경우 성공으로 간주
+      debugPrint('[SharingService] ⚠️ 네이티브 메서드 미구현 (초기화 기능 제한)');
+      return false;
     }
   }
 

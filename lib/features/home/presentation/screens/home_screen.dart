@@ -88,8 +88,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         try {
           debugPrint('[HomeScreen] 📤 URL 전송 중: $url');
           
-          // 빈 문자열이거나 URL이 아닌 경우 스킵
-          if (url.trim().isEmpty || !sharingService.isValidUrl(url)) {
+          // URL 유효성 검사
+          if (!_isValidUrlForProcessing(url, sharingService)) {
             debugPrint('[HomeScreen] ⚠️ 유효하지 않은 URL 스킵: $url');
             failureCount++;
             continue;
@@ -103,8 +103,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           );
           successCount++;
           
-          // 성공한 URL은 큐에서 제거
-          await sharingService.removeUrlFromQueue(url);
+          // 성공한 URL은 큐에서 제거 (실패해도 처리는 성공으로 간주)
+          final removed = await sharingService.removeUrlFromQueue(url);
+          if (!removed) {
+            debugPrint('[HomeScreen] ⚠️ URL 큐에서 제거 실패 (네이티브 메서드 미구현 가능)');
+          }
         } catch (e, stackTrace) {
           debugPrint('[HomeScreen] ❌ URL 전송 실패: $url');
           debugPrint('[HomeScreen] 오류: $e');
@@ -299,6 +302,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       ),
     );
+  }
+
+  /// URL 유효성 검사
+  /// 빈 문자열이거나 유효한 URL 형식이 아닌 경우 false 반환
+  bool _isValidUrlForProcessing(String url, SharingService sharingService) {
+    // 빈 문자열 체크
+    if (url.trim().isEmpty) {
+      debugPrint('[HomeScreen] URL이 비어있음');
+      return false;
+    }
+    
+    // URL 형식 체크
+    if (!sharingService.isValidUrl(url)) {
+      debugPrint('[HomeScreen] 유효하지 않은 URL 형식: $url');
+      return false;
+    }
+    
+    return true;
   }
 
   @override
