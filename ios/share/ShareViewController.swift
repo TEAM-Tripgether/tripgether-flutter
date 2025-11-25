@@ -2,9 +2,9 @@
 //  ShareViewController.swift
 //  Share Extension
 //
-//  iOS 26+ Modern Implementation
-//  UIViewController 기반 커스텀 Share Extension
-//  NSExtensionContext inputItems 표준 처리
+//  iOS 18+ Compatible Implementation
+//  UIViewController 기반 Share Extension
+//  바텀 시트 UI 없이 즉시 공유 처리 → 로컬 알림으로 피드백 제공
 //
 
 import UIKit
@@ -12,10 +12,8 @@ import UniformTypeIdentifiers
 import UserNotifications
 
 /// Share Extension의 메인 뷰 컨트롤러
-/// iOS 26+ 표준을 따르는 UIViewController 기반 커스텀 구현
-/// NSExtensionContext의 inputItems를 통한 현대적인 데이터 처리 방식
-/// @objc 어노테이션: Swift-Objective-C 브릿징을 명확하게 하여
-/// iOS 시스템이 NSExtensionPrincipalClass로부터 이 클래스를 올바르게 인식하도록 함
+/// iOS 18+ 호환 UIViewController 기반 구현
+/// 공유 즉시 처리 후 로컬 알림으로 사용자에게 피드백 제공
 @objc(ShareViewController)
 class ShareViewController: UIViewController {
 
@@ -30,30 +28,12 @@ class ShareViewController: UIViewController {
     /// 최대 큐 크기 (FIFO 방식으로 오래된 항목 자동 제거)
     private let maxQueueSize = 100
 
-    /// Legacy 호환성을 위한 구 키 (마이그레이션 시에만 사용)
-    private let legacyKey = "ShareKey"
-
     /// 추출된 공유 데이터 (URL 또는 텍스트)
     private var sharedText: [String] = []
 
-    /// iOS 26+ 권장: UTType을 직접 사용하는 현대적인 방식
+    /// iOS 14+ 권장: UTType을 직접 사용하는 현대적인 방식
     /// URL과 텍스트만 지원 (우선순위 순서: URL > PlainText > Text)
     private let supportedTypes: [UTType] = [.url, .plainText, .text]
-
-    // MARK: - UI Constants
-
-    private enum UIConstants {
-        static let bottomSheetHeight: CGFloat = 120
-        static let handleWidth: CGFloat = 40
-        static let handleHeight: CGFloat = 6
-        static let cornerRadius: CGFloat = 28
-        static let horizontalPadding: CGFloat = 20
-    }
-
-    private enum TimingConstants {
-        static let autoDismiss: TimeInterval = 5.0  // 5초 후 자동 닫기
-        static let extensionDismissal: TimeInterval = 0.5  // Extension 종료 대기 시간
-    }
 
     // MARK: - Debug Configuration
 
@@ -63,11 +43,8 @@ class ShareViewController: UIViewController {
     private let isDebugLoggingEnabled = false
     #endif
 
-    // MARK: - UI State
+    // MARK: - App Group State
 
-    private var autoDismissTimer: Timer?
-    private var gradientLayer: CAGradientLayer?
-    private var bottomSheetContainer: UIView?
     private var hasShownAppGroupError = false
 
     // MARK: - App Group
@@ -81,63 +58,22 @@ class ShareViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print("[ShareExtension] 🚀 iOS 26+ 현대적인 Share Extension 시작")
+        print("[ShareExtension] 🚀 iOS 18+ Share Extension 시작")
 
-        // View 배경을 투명하게 설정 (바텀 시트만 보이도록)
+        // View 배경을 투명하게 설정
         view.backgroundColor = .clear
 
-        // 바텀 시트 UI 설정
-        setupBottomSheetUI()
-
-        // UI 설정 완료 후 데이터 처리 시작
+        // 즉시 데이터 처리 시작 (UI 없이)
         Task {
-            await processSharedContentModern()
+            await processSharedContent()
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    // MARK: - Data Processing
 
-        print("[ShareExtension] 🎬 viewDidAppear 호출됨")
-
-        // TestFlight/프로덕션 환경 UI 강제 표시
-        view.setNeedsLayout()
-        view.layoutIfNeeded()
-
-        view.subviews.forEach { subview in
-            subview.isHidden = false
-            subview.alpha = 1.0
-            subview.setNeedsLayout()
-            subview.layoutIfNeeded()
-        }
-
-        print("[ShareExtension] ✅ viewDidAppear 완료 - UI 표시됨")
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        if let bottomSheet = bottomSheetContainer {
-            gradientLayer?.frame = bottomSheet.bounds
-        }
-    }
-
-    deinit {
-        print("[ShareExtension] 🗑️ deinit 호출됨 - 메모리 해제")
-
-        gradientLayer?.removeFromSuperlayer()
-        gradientLayer = nil
-
-        autoDismissTimer?.invalidate()
-        autoDismissTimer = nil
-    }
-
-    // MARK: - 현대적인 데이터 처리 (iOS 26+)
-
-    /// iOS 26+ 표준: NSExtensionContext의 inputItems를 통한 현대적인 데이터 처리
+    /// 공유 데이터 처리 메인 메서드
     /// async/await 패턴을 활용한 비동기 처리
-    /// Share Extension 선택 즉시 데이터 추출 → 저장 → UI 표시
-    private func processSharedContentModern() async {
+    private func processSharedContent() async {
         do {
             let sharedItems = try await extractSharedItems()
 
@@ -153,7 +89,7 @@ class ShareViewController: UIViewController {
             self.sharedText = sharedItems
 
             await MainActor.run {
-                self.saveAndLaunchApp()
+                self.saveAndComplete()
             }
         } catch {
             print("[ShareExtension] ❌ 데이터 처리 오류: \(error)")
@@ -163,7 +99,7 @@ class ShareViewController: UIViewController {
         }
     }
 
-    /// iOS 26+ 표준: NSExtensionContext의 inputItems에서 데이터 추출
+    /// NSExtensionContext의 inputItems에서 데이터 추출
     /// - Returns: 추출된 텍스트/URL 배열
     /// - Throws: 데이터 추출 중 발생한 오류
     private func extractSharedItems() async throws -> [String] {
@@ -185,7 +121,6 @@ class ShareViewController: UIViewController {
             print("[ShareExtension] 📎 InputItem[\(itemIndex)] - Attachment 개수: \(attachments.count)")
 
             for (attachmentIndex, attachment) in attachments.enumerated() {
-                // iOS 26+ 권장: 우선순위에 따라 타입별로 처리
                 if let item = try? await extractItem(from: attachment, index: attachmentIndex) {
                     extractedItems.append(item)
                 }
@@ -196,7 +131,6 @@ class ShareViewController: UIViewController {
     }
 
     /// NSItemProvider에서 지원하는 타입에 따라 데이터 추출
-    /// iOS 26+ 표준 패턴: UTType 우선순위에 따라 처리 (URL > PlainText > Text)
     /// - Parameters:
     ///   - attachment: NSItemProvider
     ///   - index: Attachment 인덱스 (로깅용)
@@ -275,7 +209,35 @@ class ShareViewController: UIViewController {
         return nil
     }
 
-    // MARK: - Data Storage & App Launch
+    // MARK: - Data Storage & Completion
+
+    /// 데이터 저장 후 즉시 Extension 종료
+    private func saveAndComplete() {
+        guard !sharedText.isEmpty else {
+            print("[ShareExtension] ⚠️ 저장할 데이터가 없습니다")
+            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            return
+        }
+
+        logSecure("💾 큐에 데이터 저장", sensitiveData: sharedText.joined(separator: ", "))
+
+        let saveSuccess = saveToQueue()
+
+        if saveSuccess {
+            // 로컬 알림 발송 (사용자에게 즉각적인 피드백)
+            sendLocalNotification()
+
+            // 디버그 로그 저장
+            let urlsOnly = sharedText.filter { $0.hasPrefix("http://") || $0.hasPrefix("https://") }
+            let urlsToLog = urlsOnly.joined(separator: " | ")
+            saveDebugLog(message: "URL 큐에 저장: \(urlsToLog)")
+        } else {
+            print("[ShareExtension] ❌ 큐 저장 실패")
+        }
+
+        // 즉시 Extension 종료
+        extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+    }
 
     /// 큐에 공유 데이터를 저장 (FIFO 방식, 최대 100개)
     /// - Returns: 저장 성공 여부
@@ -298,7 +260,7 @@ class ShareViewController: UIViewController {
             return false
         }
 
-        // ✅ URL만 필터링 (Instagram 텍스트 제목 제외)
+        // URL만 필터링 (Instagram 텍스트 제목 제외)
         let urls = sharedText.filter { text in
             text.hasPrefix("http://") || text.hasPrefix("https://")
         }
@@ -352,46 +314,10 @@ class ShareViewController: UIViewController {
         return syncSuccess
     }
 
-    /// UserDefaults에 저장하고 앱 실행 (URL과 텍스트만 처리)
-    private func saveAndLaunchApp() {
-        // 큐에 데이터 저장
-        if !sharedText.isEmpty {
-            logSecure("💾 큐에 데이터 저장", sensitiveData: sharedText.joined(separator: ", "))
-
-            // saveToQueue() 호출로 큐에 저장
-            let saveSuccess = saveToQueue()
-
-            // 로그에 URL만 저장 (Instagram 텍스트 제목 제외)
-            let urlsOnly = sharedText.filter { $0.hasPrefix("http://") || $0.hasPrefix("https://") }
-            let urlsToLog = urlsOnly.joined(separator: " | ")
-            saveDebugLog(message: "URL 큐에 저장: \(urlsToLog)")
-
-            if saveSuccess {
-                // 로컬 알림 발송 (사용자에게 즉각적인 피드백 제공)
-                sendLocalNotification()
-
-                // 데이터 저장 완료 후 바텀 시트 UI 표시 및 타이머 시작
-                showSuccessAndDismiss()
-            } else {
-                print("[ShareExtension] ❌ 큐 저장 실패")
-                extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-            }
-        } else {
-            print("[ShareExtension] ⚠️ 저장할 데이터가 없습니다")
-            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-        }
-    }
-
-    private func showSuccessAndDismiss() {
-        print("[ShareExtension] 데이터 저장 완료 - 바텀 시트 UI 표시 중")
-        startAutoDismissTimer()
-    }
+    // MARK: - Local Notification
 
     /// 로컬 알림 발송 (공유 완료 시 사용자에게 즉각 피드백)
-    /// AppDelegate에서 이미 알림 권한을 요청했으므로 Share Extension에서도 동일한 권한 사용
-    /// 알림 identifier는 "share_completed"로 설정하여 AppDelegate의 탭 핸들러와 연동
     private func sendLocalNotification() {
-        // 알림 콘텐츠 구성
         let content = UNMutableNotificationContent()
         content.title = "트립게더에 저장됨"
         content.body = "공유된 콘텐츠를 확인하세요"
@@ -401,39 +327,18 @@ class ShareViewController: UIViewController {
         // 즉시 발송 (0.1초 후 트리거)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
 
-        // 알림 요청 생성 (identifier는 AppDelegate의 탭 핸들러와 매칭)
         let request = UNNotificationRequest(
             identifier: "share_completed",
             content: content,
             trigger: trigger
         )
 
-        // 알림 스케줄링
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("[ShareExtension] ❌ 알림 발송 실패: \(error)")
             } else {
-                print("[ShareExtension] ✅ 로컬 알림 발송 성공 (identifier: share_completed)")
+                print("[ShareExtension] ✅ 로컬 알림 발송 성공")
             }
-        }
-    }
-
-    /// 자동 닫기 타이머 시작 (5초 후 자동으로 Extension 닫기)
-    private func startAutoDismissTimer() {
-        print("[ShareExtension] ⏰ 자동 닫기 타이머 시작 (\(TimingConstants.autoDismiss)초)")
-
-        autoDismissTimer = Timer.scheduledTimer(withTimeInterval: TimingConstants.autoDismiss, repeats: false) { [weak self] _ in
-            print("[ShareExtension] ⏰ 자동 닫기 타이머 완료 - Extension 닫기")
-            self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-        }
-    }
-
-    /// 자동 닫기 타이머 취소
-    private func cancelAutoDismissTimer() {
-        if autoDismissTimer != nil {
-            print("[ShareExtension] ⏰ 자동 닫기 타이머 취소")
-            autoDismissTimer?.invalidate()
-            autoDismissTimer = nil
         }
     }
 
@@ -467,168 +372,8 @@ class ShareViewController: UIViewController {
         """
         print("[ShareExtension] ❌ App Group 누락 - \(message)")
 
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-
-            let alert = UIAlertController(
-                title: "App Group 설정 필요",
-                message: message,
-                preferredStyle: .alert
-            )
-
-            alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
-                self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-            })
-
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
-
-    // MARK: - UI Setup
-
-    /// 바텀 시트 스타일 UI 설정
-    private func setupBottomSheetUI() {
-        // 바텀 시트 컨테이너
-        let bottomSheet = UIView()
-        bottomSheet.translatesAutoresizingMaskIntoConstraints = false
-        bottomSheet.backgroundColor = .clear
-        view.addSubview(bottomSheet)
-        bottomSheetContainer = bottomSheet
-
-        // 그라데이션 배경 (Tripgether 브랜드 색상)
-        gradientLayer = CAGradientLayer()
-        gradientLayer?.colors = [
-            UIColor(red: 27/255, green: 0/255, blue: 98/255, alpha: 0.85).cgColor,
-            UIColor(red: 83/255, green: 37/255, blue: 203/255, alpha: 0.90).cgColor,
-            UIColor(red: 181/255, green: 153/255, blue: 255/255, alpha: 0.95).cgColor,
-        ]
-        gradientLayer?.locations = [0.0, 0.5, 1.0]
-        gradientLayer?.startPoint = CGPoint(x: 0.5, y: 0)
-        gradientLayer?.endPoint = CGPoint(x: 0.5, y: 1)
-        gradientLayer?.cornerRadius = UIConstants.cornerRadius
-        gradientLayer?.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-
-        if let gradientLayer = gradientLayer {
-            bottomSheet.layer.insertSublayer(gradientLayer, at: 0)
-        }
-
-        NSLayoutConstraint.activate([
-            bottomSheet.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            bottomSheet.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomSheet.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            bottomSheet.heightAnchor.constraint(equalToConstant: UIConstants.bottomSheetHeight)
-        ])
-
-        // Handle indicator
-        let handle = UIView()
-        handle.translatesAutoresizingMaskIntoConstraints = false
-        handle.backgroundColor = UIColor.white.withAlphaComponent(0.6)
-        handle.layer.cornerRadius = 3
-        bottomSheet.addSubview(handle)
-
-        NSLayoutConstraint.activate([
-            handle.topAnchor.constraint(equalTo: bottomSheet.topAnchor, constant: 12),
-            handle.centerXAnchor.constraint(equalTo: bottomSheet.centerXAnchor),
-            handle.widthAnchor.constraint(equalToConstant: UIConstants.handleWidth),
-            handle.heightAnchor.constraint(equalToConstant: UIConstants.handleHeight)
-        ])
-
-        // 콘텐츠 컨테이너 (메시지 + 버튼)
-        let contentContainer = UIStackView()
-        contentContainer.axis = .horizontal
-        contentContainer.alignment = .center
-        contentContainer.spacing = 8
-        contentContainer.translatesAutoresizingMaskIntoConstraints = false
-        bottomSheet.addSubview(contentContainer)
-
-        // 메시지 레이블
-        let messageLabel = UILabel()
-        messageLabel.text = "트립게더에서 컨텐츠 분석을 시작합니다."
-        messageLabel.textColor = .white
-        messageLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentContainer.addArrangedSubview(messageLabel)
-
-        // "앱에서 보기" 버튼
-        let openAppButton = UIButton(type: .system)
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 15, weight: .medium),
-            .foregroundColor: UIColor.white,
-            .underlineStyle: NSUnderlineStyle.single.rawValue
-        ]
-        let attributedString = NSAttributedString(string: "앱에서 보기", attributes: attributes)
-        openAppButton.setAttributedTitle(attributedString, for: .normal)
-        openAppButton.addTarget(self, action: #selector(openAppButtonTapped), for: .touchUpInside)
-        openAppButton.translatesAutoresizingMaskIntoConstraints = false
-        contentContainer.addArrangedSubview(openAppButton)
-
-        NSLayoutConstraint.activate([
-            contentContainer.centerXAnchor.constraint(equalTo: bottomSheet.centerXAnchor),
-            contentContainer.centerYAnchor.constraint(equalTo: bottomSheet.centerYAnchor, constant: 10),
-            contentContainer.leadingAnchor.constraint(greaterThanOrEqualTo: bottomSheet.leadingAnchor, constant: UIConstants.horizontalPadding),
-            contentContainer.trailingAnchor.constraint(lessThanOrEqualTo: bottomSheet.trailingAnchor, constant: -UIConstants.horizontalPadding)
-        ])
-    }
-
-    @objc private func openAppButtonTapped() {
-        print("[ShareExtension] 앱에서 보기 버튼 클릭됨")
-
-        cancelAutoDismissTimer()
-
-        guard let url = URL(string: "tripgether://share") else {
-            print("[ShareExtension] ❌ URL Scheme 생성 실패")
-            extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-            return
-        }
-
-        launchMainApp(with: url)
-    }
-
-    private func launchMainApp(with url: URL) {
-        print("[ShareExtension] URL Scheme 호출: \(url.absoluteString)")
-
-        extensionContext?.open(url, completionHandler: { [weak self] success in
-            print("[ShareExtension] extensionContext.open 결과: \(success)")
-
-            guard let self = self else { return }
-
-            if success {
-                self.scheduleExtensionDismissal()
-                return
-            }
-
-            // extensionContext.open 실패 시 Responder Chain 시도
-            print("[ShareExtension] ⚠️ extensionContext.open 실패 - Responder Chain 시도")
-            self.openViaResponderChain(url: url)
-            self.scheduleExtensionDismissal()
-        })
-    }
-
-    private func scheduleExtensionDismissal() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + TimingConstants.extensionDismissal) { [weak self] in
-            self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-        }
-    }
-
-    private func openViaResponderChain(url: URL) {
-        var responder: UIResponder? = self as UIResponder
-        let selector = #selector(openURL(_:))
-
-        while responder != nil {
-            if let responder = responder, responder.responds(to: selector) && responder != self {
-                print("[ShareExtension] ✅ URL 실행 가능한 Responder 발견")
-                responder.perform(selector, with: url, afterDelay: 0)
-                return
-            }
-            responder = responder?.next
-        }
-
-        print("[ShareExtension] ⚠️ URL을 실행할 Responder를 찾지 못함")
-    }
-
-    @objc private func openURL(_ url: URL) {
-        // 이 메서드는 셀렉터 탐색용으로만 사용됨
-        // 실제 URL 열기는 UIResponder 체인의 상위 객체가 처리
+        // Extension 즉시 종료 (UI 없이)
+        extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
 
     // MARK: - Debug Utilities
@@ -645,9 +390,7 @@ class ShareViewController: UIViewController {
         }
     }
 
-    /// 백그라운드 저장 확인용 디버그 로그 파일 생성
-    /// App Groups 컨테이너에 로그 파일을 저장하여 앱에서 확인 가능
-    /// 최신 5개 로그만 유지 (로그 로테이션)
+    /// 디버그 로그 파일 생성 (App Groups 컨테이너)
     private func saveDebugLog(message: String) {
         guard let containerURL = appGroupContainerURL() else {
             print("[ShareExtension] ❌ 로그 파일 경로 생성 실패 - App Group 없음")
@@ -685,13 +428,5 @@ class ShareViewController: UIViewController {
         } catch {
             print("[ShareExtension] ❌ 로그 저장 실패: \(error)")
         }
-    }
-}
-
-// MARK: - Array Extension
-
-extension Array {
-    subscript (safe index: UInt) -> Element? {
-        return Int(index) < count ? self[Int(index)] : nil
     }
 }

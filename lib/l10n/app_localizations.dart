@@ -1445,7 +1445,7 @@ abstract class AppLocalizations {
   /// 알림 실패 상태 메시지
   ///
   /// In ko, this message translates to:
-  /// **'분석에 실패했습니다'**
+  /// **'AI가 분석을 실패했습니다'**
   String get aiAnalysisFailed;
 
   /// 알림 완료 상태 메시지

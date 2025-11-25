@@ -183,14 +183,14 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
               infoWindow: InfoWindow(title: widget.placeName),
             ),
           },
-          // 모든 제스처 비활성화 (정적 맵)
-          zoomControlsEnabled: false,
-          myLocationButtonEnabled: false,
-          mapToolbarEnabled: false,
-          scrollGesturesEnabled: false,
-          zoomGesturesEnabled: false,
-          tiltGesturesEnabled: false,
-          rotateGesturesEnabled: false,
+          // 인터랙티브 맵 (마커는 좌표에 고정)
+          zoomControlsEnabled: false, // UI 버튼 숨김
+          myLocationButtonEnabled: false, // 내 위치 버튼 숨김
+          mapToolbarEnabled: false, // Android 툴바 숨김
+          scrollGesturesEnabled: true, // ✅ 스크롤(패닝) 활성화
+          zoomGesturesEnabled: true, // ✅ 핀치 줌 활성화
+          tiltGesturesEnabled: false, // 3D 기울기 비활성화
+          rotateGesturesEnabled: false, // 회전 비활성화
         ),
       ),
     );
