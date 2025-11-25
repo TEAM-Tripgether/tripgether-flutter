@@ -94,31 +94,26 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     });
   }
 
-  /// PENDING 알림 폴링 시작
+  /// PENDING 알림 단일 폴링
   ///
-  /// 5초마다 PENDING/ANALYZING 상태 알림들의 백엔드 상태를 확인합니다.
-  /// 모든 알림이 완료되면 타이머를 자동으로 중지합니다.
+  /// 화면 진입 5초 후 한 번만 폴링을 실행합니다.
+  /// 이후 상태 업데이트는 FCM 알림으로 처리됩니다.
   void _startPollingPendingNotifications() {
-    debugPrint('[NotificationScreen] 🔄 폴링 타이머 시작 (5초 간격)');
+    debugPrint('[NotificationScreen] 🔄 단일 폴링 예약 (5초 후)');
 
-    _pollingTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-      if (!mounted) {
-        timer.cancel();
-        return;
-      }
+    _pollingTimer = Timer(const Duration(seconds: 5), () async {
+      if (!mounted) return;
 
-      // PENDING 또는 ANALYZING 상태 알림이 있는지 확인 (Provider에서)
+      // PENDING 또는 ANALYZING 상태 알림이 있는지 확인
       final notifications = ref.read(notificationListProvider);
       final hasPendingNotifications = notifications.any((n) => n.isInProgress);
 
       if (!hasPendingNotifications) {
-        debugPrint('[NotificationScreen] ✅ 모든 알림 완료 - 폴링 중지');
-        timer.cancel();
-        _pollingTimer = null;
+        debugPrint('[NotificationScreen] ✅ 폴링할 PENDING 알림 없음');
         return;
       }
 
-      debugPrint('[NotificationScreen] 🔄 폴링 실행 중...');
+      debugPrint('[NotificationScreen] 🔄 단일 폴링 실행');
       await _pollPendingNotifications();
     });
   }
