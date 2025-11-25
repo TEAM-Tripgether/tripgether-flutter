@@ -930,6 +930,11 @@
     "description": "Map screen my location button tooltip"
   },
 
+  "mapToggleMapType": "Toggle map type",
+  "@mapToggleMapType": {
+    "description": "Map type toggle button tooltip (normal/satellite)"
+  },
+
   "mapPlaceholder": "Map feature coming soon",
   "@mapPlaceholder": {
     "description": "Map screen placeholder message"
@@ -958,6 +963,36 @@
   "getDirections": "Get Directions",
   "@getDirections": {
     "description": "Get directions button at bottom of place detail screen"
+  },
+
+  "placeDetailTitle": "Place Details",
+  "@placeDetailTitle": {
+    "description": "Place detail screen title"
+  },
+
+  "placeDetailShare": "Share",
+  "@placeDetailShare": {
+    "description": "Share place button"
+  },
+
+  "placeDetailCall": "Call",
+  "@placeDetailCall": {
+    "description": "Call place button"
+  },
+
+  "placeDetailNoLocation": "Location information not available",
+  "@placeDetailNoLocation": {
+    "description": "Message when location info is missing"
+  },
+
+  "addressCopied": "Address copied to clipboard",
+  "@addressCopied": {
+    "description": "Address copy success message"
+  },
+
+  "placeDetailDescription": "Description",
+  "@placeDetailDescription": {
+    "description": "Place description section title"
   },
 
   "comingSoon": "Coming Soon",
@@ -1219,9 +1254,19 @@
     "description": "Notification empty state description message"
   },
 
+  "aiPendingAnalysis": "Analysis is pending",
+  "@aiPendingAnalysis": {
+    "description": "Notification pending status message"
+  },
+
   "aiAnalyzingLocation": "AI is analyzing location information",
   "@aiAnalyzingLocation": {
-    "description": "Notification processing status message"
+    "description": "Notification analyzing status message"
+  },
+
+  "aiAnalysisFailed": "Analysis failed",
+  "@aiAnalysisFailed": {
+    "description": "Notification failed status message"
   },
 
   "aiAnalyzedLocations": "AI analyzed {count} location(s)",
@@ -1246,6 +1291,11 @@
     }
   },
 
+  "notificationStatusWaiting": "Waiting",
+  "@notificationStatusWaiting": {
+    "description": "Notification waiting button text"
+  },
+
   "notificationStatusProcessing": "Processing",
   "@notificationStatusProcessing": {
     "description": "Notification processing button text"
@@ -1254,6 +1304,11 @@
   "notificationStatusCheckButton": "View",
   "@notificationStatusCheckButton": {
     "description": "Notification completed check button text"
+  },
+
+  "notificationStatusFailed": "Failed",
+  "@notificationStatusFailed": {
+    "description": "Notification failed button text"
   },
 
   "timestampJustNow": "Just now",

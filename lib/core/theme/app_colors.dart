@@ -91,6 +91,7 @@ class AppColors {
 
   static Color get shimmerHighlight => white;
   static const Color success = Color(0xFF4CAF50);
+  static const Color warning = Color(0xFFFF9800); // 주황색 - 경고/임시휴업
 
   // ============================================================================
   // Widget State Property

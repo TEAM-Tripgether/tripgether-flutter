@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../auth/providers/user_provider.dart';
 import '../data/models/onboarding_response.dart';
 import '../services/onboarding_api_service.dart';
 
@@ -56,6 +55,8 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   ///
   /// **응답**: currentStep = "NAME" (다음 단계: 이름 입력)
   ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
+  ///
   /// **사용 예시**:
   /// ```dart
   /// final response = await ref.read(onboardingNotifierProvider.notifier).agreeTerms(
@@ -72,20 +73,10 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     required bool isMarketingAgreed,
   }) async {
     try {
-      // 1. Access Token 가져오기 (메모리 캐시에서 즉시 읽기)
-      final accessToken = await ref
-          .read(userNotifierProvider.notifier)
-          .getAccessToken();
-      if (accessToken == null) {
-        debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
-        return null;
-      }
-
       debugPrint('[OnboardingNotifier] 📜 약관 동의 API 호출');
 
-      // 2. API 호출
+      // API 호출 (AuthInterceptor가 자동으로 토큰 주입)
       final response = await _apiService.agreeTerms(
-        accessToken: accessToken,
         isServiceTermsAndPrivacyAgreed: isServiceTermsAndPrivacyAgreed,
         isMarketingAgreed: isMarketingAgreed,
       );
@@ -94,10 +85,10 @@ class OnboardingNotifier extends _$OnboardingNotifier {
         '[OnboardingNotifier] ✅ 약관 동의 성공 → currentStep: ${response.currentStep}',
       );
 
-      // 3. currentStep을 Secure Storage에 저장 (앱 재시작 복원용)
+      // currentStep을 Secure Storage에 저장 (앱 재시작 복원용)
       await _storage.write(key: 'onboardingStep', value: response.currentStep);
 
-      // 4. 상태 업데이트
+      // 상태 업데이트
       state = AsyncValue.data(response);
 
       return response;
@@ -115,22 +106,13 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   /// **API**: POST /api/members/onboarding/name
   ///
   /// **응답**: currentStep = "BIRTH_DATE" (다음 단계: 생년월일 입력)
+  ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
   Future<OnboardingResponse?> updateName({required String name}) async {
     try {
-      final accessToken = await ref
-          .read(userNotifierProvider.notifier)
-          .getAccessToken();
-      if (accessToken == null) {
-        debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
-        return null;
-      }
-
       debugPrint('[OnboardingNotifier] 📝 이름 설정 API 호출: $name');
 
-      final response = await _apiService.updateName(
-        accessToken: accessToken,
-        name: name,
-      );
+      final response = await _apiService.updateName(name: name);
 
       debugPrint(
         '[OnboardingNotifier] ✅ 이름 설정 성공 → currentStep: ${response.currentStep}',
@@ -154,24 +136,15 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   /// **API**: POST /api/members/onboarding/birth-date
   ///
   /// **응답**: currentStep = "GENDER" (다음 단계: 성별 선택)
+  ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
   Future<OnboardingResponse?> updateBirthDate({
     required String birthDate,
   }) async {
     try {
-      final accessToken = await ref
-          .read(userNotifierProvider.notifier)
-          .getAccessToken();
-      if (accessToken == null) {
-        debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
-        return null;
-      }
-
       debugPrint('[OnboardingNotifier] 📅 생년월일 설정 API 호출: $birthDate');
 
-      final response = await _apiService.updateBirthDate(
-        accessToken: accessToken,
-        birthDate: birthDate,
-      );
+      final response = await _apiService.updateBirthDate(birthDate: birthDate);
 
       debugPrint(
         '[OnboardingNotifier] ✅ 생년월일 설정 성공 → currentStep: ${response.currentStep}',
@@ -195,22 +168,13 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   /// **API**: POST /api/members/onboarding/gender
   ///
   /// **응답**: currentStep = "INTERESTS" (다음 단계: 관심사 선택)
+  ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
   Future<OnboardingResponse?> updateGender({required String gender}) async {
     try {
-      final accessToken = await ref
-          .read(userNotifierProvider.notifier)
-          .getAccessToken();
-      if (accessToken == null) {
-        debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
-        return null;
-      }
-
       debugPrint('[OnboardingNotifier] 👤 성별 설정 API 호출: $gender');
 
-      final response = await _apiService.updateGender(
-        accessToken: accessToken,
-        gender: gender,
-      );
+      final response = await _apiService.updateGender(gender: gender);
 
       debugPrint(
         '[OnboardingNotifier] ✅ 성별 설정 성공 → currentStep: ${response.currentStep}',
@@ -235,25 +199,18 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   ///
   /// **응답**: currentStep = "COMPLETED", onboardingStatus = "COMPLETED"
   ///
+  /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
+  ///
   /// **중요**: 이 단계에서 온보딩이 완료되면 Home으로 이동해야 함
   Future<OnboardingResponse?> updateInterests({
     required List<String> interestIds,
   }) async {
     try {
-      final accessToken = await ref
-          .read(userNotifierProvider.notifier)
-          .getAccessToken();
-      if (accessToken == null) {
-        debugPrint('[OnboardingNotifier] ❌ Access Token 없음');
-        return null;
-      }
-
       debugPrint(
         '[OnboardingNotifier] 🎯 관심사 설정 API 호출: ${interestIds.length}개',
       );
 
       final response = await _apiService.updateInterests(
-        accessToken: accessToken,
         interestIds: interestIds,
       );
 

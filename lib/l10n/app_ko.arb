@@ -930,6 +930,11 @@
     "description": "지도 화면 내 위치 버튼 툴팁"
   },
 
+  "mapToggleMapType": "지도 타입 변경",
+  "@mapToggleMapType": {
+    "description": "지도 타입 변경 버튼 툴팁 (일반/위성)"
+  },
+
   "mapPlaceholder": "지도 기능이 곧 추가될 예정입니다",
   "@mapPlaceholder": {
     "description": "지도 화면 플레이스홀더 메시지"
@@ -958,6 +963,36 @@
   "getDirections": "길찾기",
   "@getDirections": {
     "description": "장소 상세 화면 하단의 길찾기 버튼"
+  },
+
+  "placeDetailTitle": "장소 상세",
+  "@placeDetailTitle": {
+    "description": "장소 상세 화면 제목"
+  },
+
+  "placeDetailShare": "공유하기",
+  "@placeDetailShare": {
+    "description": "장소 공유 버튼"
+  },
+
+  "placeDetailCall": "전화하기",
+  "@placeDetailCall": {
+    "description": "장소 전화 버튼"
+  },
+
+  "placeDetailNoLocation": "위치 정보가 없습니다",
+  "@placeDetailNoLocation": {
+    "description": "위치 정보 없을 때 표시 메시지"
+  },
+
+  "addressCopied": "주소가 복사되었습니다",
+  "@addressCopied": {
+    "description": "주소 복사 완료 메시지"
+  },
+
+  "placeDetailDescription": "설명",
+  "@placeDetailDescription": {
+    "description": "장소 설명 섹션 제목"
   },
 
   "comingSoon": "준비 중입니다",
@@ -1219,9 +1254,19 @@
     "description": "알림 빈 상태 설명 메시지"
   },
 
+  "aiPendingAnalysis": "분석 대기 중입니다",
+  "@aiPendingAnalysis": {
+    "description": "알림 대기 중 상태 메시지"
+  },
+
   "aiAnalyzingLocation": "AI가 위치정보를 파악하고 있습니다",
   "@aiAnalyzingLocation": {
-    "description": "알림 진행 중 상태 메시지"
+    "description": "알림 분석 중 상태 메시지"
+  },
+
+  "aiAnalysisFailed": "분석에 실패했습니다",
+  "@aiAnalysisFailed": {
+    "description": "알림 실패 상태 메시지"
   },
 
   "aiAnalyzedLocations": "AI가 {count}곳의 위치정보를 파악했습니다",
@@ -1246,6 +1291,11 @@
     }
   },
 
+  "notificationStatusWaiting": "대기 중",
+  "@notificationStatusWaiting": {
+    "description": "알림 대기 중 버튼 텍스트"
+  },
+
   "notificationStatusProcessing": "진행 중",
   "@notificationStatusProcessing": {
     "description": "알림 진행 중 버튼 텍스트"
@@ -1254,6 +1304,11 @@
   "notificationStatusCheckButton": "확인하기",
   "@notificationStatusCheckButton": {
     "description": "알림 완료 확인 버튼 텍스트"
+  },
+
+  "notificationStatusFailed": "실패",
+  "@notificationStatusFailed": {
+    "description": "알림 실패 버튼 텍스트"
   },
 
   "timestampJustNow": "방금",

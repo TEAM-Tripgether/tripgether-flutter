@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/models/content_model.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -55,7 +56,7 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
   @override
   Future<void> onRefreshData() async {
     // Riverpod provider 새로고침
-    ref.invalidate(completedContentsProvider);
+    ref.invalidate(contentListProvider);
   }
 
   @override
@@ -63,7 +64,7 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
     super.build(context); // AutomaticKeepAliveClientMixin 필수 호출
 
     final l10n = AppLocalizations.of(context);
-    final contentListAsync = ref.watch(completedContentsProvider);
+    final contentListAsync = ref.watch(contentListProvider);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -308,7 +309,10 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
                     logoIconSize: AppSizes.iconDefault,
                     onTap: () {
                       context.push(
-                        '/home/sns-contents/detail/${content.contentId}',
+                        AppRoutes.snsContentDetail.replaceAll(
+                          ':contentId',
+                          content.contentId,
+                        ),
                         extra: content,
                       );
                     },
@@ -331,7 +335,7 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
             title: l10n.cannotLoadContent,
             message: l10n.networkError,
             action: TextButton(
-              onPressed: () => ref.invalidate(completedContentsProvider),
+              onPressed: () => ref.invalidate(contentListProvider),
               child: Text(
                 l10n.retry,
                 style: AppTextStyles.buttonMediumMedium14.copyWith(
@@ -396,7 +400,7 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
     }
 
     return contents
-        .where((content) => content.platform.toUpperCase() == platform)
+        .where((content) => content.platform?.toUpperCase() == platform)
         .toList();
   }
 

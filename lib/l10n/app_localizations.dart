@@ -1070,6 +1070,12 @@ abstract class AppLocalizations {
   /// **'내 위치로 이동'**
   String get mapMyLocationTooltip;
 
+  /// 지도 타입 변경 버튼 툴팁 (일반/위성)
+  ///
+  /// In ko, this message translates to:
+  /// **'지도 타입 변경'**
+  String get mapToggleMapType;
+
   /// 지도 화면 플레이스홀더 메시지
   ///
   /// In ko, this message translates to:
@@ -1105,6 +1111,42 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'길찾기'**
   String get getDirections;
+
+  /// 장소 상세 화면 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'장소 상세'**
+  String get placeDetailTitle;
+
+  /// 장소 공유 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'공유하기'**
+  String get placeDetailShare;
+
+  /// 장소 전화 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'전화하기'**
+  String get placeDetailCall;
+
+  /// 위치 정보 없을 때 표시 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'위치 정보가 없습니다'**
+  String get placeDetailNoLocation;
+
+  /// 주소 복사 완료 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'주소가 복사되었습니다'**
+  String get addressCopied;
+
+  /// 장소 설명 섹션 제목
+  ///
+  /// In ko, this message translates to:
+  /// **'설명'**
+  String get placeDetailDescription;
 
   /// 기능 준비 중 메시지
   ///
@@ -1388,11 +1430,23 @@ abstract class AppLocalizations {
   /// **'외부 앱에서 공유된 링크가 여기에 표시됩니다'**
   String get sharedContentMessage;
 
-  /// 알림 진행 중 상태 메시지
+  /// 알림 대기 중 상태 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 대기 중입니다'**
+  String get aiPendingAnalysis;
+
+  /// 알림 분석 중 상태 메시지
   ///
   /// In ko, this message translates to:
   /// **'AI가 위치정보를 파악하고 있습니다'**
   String get aiAnalyzingLocation;
+
+  /// 알림 실패 상태 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'분석에 실패했습니다'**
+  String get aiAnalysisFailed;
 
   /// 알림 완료 상태 메시지
   ///
@@ -1406,6 +1460,12 @@ abstract class AppLocalizations {
   /// **'{author}님의 게시물'**
   String authorPost(String author);
 
+  /// 알림 대기 중 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'대기 중'**
+  String get notificationStatusWaiting;
+
   /// 알림 진행 중 버튼 텍스트
   ///
   /// In ko, this message translates to:
@@ -1417,6 +1477,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'확인하기'**
   String get notificationStatusCheckButton;
+
+  /// 알림 실패 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'실패'**
+  String get notificationStatusFailed;
 
   /// 방금 전 타임스탬프
   ///

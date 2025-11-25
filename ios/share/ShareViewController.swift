@@ -24,8 +24,14 @@ class ShareViewController: UIViewController {
     /// 메인 앱의 Bundle Identifier (App Group ID 접두사로도 사용)
     private let hostAppBundleIdentifier = "com.tripgether.alom"
 
-    /// UserDefaults 공유 키
-    private let sharedKey = "ShareKey"
+    /// UserDefaults 공유 키 (큐 방식)
+    private let queueKey = "ShareQueue"
+
+    /// 최대 큐 크기 (FIFO 방식으로 오래된 항목 자동 제거)
+    private let maxQueueSize = 100
+
+    /// Legacy 호환성을 위한 구 키 (마이그레이션 시에만 사용)
+    private let legacyKey = "ShareKey"
 
     /// 추출된 공유 데이터 (URL 또는 텍스트)
     private var sharedText: [String] = []
@@ -271,35 +277,107 @@ class ShareViewController: UIViewController {
 
     // MARK: - Data Storage & App Launch
 
-    /// UserDefaults에 저장하고 앱 실행 (URL과 텍스트만 처리)
-    private func saveAndLaunchApp() {
+    /// 큐에 공유 데이터를 저장 (FIFO 방식, 최대 100개)
+    /// - Returns: 저장 성공 여부
+    private func saveToQueue() -> Bool {
+        print("[ShareExtension] ═══════════════════════════════════════")
+        print("[ShareExtension] 📥 saveToQueue 시작")
+        print("[ShareExtension] sharedText 원본: \(sharedText)")
+
         guard let userDefaults = appGroupUserDefaults() else {
-            print("[ShareExtension] ❌ App Group UserDefaults를 사용할 수 없습니다")
-            return
+            print("[ShareExtension] ❌ App Group UserDefaults 실패!")
+            print("[ShareExtension] App Group ID: group.\(hostAppBundleIdentifier)")
+            print("[ShareExtension] ═══════════════════════════════════════")
+            return false
+        }
+        print("[ShareExtension] ✅ UserDefaults 획득 성공")
+
+        guard !sharedText.isEmpty else {
+            print("[ShareExtension] ⚠️ sharedText가 비어있음")
+            print("[ShareExtension] ═══════════════════════════════════════")
+            return false
         }
 
-        // URL/텍스트 데이터 저장
-        if !sharedText.isEmpty {
-            logSecure("💾 텍스트 데이터 저장", sensitiveData: sharedText.joined(separator: ", "))
-            userDefaults.set(sharedText, forKey: sharedKey)
-
-            // 로그에 실제 URL 내용 저장
-            let urlsToLog = sharedText.joined(separator: "\n")
-            saveDebugLog(message: "URL 저장: \(urlsToLog)")
+        // ✅ URL만 필터링 (Instagram 텍스트 제목 제외)
+        let urls = sharedText.filter { text in
+            text.hasPrefix("http://") || text.hasPrefix("https://")
         }
+
+        print("[ShareExtension] 필터링 결과 - 원본: \(sharedText.count)개 → URL: \(urls.count)개")
+        print("[ShareExtension] 필터링된 URL들: \(urls)")
+
+        guard !urls.isEmpty else {
+            print("[ShareExtension] ❌ 유효한 URL 없음 - 큐에 저장 안 함")
+            print("[ShareExtension] sharedText 내용: \(sharedText)")
+            print("[ShareExtension] ═══════════════════════════════════════")
+            return false
+        }
+
+        // 기존 큐 읽기 (2D 배열: [[String]])
+        var queue = userDefaults.array(forKey: queueKey) as? [[String]] ?? []
+        print("[ShareExtension] 📦 기존 큐 크기: \(queue.count)개")
+
+        // 새 데이터 추가 (URL만)
+        queue.append(urls)
+        print("[ShareExtension] ➕ 새 데이터 추가: \(urls.count)개 URL")
+        print("[ShareExtension] 추가 후 큐 크기: \(queue.count)개")
+
+        // FIFO: 큐 크기가 maxQueueSize를 초과하면 오래된 항목 제거
+        if queue.count > maxQueueSize {
+            let removeCount = queue.count - maxQueueSize
+            queue.removeFirst(removeCount)
+            print("[ShareExtension] 🗑️ 오래된 항목 \(removeCount)개 제거 (FIFO)")
+        }
+
+        // 큐 저장
+        userDefaults.set(queue, forKey: queueKey)
+        print("[ShareExtension] 💾 UserDefaults에 큐 저장 완료")
 
         // 동기화
         let syncSuccess = userDefaults.synchronize()
-        print("[ShareExtension] UserDefaults 동기화: \(syncSuccess ? "성공" : "실패")")
+        print("[ShareExtension] 🔄 동기화 결과: \(syncSuccess ? "✅ 성공" : "❌ 실패")")
 
-        if syncSuccess {
-            // 로컬 알림 발송 (사용자에게 즉각적인 피드백 제공)
-            sendLocalNotification()
+        // 저장 직후 즉시 재확인 (검증)
+        let verifyQueue = userDefaults.array(forKey: queueKey) as? [[String]] ?? []
+        print("[ShareExtension] 🔍 저장 검증 - 큐 크기: \(verifyQueue.count)개")
 
-            // 데이터 저장 완료 후 바텀 시트 UI 표시 및 타이머 시작
-            showSuccessAndDismiss()
+        if verifyQueue.count != queue.count {
+            print("[ShareExtension] ⚠️ 경고: 저장된 큐 크기 불일치!")
+            print("[ShareExtension] 예상: \(queue.count)개, 실제: \(verifyQueue.count)개")
+        }
+
+        print("[ShareExtension] ✅ saveToQueue 완료")
+        print("[ShareExtension] ═══════════════════════════════════════")
+
+        return syncSuccess
+    }
+
+    /// UserDefaults에 저장하고 앱 실행 (URL과 텍스트만 처리)
+    private func saveAndLaunchApp() {
+        // 큐에 데이터 저장
+        if !sharedText.isEmpty {
+            logSecure("💾 큐에 데이터 저장", sensitiveData: sharedText.joined(separator: ", "))
+
+            // saveToQueue() 호출로 큐에 저장
+            let saveSuccess = saveToQueue()
+
+            // 로그에 URL만 저장 (Instagram 텍스트 제목 제외)
+            let urlsOnly = sharedText.filter { $0.hasPrefix("http://") || $0.hasPrefix("https://") }
+            let urlsToLog = urlsOnly.joined(separator: " | ")
+            saveDebugLog(message: "URL 큐에 저장: \(urlsToLog)")
+
+            if saveSuccess {
+                // 로컬 알림 발송 (사용자에게 즉각적인 피드백 제공)
+                sendLocalNotification()
+
+                // 데이터 저장 완료 후 바텀 시트 UI 표시 및 타이머 시작
+                showSuccessAndDismiss()
+            } else {
+                print("[ShareExtension] ❌ 큐 저장 실패")
+                extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            }
         } else {
-            print("[ShareExtension] ❌ 저장 실패")
+            print("[ShareExtension] ⚠️ 저장할 데이터가 없습니다")
             extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
     }

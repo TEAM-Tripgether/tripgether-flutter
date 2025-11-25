@@ -39,13 +39,17 @@ mixin _$AuthResponse {
   /// - true: 회원가입 (최초 로그인)
   /// - false: 기존 회원 로그인
   ///
-  /// 최초 로그인 시 추가 프로필 설정 화면으로 이동할 수 있습니다.
+  /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않을 수 있음**
+  /// - 재발급 시에는 기존 회원이므로 항상 false
   bool get isFirstLogin => throw _privateConstructorUsedError;
 
   /// 온보딩 필요 여부
   ///
   /// - true: 온보딩이 완료되지 않아 온보딩 화면으로 이동 필요
   /// - false: 온보딩 완료, 홈 화면으로 이동
+  ///
+  /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않음**
+  /// - 재발급 시에는 이미 온보딩 완료 상태이므로 항상 false
   bool get requiresOnboarding => throw _privateConstructorUsedError;
 
   /// 현재 온보딩 단계
@@ -58,7 +62,8 @@ mixin _$AuthResponse {
   /// - "INTERESTS": 관심사 선택 필요
   /// - "COMPLETED": 온보딩 완료
   ///
-  /// requiresOnboarding이 true일 때만 의미 있는 값
+  /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않음**
+  /// - 재발급 시에는 항상 "COMPLETED"
   String get onboardingStep => throw _privateConstructorUsedError;
 
   /// Serializes this AuthResponse to a JSON map.
@@ -207,9 +212,9 @@ class _$AuthResponseImpl extends _AuthResponse {
   const _$AuthResponseImpl({
     required this.accessToken,
     required this.refreshToken,
-    required this.isFirstLogin,
-    required this.requiresOnboarding,
-    required this.onboardingStep,
+    this.isFirstLogin = false,
+    this.requiresOnboarding = false,
+    this.onboardingStep = 'COMPLETED',
   }) : super._();
 
   factory _$AuthResponseImpl.fromJson(Map<String, dynamic> json) =>
@@ -235,15 +240,21 @@ class _$AuthResponseImpl extends _AuthResponse {
   /// - true: 회원가입 (최초 로그인)
   /// - false: 기존 회원 로그인
   ///
-  /// 최초 로그인 시 추가 프로필 설정 화면으로 이동할 수 있습니다.
+  /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않을 수 있음**
+  /// - 재발급 시에는 기존 회원이므로 항상 false
   @override
+  @JsonKey()
   final bool isFirstLogin;
 
   /// 온보딩 필요 여부
   ///
   /// - true: 온보딩이 완료되지 않아 온보딩 화면으로 이동 필요
   /// - false: 온보딩 완료, 홈 화면으로 이동
+  ///
+  /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않음**
+  /// - 재발급 시에는 이미 온보딩 완료 상태이므로 항상 false
   @override
+  @JsonKey()
   final bool requiresOnboarding;
 
   /// 현재 온보딩 단계
@@ -256,8 +267,10 @@ class _$AuthResponseImpl extends _AuthResponse {
   /// - "INTERESTS": 관심사 선택 필요
   /// - "COMPLETED": 온보딩 완료
   ///
-  /// requiresOnboarding이 true일 때만 의미 있는 값
+  /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않음**
+  /// - 재발급 시에는 항상 "COMPLETED"
   @override
+  @JsonKey()
   final String onboardingStep;
 
   @override
@@ -311,9 +324,9 @@ abstract class _AuthResponse extends AuthResponse {
   const factory _AuthResponse({
     required final String accessToken,
     required final String refreshToken,
-    required final bool isFirstLogin,
-    required final bool requiresOnboarding,
-    required final String onboardingStep,
+    final bool isFirstLogin,
+    final bool requiresOnboarding,
+    final String onboardingStep,
   }) = _$AuthResponseImpl;
   const _AuthResponse._() : super._();
 
@@ -340,7 +353,8 @@ abstract class _AuthResponse extends AuthResponse {
   /// - true: 회원가입 (최초 로그인)
   /// - false: 기존 회원 로그인
   ///
-  /// 최초 로그인 시 추가 프로필 설정 화면으로 이동할 수 있습니다.
+  /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않을 수 있음**
+  /// - 재발급 시에는 기존 회원이므로 항상 false
   @override
   bool get isFirstLogin;
 
@@ -348,6 +362,9 @@ abstract class _AuthResponse extends AuthResponse {
   ///
   /// - true: 온보딩이 완료되지 않아 온보딩 화면으로 이동 필요
   /// - false: 온보딩 완료, 홈 화면으로 이동
+  ///
+  /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않음**
+  /// - 재발급 시에는 이미 온보딩 완료 상태이므로 항상 false
   @override
   bool get requiresOnboarding;
 
@@ -361,7 +378,8 @@ abstract class _AuthResponse extends AuthResponse {
   /// - "INTERESTS": 관심사 선택 필요
   /// - "COMPLETED": 온보딩 완료
   ///
-  /// requiresOnboarding이 true일 때만 의미 있는 값
+  /// **토큰 재발급 API (/api/auth/reissue) 응답에는 포함되지 않음**
+  /// - 재발급 시에는 항상 "COMPLETED"
   @override
   String get onboardingStep;
 

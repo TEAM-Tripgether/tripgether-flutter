@@ -1,6 +1,7 @@
 [
   {
-    "contentId": "550e8400-e29b-41d4-a716-446655440001",
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "memberId": null,
     "platform": "INSTAGRAM",
     "status": "PENDING",
     "platformUploader": "travel_lover_kr",
@@ -14,10 +15,12 @@
     "updatedAt": "2025-01-15T09:00:00",
     "createdBy": "system",
     "updatedBy": "system",
+    "metadata": null,
     "places": []
   },
   {
-    "contentId": "550e8400-e29b-41d4-a716-446655440002",
+    "id": "550e8400-e29b-41d4-a716-446655440002",
+    "memberId": null,
     "platform": "INSTAGRAM",
     "status": "COMPLETED",
     "platformUploader": "travel_lover_kr",
@@ -31,6 +34,7 @@
     "updatedAt": "2025-01-15T14:20:00",
     "createdBy": "system",
     "updatedBy": "system",
+    "metadata": null,
     "places": [
       {
         "placeId": "660e8400-e29b-41d4-a716-446655440002",
@@ -93,7 +97,8 @@
     ]
   },
   {
-    "contentId": "550e8400-e29b-41d4-a716-446655440003",
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "memberId": null,
     "platform": "INSTAGRAM",
     "status": "COMPLETED",
     "platformUploader": "food_explorer_seoul",
@@ -107,6 +112,7 @@
     "updatedAt": "2025-01-15T10:30:00",
     "createdBy": "system",
     "updatedBy": "system",
+    "metadata": null,
     "places": [
       {
         "placeId": "660e8400-e29b-41d4-a716-446655440004",
@@ -137,20 +143,22 @@
     ]
   },
   {
-    "contentId": "550e8400-e29b-41d4-a716-446655440004",
+    "id": "550e8400-e29b-41d4-a716-446655440004",
+    "memberId": null,
     "platform": "YOUTUBE",
     "status": "COMPLETED",
     "platformUploader": "travel_vlogger",
     "caption": "제주도 여행 브이로그",
     "thumbnailUrl": null,
     "originalUrl": "https://www.youtube.com/watch?v=example",
-    "title": "제주도 3박 4일 완벽 여행 코스매우매우매우매우매움애ㅜ",
+    "title": "제주도 3박 4일 완벽 여행 코스",
     "summary": "제주도 여행 완벽 가이드",
     "lastCheckedAt": "2025-01-15T15:00:00",
     "createdAt": "2025-01-15T14:00:00",
     "updatedAt": "2025-01-15T15:00:00",
     "createdBy": "system",
     "updatedBy": "system",
+    "metadata": null,
     "places": []
   }
 ]

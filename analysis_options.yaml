@@ -9,6 +9,13 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  errors:
+    # Freezed의 @JsonKey 사용 시 발생하는 경고를 무시
+    # factory constructor 매개변수에 @JsonKey를 사용하면 경고가 발생하지만
+    # 코드 생성 및 JSON 직렬화는 정상적으로 작동함
+    invalid_annotation_target: ignore
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`

@@ -13,9 +13,12 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/notifications/presentation/screens/notification_screen.dart';
 import '../../core/models/content_model.dart';
+import '../../core/models/place_model.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
 import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
+import '../../features/home/presentation/screens/place_detail_screen.dart';
+import '../../features/home/presentation/screens/saved_places_list_screen.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/course_market/presentation/screens/course_search_screen.dart';
 import '../../features/course_market/presentation/screens/popular_courses_screen.dart';
@@ -134,6 +137,102 @@ class AppRouter {
           NoTransitionPage(child: const NotificationScreen()),
     ),
 
+    /// SNS 콘텐츠 상세 화면 라우트 (독립 라우트)
+    ///
+    /// 어디서든 접근 가능한 독립적인 SNS 콘텐츠 상세 화면입니다.
+    /// - 홈 화면의 SNS 콘텐츠 카드 클릭 시
+    /// - SNS 콘텐츠 목록 화면에서 클릭 시
+    /// - 외부 공유로 받은 링크 (향후)
+    GoRoute(
+      path: AppRoutes.snsContentDetail,
+      pageBuilder: (context, state) {
+        final contentId = state.pathParameters['contentId']!;
+        ContentModel? content;
+
+        // state.extra 타입 안전성 체크
+        if (state.extra is Map<String, dynamic>) {
+          try {
+            content = ContentModel.fromJson(
+              state.extra as Map<String, dynamic>,
+            );
+          } catch (e) {
+            debugPrint('[Router] ContentModel 파싱 실패: $e');
+            content = null;
+          }
+        } else if (state.extra is ContentModel) {
+          content = state.extra as ContentModel;
+        }
+
+        // state.extra가 null이거나 잘못된 타입일 경우 에러 페이지 표시
+        if (content == null) {
+          return NoTransitionPage(
+            child: Scaffold(
+              appBar: AppBar(title: const Text('오류')),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: AppSizes.iconError,
+                      color: AppColors.subColor2,
+                    ),
+                    AppSpacing.verticalSpaceLG,
+                    Text('콘텐츠를 찾을 수 없습니다', style: AppTextStyles.summaryBold18),
+                    AppSpacing.verticalSpaceSM,
+                    Text(
+                      'Content ID: $contentId',
+                      style: AppTextStyles.bodyRegular14.copyWith(
+                        color: AppColors.subColor2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        return NoTransitionPage(
+          child: SnsContentDetailScreen(content: content),
+        );
+      },
+    ),
+
+    /// 장소 상세 화면 라우트 (독립 라우트)
+    ///
+    /// 어디서든 접근 가능한 독립적인 장소 상세 화면입니다.
+    /// - SNS 콘텐츠 상세 화면에서 장소 카드 클릭 시
+    /// - 홈 화면의 저장한 장소 목록에서 클릭 시
+    /// - 지도 화면에서 마커 클릭 시 (향후)
+    ///
+    /// [state.extra]로 PlaceModel을 전달할 수 있습니다:
+    /// - extra가 PlaceModel인 경우: 해당 장소 정보를 직접 사용 (저장되지 않은 장소도 조회 가능)
+    /// - extra가 없는 경우: placeId로 저장된 장소 목록에서 조회
+    GoRoute(
+      path: AppRoutes.placeDetail,
+      pageBuilder: (context, state) {
+        final placeId = state.pathParameters['placeId']!;
+        PlaceModel? place;
+
+        // state.extra 타입 안전성 체크
+        if (state.extra is Map<String, dynamic>) {
+          try {
+            place = PlaceModel.fromJson(state.extra as Map<String, dynamic>);
+          } catch (e) {
+            debugPrint('[Router] PlaceModel 파싱 실패: $e');
+            place = null;
+          }
+        } else if (state.extra is PlaceModel) {
+          place = state.extra as PlaceModel;
+        }
+
+        return NoTransitionPage(
+          child: PlaceDetailScreen(placeId: placeId, initialPlace: place),
+        );
+      },
+    ),
+
     /// StatefulShellRoute: 상태를 유지하는 바텀 네비게이션 레이아웃
     ///
     /// IndexedStack을 사용하여 각 탭의 상태를 독립적으로 유지합니다.
@@ -173,67 +272,15 @@ class AppRouter {
                       child: const SnsContentsListScreen(),
                     );
                   },
-                  routes: [
-                    // SNS 콘텐츠 상세 화면
-                    GoRoute(
-                      path: 'detail/:contentId',
-                      pageBuilder: (context, state) {
-                        final contentId = state.pathParameters['contentId']!;
-                        ContentModel? content;
-
-                        // state.extra 타입 안전성 체크
-                        if (state.extra is Map<String, dynamic>) {
-                          try {
-                            content = ContentModel.fromJson(
-                              state.extra as Map<String, dynamic>,
-                            );
-                          } catch (e) {
-                            // JSON 파싱 실패 시 에러 페이지 표시
-                            debugPrint('[Router] ContentModel 파싱 실패: $e');
-                            content = null;
-                          }
-                        } else if (state.extra is ContentModel) {
-                          content = state.extra as ContentModel;
-                        }
-
-                        // state.extra가 null이거나 잘못된 타입일 경우 에러 페이지 표시
-                        if (content == null) {
-                          return NoTransitionPage(
-                            child: Scaffold(
-                              appBar: AppBar(title: const Text('오류')),
-                              body: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.error_outline,
-                                      size: AppSizes.iconError,
-                                      color: AppColors.subColor2,
-                                    ),
-                                    AppSpacing.verticalSpaceLG,
-                                    Text(
-                                      '콘텐츠를 찾을 수 없습니다',
-                                      style: AppTextStyles.summaryBold18,
-                                    ),
-                                    AppSpacing.verticalSpaceSM,
-                                    Text(
-                                      'Content ID: $contentId',
-                                      style: AppTextStyles.bodyRegular14
-                                          .copyWith(color: AppColors.subColor2),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-
-                        return NoTransitionPage(
-                          child: SnsContentDetailScreen(content: content),
-                        );
-                      },
-                    ),
-                  ],
+                ),
+                // 저장한 장소 리스트 화면
+                GoRoute(
+                  path: 'saved-places',
+                  pageBuilder: (context, state) {
+                    return NoTransitionPage(
+                      child: const SavedPlacesListScreen(),
+                    );
+                  },
                 ),
               ],
             ), // GoRoute(AppRoutes.home) 닫기

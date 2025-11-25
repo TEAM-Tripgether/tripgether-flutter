@@ -114,13 +114,17 @@ class _ShareExtensionLogScreenState extends State<ShareExtensionLogScreen> {
         final timestamp = match.group(1) ?? '';
         final message = match.group(2) ?? '';
 
-        // URL 추출 (http:// 또는 https://로 시작하는 URL)
-        final urlMatch = RegExp(r'https?://[^\s]+').firstMatch(message);
-        final url = urlMatch?.group(0);
+        // URL 추출 ("|" 구분자로 여러 URL 지원)
+        // 정규식: http:// 또는 https://로 시작하고, 공백이나 "|" 전까지
+        final urlMatches = RegExp(r'https?://[^\s|]+').allMatches(message);
+        final urls = urlMatches.map((m) => m.group(0)!).toList();
+
+        // 여러 URL을 줄바꿈으로 연결
+        final url = urls.isNotEmpty ? urls.join('\n') : null;
 
         entries.add(LogEntry(timestamp: timestamp, message: message, url: url));
 
-        debugPrint('파싱된 로그 - timestamp: $timestamp, url: $url');
+        debugPrint('파싱된 로그 - timestamp: $timestamp, urls: ${urls.length}개');
       } else {
         // 타임스탬프 없는 로그 (예외 처리)
         debugPrint('파싱 실패한 로그: $line');

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tripgether/core/services/fcm/local_notifications_service.dart';
@@ -22,6 +23,37 @@ class FirebaseMessagingService {
   // Reference to local notifications service for displaying notifications
   // 알림 표시를 위한 로컬 알림 서비스 참조
   LocalNotificationsService? _localNotificationsService;
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // 콘텐츠 완료 알림 Stream (NotificationScreen용)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  /// 콘텐츠 분석 완료 알림을 위한 StreamController
+  ///
+  /// 백엔드에서 FCM 메시지로 다음과 같은 형식을 보냅니다:
+  /// ```json
+  /// {
+  ///   "data": {
+  ///     "type": "content_completed",
+  ///     "id": "f95d2a71-e8ec-4ef1-b283-298deea9cf6b"
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// NotificationScreen에서 이 Stream을 구독하여 UI를 업데이트합니다.
+  static final _contentCompletedController =
+      StreamController<String>.broadcast();
+
+  /// 콘텐츠 분석 완료 알림 Stream
+  ///
+  /// **사용 예시** (NotificationScreen):
+  /// ```dart
+  /// _fcmSubscription = FirebaseMessagingService.contentCompletedStream.listen(
+  ///   (contentId) => _handleContentCompleted(contentId),
+  /// );
+  /// ```
+  static Stream<String> get contentCompletedStream =>
+      _contentCompletedController.stream;
 
   /// 백엔드 등록용 FCM 토큰을 가져옵니다
   ///
@@ -132,8 +164,11 @@ class FirebaseMessagingService {
             debugPrint('📱 Updated Device Name: $updatedDeviceName');
             debugPrint('📱 Updated Device Type: $updatedDeviceType');
 
-            // TODO: Send updated token to backend server
-            // TODO: 갱신된 토큰을 백엔드 서버로 전송
+            // Note: Updated token will be sent to backend on next login
+            // 참고: 갱신된 토큰은 다음 로그인 시 백엔드로 전송됩니다
+            debugPrint(
+              '✅ FCM token refresh completed. Token will be sent on next login.',
+            );
           })
           .onError((error) {
             // Handle errors during token refresh
@@ -174,6 +209,20 @@ class FirebaseMessagingService {
   /// 앱이 포그라운드 상태일 때 수신한 메시지를 처리합니다
   void _onForegroundMessage(RemoteMessage message) {
     debugPrint('Foreground message received: ${message.data.toString()}');
+
+    // 1. 백엔드 메시지 타입 확인 (data.type)
+    final messageType = message.data['type'];
+
+    // 2. 콘텐츠 분석 완료 알림 처리
+    if (messageType == 'content_completed') {
+      final contentId = message.data['id'];
+      if (contentId != null) {
+        debugPrint('[FCM] 콘텐츠 분석 완료 알림 수신: $contentId');
+        _contentCompletedController.add(contentId); // ✅ Stream으로 브로드캐스트
+      }
+    }
+
+    // 3. 로컬 알림 표시 (기존 기능 유지)
     final notificationData = message.notification;
     if (notificationData != null) {
       // Display a local notification using the service
@@ -192,8 +241,28 @@ class FirebaseMessagingService {
     debugPrint(
       'Notification caused the app to open: ${message.data.toString()}',
     );
+
+    // 백엔드 메시지 타입 확인 (data.type)
+    final messageType = message.data['type'];
+
+    // 콘텐츠 분석 완료 알림 처리
+    if (messageType == 'content_completed') {
+      final contentId = message.data['id'];
+      if (contentId != null) {
+        debugPrint('[FCM] 백그라운드에서 앱 열림 - contentId: $contentId');
+        _contentCompletedController.add(contentId); // ✅ Stream으로 브로드캐스트
+      }
+    }
+
     // TODO: Add navigation or specific handling based on message data
     // TODO: 메시지 데이터를 기반으로 화면 이동 또는 특정 처리를 추가하세요
+  }
+
+  /// StreamController 정리
+  ///
+  /// 앱 종료 시 호출하여 메모리 누수를 방지합니다.
+  static void dispose() {
+    _contentCompletedController.close();
   }
 }
 
@@ -204,4 +273,17 @@ class FirebaseMessagingService {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint('Background message received: ${message.data.toString()}');
+
+  // 백엔드 메시지 타입 확인 (data.type)
+  final messageType = message.data['type'];
+
+  // 콘텐츠 분석 완료 알림 처리
+  if (messageType == 'content_completed') {
+    final contentId = message.data['id'];
+    if (contentId != null) {
+      debugPrint('[FCM Background] 콘텐츠 분석 완료: $contentId');
+      // ⚠️ 백그라운드 핸들러는 UI 업데이트 불가
+      // 사용자가 앱을 열면 _onMessageOpenedApp에서 처리됨
+    }
+  }
 }

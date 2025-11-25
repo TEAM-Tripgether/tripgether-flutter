@@ -33,6 +33,9 @@ class PlaceDetailCard extends StatelessWidget {
   /// 카드 탭 콜백
   final VoidCallback? onTap;
 
+  /// 카드 배경색 (기본값: AppColors.white)
+  final Color? backgroundColor;
+
   const PlaceDetailCard({
     super.key,
     required this.category,
@@ -42,6 +45,7 @@ class PlaceDetailCard extends StatelessWidget {
     required this.reviewCount,
     required this.imageUrls,
     this.onTap,
+    this.backgroundColor,
   });
 
   @override
@@ -51,7 +55,7 @@ class PlaceDetailCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(AppSpacing.sm), // 8
         decoration: BoxDecoration(
-          color: AppColors.backgroundLight,
+          color: backgroundColor ?? AppColors.white,
           borderRadius: AppRadius.allMedium,
         ),
         child: Column(
@@ -59,7 +63,7 @@ class PlaceDetailCard extends StatelessWidget {
           children: [
             // 텍스트 영역 (카테고리, 장소명, 주소, 리뷰)
             Padding(
-              padding: EdgeInsets.all(AppSpacing.xsm),
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -130,7 +134,7 @@ class PlaceDetailCard extends StatelessWidget {
                           BlendMode.srcIn,
                         ),
                       ),
-                      SizedBox(width: AppSpacing.xs),
+                      AppSpacing.horizontalSpaceXS,
                       Text(
                         '$rating ($reviewCount)',
                         style: AppTextStyles.metaMedium12.copyWith(
@@ -155,7 +159,7 @@ class PlaceDetailCard extends StatelessWidget {
   /// 가로 스크롤 이미지 리스트
   Widget _buildImageList() {
     return SizedBox(
-      height: 80.h,
+      height: 84.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: imageUrls.length,
@@ -188,7 +192,7 @@ class PlaceDetailCard extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: AppColors.subColor2.withValues(alpha: 0.3),
       highlightColor: AppColors.shimmerHighlight,
-      child: Container(width: 100.w, height: 80.h, color: AppColors.white),
+      child: Container(width: 104.w, height: 84.h, color: AppColors.white),
     );
   }
 
