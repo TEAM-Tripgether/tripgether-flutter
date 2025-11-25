@@ -177,15 +177,13 @@ class AppRouter {
                       color: AppColors.subColor2,
                     ),
                     AppSpacing.verticalSpaceLG,
-                    Text(
-                      '콘텐츠를 찾을 수 없습니다',
-                      style: AppTextStyles.summaryBold18,
-                    ),
+                    Text('콘텐츠를 찾을 수 없습니다', style: AppTextStyles.summaryBold18),
                     AppSpacing.verticalSpaceSM,
                     Text(
                       'Content ID: $contentId',
-                      style: AppTextStyles.bodyRegular14
-                          .copyWith(color: AppColors.subColor2),
+                      style: AppTextStyles.bodyRegular14.copyWith(
+                        color: AppColors.subColor2,
+                      ),
                     ),
                   ],
                 ),
@@ -219,9 +217,7 @@ class AppRouter {
         // state.extra 타입 안전성 체크
         if (state.extra is Map<String, dynamic>) {
           try {
-            place = PlaceModel.fromJson(
-              state.extra as Map<String, dynamic>,
-            );
+            place = PlaceModel.fromJson(state.extra as Map<String, dynamic>);
           } catch (e) {
             debugPrint('[Router] PlaceModel 파싱 실패: $e');
             place = null;
@@ -231,10 +227,7 @@ class AppRouter {
         }
 
         return NoTransitionPage(
-          child: PlaceDetailScreen(
-            placeId: placeId,
-            initialPlace: place,
-          ),
+          child: PlaceDetailScreen(placeId: placeId, initialPlace: place),
         );
       },
     ),

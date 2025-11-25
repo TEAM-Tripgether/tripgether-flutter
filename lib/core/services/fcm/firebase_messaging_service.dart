@@ -166,7 +166,9 @@ class FirebaseMessagingService {
 
             // Note: Updated token will be sent to backend on next login
             // 참고: 갱신된 토큰은 다음 로그인 시 백엔드로 전송됩니다
-            debugPrint('✅ FCM token refresh completed. Token will be sent on next login.');
+            debugPrint(
+              '✅ FCM token refresh completed. Token will be sent on next login.',
+            );
           })
           .onError((error) {
             // Handle errors during token refresh

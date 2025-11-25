@@ -56,10 +56,7 @@ class PlaceInfoHeader extends StatelessWidget {
           ],
 
           // 장소 이름
-          Text(
-            name,
-            style: AppTextStyles.greetingBold20,
-          ),
+          Text(name, style: AppTextStyles.greetingBold20),
 
           // 설명
           if (description != null && description!.isNotEmpty) ...[

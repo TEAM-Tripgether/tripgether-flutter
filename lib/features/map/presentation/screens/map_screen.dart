@@ -69,9 +69,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               color: AppColors.subColor2,
             ),
             onPressed: () async {
-              await ref
-                  .read(mapControllerProvider.notifier)
-                  .moveToMyLocation();
+              await ref.read(mapControllerProvider.notifier).moveToMyLocation();
             },
             tooltip: l10n.mapMyLocationTooltip,
           ),

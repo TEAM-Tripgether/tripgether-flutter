@@ -112,9 +112,7 @@ class PlaceApiService {
   ///
   /// Returns: [SavePlaceResponse] 저장 결과
   /// Throws: Exception - API 호출 실패 시
-  static Future<SavePlaceResponse> savePlace({
-    required String placeId,
-  }) async {
+  static Future<SavePlaceResponse> savePlace({required String placeId}) async {
     debugPrint('═══════════════════════════════════════════════════════');
     debugPrint('[PlaceApiService] 🔄 savePlace 시작');
     debugPrint('[PlaceApiService] 📍 placeId: $placeId');
@@ -143,7 +141,8 @@ class PlaceApiService {
     await Future.delayed(const Duration(milliseconds: 500));
 
     final mockResponse = SavePlaceResponse(
-      memberPlaceId: 'mock-member-place-${DateTime.now().millisecondsSinceEpoch}',
+      memberPlaceId:
+          'mock-member-place-${DateTime.now().millisecondsSinceEpoch}',
       placeId: placeId,
       savedStatus: 'SAVED',
       savedAt: DateTime.now().toIso8601String(),
@@ -167,11 +166,11 @@ class PlaceApiService {
     try {
       debugPrint('[PlaceApiService.Real] 📤 POST /api/place/$placeId/save 요청');
 
-      final response = await _dioInstance.post(
-        '/api/place/$placeId/save',
-      );
+      final response = await _dioInstance.post('/api/place/$placeId/save');
 
-      debugPrint('[PlaceApiService.Real] 📥 Response Status: ${response.statusCode}');
+      debugPrint(
+        '[PlaceApiService.Real] 📥 Response Status: ${response.statusCode}',
+      );
       debugPrint('[PlaceApiService.Real] 📥 Response Data: ${response.data}');
 
       if (response.statusCode == 200) {
@@ -181,12 +180,16 @@ class PlaceApiService {
         final result = SavePlaceResponse.fromJson(responseData);
 
         debugPrint('[PlaceApiService.Real] ✅ 장소 저장 성공');
-        debugPrint('[PlaceApiService.Real] 📦 savedStatus: ${result.savedStatus}');
+        debugPrint(
+          '[PlaceApiService.Real] 📦 savedStatus: ${result.savedStatus}',
+        );
         debugPrint('═══════════════════════════════════════════════════════');
 
         return result;
       } else {
-        debugPrint('[PlaceApiService.Real] ❌ 실패 - Status: ${response.statusCode}');
+        debugPrint(
+          '[PlaceApiService.Real] ❌ 실패 - Status: ${response.statusCode}',
+        );
         debugPrint('═══════════════════════════════════════════════════════');
         throw Exception('장소 저장 실패: ${response.statusCode}');
       }
@@ -197,17 +200,11 @@ class PlaceApiService {
       debugPrint('[PlaceApiService.Real] ❌ Response: ${e.response?.data}');
       debugPrint('═══════════════════════════════════════════════════════');
 
-      ApiLogger.throwFromDioError(
-        e,
-        context: 'PlaceApiService.savePlace',
-      );
+      ApiLogger.throwFromDioError(e, context: 'PlaceApiService.savePlace');
     } catch (e) {
       debugPrint('[PlaceApiService.Real] ❌ Exception 발생: $e');
       debugPrint('═══════════════════════════════════════════════════════');
-      ApiLogger.logException(
-        e,
-        context: 'PlaceApiService.savePlace',
-      );
+      ApiLogger.logException(e, context: 'PlaceApiService.savePlace');
       rethrow;
     }
   }

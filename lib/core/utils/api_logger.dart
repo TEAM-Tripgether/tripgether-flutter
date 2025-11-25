@@ -164,10 +164,7 @@ class ApiLogger {
   ///
   /// [e] DioException 객체
   /// [context] 에러 발생 위치 (예: 'AuthApiService.signIn')
-  static Never throwFromDioError(
-    DioException e, {
-    required String context,
-  }) {
+  static Never throwFromDioError(DioException e, {required String context}) {
     // 1. debugPrint 로깅 (개발자용)
     logDioError(e, context: context);
 

@@ -144,9 +144,7 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     try {
       debugPrint('[OnboardingNotifier] 📅 생년월일 설정 API 호출: $birthDate');
 
-      final response = await _apiService.updateBirthDate(
-        birthDate: birthDate,
-      );
+      final response = await _apiService.updateBirthDate(birthDate: birthDate);
 
       debugPrint(
         '[OnboardingNotifier] ✅ 생년월일 설정 성공 → currentStep: ${response.currentStep}',

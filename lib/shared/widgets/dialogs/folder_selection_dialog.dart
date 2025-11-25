@@ -51,9 +51,7 @@ class _FolderSelectionDialogState extends State<FolderSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.allMedium,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.allMedium),
       backgroundColor: AppColors.white,
       insetPadding: EdgeInsets.symmetric(
         horizontal: AppSpacing.xxl,
@@ -73,20 +71,13 @@ class _FolderSelectionDialogState extends State<FolderSelectionDialog> {
             // 제목
             Padding(
               padding: EdgeInsets.only(left: AppSpacing.sm),
-              child: Text(
-                '저장 폴더 선택',
-                style: AppTextStyles.titleBold24,
-              ),
+              child: Text('저장 폴더 선택', style: AppTextStyles.titleBold24),
             ),
 
             AppSpacing.verticalSpaceXXL,
 
             // "전체 저장하기" 옵션
-            _buildRadioOption(
-              id: null,
-              title: '전체 저장하기',
-              subtitle: null,
-            ),
+            _buildRadioOption(id: null, title: '전체 저장하기', subtitle: null),
 
             AppSpacing.verticalSpaceMD,
 
@@ -101,7 +92,6 @@ class _FolderSelectionDialogState extends State<FolderSelectionDialog> {
 
             // TODO: 폴더 API 연동 후 폴더 리스트 추가 예정
             // 현재는 "전체 저장하기"만 선택 가능
-
             AppSpacing.verticalSpaceLG,
 
             // 버튼 행
@@ -138,10 +128,7 @@ class _FolderSelectionDialogState extends State<FolderSelectionDialog> {
             Expanded(
               child: Row(
                 children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.titleSemiBold16,
-                  ),
+                  Text(title, style: AppTextStyles.titleSemiBold16),
                   if (subtitle != null) ...[
                     AppSpacing.horizontalSpaceMD,
                     Expanded(
@@ -190,9 +177,7 @@ class _FolderSelectionDialogState extends State<FolderSelectionDialog> {
               elevation: 0,
               shadowColor: Colors.transparent,
               padding: EdgeInsets.symmetric(vertical: 14.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.allSmall,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.allSmall),
             ),
             child: Text(
               '닫기',
@@ -218,9 +203,7 @@ class _FolderSelectionDialogState extends State<FolderSelectionDialog> {
               elevation: 0,
               shadowColor: Colors.transparent,
               padding: EdgeInsets.symmetric(vertical: 14.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.allSmall,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.allSmall),
             ),
             child: Text(
               '저장하기',

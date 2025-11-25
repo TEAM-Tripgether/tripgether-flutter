@@ -122,9 +122,7 @@ class AuthApiService {
     required String baseUrl,
     int timeout = 10000,
   }) async {
-    debugPrint(
-      '[AuthApiService.reissueTokenWithoutInterceptor] 🔄 토큰 재발급 시작',
-    );
+    debugPrint('[AuthApiService.reissueTokenWithoutInterceptor] 🔄 토큰 재발급 시작');
     debugPrint('[AuthApiService.reissueTokenWithoutInterceptor] URL: $baseUrl');
 
     try {
@@ -150,8 +148,9 @@ class AuthApiService {
 
       // 성공 응답 처리
       if (response.statusCode == 200) {
-        final authResponse =
-            AuthResponse.fromJson(response.data as Map<String, dynamic>);
+        final authResponse = AuthResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
         debugPrint(
           '[AuthApiService.reissueTokenWithoutInterceptor] ✅ 토큰 재발급 성공',
         );
@@ -169,9 +168,7 @@ class AuthApiService {
       );
       rethrow;
     } catch (e) {
-      debugPrint(
-        '[AuthApiService.reissueTokenWithoutInterceptor] ❌ 예외 발생: $e',
-      );
+      debugPrint('[AuthApiService.reissueTokenWithoutInterceptor] ❌ 예외 발생: $e');
       rethrow;
     }
   }
@@ -516,10 +513,7 @@ class AuthApiService {
       }
     } on DioException catch (e) {
       debugPrint('[AuthApiService - Real] ❌ Dio 에러: ${e.type}');
-      ApiLogger.throwFromDioError(
-        e,
-        context: 'AuthApiService.reissueToken',
-      );
+      ApiLogger.throwFromDioError(e, context: 'AuthApiService.reissueToken');
     } catch (e) {
       ApiLogger.logException(e, context: 'AuthApiService.reissueToken');
       rethrow;

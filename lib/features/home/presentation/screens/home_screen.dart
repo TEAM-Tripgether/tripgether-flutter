@@ -34,7 +34,10 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
-    with AutomaticKeepAliveClientMixin, RefreshableTabMixin, WidgetsBindingObserver {
+    with
+        AutomaticKeepAliveClientMixin,
+        RefreshableTabMixin,
+        WidgetsBindingObserver {
   // ════════════════════════════════════════════════════════════════════════
   // 상태 관리
   // ════════════════════════════════════════════════════════════════════════
@@ -169,7 +172,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           );
 
           // ✅ NotificationProvider에 알림 추가
-          ref.read(notificationListProvider.notifier).addNotification(
+          ref
+              .read(notificationListProvider.notifier)
+              .addNotification(
                 contentId: result.contentId,
                 url: url,
                 author: '알 수 없음', // URL에서 작성자 추출 불가 시 기본값
@@ -195,7 +200,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
       // 4. ✅ 성공 여부와 관계없이 큐 삭제 (무한 재시도 방지)
       await sharingService.clearQueue();
-      debugPrint('[HomeScreen] 🗑️ URL 큐 삭제 완료 (성공 $successCount개, 실패 $failCount개)');
+      debugPrint(
+        '[HomeScreen] 🗑️ URL 큐 삭제 완료 (성공 $successCount개, 실패 $failCount개)',
+      );
 
       debugPrint('[HomeScreen] 📊 처리 결과: 성공 $successCount개, 실패 $failCount개');
       debugPrint('═══════════════════════════════════════════════════════');

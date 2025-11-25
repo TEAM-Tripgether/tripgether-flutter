@@ -22,9 +22,7 @@ class AuthInterceptor extends Interceptor {
   /// 토큰 재발급 중 플래그 (동시 요청 시 중복 재발급 방지)
   bool _isRefreshing = false;
 
-  AuthInterceptor({
-    required String baseUrl,
-  }) : _baseUrl = baseUrl;
+  AuthInterceptor({required String baseUrl}) : _baseUrl = baseUrl;
 
   @override
   Future<void> onRequest(
@@ -89,12 +87,16 @@ class AuthInterceptor extends Interceptor {
           final refreshToken = await _tokenManager.getRefreshToken();
 
           if (refreshToken == null || refreshToken.isEmpty) {
-            debugPrint('❌ [AuthInterceptor] $apiInfo → Refresh Token 없음 → 재발급 불가');
+            debugPrint(
+              '❌ [AuthInterceptor] $apiInfo → Refresh Token 없음 → 재발급 불가',
+            );
             _isRefreshing = false;
             return handler.next(err);
           }
 
-          debugPrint('[AuthInterceptor] $apiInfo → 📤 Refresh Token으로 재발급 API 호출 중');
+          debugPrint(
+            '[AuthInterceptor] $apiInfo → 📤 Refresh Token으로 재발급 API 호출 중',
+          );
 
           // 2. 토큰 재발급 API 호출 (AuthApiService의 공통 메서드 사용)
           final authResponse =
@@ -143,10 +145,14 @@ class AuthInterceptor extends Interceptor {
         // 🚨 토큰이 만료되거나 유효하지 않거나 블랙리스트 처리된 경우
         debugPrint('🚨 [AuthInterceptor] $apiInfo → 401 - $errorCode → 토큰 삭제');
         await deleteToken();
-        debugPrint('🗑️ [AuthInterceptor] $apiInfo → JWT 토큰 삭제 완료 ($errorCode)');
+        debugPrint(
+          '🗑️ [AuthInterceptor] $apiInfo → JWT 토큰 삭제 완료 ($errorCode)',
+        );
       } else {
         // ⚠️ 알 수 없는 401 에러
-        debugPrint('🚨 [AuthInterceptor] $apiInfo → 401 - 알 수 없는 인증 오류: $errorCode');
+        debugPrint(
+          '🚨 [AuthInterceptor] $apiInfo → 401 - 알 수 없는 인증 오류: $errorCode',
+        );
       }
     }
 

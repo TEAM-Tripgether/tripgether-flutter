@@ -144,9 +144,7 @@ class OnboardingApiService {
   /// **응답**: currentStep = "BIRTH_DATE" (다음 단계: 생년월일 입력)
   ///
   /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
-  Future<OnboardingResponse> updateName({
-    required String name,
-  }) async {
+  Future<OnboardingResponse> updateName({required String name}) async {
     if (_useMockData) {
       return _mockUpdateName(name: name);
     }
@@ -219,9 +217,7 @@ class OnboardingApiService {
   /// **응답**: currentStep = "INTERESTS" (다음 단계: 관심사 선택)
   ///
   /// **인증**: AuthInterceptor가 자동으로 JWT 토큰 추가
-  Future<OnboardingResponse> updateGender({
-    required String gender,
-  }) async {
+  Future<OnboardingResponse> updateGender({required String gender}) async {
     if (_useMockData) {
       return _mockUpdateGender(gender: gender);
     }

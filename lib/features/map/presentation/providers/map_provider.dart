@@ -28,18 +28,12 @@ class MapController extends _$MapController {
   ///
   /// [position] 이동할 위도/경도 좌표
   /// [zoom] 줌 레벨 (선택 사항, 기본값: 현재 줌 유지)
-  Future<void> moveToLocation(
-    LatLng position, {
-    double? zoom,
-  }) async {
+  Future<void> moveToLocation(LatLng position, {double? zoom}) async {
     if (_controller == null) return;
 
     await _controller!.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: position,
-          zoom: zoom ?? 14.0,
-        ),
+        CameraPosition(target: position, zoom: zoom ?? 14.0),
       ),
     );
   }

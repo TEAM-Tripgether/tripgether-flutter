@@ -66,10 +66,7 @@ class _PlaceInfoSectionState extends State<PlaceInfoSection> {
             'assets/icons/location_on.svg',
             width: AppSizes.iconSmall,
             height: AppSizes.iconSmall,
-            colorFilter: ColorFilter.mode(
-              AppColors.mainColor,
-              BlendMode.srcIn,
-            ),
+            colorFilter: ColorFilter.mode(AppColors.mainColor, BlendMode.srcIn),
           ),
           text: widget.address,
           onTap: widget.onAddressTap,
@@ -138,11 +135,7 @@ class _InfoRow extends StatelessWidget {
   final String text;
   final VoidCallback? onTap;
 
-  const _InfoRow({
-    required this.icon,
-    required this.text,
-    this.onTap,
-  });
+  const _InfoRow({required this.icon, required this.text, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -318,7 +311,9 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
     return Text(
       isOpen ? '영업 중' : '영업 종료',
       style: AppTextStyles.titleSemiBold13.copyWith(
-        color: isOpen ? AppColors.success : AppColors.textColor1.withValues(alpha: 0.6),
+        color: isOpen
+            ? AppColors.success
+            : AppColors.textColor1.withValues(alpha: 0.6),
       ),
     );
   }
@@ -372,8 +367,7 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
 
     // 오픈/마감 시간 파싱
     final openParts = todayHour.openTime.split(':');
-    final openMinutes =
-        int.parse(openParts[0]) * 60 + int.parse(openParts[1]);
+    final openMinutes = int.parse(openParts[0]) * 60 + int.parse(openParts[1]);
 
     final closeParts = todayHour.closeTime.split(':');
     final closeMinutes =

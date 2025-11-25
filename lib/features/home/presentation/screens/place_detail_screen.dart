@@ -346,8 +346,10 @@ class PlaceDetailScreen extends ConsumerWidget {
 
                 // Exception에서 메시지만 추출
                 // Exception.toString()은 "Exception: 메시지" 형태이므로 prefix 제거
-                final errorMessage =
-                    e.toString().replaceFirst('Exception: ', '');
+                final errorMessage = e.toString().replaceFirst(
+                  'Exception: ',
+                  '',
+                );
 
                 // 에러 메시지 표시
                 if (context.mounted) {

@@ -86,8 +86,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   /// FirebaseMessagingService의 contentCompletedStream을 구독하여
   /// 백엔드에서 콘텐츠 분석 완료 알림을 받으면 자동으로 UI를 업데이트합니다.
   void _initializeFcmListener() {
-    _fcmSubscription =
-        FirebaseMessagingService.contentCompletedStream.listen((contentId) {
+    _fcmSubscription = FirebaseMessagingService.contentCompletedStream.listen((
+      contentId,
+    ) {
       debugPrint('[NotificationScreen] FCM 알림 수신 - contentId: $contentId');
       _updateNotificationFromApi(contentId);
     });
@@ -134,7 +135,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
     // PENDING 또는 ANALYZING 상태인 알림들 필터링 (Provider에서)
     final notifications = ref.read(notificationListProvider);
-    final pendingNotifications = notifications.where((n) => n.isInProgress).toList();
+    final pendingNotifications = notifications
+        .where((n) => n.isInProgress)
+        .toList();
 
     if (pendingNotifications.isEmpty) {
       debugPrint('[NotificationScreen] ✅ 폴링할 PENDING 알림 없음');
@@ -142,7 +145,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       return;
     }
 
-    debugPrint('[NotificationScreen] 📋 폴링 대상: ${pendingNotifications.length}개');
+    debugPrint(
+      '[NotificationScreen] 📋 폴링 대상: ${pendingNotifications.length}개',
+    );
 
     int completedCount = 0;
     int stillPendingCount = 0;
@@ -214,7 +219,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       }
     }
 
-    debugPrint('[NotificationScreen] 📊 폴링 결과: 완료 $completedCount개, 진행중 $stillPendingCount개');
+    debugPrint(
+      '[NotificationScreen] 📊 폴링 결과: 완료 $completedCount개, 진행중 $stillPendingCount개',
+    );
     debugPrint('═══════════════════════════════════════════════════════');
   }
 
@@ -233,7 +240,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
       // PENDING 상태인 알림들 필터링 (Provider에서)
       final notifications = ref.read(notificationListProvider);
-      final pendingNotifications = notifications.where((n) => n.isPending).toList();
+      final pendingNotifications = notifications
+          .where((n) => n.isPending)
+          .toList();
 
       if (pendingNotifications.isEmpty) {
         debugPrint('[NotificationScreen] ✅ 체크할 PENDING 알림 없음');
@@ -241,7 +250,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
         return;
       }
 
-      debugPrint('[NotificationScreen] 📋 체크할 PENDING 알림 ${pendingNotifications.length}개');
+      debugPrint(
+        '[NotificationScreen] 📋 체크할 PENDING 알림 ${pendingNotifications.length}개',
+      );
 
       int completedCount = 0;
       int stillPendingCount = 0;
@@ -260,9 +271,13 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           debugPrint('[NotificationScreen] 📤 상태 확인 중: $contentId');
 
           // GET /api/content/{contentId} 호출
-          final content = await ref.read(contentDetailProvider(contentId).future);
+          final content = await ref.read(
+            contentDetailProvider(contentId).future,
+          );
 
-          debugPrint('[NotificationScreen] 📥 응답 수신 - status: ${content.status}');
+          debugPrint(
+            '[NotificationScreen] 📥 응답 수신 - status: ${content.status}',
+          );
 
           // 상태 변경 감지를 위해 이전 상태 저장
           final oldStatus = notification.status;
@@ -272,7 +287,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
           // 상태 변경 통계 업데이트 (Provider에서 다시 읽기)
           final updatedNotifications = ref.read(notificationListProvider);
-          final newStatus = updatedNotifications.firstWhere((n) => n.contentId == contentId).status;
+          final newStatus = updatedNotifications
+              .firstWhere((n) => n.contentId == contentId)
+              .status;
           if (oldStatus != newStatus) {
             switch (newStatus) {
               case NotificationStatus.analyzing:
@@ -308,7 +325,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
         }
       }
 
-      debugPrint('[NotificationScreen] 📊 체크 결과: 완료 $completedCount개, 진행중 $stillPendingCount개');
+      debugPrint(
+        '[NotificationScreen] 📊 체크 결과: 완료 $completedCount개, 진행중 $stillPendingCount개',
+      );
       debugPrint('═══════════════════════════════════════════════════════');
     });
   }
@@ -336,11 +355,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
         debugPrint('[NotificationScreen] contentId 수신: $contentId');
 
         // 알림 리스트에 추가 (Provider 사용)
-        ref.read(notificationListProvider.notifier).addNotification(
-          contentId: contentId,
-          url: url,
-          author: author,
-        );
+        ref
+            .read(notificationListProvider.notifier)
+            .addNotification(contentId: contentId, url: url, author: author);
 
         debugPrint('[NotificationScreen] 알림 추가 완료 (PENDING 상태)');
       } on RefreshTokenException catch (e) {
@@ -389,22 +406,32 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       debugPrint('[NotificationScreen] 📤 콘텐츠 상태 조회: $contentId');
 
       // GET /api/content/{contentId} 호출
-      final fullContent = await ref.read(contentDetailProvider(contentId).future);
+      final fullContent = await ref.read(
+        contentDetailProvider(contentId).future,
+      );
 
-      debugPrint('[NotificationScreen] 📥 상태 조회 완료: status=${fullContent.status}');
+      debugPrint(
+        '[NotificationScreen] 📥 상태 조회 완료: status=${fullContent.status}',
+      );
 
       // 백엔드 status 문자열 → NotificationStatus enum 변환
-      final notificationStatus = _mapContentStatusToNotificationStatus(fullContent.status);
+      final notificationStatus = _mapContentStatusToNotificationStatus(
+        fullContent.status,
+      );
 
       // 알림 업데이트 (Provider 사용)
-      ref.read(notificationListProvider.notifier).updateNotification(
-        contentId: contentId,
-        status: notificationStatus,
-        title: fullContent.title,
-        summary: fullContent.summary,
-        placeCount: fullContent.places.length,
+      ref
+          .read(notificationListProvider.notifier)
+          .updateNotification(
+            contentId: contentId,
+            status: notificationStatus,
+            title: fullContent.title,
+            summary: fullContent.summary,
+            placeCount: fullContent.places.length,
+          );
+      debugPrint(
+        '[NotificationScreen] ✅ 알림 업데이트 완료: ${notificationStatus.name}',
       );
-      debugPrint('[NotificationScreen] ✅ 알림 업데이트 완료: ${notificationStatus.name}');
     } catch (e) {
       debugPrint('[NotificationScreen] ❌ API 호출 실패: $e');
       // 에러 발생 시 알림 상태 유지 (변경하지 않음)
@@ -433,7 +460,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       case 'FAILED':
         return NotificationStatus.failed;
       default:
-        debugPrint('[NotificationScreen] ⚠️ 알 수 없는 status: $apiStatus → pending으로 처리');
+        debugPrint(
+          '[NotificationScreen] ⚠️ 알 수 없는 status: $apiStatus → pending으로 처리',
+        );
         return NotificationStatus.pending;
     }
   }
@@ -480,7 +509,8 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                         children: [
                           _buildSectionHeader(l10n.notificationSectionToday),
                           ...notifications.map(
-                            (notification) => _buildNotificationItem(notification),
+                            (notification) =>
+                                _buildNotificationItem(notification),
                           ),
                         ],
                       ),
@@ -524,14 +554,19 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   /// - ANALYZING: "AI가 위치정보를 파악하고 있습니다"
   /// - COMPLETED: "AI가 N개의 장소를 찾았습니다"
   /// - FAILED: "분석에 실패했습니다"
-  String _getStatusMessage(NotificationItem notification, AppLocalizations l10n) {
+  String _getStatusMessage(
+    NotificationItem notification,
+    AppLocalizations l10n,
+  ) {
     switch (notification.status) {
       case NotificationStatus.pending:
         return l10n.aiPendingAnalysis;
       case NotificationStatus.analyzing:
         return l10n.aiAnalyzingLocation;
       case NotificationStatus.completed:
-        return l10n.aiAnalyzedLocations(notification.placeCount?.toString() ?? '0');
+        return l10n.aiAnalyzedLocations(
+          notification.placeCount?.toString() ?? '0',
+        );
       case NotificationStatus.failed:
         return l10n.aiAnalysisFailed;
     }
@@ -618,9 +653,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                       ],
                     ),
                     AppSpacing.verticalSpaceXSM, // 6
-
                     // COMPLETED 상태: 콘텐츠 제목 표시
-                    if (notification.isCompleted && notification.contentTitle != null) ...[
+                    if (notification.isCompleted &&
+                        notification.contentTitle != null) ...[
                       Text(
                         notification.contentTitle!,
                         style: AppTextStyles.titleSemiBold14.copyWith(
@@ -633,7 +668,8 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                     ],
 
                     // COMPLETED 상태: 콘텐츠 요약 표시
-                    if (notification.isCompleted && notification.contentSummary != null) ...[
+                    if (notification.isCompleted &&
+                        notification.contentSummary != null) ...[
                       Text(
                         notification.contentSummary!,
                         style: AppTextStyles.bodyRegular14.copyWith(
@@ -796,10 +832,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       decoration: BoxDecoration(
         color: AppColors.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
-        border: Border.all(
-          color: AppColors.error,
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.error, width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -812,9 +845,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           AppSpacing.horizontalSpaceXS,
           Text(
             AppLocalizations.of(context).notificationStatusFailed,
-            style: AppTextStyles.bodyMedium14.copyWith(
-              color: AppColors.error,
-            ),
+            style: AppTextStyles.bodyMedium14.copyWith(color: AppColors.error),
           ),
         ],
       ),

@@ -51,10 +51,7 @@ class PlaceNotFoundException implements Exception {
 ///
 /// [placeId]를 포함한 모든 SNS 컨텐츠를 필터링하여 반환합니다.
 @riverpod
-Future<List<ContentModel>> relatedContents(
-  Ref ref,
-  String placeId,
-) async {
+Future<List<ContentModel>> relatedContents(Ref ref, String placeId) async {
   final repository = ref.read(contentRepositoryProvider);
 
   try {
@@ -74,14 +71,12 @@ Future<List<ContentModel>> relatedContents(
 ///
 /// [currentPlaceId]가 포함된 첫 번째 컨텐츠의 나머지 장소들을 반환합니다.
 @riverpod
-Future<List<PlaceModel>> otherPlaces(
-  Ref ref,
-  String currentPlaceId,
-) async {
+Future<List<PlaceModel>> otherPlaces(Ref ref, String currentPlaceId) async {
   try {
     // 현재 장소가 포함된 컨텐츠 찾기
-    final relatedContentsList =
-        await ref.watch(relatedContentsProvider(currentPlaceId).future);
+    final relatedContentsList = await ref.watch(
+      relatedContentsProvider(currentPlaceId).future,
+    );
 
     if (relatedContentsList.isEmpty) return [];
 

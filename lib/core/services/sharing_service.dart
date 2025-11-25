@@ -775,7 +775,9 @@ class SharingService {
 
       if (Platform.isIOS) {
         // iOS: MethodChannel을 통해 UserDefaults에서 큐 읽기
-        final result = await _channel.invokeMethod<List<dynamic>>('getPendingUrls');
+        final result = await _channel.invokeMethod<List<dynamic>>(
+          'getPendingUrls',
+        );
 
         if (result == null || result.isEmpty) {
           debugPrint('[SharingService] ✅ 대기 중인 URL 없음');
@@ -787,7 +789,9 @@ class SharingService {
         return urls;
       } else if (Platform.isAndroid) {
         // Android: SharedPreferences에서 큐 읽기
-        final result = await _channel.invokeMethod<List<dynamic>>('getPendingUrls');
+        final result = await _channel.invokeMethod<List<dynamic>>(
+          'getPendingUrls',
+        );
 
         if (result == null || result.isEmpty) {
           debugPrint('[SharingService] ✅ 대기 중인 URL 없음 (Android)');
@@ -795,7 +799,9 @@ class SharingService {
         }
 
         final urls = result.map((item) => item.toString()).toList();
-        debugPrint('[SharingService] ✅ 대기 중인 URL ${urls.length}개 발견 (Android): $urls');
+        debugPrint(
+          '[SharingService] ✅ 대기 중인 URL ${urls.length}개 발견 (Android): $urls',
+        );
         return urls;
       }
 

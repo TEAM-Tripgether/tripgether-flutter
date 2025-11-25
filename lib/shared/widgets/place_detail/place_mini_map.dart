@@ -174,10 +174,7 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
       child: SizedBox(
         height: widget.height.h,
         child: GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: position,
-            zoom: 16.0,
-          ),
+          initialCameraPosition: CameraPosition(target: position, zoom: 16.0),
           markers: {
             Marker(
               markerId: MarkerId(widget.placeId),
