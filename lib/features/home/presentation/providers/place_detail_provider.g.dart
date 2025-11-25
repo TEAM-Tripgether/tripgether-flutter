@@ -316,7 +316,7 @@ class _OtherPlacesProviderElement
   String get currentPlaceId => (origin as OtherPlacesProvider).currentPlaceId;
 }
 
-String _$placeDetailHash() => r'42082ea25efb4ebdc6cc6ae39c9f87af916e3d21';
+String _$placeDetailHash() => r'903bb46a6045a6eafeaad93d63527d233ad57144';
 
 abstract class _$PlaceDetail
     extends BuildlessAutoDisposeAsyncNotifier<PlaceModel?> {
@@ -328,8 +328,7 @@ abstract class _$PlaceDetail
 /// 장소 상세 정보를 제공하는 Provider
 ///
 /// placeId를 받아 해당 장소의 상세 정보를 로드합니다.
-/// ContentRepository의 getSavedPlaces()를 통해 장소 목록을 가져온 후
-/// placeId로 필터링하여 반환합니다.
+/// GET /api/place/{placeId} API를 호출하여 위치 정보를 포함한 상세 데이터를 가져옵니다.
 ///
 /// Copied from [PlaceDetail].
 @ProviderFor(PlaceDetail)
@@ -338,16 +337,14 @@ const placeDetailProvider = PlaceDetailFamily();
 /// 장소 상세 정보를 제공하는 Provider
 ///
 /// placeId를 받아 해당 장소의 상세 정보를 로드합니다.
-/// ContentRepository의 getSavedPlaces()를 통해 장소 목록을 가져온 후
-/// placeId로 필터링하여 반환합니다.
+/// GET /api/place/{placeId} API를 호출하여 위치 정보를 포함한 상세 데이터를 가져옵니다.
 ///
 /// Copied from [PlaceDetail].
 class PlaceDetailFamily extends Family<AsyncValue<PlaceModel?>> {
   /// 장소 상세 정보를 제공하는 Provider
   ///
   /// placeId를 받아 해당 장소의 상세 정보를 로드합니다.
-  /// ContentRepository의 getSavedPlaces()를 통해 장소 목록을 가져온 후
-  /// placeId로 필터링하여 반환합니다.
+  /// GET /api/place/{placeId} API를 호출하여 위치 정보를 포함한 상세 데이터를 가져옵니다.
   ///
   /// Copied from [PlaceDetail].
   const PlaceDetailFamily();
@@ -355,8 +352,7 @@ class PlaceDetailFamily extends Family<AsyncValue<PlaceModel?>> {
   /// 장소 상세 정보를 제공하는 Provider
   ///
   /// placeId를 받아 해당 장소의 상세 정보를 로드합니다.
-  /// ContentRepository의 getSavedPlaces()를 통해 장소 목록을 가져온 후
-  /// placeId로 필터링하여 반환합니다.
+  /// GET /api/place/{placeId} API를 호출하여 위치 정보를 포함한 상세 데이터를 가져옵니다.
   ///
   /// Copied from [PlaceDetail].
   PlaceDetailProvider call(String placeId) {
@@ -388,8 +384,7 @@ class PlaceDetailFamily extends Family<AsyncValue<PlaceModel?>> {
 /// 장소 상세 정보를 제공하는 Provider
 ///
 /// placeId를 받아 해당 장소의 상세 정보를 로드합니다.
-/// ContentRepository의 getSavedPlaces()를 통해 장소 목록을 가져온 후
-/// placeId로 필터링하여 반환합니다.
+/// GET /api/place/{placeId} API를 호출하여 위치 정보를 포함한 상세 데이터를 가져옵니다.
 ///
 /// Copied from [PlaceDetail].
 class PlaceDetailProvider
@@ -397,8 +392,7 @@ class PlaceDetailProvider
   /// 장소 상세 정보를 제공하는 Provider
   ///
   /// placeId를 받아 해당 장소의 상세 정보를 로드합니다.
-  /// ContentRepository의 getSavedPlaces()를 통해 장소 목록을 가져온 후
-  /// placeId로 필터링하여 반환합니다.
+  /// GET /api/place/{placeId} API를 호출하여 위치 정보를 포함한 상세 데이터를 가져옵니다.
   ///
   /// Copied from [PlaceDetail].
   PlaceDetailProvider(String placeId)

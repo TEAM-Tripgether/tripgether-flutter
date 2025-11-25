@@ -33,6 +33,9 @@ class PlaceDetailCard extends StatelessWidget {
   /// 카드 탭 콜백
   final VoidCallback? onTap;
 
+  /// 카드 배경색 (기본값: AppColors.white)
+  final Color? backgroundColor;
+
   const PlaceDetailCard({
     super.key,
     required this.category,
@@ -42,6 +45,7 @@ class PlaceDetailCard extends StatelessWidget {
     required this.reviewCount,
     required this.imageUrls,
     this.onTap,
+    this.backgroundColor,
   });
 
   @override
@@ -51,93 +55,96 @@ class PlaceDetailCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(AppSpacing.sm), // 8
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: backgroundColor ?? AppColors.white,
           borderRadius: AppRadius.allMedium,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 텍스트 영역 (카테고리, 장소명, 주소, 리뷰)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 카테고리
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.subColor2.withValues(alpha: 0.2),
-                    borderRadius: AppRadius.allSmall,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSpacing.smd,
-                    vertical: AppSpacing.xxs,
-                  ),
-                  child: Text(
-                    category,
-                    style: AppTextStyles.metaMedium12.copyWith(
-                      color: AppColors.textColor1.withValues(alpha: 0.4),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 카테고리
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.subColor2.withValues(alpha: 0.2),
+                      borderRadius: AppRadius.allSmall,
                     ),
-                  ),
-                ),
-
-                AppSpacing.verticalSpaceXSM, // 6
-                // 장소 이름
-                Text(
-                  placeName,
-                  style: AppTextStyles.titleSemiBold14,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-
-                AppSpacing.verticalSpaceXS, // 4
-                // 주소
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/location_on.svg',
-                      width: AppSizes.iconSmall,
-                      height: AppSizes.iconSmall,
-                      colorFilter: ColorFilter.mode(
-                        AppColors.mainColor,
-                        BlendMode.srcIn,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.smd,
+                      vertical: AppSpacing.xxs,
+                    ),
+                    child: Text(
+                      category,
+                      style: AppTextStyles.metaMedium12.copyWith(
+                        color: AppColors.textColor1.withValues(alpha: 0.4),
                       ),
                     ),
-                    AppSpacing.horizontalSpaceXS,
-                    Expanded(
-                      child: Text(
-                        address,
+                  ),
+
+                  AppSpacing.verticalSpaceXSM, // 6
+                  // 장소 이름
+                  Text(
+                    placeName,
+                    style: AppTextStyles.titleSemiBold14,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  AppSpacing.verticalSpaceXS, // 4
+                  // 주소
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/location_on.svg',
+                        width: AppSizes.iconSmall,
+                        height: AppSizes.iconSmall,
+                        colorFilter: ColorFilter.mode(
+                          AppColors.mainColor,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      AppSpacing.horizontalSpaceXS,
+                      Expanded(
+                        child: Text(
+                          address,
+                          style: AppTextStyles.metaMedium12.copyWith(
+                            color: AppColors.textColor1.withValues(alpha: 0.6),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  AppSpacing.verticalSpaceXS, // 4
+                  // 평점 및 리뷰 수
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/star.svg',
+                        width: AppSizes.iconSmall,
+                        height: AppSizes.iconSmall,
+                        colorFilter: ColorFilter.mode(
+                          AppColors.mainColor,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      AppSpacing.horizontalSpaceXS,
+                      Text(
+                        '$rating ($reviewCount)',
                         style: AppTextStyles.metaMedium12.copyWith(
                           color: AppColors.textColor1.withValues(alpha: 0.6),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
-                ),
-
-                AppSpacing.verticalSpaceXS, // 4
-                // 평점 및 리뷰 수
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/star.svg',
-                      width: AppSizes.iconSmall,
-                      height: AppSizes.iconSmall,
-                      colorFilter: ColorFilter.mode(
-                        AppColors.mainColor,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    SizedBox(width: AppSpacing.xs),
-                    Text(
-                      '$rating ($reviewCount)',
-                      style: AppTextStyles.metaMedium12.copyWith(
-                        color: AppColors.textColor1.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
 
             AppSpacing.verticalSpaceSM, // 8

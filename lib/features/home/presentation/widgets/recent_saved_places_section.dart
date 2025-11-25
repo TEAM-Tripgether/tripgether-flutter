@@ -73,6 +73,7 @@ class RecentSavedPlacesSection extends ConsumerWidget {
                       rating: place.rating ?? 0.0,
                       reviewCount: place.userRatingsTotal ?? 0,
                       imageUrls: place.photoUrls,
+                      backgroundColor: AppColors.backgroundLight,
                       onTap: () {
                         // 장소 상세 화면으로 이동
                         context.push(

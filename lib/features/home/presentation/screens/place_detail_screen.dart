@@ -9,6 +9,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/common/app_snackbar.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
@@ -19,7 +20,10 @@ import '../../../../shared/widgets/place_detail/place_photo_gallery.dart';
 import '../../../../shared/widgets/cards/sns_content_card.dart';
 import '../../../../shared/widgets/cards/place_detail_card.dart';
 import '../../../../shared/widgets/layout/section_header.dart';
+import '../../../../shared/widgets/dialogs/folder_selection_dialog.dart';
+import '../../data/services/place_api_service.dart';
 import '../providers/place_detail_provider.dart';
+import '../providers/content_provider.dart';
 
 /// 장소 상세 화면
 ///
@@ -86,106 +90,117 @@ class PlaceDetailScreen extends ConsumerWidget {
     AppLocalizations l10n,
     place,
   ) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1. 장소 기본 정보 헤더 (카테고리, 이름, 설명) - 패딩 있음
-          Padding(
-            padding: EdgeInsets.all(AppSpacing.lg),
-            child: PlaceInfoHeader(
-              category: place.category,
-              name: place.name,
-              description: place.description,
+    return Column(
+      children: [
+        // 스크롤 가능 영역 (1~7번 콘텐츠)
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. 장소 기본 정보 헤더 (카테고리, 이름, 설명) - 패딩 있음
+                Padding(
+                  padding: EdgeInsets.all(AppSpacing.lg),
+                  child: PlaceInfoHeader(
+                    category: place.category,
+                    name: place.name,
+                    description: place.description,
+                  ),
+                ),
+
+                // 2. Google Maps 미니맵 - 패딩 있음
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: PlaceMiniMap(
+                    latitude: place.latitude,
+                    longitude: place.longitude,
+                    placeName: place.name,
+                    placeId: place.placeId,
+                    height: 240.h,
+                    iconUrl: place.iconUrl,
+                  ),
+                ),
+
+                AppSpacing.verticalSpaceLG, // 지도 → 구분선 간격
+                // 3. 구분선 - 패딩 없음 (앱 양 끝으로 뻗음)
+                const SectionDivider.thick(),
+
+                AppSpacing.verticalSpaceLG, // 구분선 → 상세 정보 간격
+                // 4. 장소 상세 정보 (주소, 전화, 영업시간, 별점) - 패딩 있음 (헤더보다 8px 더 들어감)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+                  child: PlaceInfoSection(
+                    address: place.address,
+                    phone: place.phone,
+                    rating: place.rating?.toDouble(),
+                    reviewCount: place.userRatingsTotal,
+                    businessHours: place.businessHours,
+                    businessStatus: place.businessStatus,
+                    onPhoneTap: place.phone != null
+                        ? () {
+                            // TODO: 전화 기능 구현
+                            debugPrint(
+                              '[PlaceDetailScreen] 전화: ${place.phone}',
+                            );
+                          }
+                        : null,
+                    onAddressTap: () async {
+                      // 주소를 클립보드에 복사
+                      await Clipboard.setData(
+                        ClipboardData(text: place.address),
+                      );
+                      if (context.mounted) {
+                        AppSnackBar.showInfo(context, l10n.addressCopied);
+                      }
+                    },
+                  ),
+                ),
+
+                AppSpacing.verticalSpaceLG, // 상세 정보 → 사진 간격
+                // 5. 장소 사진 갤러리 (가로 스크롤) - PlacePhotoGallery 내부에 패딩 있음
+                if (place.photoUrls.isNotEmpty) ...[
+                  PlacePhotoGallery(
+                    photoUrls: place.photoUrls,
+                    placeName: place.name,
+                    onPhotoTap: (index) {
+                      // TODO: 전체화면 갤러리로 이동
+                      debugPrint('[PlaceDetailScreen] 사진 탭: index $index');
+                    },
+                  ),
+                  AppSpacing.verticalSpaceXXL,
+                ],
+
+                // 6. 이 장소를 포함한 SNS 컨텐츠 섹션 - 패딩 있음
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: _buildRelatedContentsSection(context, ref, l10n),
+                ),
+
+                AppSpacing.verticalSpaceXXL,
+
+                // 7. 같은 컨텐츠의 다른 장소들 섹션 - 패딩 있음
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: _buildOtherPlacesSection(context, ref, l10n),
+                ),
+
+                // 스크롤 영역 하단 여백 (버튼과의 간격)
+                AppSpacing.verticalSpaceLG,
+              ],
             ),
           ),
+        ),
 
-          // 2. Google Maps 미니맵 - 패딩 있음
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: PlaceMiniMap(
-              latitude: place.latitude,
-              longitude: place.longitude,
-              placeName: place.name,
-              placeId: place.placeId,
-              height: 240.h,
-              iconUrl: place.iconUrl,
-            ),
+        // 하단 고정 버튼 영역
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: AppSpacing.huge,
+            left: AppSpacing.lg,
+            right: AppSpacing.lg,
           ),
-
-          AppSpacing.verticalSpaceLG, // 지도 → 구분선 간격
-          // 3. 구분선 - 패딩 없음 (앱 양 끝으로 뻗음)
-          const SectionDivider.thick(),
-
-          AppSpacing.verticalSpaceLG, // 구분선 → 상세 정보 간격
-          // 4. 장소 상세 정보 (주소, 전화, 영업시간, 별점) - 패딩 있음 (헤더보다 8px 더 들어감)
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-            child: PlaceInfoSection(
-              address: place.address,
-              phone: place.phone,
-              rating: place.rating?.toDouble(),
-              reviewCount: place.userRatingsTotal,
-              businessHours: place.businessHours,
-              businessStatus: place.businessStatus,
-              onPhoneTap: place.phone != null
-                  ? () {
-                      // TODO: 전화 기능 구현
-                      debugPrint('[PlaceDetailScreen] 전화: ${place.phone}');
-                    }
-                  : null,
-              onAddressTap: () async {
-                // 주소를 클립보드에 복사
-                await Clipboard.setData(ClipboardData(text: place.address));
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.addressCopied),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-
-          AppSpacing.verticalSpaceLG, // 상세 정보 → 사진 간격
-          // 5. 장소 사진 갤러리 (가로 스크롤) - PlacePhotoGallery 내부에 패딩 있음
-          if (place.photoUrls.isNotEmpty) ...[
-            PlacePhotoGallery(
-              photoUrls: place.photoUrls,
-              placeName: place.name,
-              onPhotoTap: (index) {
-                // TODO: 전체화면 갤러리로 이동
-                debugPrint('[PlaceDetailScreen] 사진 탭: index $index');
-              },
-            ),
-            AppSpacing.verticalSpaceXXL,
-          ],
-
-          // 6. 이 장소를 포함한 SNS 컨텐츠 섹션 - 패딩 있음
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: _buildRelatedContentsSection(context, ref, l10n),
-          ),
-
-          AppSpacing.verticalSpaceXXL,
-
-          // 7. 같은 컨텐츠의 다른 장소들 섹션 - 패딩 있음
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: _buildOtherPlacesSection(context, ref, l10n),
-          ),
-
-          AppSpacing.verticalSpaceXXL,
-
-          // 8. 액션 버튼들 - 패딩 있음
-          Padding(
-            padding: EdgeInsets.all(AppSpacing.lg),
-            child: _buildActionButtons(context, ref, l10n, place),
-          ),
-        ],
-      ),
+          child: _buildActionButtons(context, ref, l10n, place),
+        ),
+      ],
     );
   }
 
@@ -299,8 +314,53 @@ class PlaceDetailScreen extends ConsumerWidget {
     return PrimaryButton(
       text: '저장하기',
       onPressed: () {
-        // TODO: 장소 저장 기능 구현
-        debugPrint('[PlaceDetailScreen] 장소 저장: ${place.name}');
+        // 폴더 선택 다이얼로그 표시
+        showDialog(
+          context: context,
+          builder: (dialogContext) => FolderSelectionDialog(
+            onSave: (folderId) async {
+              // folderId가 null이면 "전체 저장하기"
+              debugPrint(
+                '[PlaceDetailScreen] 장소 저장: ${place.name}, 폴더: ${folderId ?? "전체"}',
+              );
+
+              try {
+                // 장소 저장 API 호출
+                final response = await PlaceApiService.savePlace(
+                  placeId: place.placeId,
+                );
+
+                debugPrint(
+                  '[PlaceDetailScreen] ✅ 저장 성공: ${response.savedStatus}',
+                );
+
+                // HomeScreen의 저장된 장소 목록 새로고침
+                ref.invalidate(recentSavedPlacesProvider);
+
+                // 성공 메시지 표시
+                if (context.mounted) {
+                  AppSnackBar.showSuccess(context, '${place.name} 저장 완료');
+                }
+              } catch (e) {
+                debugPrint('[PlaceDetailScreen] ❌ 저장 실패: $e');
+
+                // Exception에서 메시지만 추출
+                // Exception.toString()은 "Exception: 메시지" 형태이므로 prefix 제거
+                final errorMessage =
+                    e.toString().replaceFirst('Exception: ', '');
+
+                // 에러 메시지 표시
+                if (context.mounted) {
+                  AppSnackBar.showError(context, errorMessage);
+                }
+              }
+            },
+            onCreateFolder: () {
+              // TODO: 새 폴더 생성 화면으로 이동
+              debugPrint('[PlaceDetailScreen] 새 폴더 만들기');
+            },
+          ),
+        );
       },
       isFullWidth: true,
     );
