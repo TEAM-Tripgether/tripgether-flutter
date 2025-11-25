@@ -1264,7 +1264,7 @@
     "description": "알림 분석 중 상태 메시지"
   },
 
-  "aiAnalysisFailed": "분석에 실패했습니다",
+  "aiAnalysisFailed": "AI가 분석을 실패했습니다",
   "@aiAnalysisFailed": {
     "description": "알림 실패 상태 메시지"
   },

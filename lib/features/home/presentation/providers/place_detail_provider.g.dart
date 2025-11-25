@@ -316,7 +316,7 @@ class _OtherPlacesProviderElement
   String get currentPlaceId => (origin as OtherPlacesProvider).currentPlaceId;
 }
 
-String _$placeDetailHash() => r'903bb46a6045a6eafeaad93d63527d233ad57144';
+String _$placeDetailHash() => r'52e76a9265e7420461906f98080089775fde7d72';
 
 abstract class _$PlaceDetail
     extends BuildlessAutoDisposeAsyncNotifier<PlaceModel?> {

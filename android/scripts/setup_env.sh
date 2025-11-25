@@ -26,8 +26,9 @@ if [ ! -f "$ENV_FILE" ]; then
     fi
 else
     echo "✅ Loading environment variables from .env..."
-    # .env 파일에서 GOOGLE_WEB_CLIENT_ID 읽기
+    # .env 파일에서 환경 변수 읽기
     GOOGLE_WEB_CLIENT_ID=$(grep -E "^GOOGLE_WEB_CLIENT_ID=" "$ENV_FILE" | cut -d '=' -f2)
+    GOOGLE_MAPS_API_KEY=$(grep -E "^GOOGLE_MAP_ANDROID_MAPS_API_KEY=" "$ENV_FILE" | cut -d '=' -f2)
 fi
 
 # GOOGLE_WEB_CLIENT_ID 값 확인
@@ -43,6 +44,7 @@ if [ -z "$GOOGLE_WEB_CLIENT_ID" ]; then
 fi
 
 echo "🌐 GOOGLE_WEB_CLIENT_ID: ${GOOGLE_WEB_CLIENT_ID:0:30}..."
+echo "🗺️  GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:0:20}..."
 
 # local.properties에 기존 내용 유지하면서 환경 변수 추가
 # 먼저 기존 local.properties의 sdk.dir 라인만 유지
@@ -62,6 +64,11 @@ fi
     echo "# Google OAuth 환경 변수 (빌드 시 .env에서 자동 주입)"
     echo "# ═══════════════════════════════════════════════════════════"
     echo "GOOGLE_WEB_CLIENT_ID=$GOOGLE_WEB_CLIENT_ID"
+    echo ""
+    echo "# ═══════════════════════════════════════════════════════════"
+    echo "# Google Maps API 키 (AndroidManifest.xml에서 사용)"
+    echo "# ═══════════════════════════════════════════════════════════"
+    echo "GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY"
 } > "$OUTPUT_FILE"
 
 echo "✅ Environment setup completed!"

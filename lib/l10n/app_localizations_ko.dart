@@ -731,7 +731,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiAnalyzingLocation => 'AI가 위치정보를 파악하고 있습니다';
 
   @override
-  String get aiAnalysisFailed => '분석에 실패했습니다';
+  String get aiAnalysisFailed => 'AI가 분석을 실패했습니다';
 
   @override
   String aiAnalyzedLocations(String count) {
