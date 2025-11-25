@@ -1,11 +1,32 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-25T09:22:40Z",
-    "currentVersion": "1.2.10",
+    "lastUpdated": "2025-11-25T10:24:38Z",
+    "currentVersion": "1.2.11",
     "projectType": "flutter",
-    "totalReleases": 37
+    "totalReleases": 38
   },
   "releases": [
+    {
+      "version": "1.2.11",
+      "project_type": "flutter",
+      "date": "2025-11-25",
+      "pr_number": 103,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n버그 수정\n\n알림 폴링 메커니즘을 최적화하여 불필요한 반복 확인을 제거했습니다. 이제 단일 지연 확인 후 FCM을 통해 업데이트됩니다.\n\n\n\nChores\n\n앱 버전을 1.2.11로 업데이트했습니다.\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "버그_수정": {
+          "title": "버그 수정",
+          "items": [
+            "알림 폴링 메커니즘을 최적화하여 불필요한 반복 확인을 제거했습니다. 이제 단일 지연 확인 후 FCM을 통해 업데이트됩니다."
+          ]
+        },
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "앱 버전을 1.2.11로 업데이트했습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.10",
       "project_type": "flutter",
