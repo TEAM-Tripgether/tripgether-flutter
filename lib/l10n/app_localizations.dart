@@ -1430,11 +1430,23 @@ abstract class AppLocalizations {
   /// **'외부 앱에서 공유된 링크가 여기에 표시됩니다'**
   String get sharedContentMessage;
 
-  /// 알림 진행 중 상태 메시지
+  /// 알림 대기 중 상태 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 대기 중입니다'**
+  String get aiPendingAnalysis;
+
+  /// 알림 분석 중 상태 메시지
   ///
   /// In ko, this message translates to:
   /// **'AI가 위치정보를 파악하고 있습니다'**
   String get aiAnalyzingLocation;
+
+  /// 알림 실패 상태 메시지
+  ///
+  /// In ko, this message translates to:
+  /// **'분석에 실패했습니다'**
+  String get aiAnalysisFailed;
 
   /// 알림 완료 상태 메시지
   ///
@@ -1448,6 +1460,12 @@ abstract class AppLocalizations {
   /// **'{author}님의 게시물'**
   String authorPost(String author);
 
+  /// 알림 대기 중 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'대기 중'**
+  String get notificationStatusWaiting;
+
   /// 알림 진행 중 버튼 텍스트
   ///
   /// In ko, this message translates to:
@@ -1459,6 +1477,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'확인하기'**
   String get notificationStatusCheckButton;
+
+  /// 알림 실패 버튼 텍스트
+  ///
+  /// In ko, this message translates to:
+  /// **'실패'**
+  String get notificationStatusFailed;
 
   /// 방금 전 타임스탬프
   ///

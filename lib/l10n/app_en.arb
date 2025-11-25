@@ -1254,9 +1254,19 @@
     "description": "Notification empty state description message"
   },
 
+  "aiPendingAnalysis": "Analysis is pending",
+  "@aiPendingAnalysis": {
+    "description": "Notification pending status message"
+  },
+
   "aiAnalyzingLocation": "AI is analyzing location information",
   "@aiAnalyzingLocation": {
-    "description": "Notification processing status message"
+    "description": "Notification analyzing status message"
+  },
+
+  "aiAnalysisFailed": "Analysis failed",
+  "@aiAnalysisFailed": {
+    "description": "Notification failed status message"
   },
 
   "aiAnalyzedLocations": "AI analyzed {count} location(s)",
@@ -1281,6 +1291,11 @@
     }
   },
 
+  "notificationStatusWaiting": "Waiting",
+  "@notificationStatusWaiting": {
+    "description": "Notification waiting button text"
+  },
+
   "notificationStatusProcessing": "Processing",
   "@notificationStatusProcessing": {
     "description": "Notification processing button text"
@@ -1289,6 +1304,11 @@
   "notificationStatusCheckButton": "View",
   "@notificationStatusCheckButton": {
     "description": "Notification completed check button text"
+  },
+
+  "notificationStatusFailed": "Failed",
+  "@notificationStatusFailed": {
+    "description": "Notification failed button text"
   },
 
   "timestampJustNow": "Just now",

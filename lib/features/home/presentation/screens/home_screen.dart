@@ -19,6 +19,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/providers/user_provider.dart';
 import '../../data/repositories/content_repository.dart';
+import '../providers/content_provider.dart';
 import '../widgets/recent_sns_content_section.dart';
 import '../widgets/recent_saved_places_section.dart';
 
@@ -32,7 +33,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
-    with AutomaticKeepAliveClientMixin, RefreshableTabMixin {
+    with AutomaticKeepAliveClientMixin, RefreshableTabMixin, WidgetsBindingObserver {
+  // ════════════════════════════════════════════════════════════════════════
+  // 상태 관리
+  // ════════════════════════════════════════════════════════════════════════
+
+  /// URL 큐 처리 중복 실행 방지 플래그
+  bool _isProcessingQueue = false;
+
   // ════════════════════════════════════════════════════════════════════════
   // 라이프사이클
   // ════════════════════════════════════════════════════════════════════════
@@ -41,10 +49,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void initState() {
     super.initState();
 
+    // 앱 라이프사이클 옵저버 등록 (앱 재개 시 큐 처리용)
+    WidgetsBinding.instance.addObserver(this);
+
     // 앱 진입 시 Share Extension 큐 처리
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _processPendingSharedUrls();
     });
+  }
+
+  /// 앱 라이프사이클 상태 변화 감지
+  ///
+  /// 백그라운드에서 포그라운드로 돌아올 때 (resumed) Share Extension 큐를 처리합니다.
+  /// AutomaticKeepAliveClientMixin 때문에 initState가 재호출되지 않으므로,
+  /// 이 콜백에서 큐 처리를 트리거합니다.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      debugPrint('[HomeScreen] 🔄 앱 재개 감지 (resumed) - URL 큐 처리 시작');
+      _processPendingSharedUrls();
+    }
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -56,12 +80,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Future<void> onRefreshData() async {
-    // 홈 화면 데이터 새로고침
-    if (mounted) {
-      setState(() {
-        // 데이터 새로고침 로직
-      });
-    }
+    debugPrint('[HomeScreen] 🔄 onRefreshData 호출 - 데이터 새로고침 시작');
+
+    // 1. 공유된 URL 큐 처리 (Share Extension에서 저장된 URL)
+    await _processPendingSharedUrls();
+
+    // 2. Riverpod Provider 무효화 → API 재호출
+    // contentListProvider: GET /api/content/recent
+    ref.invalidate(contentListProvider);
+    debugPrint('[HomeScreen] ✅ contentListProvider 무효화 완료');
+
+    // recentSavedPlacesProvider: GET /api/content/place/saved
+    ref.invalidate(recentSavedPlacesProvider);
+    debugPrint('[HomeScreen] ✅ recentSavedPlacesProvider 무효화 완료');
+
+    debugPrint('[HomeScreen] 🔄 onRefreshData 완료 - Provider 재빌드 대기 중');
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -79,14 +112,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   ///
   /// 앱 진입 시 자동으로 호출되어 외부 앱에서 공유된 URL들을 처리합니다.
   /// 각 URL을 POST /api/content/analyze로 전송하여 AI 분석을 시작합니다.
+  ///
+  /// ⚠️ 중복 실행 방지: _isProcessingQueue 플래그로 동시 실행 차단
   Future<void> _processPendingSharedUrls() async {
+    // 중복 실행 방지
+    if (_isProcessingQueue) {
+      debugPrint('[HomeScreen] ⚠️ 이미 큐 처리 중 - 중복 실행 무시');
+      return;
+    }
+
+    _isProcessingQueue = true; // 처리 시작 플래그 설정
+
     try {
       debugPrint('═══════════════════════════════════════════════════════');
       debugPrint('[HomeScreen] 📥 공유 URL 큐 처리 시작');
+      debugPrint('[HomeScreen] ⏰ 호출 시간: ${DateTime.now()}');
+      debugPrint('[HomeScreen] 📍 initState에서 호출됨');
 
       // 1. SharingService에서 URL 큐 읽기
+      debugPrint('[HomeScreen] 1단계: SharingService.getPendingUrls() 호출');
       final sharingService = SharingService.instance;
       final pendingUrls = await sharingService.getPendingUrls();
+
+      debugPrint('[HomeScreen] 📋 getPendingUrls 결과: ${pendingUrls.length}개');
+      if (pendingUrls.isNotEmpty) {
+        debugPrint('[HomeScreen] URL 목록:');
+        for (int i = 0; i < pendingUrls.length; i++) {
+          debugPrint('[HomeScreen]   [${i + 1}] ${pendingUrls[i]}');
+        }
+      }
 
       if (pendingUrls.isEmpty) {
         debugPrint('[HomeScreen] ✅ 처리할 URL 없음');
@@ -94,7 +148,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         return;
       }
 
-      debugPrint('[HomeScreen] 📋 대기 중인 URL ${pendingUrls.length}개 발견');
+      debugPrint('[HomeScreen] 2단계: ContentRepository 생성 및 API 전송 시작');
 
       // 2. ContentRepository 생성
       final repository = ContentRepository();
@@ -119,18 +173,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           if (mounted) {
             await handleTokenError(context, ref, e);
           }
-          return; // 토큰 에러 발생 시 큐 처리 중단하고 종료
+          // ⚠️ 토큰 에러 시에도 큐 삭제 (무한 재시도 방지)
+          await sharingService.clearQueue();
+          debugPrint('[HomeScreen] 🗑️ 토큰 에러 발생 - 큐 삭제 후 종료');
+          return;
         } catch (e) {
           debugPrint('[HomeScreen] ❌ URL 전송 실패: $url - $e');
           failCount++;
         }
       }
 
-      // 4. 성공적으로 처리했으면 큐 삭제
-      if (successCount > 0) {
-        await sharingService.clearQueue();
-        debugPrint('[HomeScreen] 🗑️ URL 큐 삭제 완료 ($successCount개 성공)');
-      }
+      // 4. ✅ 성공 여부와 관계없이 큐 삭제 (무한 재시도 방지)
+      await sharingService.clearQueue();
+      debugPrint('[HomeScreen] 🗑️ URL 큐 삭제 완료 (성공 $successCount개, 실패 $failCount개)');
 
       debugPrint('[HomeScreen] 📊 처리 결과: 성공 $successCount개, 실패 $failCount개');
       debugPrint('═══════════════════════════════════════════════════════');
@@ -145,6 +200,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       debugPrint('[HomeScreen] ❌ URL 큐 처리 중 오류 발생: $e');
       debugPrint('StackTrace: $stackTrace');
       debugPrint('═══════════════════════════════════════════════════════');
+    } finally {
+      // 처리 완료 후 플래그 해제
+      _isProcessingQueue = false;
+      debugPrint('[HomeScreen] ✅ 큐 처리 플래그 해제');
     }
   }
 
@@ -318,6 +377,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   void dispose() {
+    // 앱 라이프사이클 옵저버 해제
+    WidgetsBinding.instance.removeObserver(this);
     // RefreshableTabMixin이 자동으로 탭 콜백 해제 및 컨트롤러 정리 처리
     super.dispose();
   }

@@ -725,7 +725,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sharedContentMessage => '외부 앱에서 공유된 링크가 여기에 표시됩니다';
 
   @override
+  String get aiPendingAnalysis => '분석 대기 중입니다';
+
+  @override
   String get aiAnalyzingLocation => 'AI가 위치정보를 파악하고 있습니다';
+
+  @override
+  String get aiAnalysisFailed => '분석에 실패했습니다';
 
   @override
   String aiAnalyzedLocations(String count) {
@@ -738,10 +744,16 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get notificationStatusWaiting => '대기 중';
+
+  @override
   String get notificationStatusProcessing => '진행 중';
 
   @override
   String get notificationStatusCheckButton => '확인하기';
+
+  @override
+  String get notificationStatusFailed => '실패';
 
   @override
   String get timestampJustNow => '방금';

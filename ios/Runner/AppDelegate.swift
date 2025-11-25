@@ -189,40 +189,91 @@ import GoogleMaps
   /// 큐에 저장된 모든 URL 가져오기 (2D 배열 → 1D 배열 변환)
   /// - Parameter result: Flutter로 반환할 결과 ([String] 형태)
   private func getPendingUrls(result: @escaping FlutterResult) {
+    print("[AppDelegate] ═══════════════════════════════════════")
+    print("[AppDelegate] 📥 getPendingUrls 시작")
+    print("[AppDelegate] App Group ID: group.\(hostAppBundleIdentifier)")
+    print("[AppDelegate] Queue Key: \(queueKey)")
+
     let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
 
-    print("[AppDelegate] 📥 대기 중인 URL 큐 조회 시작")
+    if userDefaults == nil {
+      print("[AppDelegate] ❌ UserDefaults 획득 실패 - App Group 설정 확인 필요")
+      print("[AppDelegate] ═══════════════════════════════════════")
+      result([])
+      return
+    }
+    print("[AppDelegate] ✅ UserDefaults 획득 성공")
 
     guard let queue = userDefaults?.array(forKey: queueKey) as? [[String]] else {
-      print("[AppDelegate] ✅ 대기 중인 URL 큐 없음")
+      print("[AppDelegate] ❌ 큐 없음 또는 타입 불일치")
+
+      // 디버깅: 실제 저장된 값의 타입 확인
+      if let rawValue = userDefaults?.object(forKey: queueKey) {
+        print("[AppDelegate] 큐 키에 저장된 값 타입: \(type(of: rawValue))")
+        print("[AppDelegate] 큐 키에 저장된 값: \(rawValue)")
+      } else {
+        print("[AppDelegate] 큐 키에 저장된 값 없음 (nil)")
+      }
+
+      print("[AppDelegate] ═══════════════════════════════════════")
       result([])
       return
     }
 
+    print("[AppDelegate] ✅ 큐 발견 - 크기: \(queue.count)개")
+    print("[AppDelegate] 큐 내용 (2D 배열): \(queue)")
+
     // 2D 배열을 1D 배열로 평탄화 (flatMap)
     let urls = queue.flatMap { $0 }
 
-    print("[AppDelegate] ✅ 대기 중인 URL \(urls.count)개 발견 (큐 크기: \(queue.count))")
+    print("[AppDelegate] 평탄화 결과: \(urls.count)개 URL")
+    print("[AppDelegate] URL 목록:")
+    for (index, url) in urls.enumerated() {
+      print("[AppDelegate]   [\(index + 1)] \(url)")
+    }
+
+    print("[AppDelegate] ✅ getPendingUrls 완료")
+    print("[AppDelegate] ═══════════════════════════════════════")
+
     result(urls)
   }
 
   /// 큐 전체 삭제
   /// - Parameter result: Flutter로 반환할 결과 (Bool)
   private func clearPendingUrls(result: @escaping FlutterResult) {
+    print("[AppDelegate] ═══════════════════════════════════════")
+    print("[AppDelegate] 🗑️ clearPendingUrls 시작")
+    print("[AppDelegate] App Group ID: group.\(hostAppBundleIdentifier)")
+    print("[AppDelegate] Queue Key: \(queueKey)")
+
     let userDefaults = UserDefaults(suiteName: "group.\(hostAppBundleIdentifier)")
 
-    print("[AppDelegate] 🗑️ URL 큐 삭제 시작")
+    if userDefaults == nil {
+      print("[AppDelegate] ❌ UserDefaults 획득 실패")
+      print("[AppDelegate] ═══════════════════════════════════════")
+      result(false)
+      return
+    }
+    print("[AppDelegate] ✅ UserDefaults 획득 성공")
 
     // 삭제 전 데이터 존재 확인
     let existsBefore = userDefaults?.object(forKey: queueKey) != nil
     print("[AppDelegate] 삭제 전 큐 존재: \(existsBefore)")
 
+    if existsBefore {
+      if let queueBefore = userDefaults?.array(forKey: queueKey) as? [[String]] {
+        print("[AppDelegate] 삭제 전 큐 크기: \(queueBefore.count)개")
+      }
+    }
+
     // 큐 삭제
+    print("[AppDelegate] removeObject(forKey:) 호출")
     userDefaults?.removeObject(forKey: queueKey)
 
     // 강제 동기화
+    print("[AppDelegate] synchronize() 호출")
     let syncSuccess = userDefaults?.synchronize() ?? false
-    print("[AppDelegate] 동기화 성공: \(syncSuccess)")
+    print("[AppDelegate] 동기화 결과: \(syncSuccess ? "✅ 성공" : "❌ 실패")")
 
     // 삭제 후 데이터 존재 확인
     let existsAfter = userDefaults?.object(forKey: queueKey) != nil
@@ -230,9 +281,14 @@ import GoogleMaps
 
     if existsAfter {
       print("[AppDelegate] ⚠️ 경고: 큐가 삭제되지 않았습니다!")
+      if let queueAfter = userDefaults?.array(forKey: queueKey) as? [[String]] {
+        print("[AppDelegate] 삭제 후에도 남아있는 큐 크기: \(queueAfter.count)개")
+      }
+      print("[AppDelegate] ═══════════════════════════════════════")
       result(false)
     } else {
       print("[AppDelegate] ✅ URL 큐 삭제 완료")
+      print("[AppDelegate] ═══════════════════════════════════════")
       result(true)
     }
   }

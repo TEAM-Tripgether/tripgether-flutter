@@ -1,10 +1,16 @@
 /// 알림 아이템 상태
 enum NotificationStatus {
-  /// 진행 중 (AI가 분석 중)
+  /// 대기 중 (요청 접수됨, 아직 분석 시작 안 됨)
   pending,
 
-  /// 완료됨 (분석 완료, 확인 가능)
+  /// 분석 중 (AI가 현재 분석 중)
+  analyzing,
+
+  /// 완료됨 (분석 성공, 장소 추출 완료)
   completed,
+
+  /// 실패 (분석 오류 발생)
+  failed,
 }
 
 /// 알림 아이템 모델
@@ -87,11 +93,20 @@ class NotificationItem {
     );
   }
 
-  /// 진행 중 상태 여부
+  /// 대기 중 상태 여부 (PENDING)
   bool get isPending => status == NotificationStatus.pending;
 
-  /// 완료 상태 여부
+  /// 분석 중 상태 여부 (ANALYZING)
+  bool get isAnalyzing => status == NotificationStatus.analyzing;
+
+  /// 완료 상태 여부 (COMPLETED)
   bool get isCompleted => status == NotificationStatus.completed;
+
+  /// 실패 상태 여부 (FAILED)
+  bool get isFailed => status == NotificationStatus.failed;
+
+  /// 진행 중 상태 여부 (PENDING 또는 ANALYZING)
+  bool get isInProgress => isPending || isAnalyzing;
 
   /// 상대적 타임스탬프 반환 (예: "방금", "5분 전")
   ///

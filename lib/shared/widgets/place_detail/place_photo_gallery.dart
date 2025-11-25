@@ -40,7 +40,7 @@ class PlacePhotoGallery extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         itemCount: photoUrls.length,
-        separatorBuilder: (_, __) => SizedBox(width: AppSpacing.sm),
+        separatorBuilder: (_, _) => SizedBox(width: AppSpacing.sm),
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {

@@ -208,7 +208,7 @@ class PlaceDetailScreen extends ConsumerWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: contents.length,
-                separatorBuilder: (_, __) => AppSpacing.horizontalSpaceMD,
+                separatorBuilder: (_, _) => AppSpacing.horizontalSpaceMD,
                 itemBuilder: (context, index) {
                   return SnsContentCard(
                     content: contents[index],
@@ -226,7 +226,7 @@ class PlaceDetailScreen extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 
@@ -252,7 +252,7 @@ class PlaceDetailScreen extends ConsumerWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: places.length,
-                separatorBuilder: (_, __) => AppSpacing.horizontalSpaceMD,
+                separatorBuilder: (_, _) => AppSpacing.horizontalSpaceMD,
                 itemBuilder: (context, index) {
                   final place = places[index];
                   return SizedBox(
@@ -282,7 +282,7 @@ class PlaceDetailScreen extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 
@@ -342,10 +342,7 @@ class PlaceDetailScreen extends ConsumerWidget {
               color: AppColors.error,
             ),
             AppSpacing.verticalSpaceMD,
-            Text(
-              '데이터를 불러올 수 없습니다',
-              style: AppTextStyles.titleSemiBold16,
-            ),
+            Text('데이터를 불러올 수 없습니다', style: AppTextStyles.titleSemiBold16),
             AppSpacing.verticalSpaceXS,
             Text(
               error.toString(),

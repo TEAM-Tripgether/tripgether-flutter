@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tripgether/core/utils/api_logger.dart';
 import '../../../../core/models/content_model.dart';
@@ -27,23 +28,60 @@ class ApiContentDataSource implements ContentDataSource {
   @override
   Future<ContentModel> analyzeSharedUrl({required String snsUrl}) async {
     try {
+      debugPrint('═══════════════════════════════════════════════════════');
+      debugPrint('[API] 📤 POST /api/content/analyze 요청');
+      debugPrint('[API] 📦 Request Body: {"snsUrl": "$snsUrl"}');
+
       final response = await dio.post(
         '$baseUrl/api/content/analyze',
         options: Options(headers: {'Content-Type': 'application/json'}),
         data: {'snsUrl': snsUrl},
       );
 
+      debugPrint('[API] 📥 Response Status: ${response.statusCode}');
+      debugPrint('[API] 📥 Response Headers: ${response.headers}');
+      debugPrint('[API] 📥 Response Data Type: ${response.data.runtimeType}');
+      debugPrint('[API] 📥 Response Data: ${response.data}');
+
       if (response.statusCode == 201 || response.statusCode == 200) {
-        return ContentModel.fromJson(response.data);
+        // ✅ 안전한 JSON 파싱 (null 값을 명시적으로 처리)
+        final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+
+        debugPrint('[API] 📋 Parsed Response Keys: ${responseData.keys.toList()}');
+        debugPrint('[API] 📋 contentId: ${responseData['contentId']}');
+        debugPrint('[API] 📋 status: ${responseData['status']}');
+        debugPrint('[API] 📋 title: ${responseData['title']}');
+        debugPrint('[API] 📋 snsUrl: ${responseData['snsUrl']}');
+
+        // null 값을 안전하게 제거하여 freezed의 기본값 적용
+        final safeData = Map<String, dynamic>.from(responseData)
+          ..removeWhere((key, value) => value == null);
+
+        debugPrint('[API] ✅ ContentModel 파싱 시작');
+        final content = ContentModel.fromJson(safeData);
+        debugPrint('[API] ✅ ContentModel 파싱 성공');
+        debugPrint('[API] ✅ 파싱 결과 - contentId: ${content.contentId}, status: ${content.status}');
+        debugPrint('═══════════════════════════════════════════════════════');
+
+        return content;
       } else {
+        debugPrint('[API] ❌ 실패 - Status: ${response.statusCode}');
+        debugPrint('═══════════════════════════════════════════════════════');
         throw Exception('Failed to analyze URL: ${response.statusCode}');
       }
     } on DioException catch (e) {
+      debugPrint('[API] ❌ DioException 발생');
+      debugPrint('[API] ❌ Error Type: ${e.type}');
+      debugPrint('[API] ❌ Error Message: ${e.message}');
+      debugPrint('[API] ❌ Response: ${e.response?.data}');
+      debugPrint('═══════════════════════════════════════════════════════');
       ApiLogger.throwFromDioError(
         e,
         context: 'ApiContentDataSource.analyzeSharedUrl',
       );
     } catch (e) {
+      debugPrint('[API] ❌ Exception 발생: $e');
+      debugPrint('═══════════════════════════════════════════════════════');
       ApiLogger.logException(
         e,
         context: 'ApiContentDataSource.analyzeSharedUrl',

@@ -738,7 +738,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Shared links from external apps will appear here';
 
   @override
+  String get aiPendingAnalysis => 'Analysis is pending';
+
+  @override
   String get aiAnalyzingLocation => 'AI is analyzing location information';
+
+  @override
+  String get aiAnalysisFailed => 'Analysis failed';
 
   @override
   String aiAnalyzedLocations(String count) {
@@ -751,10 +757,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get notificationStatusWaiting => 'Waiting';
+
+  @override
   String get notificationStatusProcessing => 'Processing';
 
   @override
   String get notificationStatusCheckButton => 'View';
+
+  @override
+  String get notificationStatusFailed => 'Failed';
 
   @override
   String get timestampJustNow => 'Just now';
