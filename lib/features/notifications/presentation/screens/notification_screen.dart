@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/services/sharing_service.dart';
 import '../../../../core/services/fcm/firebase_messaging_service.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -94,26 +96,31 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     });
   }
 
-  /// PENDING 알림 단일 폴링
+  /// PENDING 알림 반복 폴링
   ///
-  /// 화면 진입 5초 후 한 번만 폴링을 실행합니다.
-  /// 이후 상태 업데이트는 FCM 알림으로 처리됩니다.
+  /// 화면에 있는 동안 10초마다 PENDING 알림 상태를 확인합니다.
+  /// PENDING 알림이 없거나 모두 COMPLETED/FAILED 되면 자동으로 중지합니다.
   void _startPollingPendingNotifications() {
-    debugPrint('[NotificationScreen] 🔄 단일 폴링 예약 (5초 후)');
+    debugPrint('[NotificationScreen] 🔄 폴링 시작 (10초 간격)');
 
-    _pollingTimer = Timer(const Duration(seconds: 5), () async {
-      if (!mounted) return;
+    _pollingTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
 
       // PENDING 또는 ANALYZING 상태 알림이 있는지 확인
       final notifications = ref.read(notificationListProvider);
       final hasPendingNotifications = notifications.any((n) => n.isInProgress);
 
       if (!hasPendingNotifications) {
-        debugPrint('[NotificationScreen] ✅ 폴링할 PENDING 알림 없음');
+        debugPrint('[NotificationScreen] ✅ 모든 알림 완료 - 폴링 중지');
+        timer.cancel();
+        _pollingTimer = null;
         return;
       }
 
-      debugPrint('[NotificationScreen] 🔄 단일 폴링 실행');
+      debugPrint('[NotificationScreen] 🔄 폴링 실행');
       await _pollPendingNotifications();
     });
   }
@@ -745,7 +752,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       case NotificationStatus.analyzing:
         return _buildLoadingButton(notification.status);
       case NotificationStatus.completed:
-        return _buildCompletedButton();
+        return _buildCompletedButton(notification);
       case NotificationStatus.failed:
         return _buildFailedButton();
     }
@@ -796,21 +803,73 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   }
 
   /// 완료 버튼 (COMPLETED 상태)
-  Widget _buildCompletedButton() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.smd,
-        vertical: AppSpacing.sm,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.mainColor,
-        borderRadius: BorderRadius.circular(AppRadius.small),
-      ),
-      child: Text(
-        AppLocalizations.of(context).notificationStatusCheckButton,
-        style: AppTextStyles.bodyMedium14.copyWith(color: AppColors.white),
+  ///
+  /// [notification]: 알림 아이템 (contentId로 상세 화면 이동)
+  ///
+  /// 탭 시 SnsContentDetailScreen으로 이동합니다.
+  Widget _buildCompletedButton(NotificationItem notification) {
+    return GestureDetector(
+      onTap: () => _navigateToContentDetail(notification),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.smd,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.mainColor,
+          borderRadius: BorderRadius.circular(AppRadius.small),
+        ),
+        child: Text(
+          AppLocalizations.of(context).notificationStatusCheckButton,
+          style: AppTextStyles.bodyMedium14.copyWith(color: AppColors.white),
+        ),
       ),
     );
+  }
+
+  /// 콘텐츠 상세 화면으로 이동
+  ///
+  /// [notification]: 알림 아이템
+  ///
+  /// contentId가 있으면 API에서 ContentModel을 조회하여 SnsContentDetailScreen으로 이동합니다.
+  Future<void> _navigateToContentDetail(NotificationItem notification) async {
+    final contentId = notification.contentId;
+    if (contentId == null) {
+      debugPrint('[NotificationScreen] ❌ contentId가 null - 이동 불가');
+      return;
+    }
+
+    try {
+      debugPrint('[NotificationScreen] 📤 콘텐츠 상세 조회: $contentId');
+
+      // API에서 ContentModel 조회
+      final content = await ref.read(contentDetailProvider(contentId).future);
+
+      if (!mounted) return;
+
+      debugPrint('[NotificationScreen] ✅ 콘텐츠 조회 완료 - 상세 화면 이동');
+
+      // SnsContentDetailScreen으로 이동
+      context.push(
+        AppRoutes.snsContentDetail.replaceAll(':contentId', contentId),
+        extra: content,
+      );
+    } on RefreshTokenException catch (e) {
+      debugPrint('[NotificationScreen] 🚨 Refresh Token 에러: $e');
+      if (mounted) {
+        await handleTokenError(context, ref, e);
+      }
+    } catch (e) {
+      debugPrint('[NotificationScreen] ❌ 콘텐츠 조회 실패: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('콘텐츠를 불러올 수 없습니다.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   /// 실패 버튼 (FAILED 상태)
