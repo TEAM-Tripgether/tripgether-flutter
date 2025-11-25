@@ -57,6 +57,10 @@ android {
         // ═══════════════════════════════════════════════════════════
         val googleWebClientId = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
+
+        // Google Maps API Key를 AndroidManifest.xml에 주입
+        val googleMapsApiKey = localProperties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
+        manifestPlaceholders["GOOGLE_MAPS_API_KEY"] = googleMapsApiKey
     }
 	val keystorePropertiesFile = rootProject.file("key.properties")
     val keystoreProperties = Properties()

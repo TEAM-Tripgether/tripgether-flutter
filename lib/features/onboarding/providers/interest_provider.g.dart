@@ -6,14 +6,15 @@ part of 'interest_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dioHash() => r'97e2f7c7055d4e32a6f7313f15c4cc2499145eb1';
+String _$dioHash() => r'a0e3ab5d241d79ccb9492b0e2d6835b525906229';
 
 /// Dio 인스턴스 Provider (JWT 토큰 자동 추가)
 ///
 /// **특징**:
-/// - Interceptor를 통해 모든 요청에 JWT 토큰 자동 추가
-/// - FlutterSecureStorage에서 access_token 읽기
-/// - 토큰이 없으면 요청 그대로 진행 (인증 불필요한 API 대응)
+/// - AuthInterceptor를 통해 모든 요청에 JWT 토큰 자동 추가
+/// - TokenManager에서 메모리 캐시 우선 읽기 (Race Condition 방지)
+/// - Access Token 만료 시 자동 갱신
+/// - TOKEN_BLACKLISTED 에러 자동 처리
 ///
 /// Copied from [dio].
 @ProviderFor(dio)

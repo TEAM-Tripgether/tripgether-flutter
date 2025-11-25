@@ -1,7 +1,7 @@
 # Tripgether Backend API 문서
 
 **Base URL**: `https://api.tripgether.suhsaechan.kr`
-**문서 버전**: 2025-01-18
+**문서 버전**: 2025-11-24
 **API 버전**: OAS 3.1
 
 ---
@@ -12,11 +12,12 @@
 3. [회원 관리 API](#회원-관리-api)
 4. [온보딩 API](#온보딩-api)
 5. [관심사 관리 API](#관심사-관리-api)
-6. [콘텐츠 API](#콘텐츠-api)
-7. [AI 서버 API](#ai-서버-api)
-8. [테스트 API](#테스트-api)
-9. [에러 코드](#에러-코드)
-10. [데이터 모델](#데이터-모델)
+6. [장소 관리 API](#장소-관리-api)
+7. [콘텐츠 API](#콘텐츠-api)
+8. [AI 서버 API](#ai-서버-api)
+9. [테스트 API](#테스트-api)
+10. [에러 코드](#에러-코드)
+11. [데이터 모델](#데이터-모델)
 
 ---
 
@@ -33,6 +34,7 @@
 - 회원 프로필 수정
 - 온보딩 관련 API
 - 콘텐츠 생성 및 분석
+- 장소 저장/관리
 - 로그아웃
 
 ### 인증이 불필요한 API
@@ -40,6 +42,7 @@
 - 토큰 재발급
 - 회원 조회
 - 관심사 조회
+- 닉네임 중복 확인
 
 ---
 
@@ -52,15 +55,18 @@
 
 **인증**: 불필요
 
-**Request Body** (`AuthRequest`):
+**Request Body** (`SignInRequest`):
 | 필드 | 타입 | 필수 | 설명 | 예시 |
 |------|------|------|------|------|
-| socialPlatform | string (enum) | ✅ | 로그인 플랫폼 (KAKAO, GOOGLE, NORMAL) | "KAKAO" |
+| socialPlatform | string (enum) | ✅ | 로그인 플랫폼 (KAKAO, GOOGLE) | "KAKAO" |
 | email | string | ✅ | 소셜 로그인 후 반환된 이메일 | "user@example.com" |
 | name | string | ✅ | 소셜 로그인 후 반환된 닉네임 | "홍길동" |
 | profileUrl | string | ❌ | 소셜 로그인 후 반환된 프로필 URL | "https://example.com/profile.jpg" |
+| fcmToken | string | ❌ | FCM 푸시 알림 토큰 (선택) | "dXQzM2k1N2RkZjM0OGE3YjczZGY5..." |
+| deviceType | string (enum) | ❌ | 디바이스 타입 (IOS, ANDROID) - fcmToken 제공 시 필수 | "IOS" |
+| deviceId | string (uuid) | ❌ | 디바이스 고유 식별자 - fcmToken 제공 시 필수 | "550e8400-e29b-41d4-a716-446655440000" |
 
-**Response 200** (`AuthResponse`):
+**Response 200** (`SignInResponse`):
 ```json
 {
   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -82,15 +88,20 @@
 **특이사항**:
 - 클라이언트에서 Kakao/Google OAuth 처리 후 받은 사용자 정보로 서버에 JWT 토큰을 요청합니다.
 - 액세스 토큰은 1시간, 리프레시 토큰은 7일 유효합니다.
+- **FCM 토큰을 전송하면 푸시 알림을 받을 수 있습니다. (멀티 디바이스 지원)**
+- fcmToken, deviceType, deviceId는 3개 모두 함께 전송하거나 모두 전송하지 않아야 합니다.
+- @Valid 검증이 적용됩니다: email, name은 필수 필드입니다.
 
 **에러 코드**:
 - `INVALID_SOCIAL_TOKEN`: 유효하지 않은 소셜 인증 토큰입니다.
 - `SOCIAL_AUTH_FAILED`: 소셜 로그인 인증에 실패하였습니다.
 - `MEMBER_NOT_FOUND`: 회원 정보를 찾을 수 없습니다.
+- `INVALID_INPUT_VALUE`: FCM 토큰 관련 필드가 올바르지 않습니다.
 
 **API 변경 이력**:
 | 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
 |------|--------|----------|-----------|-----------|
+| 2025.11.23 | 서새찬 | - | FCM 토큰 멀티 디바이스 지원 | FCM 토큰 멀티 디바이스 지원 추가 |
 | 2025.10.16 | 서새찬 | [#22](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/22) | 인증 모듈 추가 및 기본 OAuth 로그인 구현 | 인증 모듈 추가 및 기본 OAuth 로그인 구현 |
 
 ---
@@ -167,6 +178,37 @@
 | 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
 |------|--------|----------|-----------|-----------|
 | 2025.10.16 | 서새찬 | [#22](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/22) | 인증 모듈 추가 및 기본 OAuth 로그인 구현 | 로그아웃 기능 구현 |
+
+---
+
+### DELETE /api/auth/withdraw
+회원 탈퇴
+
+**인증**: 필요 (JWT)
+
+**Request Headers**:
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| Authorization | string | ✅ | Bearer {accessToken} |
+
+**Request Parameters**: 없음
+
+**Response 200**:
+- 성공 시 상태코드 200 (OK)와 빈 응답 본문
+
+**동작 설명**:
+- 회원 정보를 소프트 삭제(Soft Delete) 처리합니다.
+- 실제 데이터는 삭제되지 않고 `deletedAt` 필드가 설정됩니다.
+- 탈퇴한 회원은 로그인 및 API 사용이 불가능합니다.
+
+**에러 코드**:
+- `MEMBER_NOT_FOUND`: 회원 정보를 찾을 수 없습니다.
+- `UNAUTHORIZED`: 인증이 필요한 요청입니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.23 | 서새찬 | - | 회원 탈퇴 기능 | 회원 탈퇴 API 추가 |
 
 ---
 
@@ -253,6 +295,45 @@
 | 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
 |------|--------|----------|-----------|-----------|
 | 2025.10.16 | 서새찬 | [#22](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/22) | 인증 모듈 추가 및 기본 OAuth 로그인 구현 | 회원 관리 API 문서화 |
+
+---
+
+### GET /api/members/check-name
+닉네임 중복 확인
+
+**인증**: 불필요
+
+**Query Parameters**:
+| 필드 | 타입 | 필수 | 설명 | 예시 |
+|------|------|------|------|------|
+| name | string | ✅ | 확인할 닉네임 (2자 이상 50자 이하) | "여행러버" |
+
+**Response 200** (`CheckNameResponse`):
+```json
+{
+  "isAvailable": true,
+  "name": "여행러버"
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| isAvailable | boolean | 사용 가능 여부 (true: 사용 가능, false: 이미 사용 중) |
+| name | string | 확인한 닉네임 |
+
+**특이사항**:
+- 회원가입 전에도 사용 가능한 API입니다.
+- 닉네임 길이는 2자 이상 50자 이하여야 합니다.
+- 탈퇴한 회원의 닉네임은 타임스탬프가 추가되어 중복 체크에서 제외됩니다.
+
+**에러 코드**:
+- `INVALID_NAME_LENGTH`: 닉네임은 2자 이상 50자 이하여야 합니다.
+- `INVALID_INPUT_VALUE`: 유효하지 않은 입력값입니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.23 | 서새찬 | [#106](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/106) | 닉네임 중복 확인 API 구현 필요 | 닉네임 중복 확인 API 추가 |
 
 ---
 
@@ -673,7 +754,7 @@
 | categories[].interests[].name | string | 관심사 이름 |
 
 **특이사항**:
-- 13개 대분류 카테고리별로 그룹핑된 전체 관심사 목록을 조회합니다.
+- 14개 대분류 카테고리별로 그룹핑된 전체 관심사 목록을 조회합니다.
 - Redis 캐싱이 적용되어 빠른 응답이 가능합니다.
 
 **API 변경 이력**:
@@ -768,6 +849,273 @@
 
 ---
 
+## 📍 장소 관리 API
+
+장소 정보 조회 및 관리 API
+
+### 장소 저장 상태 (SavedStatus)
+- **TEMPORARY** - 임시 저장 (AI 분석으로 자동 생성)
+- **SAVED** - 저장 완료 (사용자가 명시적으로 저장)
+
+---
+
+### GET /api/place/{placeId}
+장소 세부정보 조회
+
+**인증**: 필요 (JWT)
+
+**Path Parameters**:
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| placeId | string (uuid) | ✅ | 조회할 장소 ID |
+
+**Response 200** (`PlaceDetailDto`):
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "제주 카페 쿠모",
+  "address": "제주특별자치도 제주시 애월읍",
+  "country": "KR",
+  "latitude": 33.4996213,
+  "longitude": 126.5311884,
+  "businessType": "카페",
+  "phone": "010-1234-5678",
+  "description": "제주 바다를 바라보며 커피를 즐길 수 있는 카페",
+  "types": ["cafe", "restaurant"],
+  "businessStatus": "OPERATIONAL",
+  "iconUrl": "https://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
+  "rating": 4.5,
+  "userRatingsTotal": 123,
+  "photoUrls": ["https://example.com/photo1.jpg", "https://example.com/photo2.jpg"],
+  "platformReferences": [
+    {
+      "platform": "GOOGLE",
+      "referenceId": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+    }
+  ],
+  "businessHours": [
+    {
+      "dayOfWeek": "MONDAY",
+      "openTime": "09:00",
+      "closeTime": "18:00"
+    }
+  ],
+  "medias": [
+    {
+      "mediaType": "IMAGE",
+      "url": "https://example.com/media1.jpg"
+    }
+  ]
+}
+```
+
+**Response Schema**:
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| id | string (uuid) | 장소 ID |
+| name | string | 장소명 |
+| address | string | 주소 |
+| country | string | 국가 코드 (ISO 3166-1 alpha-2) |
+| latitude | number | 위도 |
+| longitude | number | 경도 |
+| businessType | string | 업종 |
+| phone | string | 전화번호 |
+| description | string | 장소 설명 |
+| types | array of string | 장소 유형 배열 |
+| businessStatus | string | 영업 상태 |
+| iconUrl | string | Google 아이콘 URL |
+| rating | number | 평점 (0.0 ~ 5.0) |
+| userRatingsTotal | integer | 리뷰 수 |
+| photoUrls | array of string | 사진 URL 배열 |
+| platformReferences | array | 플랫폼별 참조 정보 (Google Place ID 등) |
+| businessHours | array | 영업시간 목록 |
+| medias | array | 추가 미디어 목록 |
+
+**특이사항**:
+- Google Place ID를 포함한 플랫폼 참조 정보를 제공합니다.
+- 영업시간과 추가 미디어 정보가 포함됩니다.
+
+**에러 코드**:
+- `PLACE_NOT_FOUND`: 장소를 찾을 수 없습니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.10.25 | 서새찬 | [#36](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/36) | Deploy 20251025-v0.1.5 | 장소 상세 정보 조회 API 추가 |
+
+---
+
+### GET /api/place/saved
+저장한 장소 목록 조회
+
+**인증**: 필요 (JWT)
+
+**Request Parameters**: 없음
+
+**Response 200** (`GetSavedPlacesResponse`):
+```json
+{
+  "places": [
+    {
+      "placeId": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "스타벅스 서울역점",
+      "address": "서울특별시 중구 명동길 29",
+      "rating": 4.5,
+      "photoUrls": ["https://example.com/photo1.jpg"],
+      "description": "서울역 인근, 공부하기 좋은 카페"
+    }
+  ]
+}
+```
+
+**Response Schema**:
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| places | array of PlaceDto | 저장한 장소 목록 |
+| places[].placeId | string (uuid) | 장소 ID |
+| places[].name | string | 장소명 |
+| places[].address | string | 주소 |
+| places[].rating | number | 별점 (0.0 ~ 5.0) |
+| places[].photoUrls | array of string | 사진 URL 배열 (최대 10개) |
+| places[].description | string | 장소 요약 설명 |
+
+**특이사항**:
+- 사용자가 명시적으로 저장한 장소들을 조회합니다.
+- 최신순으로 정렬되어 반환됩니다.
+- `/api/content/place/saved`와는 다른 MemberPlace 기반 조회입니다.
+
+**에러 코드**:
+- `MEMBER_NOT_FOUND`: 회원을 찾을 수 없습니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.24 | 서새찬 | [#103](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/103) | 로그인 API FCM 토큰 필드 추가 및 멀티 디바이스 푸시 알림 지원 기능 추가 | 저장한 장소 목록 조회 API 추가 |
+
+---
+
+### GET /api/place/temporary
+임시 저장 장소 목록 조회
+
+**인증**: 필요 (JWT)
+
+**Request Parameters**: 없음
+
+**Response 200** (`GetTemporaryPlacesResponse`):
+```json
+{
+  "places": [
+    {
+      "placeId": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "제주 카페 쿠모",
+      "address": "제주특별자치도 제주시 애월읍",
+      "rating": 4.5,
+      "photoUrls": ["https://example.com/photo1.jpg"],
+      "description": "제주 바다를 바라보며 커피를 즐길 수 있는 카페"
+    }
+  ]
+}
+```
+
+**Response Schema**:
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| places | array of PlaceDto | 임시 저장 장소 목록 |
+
+**특이사항**:
+- AI 분석으로 자동 생성된 장소들을 조회합니다.
+- 사용자가 아직 저장 여부를 결정하지 않은 상태입니다.
+- 최신순으로 정렬되어 반환됩니다.
+
+**에러 코드**:
+- `MEMBER_NOT_FOUND`: 회원을 찾을 수 없습니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.24 | 서새찬 | [#103](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/103) | 로그인 API FCM 토큰 필드 추가 및 멀티 디바이스 푸시 알림 지원 기능 추가 | 임시 저장 장소 목록 조회 API 추가 |
+
+---
+
+### POST /api/place/{placeId}/save
+장소 저장
+
+**인증**: 필요 (JWT)
+
+**Path Parameters**:
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| placeId | string (uuid) | ✅ | 저장할 장소 ID |
+
+**Request Parameters**: 없음
+
+**Response 200** (`SavePlaceResponse`):
+```json
+{
+  "memberPlaceId": "550e8400-e29b-41d4-a716-446655440000",
+  "placeId": "550e8400-e29b-41d4-a716-446655440000",
+  "savedStatus": "SAVED",
+  "savedAt": "2024-11-24T10:30:00"
+}
+```
+
+**Response Schema**:
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| memberPlaceId | string (uuid) | 회원 장소 ID |
+| placeId | string (uuid) | 장소 ID |
+| savedStatus | string | 저장 상태 (SAVED) |
+| savedAt | string (datetime) | 저장 일시 |
+
+**특이사항**:
+- 임시 저장 상태(TEMPORARY)의 장소를 저장 상태(SAVED)로 변경합니다.
+- 저장 시점의 시간이 기록됩니다.
+
+**에러 코드**:
+- `PLACE_NOT_FOUND`: 장소를 찾을 수 없습니다.
+- `MEMBER_PLACE_NOT_FOUND`: 회원의 장소 정보를 찾을 수 없습니다.
+- `MEMBER_NOT_FOUND`: 회원을 찾을 수 없습니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.24 | 서새찬 | [#103](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/103) | 로그인 API FCM 토큰 필드 추가 및 멀티 디바이스 푸시 알림 지원 기능 추가 | 장소 저장 API 추가 |
+
+---
+
+### DELETE /api/place/{placeId}/temporary
+임시 저장 장소 삭제
+
+**인증**: 필요 (JWT)
+
+**Path Parameters**:
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| placeId | string (uuid) | ✅ | 삭제할 장소 ID |
+
+**Request Parameters**: 없음
+
+**Response 200**:
+- **204 No Content**: 삭제 성공 (반환값 없음)
+
+**특이사항**:
+- 임시 저장 상태(TEMPORARY)의 장소만 삭제 가능합니다.
+- 저장된 상태(SAVED)의 장소는 삭제할 수 없습니다.
+- Soft Delete 방식으로 데이터는 실제로 삭제되지 않습니다.
+
+**에러 코드**:
+- `PLACE_NOT_FOUND`: 장소를 찾을 수 없습니다.
+- `MEMBER_PLACE_NOT_FOUND`: 회원의 장소 정보를 찾을 수 없습니다.
+- `CANNOT_DELETE_SAVED_PLACE`: 임시 저장된 장소만 삭제할 수 있습니다.
+- `MEMBER_NOT_FOUND`: 회원을 찾을 수 없습니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.24 | 서새찬 | [#103](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/103) | 로그인 API FCM 토큰 필드 추가 및 멀티 디바이스 푸시 알림 지원 기능 추가 | 임시 저장 장소 삭제 API 추가 |
+
+---
+
 ## 📱 콘텐츠 API
 
 SNS 콘텐츠 생성 및 장소 추출 요청 API
@@ -853,6 +1201,239 @@ SNS 콘텐츠 생성 및 장소 추출 요청 API
 | 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
 |------|--------|----------|-----------|-----------|
 | 2025.11.02 | 강지윤 | [#54](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/54) | AI서버 장소 추출 요청 API 구현 필요 | 콘텐츠 Docs 추가 및 리팩토링 |
+
+---
+
+### GET /api/content/{contentId}
+단일 SNS 콘텐츠 정보 조회
+
+**인증**: 필요 (JWT)
+
+**Path Parameters**:
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| contentId | string (uuid) | ✅ | 조회할 Content UUID |
+
+**Response 200** (`GetContentInfoResponse`):
+```json
+{
+  "content": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "platform": "INSTAGRAM",
+    "status": "COMPLETED",
+    "platformUploader": "travel_lover_123",
+    "caption": "제주도 여행 브이로그",
+    "thumbnailUrl": "https://example.com/thumbnail.jpg",
+    "originalUrl": "https://www.instagram.com/p/ABC123/",
+    "title": "제주도 힐링 여행",
+    "summary": "제주도의 아름다운 카페와 맛집을 소개합니다.",
+    "lastCheckedAt": "2025-11-23T10:30:00"
+  },
+  "places": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "제주 카페 쿠모",
+      "address": "제주특별자치도 제주시 애월읍",
+      "country": "KR",
+      "latitude": 33.4996213,
+      "longitude": 126.5311884,
+      "businessType": "카페",
+      "phone": "010-1234-5678",
+      "description": "제주 바다를 바라보며 커피를 즐길 수 있는 카페",
+      "types": ["cafe", "restaurant"],
+      "businessStatus": "OPERATIONAL",
+      "iconUrl": "https://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
+      "rating": 4.5,
+      "userRatingsTotal": 123,
+      "photoUrls": ["https://example.com/photo1.jpg", "https://example.com/photo2.jpg"]
+    }
+  ]
+}
+```
+
+**Response Schema**:
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| content | ContentDto | Content 상세 정보 |
+| content.id | string (uuid) | 콘텐츠 ID |
+| content.platform | string | 플랫폼 유형 (INSTAGRAM, YOUTUBE 등) |
+| content.status | string | 처리 상태 (PENDING, COMPLETED, FAILED 등) |
+| content.platformUploader | string | 업로더 이름 |
+| content.caption | string | 캡션 |
+| content.thumbnailUrl | string | 썸네일 URL |
+| content.originalUrl | string | 원본 SNS URL |
+| content.title | string | 제목 |
+| content.summary | string | 요약 설명 |
+| content.lastCheckedAt | string (datetime) | 마지막 확인 시각 |
+| places | array | 연관된 Place 목록 (position 순서대로 정렬) |
+
+**동작 방식**:
+- Content ID로 콘텐츠 정보와 연관된 장소 목록을 조회합니다.
+- Place 목록은 position 순서대로 정렬되어 반환됩니다.
+- Content가 존재하지 않으면 404 에러를 반환합니다.
+- 연관된 Place가 없는 경우 빈 배열을 반환합니다.
+
+**에러 코드**:
+- `CONTENT_NOT_FOUND`: 해당 콘텐츠를 찾을 수 없습니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.23 | 서새찬 | [#111](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/111) | 단일 SNS 컨텐츠 조회 API | 단일 SNS 컨텐츠 조회 API 추가 |
+
+---
+
+### GET /api/content/recent
+최근 SNS 콘텐츠 목록 조회
+
+**인증**: 필요 (JWT)
+
+**Request Parameters**: 없음
+
+**Response 200** (`GetRecentContentResponse`):
+```json
+{
+  "contents": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "platform": "INSTAGRAM",
+      "status": "COMPLETED",
+      "platformUploader": "travel_lover_123",
+      "caption": "제주도 여행 브이로그",
+      "thumbnailUrl": "https://example.com/thumbnail.jpg",
+      "originalUrl": "https://www.instagram.com/p/ABC123/",
+      "title": "제주도 힐링 여행",
+      "summary": "제주도의 아름다운 카페와 맛집을 소개합니다.",
+      "lastCheckedAt": "2025-11-23T10:30:00"
+    }
+  ]
+}
+```
+
+**Response Schema**:
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| contents | array | 최근 10개 콘텐츠 목록 (최신순 정렬) |
+
+**동작 방식**:
+- 인증된 회원이 소유한 Content 목록을 최신순(createdAt DESC)으로 조회합니다.
+- 최대 10개까지 반환됩니다.
+- Place 정보는 제외하고 Content 정보만 반환합니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.23 | 서새찬 | - | 최근 콘텐츠 조회 API | 최근 SNS 콘텐츠 목록 조회 API 추가 |
+
+---
+
+### GET /api/content/member
+회원 콘텐츠 목록 조회 (페이지네이션)
+
+**인증**: 필요 (JWT)
+
+**Query Parameters**:
+| 필드 | 타입 | 필수 | 기본값 | 설명 |
+|------|------|------|--------|------|
+| pageSize | integer | ❌ | 10 | 페이지 크기 |
+
+**Response 200** (`GetMemberContentPageResponse`):
+```json
+{
+  "contentPage": {
+    "content": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "platform": "INSTAGRAM",
+        "status": "COMPLETED",
+        "platformUploader": "travel_lover_123",
+        "caption": "제주도 여행 브이로그",
+        "thumbnailUrl": "https://example.com/thumbnail.jpg",
+        "originalUrl": "https://www.instagram.com/p/ABC123/",
+        "title": "제주도 힐링 여행",
+        "summary": "제주도의 아름다운 카페와 맛집을 소개합니다.",
+        "lastCheckedAt": "2025-11-23T10:30:00"
+      }
+    ],
+    "totalElements": 25,
+    "totalPages": 3,
+    "number": 0,
+    "size": 10,
+    "first": true,
+    "last": false
+  }
+}
+```
+
+**Response Schema**:
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| contentPage.content | array | 콘텐츠 목록 (ContentDto 배열) |
+| contentPage.totalElements | long | 전체 콘텐츠 개수 |
+| contentPage.totalPages | integer | 전체 페이지 수 |
+| contentPage.number | integer | 현재 페이지 번호 (0부터 시작) |
+| contentPage.size | integer | 페이지 크기 |
+| contentPage.first | boolean | 첫 페이지 여부 |
+| contentPage.last | boolean | 마지막 페이지 여부 |
+
+**동작 방식**:
+- 인증된 회원이 소유한 Content 목록을 최신순(createdAt DESC)으로 조회합니다.
+- Place 정보는 제외하고 Content 정보만 반환합니다.
+- 페이지 크기를 지정하지 않으면 기본 10개가 조회됩니다.
+- 첫 페이지(0번 페이지)만 조회됩니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.23 | 서새찬 | [#112](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/112) | Member에 대한 리스트 Content 조회 메소드 | Member가 소유한 Content 목록 조회 API 추가 |
+
+---
+
+### GET /api/content/place/saved
+사용자 장소 조회
+
+**인증**: 필요 (JWT)
+
+**Request Parameters**: 없음
+
+**Response 200** (`GetSavedPlacesResponse`):
+```json
+{
+  "places": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "제주 카페 쿠모",
+      "address": "제주특별자치도 제주시 애월읍",
+      "country": "KR",
+      "latitude": 33.4996213,
+      "longitude": 126.5311884,
+      "businessType": "카페",
+      "phone": "010-1234-5678",
+      "description": "제주 바다를 바라보며 커피를 즐길 수 있는 카페",
+      "types": ["cafe", "restaurant"],
+      "businessStatus": "OPERATIONAL",
+      "iconUrl": "https://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
+      "rating": 4.5,
+      "userRatingsTotal": 123,
+      "photoUrls": ["https://example.com/photo1.jpg"]
+    }
+  ]
+}
+```
+
+**Response Schema**:
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| places | array | 최근 10개 장소 목록 (최신순 정렬) |
+
+**동작 방식**:
+- 인증된 회원이 저장한 Place 목록을 최신순으로 조회합니다.
+- 최대 10개까지 반환됩니다.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.20 | 서새찬 | - | 사용자 장소 조회 API | 사용자 장소 조회 API 추가 |
 
 ---
 
@@ -1005,6 +1586,33 @@ Mock Content 생성 및 반환
 
 ---
 
+### POST /api/test/fcm/send
+FCM 푸시 알림 전송 테스트
+
+**인증**: 불필요
+
+**Request Body** (`FcmNotificationRequest`):
+| 필드 | 타입 | 필수 | 설명 | 예시 |
+|------|------|------|------|------|
+| fcmToken | string | ✅ | 실제 FCM 토큰 | "dXQzM2k1N2RkZjM0OGE3YjczZGY5..." |
+| title | string | ❌ | 알림 제목 | "테스트 알림" |
+| body | string | ❌ | 알림 본문 | "FCM 푸시 알림 테스트입니다" |
+
+**Response 200**:
+- 성공 시 상태코드 200 (OK)
+
+**특이사항**:
+- 단일 기기로 FCM 푸시 알림을 전송합니다.
+- fcmToken 필드에 실제 FCM 토큰을 입력해야 합니다.
+- 개발 및 테스트 환경에서만 사용하세요.
+
+**API 변경 이력**:
+| 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
+|------|--------|----------|-----------|-----------|
+| 2025.11.24 | 서새찬 | - | FCM 푸시 알림 테스트 API | FCM 푸시 알림 전송 테스트 API 추가 |
+
+---
+
 ## ⚠️ 에러 코드
 
 ### 인증 관련 에러
@@ -1026,11 +1634,19 @@ Mock Content 생성 및 반환
 | EMAIL_ALREADY_EXISTS | 409 | 이미 가입된 이메일입니다. |
 | NAME_ALREADY_EXISTS | 409 | 이미 사용 중인 이름입니다. |
 | MEMBER_TERMS_REQUIRED_NOT_AGREED | 400 | 필수 약관에 동의하지 않았습니다. |
+| INVALID_NAME_LENGTH | 400 | 닉네임은 2자 이상 50자 이하여야 합니다. |
 
 ### 관심사 관련 에러
 | 에러 코드 | HTTP 상태 | 설명 |
 |-----------|-----------|------|
 | INTEREST_NOT_FOUND | 404 | 유효하지 않은 관심사 ID가 포함되어 있습니다. |
+
+### 장소 관련 에러
+| 에러 코드 | HTTP 상태 | 설명 |
+|-----------|-----------|------|
+| PLACE_NOT_FOUND | 404 | 장소를 찾을 수 없습니다. |
+| MEMBER_PLACE_NOT_FOUND | 404 | 회원의 장소 정보를 찾을 수 없습니다. |
+| CANNOT_DELETE_SAVED_PLACE | 400 | 임시 저장된 장소만 삭제할 수 있습니다. |
 
 ### 콘텐츠 관련 에러
 | 에러 코드 | HTTP 상태 | 설명 |
@@ -1081,52 +1697,61 @@ Mock Content 생성 및 반환
 
 ---
 
-### AuthRequest
-인증 요청 DTO
+### PlaceDto
+장소 정보 DTO (간략)
 
-| 필드 | 타입 | 필수 | 설명 | 예시 |
-|------|------|------|------|------|
-| socialPlatform | string (enum) | ❌ | 로그인 플랫폼 (NORMAL, KAKAO, GOOGLE) | "KAKAO" |
-| email | string | ❌ | 소셜 로그인 후 반환된 이메일 | "user@example.com" |
-| name | string | ❌ | 소셜 로그인 후 반환된 닉네임 | "홍길동" |
-| profileUrl | string | ❌ | 소셜 로그인 후 반환된 프로필 URL | "https://example.com/profile.jpg" |
-
----
-
-### AuthResponse
-인증 응답 DTO
-
-| 필드 | 타입 | 설명 |
-|------|------|------|
-| accessToken | string | 액세스 토큰 |
-| refreshToken | string | 리프레시 토큰 |
-| isFirstLogin | boolean | 첫 로그인 여부 |
-| requiresOnboarding | boolean | 약관/온보딩 완료 여부 |
-| onboardingStep | string | 현재 온보딩 단계 |
+| 필드 | 타입 | 설명 | 예시 |
+|------|------|------|------|
+| placeId | string (uuid) | 장소 ID | "550e8400-e29b-41d4-a716-446655440000" |
+| name | string | 장소명 | "스타벅스 서울역점" |
+| address | string | 주소 | "서울특별시 중구 명동길 29" |
+| rating | number | 별점 (0.0 ~ 5.0) | 4.5 |
+| photoUrls | array of string | 사진 URL 배열 (최대 10개) | ["https://example.com/photo1.jpg"] |
+| description | string | 장소 요약 설명 | "서울역 인근, 공부하기 좋은 카페" |
 
 ---
 
-### Content
-콘텐츠 엔티티
+### PlaceDetailDto
+장소 상세 정보 DTO
 
-| 필드 | 타입 | 설명 |
-|------|------|------|
-| id | string (uuid) | 콘텐츠 ID |
-| platform | string (enum) | 플랫폼 (INSTAGRAM, TIKTOK, YOUTUBE, YOUTUBE_SHORTS, FACEBOOK, TWITTER) |
-| status | string (enum) | 상태 (PENDING, ANALYZING, COMPLETED, FAILED, DELETED) |
-| platformUploader | string | 업로더 계정 이름 |
-| caption | string | 게시글 본문 |
-| thumbnailUrl | string | 썸네일 URL |
-| originalUrl | string | 원본 URL |
-| title | string | 콘텐츠 제목 |
-| summary | string | 콘텐츠 요약 |
-| lastCheckedAt | string (datetime) | 마지막 조회 시간 |
-| createdAt | string (datetime) | 생성일시 |
-| updatedAt | string (datetime) | 수정일시 |
-| isDeleted | boolean | 삭제 여부 |
-| deletedAt | string (datetime) | 삭제일시 |
-| deletedBy | string | 삭제자 |
-| active | boolean | 활성 여부 |
+| 필드 | 타입 | 설명 | 예시 |
+|------|------|------|------|
+| id | string (uuid) | 장소 ID | "550e8400-e29b-41d4-a716-446655440000" |
+| name | string | 장소명 | "제주 카페 쿠모" |
+| address | string | 주소 | "제주특별자치도 제주시 애월읍" |
+| country | string | 국가 코드 (ISO 3166-1 alpha-2) | "KR" |
+| latitude | number | 위도 | 33.4996213 |
+| longitude | number | 경도 | 126.5311884 |
+| businessType | string | 업종 | "카페" |
+| phone | string | 전화번호 | "010-1234-5678" |
+| description | string | 장소 설명 | "제주 바다를 바라보며 커피를 즐길 수 있는 카페" |
+| types | array of string | 장소 유형 배열 | ["cafe", "restaurant"] |
+| businessStatus | string | 영업 상태 | "OPERATIONAL" |
+| iconUrl | string | Google 아이콘 URL | "https://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png" |
+| rating | number | 평점 (0.0 ~ 5.0) | 4.5 |
+| userRatingsTotal | integer | 리뷰 수 | 123 |
+| photoUrls | array of string | 사진 URL 배열 | ["https://example.com/photo1.jpg"] |
+| platformReferences | array | 플랫폼별 참조 정보 (Google Place ID 등) | - |
+| businessHours | array | 영업시간 목록 | - |
+| medias | array | 추가 미디어 목록 | - |
+
+---
+
+### ContentDto
+콘텐츠 정보 DTO
+
+| 필드 | 타입 | 설명 | 예시 |
+|------|------|------|------|
+| id | string (uuid) | 콘텐츠 ID | "550e8400-e29b-41d4-a716-446655440000" |
+| platform | string (enum) | 플랫폼 (INSTAGRAM, YOUTUBE, YOUTUBE_SHORTS, TIKTOK, FACEBOOK, TWITTER) | "INSTAGRAM" |
+| status | string (enum) | 상태 (PENDING, ANALYZING, COMPLETED, FAILED, DELETED) | "COMPLETED" |
+| platformUploader | string | 업로더 계정 이름 | "travel_lover_123" |
+| caption | string | 게시글 본문 | "제주도 여행 브이로그" |
+| thumbnailUrl | string | 썸네일 URL | "https://example.com/thumbnail.jpg" |
+| originalUrl | string | 원본 URL | "https://www.instagram.com/p/ABC123/" |
+| title | string | 콘텐츠 제목 | "제주도 힐링 여행" |
+| summary | string | 콘텐츠 요약 | "제주도의 아름다운 카페와 맛집을 소개합니다." |
+| lastCheckedAt | string (datetime) | 마지막 조회 시간 | "2025-11-23T10:30:00" |
 
 ---
 
@@ -1144,6 +1769,9 @@ Mock Content 생성 및 반환
 ### 주요 변경 이력
 | 날짜 | 주요 변경 사항 |
 |------|---------------|
+| 2025.11.24 | 장소 관리 API 신규 추가 (5개 엔드포인트), 닉네임 중복 확인 API 추가, FCM 푸시 알림 테스트 API 추가 |
+| 2025.11.23 | FCM 토큰 멀티 디바이스 지원 추가, Content 조회 API 추가 (단일/목록/페이지네이션), 회원 탈퇴 API 추가 |
+| 2025.11.20 | 사용자 장소 조회 API 추가 |
 | 2025.11.18 | AI 서버 Callback API ContentInfo 파라미터 추가 (summary 필드) |
 | 2025.11.12 | 장소 정보 명세 변경 (전체정보 > 상호명으로만 받음) |
 | 2025.11.04 | 관심사 조회 API init |
@@ -1154,5 +1782,5 @@ Mock Content 생성 및 반환
 
 ---
 
-**문서 생성일**: 2025-01-18
+**문서 생성일**: 2025-11-24
 **출처**: Tripgether Backend Swagger API Documentation

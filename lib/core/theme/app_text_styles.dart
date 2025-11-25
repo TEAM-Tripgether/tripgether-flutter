@@ -92,6 +92,14 @@ class AppTextStyles {
     color: AppColors.textColor1,
   );
 
+  /// 더 작은 제목 (SemiBold, 13px)
+  /// 사용처: 콘텐츠 제목, 장소 이름, 게시물 작성자
+  static TextStyle titleSemiBold13 = TextStyle(
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 13.sp,
+    color: AppColors.textColor1,
+  );
+
   // ============================================================================
   // 본문 텍스트 (Body Text)
   // ============================================================================
@@ -112,11 +120,27 @@ class AppTextStyles {
     color: AppColors.textColor1,
   );
 
+  /// 중간 본문 텍스트 (Medium, 15px)
+  /// 사용처: 장소 설명, 강조된 본문
+  static TextStyle bodyMedium15 = TextStyle(
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15.sp,
+    color: AppColors.textColor1,
+  );
+
   /// 중간 본문 텍스트 (Medium, 14px)
   /// 사용처: 강조된 일반 본문, 사용자 정보
   static TextStyle bodyMedium14 = TextStyle(
     fontFamily: 'Pretendard-Medium',
     fontSize: 14.sp,
+    color: AppColors.textColor1,
+  );
+
+  /// 작은 본문 텍스트 (Medium, 13px)
+  /// 사용처: 주소, 별점, 부가 정보
+  static TextStyle bodyMedium13 = TextStyle(
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 13.sp,
     color: AppColors.textColor1,
   );
 

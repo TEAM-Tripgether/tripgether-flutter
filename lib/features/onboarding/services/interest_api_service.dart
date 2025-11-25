@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:tripgether/core/errors/api_error.dart';
 import 'package:tripgether/core/utils/api_logger.dart';
 import '../data/models/interest_response.dart';
 
@@ -68,13 +67,10 @@ class InterestApiService {
 
       return GetAllInterestsResponse.fromJson(response.data);
     } on DioException catch (e) {
-      ApiLogger.logDioError(e, context: 'InterestApiService.getAllInterests');
-      if (e.response != null) {
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      } else {
-        throw Exception('네트워크 연결을 확인해주세요');
-      }
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'InterestApiService.getAllInterests',
+      );
     }
   }
 
@@ -96,12 +92,10 @@ class InterestApiService {
 
       return GetInterestByIdResponse.fromJson(response.data);
     } on DioException catch (e) {
-      ApiLogger.logDioError(e, context: 'InterestApiService.getInterestById');
-      if (e.response != null) {
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      }
-      throw Exception('관심사 정보를 가져올 수 없습니다.');
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'InterestApiService.getInterestById',
+      );
     }
   }
 
@@ -125,15 +119,10 @@ class InterestApiService {
 
       return GetInterestsByCategoryResponse.fromJson(response.data);
     } on DioException catch (e) {
-      ApiLogger.logDioError(
+      ApiLogger.throwFromDioError(
         e,
         context: 'InterestApiService.getInterestsByCategory',
       );
-      if (e.response != null) {
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      }
-      throw Exception('카테고리 관심사를 가져올 수 없습니다.');
     }
   }
 

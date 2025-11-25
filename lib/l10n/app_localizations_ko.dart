@@ -535,6 +535,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mapMyLocationTooltip => '내 위치로 이동';
 
   @override
+  String get mapToggleMapType => '지도 타입 변경';
+
+  @override
   String get mapPlaceholder => '지도 기능이 곧 추가될 예정입니다';
 
   @override
@@ -551,6 +554,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get getDirections => '길찾기';
+
+  @override
+  String get placeDetailTitle => '장소 상세';
+
+  @override
+  String get placeDetailShare => '공유하기';
+
+  @override
+  String get placeDetailCall => '전화하기';
+
+  @override
+  String get placeDetailNoLocation => '위치 정보가 없습니다';
+
+  @override
+  String get addressCopied => '주소가 복사되었습니다';
+
+  @override
+  String get placeDetailDescription => '설명';
 
   @override
   String get comingSoon => '준비 중입니다';
@@ -704,7 +725,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sharedContentMessage => '외부 앱에서 공유된 링크가 여기에 표시됩니다';
 
   @override
+  String get aiPendingAnalysis => '분석 대기 중입니다';
+
+  @override
   String get aiAnalyzingLocation => 'AI가 위치정보를 파악하고 있습니다';
+
+  @override
+  String get aiAnalysisFailed => '분석에 실패했습니다';
 
   @override
   String aiAnalyzedLocations(String count) {
@@ -717,10 +744,16 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get notificationStatusWaiting => '대기 중';
+
+  @override
   String get notificationStatusProcessing => '진행 중';
 
   @override
   String get notificationStatusCheckButton => '확인하기';
+
+  @override
+  String get notificationStatusFailed => '실패';
 
   @override
   String get timestampJustNow => '방금';

@@ -22,9 +22,14 @@ PlaceModel _$PlaceModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PlaceModel {
   /// 장소 고유 ID
+  /// - GET /api/content/place/saved: "id" 필드 사용
+  /// - Mock 데이터, 일부 API: "placeId" 필드 사용
+  /// readValue로 "id" 또는 "placeId" 둘 다 처리
+  @JsonKey(readValue: _readPlaceId)
   String get placeId => throw _privateConstructorUsedError;
 
   /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   int get position => throw _privateConstructorUsedError;
 
   /// 장소명
@@ -34,13 +39,16 @@ mixin _$PlaceModel {
   String get address => throw _privateConstructorUsedError;
 
   /// 국가 코드 (KR, US 등)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   String get country => throw _privateConstructorUsedError;
 
   /// 위도
-  double get latitude => throw _privateConstructorUsedError;
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
+  double? get latitude => throw _privateConstructorUsedError;
 
   /// 경도
-  double get longitude => throw _privateConstructorUsedError;
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
+  double? get longitude => throw _privateConstructorUsedError;
 
   /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
   String? get businessType => throw _privateConstructorUsedError;
@@ -72,6 +80,10 @@ mixin _$PlaceModel {
   /// 사진 URL 리스트
   List<String> get photoUrls => throw _privateConstructorUsedError;
 
+  /// 영업시간 목록
+  List<BusinessHourModel> get businessHours =>
+      throw _privateConstructorUsedError;
+
   /// 생성 일시
   DateTime? get createdAt => throw _privateConstructorUsedError;
 
@@ -102,13 +114,13 @@ abstract class $PlaceModelCopyWith<$Res> {
   ) = _$PlaceModelCopyWithImpl<$Res, PlaceModel>;
   @useResult
   $Res call({
-    String placeId,
+    @JsonKey(readValue: _readPlaceId) String placeId,
     int position,
     String name,
     String address,
     String country,
-    double latitude,
-    double longitude,
+    double? latitude,
+    double? longitude,
     String? businessType,
     String? category,
     String? phone,
@@ -119,6 +131,7 @@ abstract class $PlaceModelCopyWith<$Res> {
     double? rating,
     int? userRatingsTotal,
     List<String> photoUrls,
+    List<BusinessHourModel> businessHours,
     DateTime? createdAt,
     DateTime? updatedAt,
     String createdBy,
@@ -146,8 +159,8 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
     Object? name = null,
     Object? address = null,
     Object? country = null,
-    Object? latitude = null,
-    Object? longitude = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
     Object? businessType = freezed,
     Object? category = freezed,
     Object? phone = freezed,
@@ -158,6 +171,7 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
     Object? rating = freezed,
     Object? userRatingsTotal = freezed,
     Object? photoUrls = null,
+    Object? businessHours = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? createdBy = null,
@@ -185,14 +199,14 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
                 ? _value.country
                 : country // ignore: cast_nullable_to_non_nullable
                       as String,
-            latitude: null == latitude
+            latitude: freezed == latitude
                 ? _value.latitude
                 : latitude // ignore: cast_nullable_to_non_nullable
-                      as double,
-            longitude: null == longitude
+                      as double?,
+            longitude: freezed == longitude
                 ? _value.longitude
                 : longitude // ignore: cast_nullable_to_non_nullable
-                      as double,
+                      as double?,
             businessType: freezed == businessType
                 ? _value.businessType
                 : businessType // ignore: cast_nullable_to_non_nullable
@@ -233,6 +247,10 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
                 ? _value.photoUrls
                 : photoUrls // ignore: cast_nullable_to_non_nullable
                       as List<String>,
+            businessHours: null == businessHours
+                ? _value.businessHours
+                : businessHours // ignore: cast_nullable_to_non_nullable
+                      as List<BusinessHourModel>,
             createdAt: freezed == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -265,13 +283,13 @@ abstract class _$$PlaceModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    String placeId,
+    @JsonKey(readValue: _readPlaceId) String placeId,
     int position,
     String name,
     String address,
     String country,
-    double latitude,
-    double longitude,
+    double? latitude,
+    double? longitude,
     String? businessType,
     String? category,
     String? phone,
@@ -282,6 +300,7 @@ abstract class _$$PlaceModelImplCopyWith<$Res>
     double? rating,
     int? userRatingsTotal,
     List<String> photoUrls,
+    List<BusinessHourModel> businessHours,
     DateTime? createdAt,
     DateTime? updatedAt,
     String createdBy,
@@ -308,8 +327,8 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
     Object? name = null,
     Object? address = null,
     Object? country = null,
-    Object? latitude = null,
-    Object? longitude = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
     Object? businessType = freezed,
     Object? category = freezed,
     Object? phone = freezed,
@@ -320,6 +339,7 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
     Object? rating = freezed,
     Object? userRatingsTotal = freezed,
     Object? photoUrls = null,
+    Object? businessHours = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? createdBy = null,
@@ -347,14 +367,14 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
             ? _value.country
             : country // ignore: cast_nullable_to_non_nullable
                   as String,
-        latitude: null == latitude
+        latitude: freezed == latitude
             ? _value.latitude
             : latitude // ignore: cast_nullable_to_non_nullable
-                  as double,
-        longitude: null == longitude
+                  as double?,
+        longitude: freezed == longitude
             ? _value.longitude
             : longitude // ignore: cast_nullable_to_non_nullable
-                  as double,
+                  as double?,
         businessType: freezed == businessType
             ? _value.businessType
             : businessType // ignore: cast_nullable_to_non_nullable
@@ -395,6 +415,10 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
             ? _value._photoUrls
             : photoUrls // ignore: cast_nullable_to_non_nullable
                   as List<String>,
+        businessHours: null == businessHours
+            ? _value._businessHours
+            : businessHours // ignore: cast_nullable_to_non_nullable
+                  as List<BusinessHourModel>,
         createdAt: freezed == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -420,13 +444,13 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PlaceModelImpl implements _PlaceModel {
   const _$PlaceModelImpl({
-    required this.placeId,
-    required this.position,
+    @JsonKey(readValue: _readPlaceId) required this.placeId,
+    this.position = 0,
     required this.name,
     required this.address,
     this.country = 'KR',
-    required this.latitude,
-    required this.longitude,
+    this.latitude,
+    this.longitude,
     this.businessType,
     this.category,
     this.phone,
@@ -437,22 +461,30 @@ class _$PlaceModelImpl implements _PlaceModel {
     this.rating,
     this.userRatingsTotal,
     final List<String> photoUrls = const [],
+    final List<BusinessHourModel> businessHours = const [],
     this.createdAt,
     this.updatedAt,
     this.createdBy = 'system',
     this.updatedBy = 'system',
   }) : _types = types,
-       _photoUrls = photoUrls;
+       _photoUrls = photoUrls,
+       _businessHours = businessHours;
 
   factory _$PlaceModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$PlaceModelImplFromJson(json);
 
   /// 장소 고유 ID
+  /// - GET /api/content/place/saved: "id" 필드 사용
+  /// - Mock 데이터, 일부 API: "placeId" 필드 사용
+  /// readValue로 "id" 또는 "placeId" 둘 다 처리
   @override
+  @JsonKey(readValue: _readPlaceId)
   final String placeId;
 
   /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
+  @JsonKey()
   final int position;
 
   /// 장소명
@@ -464,17 +496,20 @@ class _$PlaceModelImpl implements _PlaceModel {
   final String address;
 
   /// 국가 코드 (KR, US 등)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
   @JsonKey()
   final String country;
 
   /// 위도
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
-  final double latitude;
+  final double? latitude;
 
   /// 경도
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
-  final double longitude;
+  final double? longitude;
 
   /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
   @override
@@ -533,6 +568,18 @@ class _$PlaceModelImpl implements _PlaceModel {
     return EqualUnmodifiableListView(_photoUrls);
   }
 
+  /// 영업시간 목록
+  final List<BusinessHourModel> _businessHours;
+
+  /// 영업시간 목록
+  @override
+  @JsonKey()
+  List<BusinessHourModel> get businessHours {
+    if (_businessHours is EqualUnmodifiableListView) return _businessHours;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_businessHours);
+  }
+
   /// 생성 일시
   @override
   final DateTime? createdAt;
@@ -553,7 +600,7 @@ class _$PlaceModelImpl implements _PlaceModel {
 
   @override
   String toString() {
-    return 'PlaceModel(placeId: $placeId, position: $position, name: $name, address: $address, country: $country, latitude: $latitude, longitude: $longitude, businessType: $businessType, category: $category, phone: $phone, description: $description, types: $types, businessStatus: $businessStatus, iconUrl: $iconUrl, rating: $rating, userRatingsTotal: $userRatingsTotal, photoUrls: $photoUrls, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy, updatedBy: $updatedBy)';
+    return 'PlaceModel(placeId: $placeId, position: $position, name: $name, address: $address, country: $country, latitude: $latitude, longitude: $longitude, businessType: $businessType, category: $category, phone: $phone, description: $description, types: $types, businessStatus: $businessStatus, iconUrl: $iconUrl, rating: $rating, userRatingsTotal: $userRatingsTotal, photoUrls: $photoUrls, businessHours: $businessHours, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy, updatedBy: $updatedBy)';
   }
 
   @override
@@ -589,6 +636,10 @@ class _$PlaceModelImpl implements _PlaceModel {
               other._photoUrls,
               _photoUrls,
             ) &&
+            const DeepCollectionEquality().equals(
+              other._businessHours,
+              _businessHours,
+            ) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -620,6 +671,7 @@ class _$PlaceModelImpl implements _PlaceModel {
     rating,
     userRatingsTotal,
     const DeepCollectionEquality().hash(_photoUrls),
+    const DeepCollectionEquality().hash(_businessHours),
     createdAt,
     updatedAt,
     createdBy,
@@ -642,13 +694,13 @@ class _$PlaceModelImpl implements _PlaceModel {
 
 abstract class _PlaceModel implements PlaceModel {
   const factory _PlaceModel({
-    required final String placeId,
-    required final int position,
+    @JsonKey(readValue: _readPlaceId) required final String placeId,
+    final int position,
     required final String name,
     required final String address,
     final String country,
-    required final double latitude,
-    required final double longitude,
+    final double? latitude,
+    final double? longitude,
     final String? businessType,
     final String? category,
     final String? phone,
@@ -659,6 +711,7 @@ abstract class _PlaceModel implements PlaceModel {
     final double? rating,
     final int? userRatingsTotal,
     final List<String> photoUrls,
+    final List<BusinessHourModel> businessHours,
     final DateTime? createdAt,
     final DateTime? updatedAt,
     final String createdBy,
@@ -669,10 +722,15 @@ abstract class _PlaceModel implements PlaceModel {
       _$PlaceModelImpl.fromJson;
 
   /// 장소 고유 ID
+  /// - GET /api/content/place/saved: "id" 필드 사용
+  /// - Mock 데이터, 일부 API: "placeId" 필드 사용
+  /// readValue로 "id" 또는 "placeId" 둘 다 처리
   @override
+  @JsonKey(readValue: _readPlaceId)
   String get placeId;
 
   /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
   int get position;
 
@@ -685,16 +743,19 @@ abstract class _PlaceModel implements PlaceModel {
   String get address;
 
   /// 국가 코드 (KR, US 등)
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
   String get country;
 
   /// 위도
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
-  double get latitude;
+  double? get latitude;
 
   /// 경도
+  /// GET /api/content/place/saved 응답에는 포함되지 않음
   @override
-  double get longitude;
+  double? get longitude;
 
   /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
   @override
@@ -735,6 +796,10 @@ abstract class _PlaceModel implements PlaceModel {
   /// 사진 URL 리스트
   @override
   List<String> get photoUrls;
+
+  /// 영업시간 목록
+  @override
+  List<BusinessHourModel> get businessHours;
 
   /// 생성 일시
   @override

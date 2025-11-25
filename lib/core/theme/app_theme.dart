@@ -25,10 +25,13 @@ class AppTheme {
       useMaterial3: true,
       fontFamily: 'Pretendard-Regular',
 
+      /// Scaffold 배경색 (순백색)
+      scaffoldBackgroundColor: AppColors.white,
+
       /// 시스템 UI 오버레이 (상태바 스타일)
       appBarTheme: AppBarTheme(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        titleTextStyle: AppTextStyles.titleSemiBold18.copyWith(
+        titleTextStyle: AppTextStyles.greetingBold20.copyWith(
           color: AppColors.textColor1,
         ),
       ),

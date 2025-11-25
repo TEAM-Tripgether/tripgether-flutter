@@ -1,7 +1,18 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'business_hour_model.dart';
 
 part 'place_model.freezed.dart';
 part 'place_model.g.dart';
+
+/// JSON에서 placeId 읽기 - "id" 또는 "placeId" 둘 다 지원
+///
+/// API 엔드포인트별 필드명 차이 처리:
+/// - GET /api/content/place/saved: "id" 필드 사용
+/// - Mock 데이터, 일부 API: "placeId" 필드 사용
+Object? _readPlaceId(Map<dynamic, dynamic> json, String key) {
+  // "id" 필드 우선, 없으면 "placeId" 사용
+  return json['id'] ?? json['placeId'];
+}
 
 /// 장소 정보 모델
 ///
@@ -11,10 +22,14 @@ part 'place_model.g.dart';
 class PlaceModel with _$PlaceModel {
   const factory PlaceModel({
     /// 장소 고유 ID
-    required String placeId,
+    /// - GET /api/content/place/saved: "id" 필드 사용
+    /// - Mock 데이터, 일부 API: "placeId" 필드 사용
+    /// readValue로 "id" 또는 "placeId" 둘 다 처리
+    @JsonKey(readValue: _readPlaceId) required String placeId,
 
     /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
-    required int position,
+    /// GET /api/content/place/saved 응답에는 포함되지 않음
+    @Default(0) int position,
 
     /// 장소명
     required String name,
@@ -23,13 +38,16 @@ class PlaceModel with _$PlaceModel {
     required String address,
 
     /// 국가 코드 (KR, US 등)
+    /// GET /api/content/place/saved 응답에는 포함되지 않음
     @Default('KR') String country,
 
     /// 위도
-    required double latitude,
+    /// GET /api/content/place/saved 응답에는 포함되지 않음
+    double? latitude,
 
     /// 경도
-    required double longitude,
+    /// GET /api/content/place/saved 응답에는 포함되지 않음
+    double? longitude,
 
     /// 비즈니스 타입 (restaurant, cafe, beach, tourist_attraction 등)
     String? businessType,
@@ -60,6 +78,9 @@ class PlaceModel with _$PlaceModel {
 
     /// 사진 URL 리스트
     @Default([]) List<String> photoUrls,
+
+    /// 영업시간 목록
+    @Default([]) List<BusinessHourModel> businessHours,
 
     /// 생성 일시
     DateTime? createdAt,

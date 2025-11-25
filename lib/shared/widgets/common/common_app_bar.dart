@@ -111,7 +111,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
               : null),
 
       // 제목을 중앙에 정렬
-      centerTitle: true,
+      centerTitle: false,
 
       // 배경색 설정 (항상 흰색 고정)
       backgroundColor: backgroundColor ?? AppColors.white,

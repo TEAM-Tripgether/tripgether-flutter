@@ -1,0 +1,8 @@
+# Android Local Properties Template
+# 이 파일을 'local.properties'로 복사하고 실제 값을 입력하세요
+# local.properties 파일은 .gitignore에 포함되어 있어 Git에 커밋되지 않습니다
+
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+GOOGLE_WEB_CLIENT_ID=YOUR_GOOGLE_WEB_CLIENT_ID_HERE
+GOOGLE_MAPS_API_KEY=YOUR_ANDROID_GOOGLE_MAPS_API_KEY_HERE
+flutter.sdk=/Users/YOUR_USERNAME/Documents/flutter

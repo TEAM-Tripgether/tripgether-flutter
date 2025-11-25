@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../errors/api_error.dart';
+import '../errors/refresh_token_exception.dart';
 
 /// API 로깅 유틸리티
 ///
@@ -115,5 +116,80 @@ class ApiLogger {
     if (kDebugMode) {
       debugPrint('[$context] 🔄 ${message ?? '시작'}');
     }
+  }
+
+  /// Refresh Token 관련 에러 코드인지 확인
+  ///
+  /// **에러 코드**:
+  /// - EXPIRED_ACCESS_TOKEN: 액세스 토큰이 만료되었습니다.
+  /// - REFRESH_TOKEN_NOT_FOUND: 리프레시 토큰을 찾을 수 없습니다.
+  /// - INVALID_REFRESH_TOKEN: 유효하지 않은 리프레시 토큰입니다.
+  /// - EXPIRED_REFRESH_TOKEN: 만료된 리프레시 토큰입니다.
+  /// - MEMBER_NOT_FOUND: 회원 정보를 찾을 수 없습니다.
+  /// - TOKEN_BLACKLISTED: 블랙리스트 처리된 토큰입니다. (회원 탈퇴 또는 계정 비활성화)
+  static bool _isRefreshTokenError(String? errorCode) {
+    if (errorCode == null) return false;
+
+    return errorCode == 'EXPIRED_ACCESS_TOKEN' ||
+        errorCode == 'REFRESH_TOKEN_NOT_FOUND' ||
+        errorCode == 'INVALID_REFRESH_TOKEN' ||
+        errorCode == 'EXPIRED_REFRESH_TOKEN' ||
+        errorCode == 'MEMBER_NOT_FOUND' ||
+        errorCode == 'TOKEN_BLACKLISTED';
+  }
+
+  /// DioException을 처리하고 적절한 Exception을 throw
+  ///
+  /// **기능**:
+  /// - 타임아웃 에러 별도 메시지
+  /// - Refresh Token 에러 특수 처리 (RefreshTokenException)
+  /// - ApiError 기반 에러 메시지 추출 (백엔드 response message 사용)
+  /// - 네트워크 에러 분류 처리
+  ///
+  /// **에러 메시지 흐름**:
+  /// 1. Service Layer: throwFromDioError → Exception(apiError.message)
+  /// 2. Notifier Layer: rethrow
+  /// 3. Page Layer: handleError 호출
+  /// 4. Error Handler: AppSnackBar.showError(context, message)
+  ///
+  /// **사용 예시**:
+  /// ```dart
+  /// try {
+  ///   final response = await dio.get('/api/data');
+  ///   return response.data;
+  /// } on DioException catch (e) {
+  ///   ApiLogger.throwFromDioError(e, context: 'ContentDataSource.getData');
+  /// }
+  /// ```
+  ///
+  /// [e] DioException 객체
+  /// [context] 에러 발생 위치 (예: 'AuthApiService.signIn')
+  static Never throwFromDioError(DioException e, {required String context}) {
+    // 1. debugPrint 로깅 (개발자용)
+    logDioError(e, context: context);
+
+    // 2. 타임아웃 에러 처리
+    if (e.type == DioExceptionType.connectionTimeout) {
+      throw Exception('연결 시간 초과: 서버에 연결할 수 없습니다.');
+    }
+    if (e.type == DioExceptionType.receiveTimeout) {
+      throw Exception('응답 시간 초과: 서버 응답이 없습니다.');
+    }
+
+    // 3. 서버 응답이 있는 경우 (백엔드 메시지 사용)
+    if (e.response != null) {
+      final apiError = ApiError.fromDioError(e.response!.data);
+
+      // 3-1. Refresh Token 에러 특수 처리
+      if (_isRefreshTokenError(apiError.code)) {
+        throw RefreshTokenException(apiError.message, apiError.code);
+      }
+
+      // 3-2. 일반 에러
+      throw Exception(apiError.message);
+    }
+
+    // 4. 네트워크 에러 (응답 없음)
+    throw Exception('네트워크 연결을 확인해주세요.');
   }
 }

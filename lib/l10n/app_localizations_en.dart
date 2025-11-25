@@ -543,6 +543,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapMyLocationTooltip => 'Go to my location';
 
   @override
+  String get mapToggleMapType => 'Toggle map type';
+
+  @override
   String get mapPlaceholder => 'Map feature coming soon';
 
   @override
@@ -559,6 +562,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get getDirections => 'Get Directions';
+
+  @override
+  String get placeDetailTitle => 'Place Details';
+
+  @override
+  String get placeDetailShare => 'Share';
+
+  @override
+  String get placeDetailCall => 'Call';
+
+  @override
+  String get placeDetailNoLocation => 'Location information not available';
+
+  @override
+  String get addressCopied => 'Address copied to clipboard';
+
+  @override
+  String get placeDetailDescription => 'Description';
 
   @override
   String get comingSoon => 'Coming Soon';
@@ -717,7 +738,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Shared links from external apps will appear here';
 
   @override
+  String get aiPendingAnalysis => 'Analysis is pending';
+
+  @override
   String get aiAnalyzingLocation => 'AI is analyzing location information';
+
+  @override
+  String get aiAnalysisFailed => 'Analysis failed';
 
   @override
   String aiAnalyzedLocations(String count) {
@@ -730,10 +757,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get notificationStatusWaiting => 'Waiting';
+
+  @override
   String get notificationStatusProcessing => 'Processing';
 
   @override
   String get notificationStatusCheckButton => 'View';
+
+  @override
+  String get notificationStatusFailed => 'Failed';
 
   @override
   String get timestampJustNow => 'Just now';

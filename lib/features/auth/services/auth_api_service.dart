@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:tripgether/core/errors/api_error.dart';
 import 'package:tripgether/core/utils/api_logger.dart';
 import 'package:tripgether/core/services/fcm/firebase_messaging_service.dart';
 import 'package:tripgether/core/services/device_info_service.dart';
@@ -102,6 +101,77 @@ class AuthApiService {
   // ════════════════════════════════════════════════════════════════════════
   // Public API Methods
   // ════════════════════════════════════════════════════════════════════════
+
+  /// Interceptor에서 사용하기 위한 토큰 재발급 메서드
+  ///
+  /// **주의**: AuthInterceptor 내부에서만 사용하세요.
+  /// - Interceptor가 없는 별도 Dio 인스턴스를 생성하여 Circular Dependency 방지
+  /// - ApiLogger를 사용하지 않음 (Interceptor 내부 호출이므로)
+  ///
+  /// **사용처**:
+  /// - AuthInterceptor.onError()에서 401 EXPIRED_ACCESS_TOKEN 감지 시 호출
+  ///
+  /// [refreshToken] Refresh Token 문자열
+  /// [baseUrl] API Base URL
+  /// [timeout] 타임아웃 (밀리초, 기본 10000ms)
+  ///
+  /// Returns: AuthResponse (새로운 accessToken, refreshToken)
+  /// Throws: Exception - 재발급 실패 시
+  static Future<AuthResponse> reissueTokenWithoutInterceptor({
+    required String refreshToken,
+    required String baseUrl,
+    int timeout = 10000,
+  }) async {
+    debugPrint('[AuthApiService.reissueTokenWithoutInterceptor] 🔄 토큰 재발급 시작');
+    debugPrint('[AuthApiService.reissueTokenWithoutInterceptor] URL: $baseUrl');
+
+    try {
+      // Interceptor 없는 별도 Dio 인스턴스 생성
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: baseUrl,
+          connectTimeout: Duration(milliseconds: timeout),
+          receiveTimeout: Duration(milliseconds: timeout),
+          headers: {'Content-Type': 'application/json'},
+        ),
+      );
+
+      // POST 요청 전송
+      final response = await dio.post(
+        '/api/auth/reissue',
+        data: AuthRequest.reissue(refreshToken: refreshToken).toJson(),
+      );
+
+      debugPrint(
+        '[AuthApiService.reissueTokenWithoutInterceptor] ✅ 응답 상태: ${response.statusCode}',
+      );
+
+      // 성공 응답 처리
+      if (response.statusCode == 200) {
+        final authResponse = AuthResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+        debugPrint(
+          '[AuthApiService.reissueTokenWithoutInterceptor] ✅ 토큰 재발급 성공',
+        );
+        return authResponse;
+      } else {
+        throw Exception('토큰 재발급 실패: 상태 코드 ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      // ⚠️ 주의: ApiLogger 사용하지 않음 (Circular Dependency 방지)
+      debugPrint(
+        '[AuthApiService.reissueTokenWithoutInterceptor] ❌ DioException: ${e.type}',
+      );
+      debugPrint(
+        '[AuthApiService.reissueTokenWithoutInterceptor] 메시지: ${e.message}',
+      );
+      rethrow;
+    } catch (e) {
+      debugPrint('[AuthApiService.reissueTokenWithoutInterceptor] ❌ 예외 발생: $e');
+      rethrow;
+    }
+  }
 
   /// 소셜 로그인 API
   ///
@@ -396,18 +466,7 @@ class AuthApiService {
         throw Exception('로그인 실패: 상태 코드 ${response.statusCode}');
       }
     } on DioException catch (e) {
-      // Dio 관련 에러 처리
-      if (e.type == DioExceptionType.connectionTimeout) {
-        throw Exception('연결 시간 초과: 서버에 연결할 수 없습니다.');
-      } else if (e.type == DioExceptionType.receiveTimeout) {
-        throw Exception('응답 시간 초과: 서버 응답이 없습니다.');
-      } else if (e.response != null) {
-        ApiLogger.logDioError(e, context: 'AuthApiService.signIn');
-        final apiError = ApiError.fromDioError(e.response!.data);
-        throw Exception(apiError.message);
-      } else {
-        throw Exception('네트워크 오류: ${e.message}');
-      }
+      ApiLogger.throwFromDioError(e, context: 'AuthApiService.signIn');
     } catch (e) {
       ApiLogger.logException(e, context: 'AuthApiService.signIn');
       rethrow;
@@ -453,26 +512,8 @@ class AuthApiService {
         throw Exception('토큰 재발급 실패: 상태 코드 ${response.statusCode}');
       }
     } on DioException catch (e) {
-      // Dio 관련 에러 처리
       debugPrint('[AuthApiService - Real] ❌ Dio 에러: ${e.type}');
-
-      if (e.response != null) {
-        ApiLogger.logDioError(e, context: 'AuthApiService.reissueToken');
-        final apiError = ApiError.fromDioError(e.response!.data);
-
-        // Refresh Token 관련 에러는 재로그인 필요
-        if (apiError.code == 'REFRESH_TOKEN_NOT_FOUND' ||
-            apiError.code == 'INVALID_REFRESH_TOKEN' ||
-            apiError.code == 'EXPIRED_REFRESH_TOKEN') {
-          throw Exception('${apiError.message} 다시 로그인해주세요.');
-        }
-
-        throw Exception(apiError.message);
-      } else if (e.type == DioExceptionType.connectionTimeout) {
-        throw Exception('연결 시간 초과: 서버에 연결할 수 없습니다.');
-      } else {
-        throw Exception('네트워크 오류: ${e.message}');
-      }
+      ApiLogger.throwFromDioError(e, context: 'AuthApiService.reissueToken');
     } catch (e) {
       ApiLogger.logException(e, context: 'AuthApiService.reissueToken');
       rethrow;

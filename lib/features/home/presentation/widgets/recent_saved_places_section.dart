@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/errors/refresh_token_exception.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/utils/token_error_handler.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cards/place_detail_card.dart';
 import '../../../../shared/widgets/layout/section_header.dart';
@@ -35,7 +39,8 @@ class RecentSavedPlacesSection extends ConsumerWidget {
           SectionHeader(
             title: l10n.recentSavedPlaces,
             onMoreTap: () {
-              debugPrint('최근 저장한 장소 리스트 화면으로 이동');
+              // 저장한 장소 전체 리스트 화면으로 이동
+              context.push(AppRoutes.savedPlacesList);
             },
           ),
 
@@ -58,8 +63,11 @@ class RecentSavedPlacesSection extends ConsumerWidget {
                 );
               }
 
+              // 홈 화면에서는 최대 3개만 표시
+              final displayPlaces = places.take(3).toList();
+
               return Column(
-                children: places.map((place) {
+                children: displayPlaces.map((place) {
                   return Padding(
                     padding: EdgeInsets.only(bottom: AppSpacing.sm),
                     child: PlaceDetailCard(
@@ -69,8 +77,15 @@ class RecentSavedPlacesSection extends ConsumerWidget {
                       rating: place.rating ?? 0.0,
                       reviewCount: place.userRatingsTotal ?? 0,
                       imageUrls: place.photoUrls,
+                      backgroundColor: AppColors.backgroundLight,
                       onTap: () {
-                        debugPrint('장소 상세 화면으로 이동: ${place.placeId}');
+                        // 장소 상세 화면으로 이동
+                        context.push(
+                          AppRoutes.placeDetail.replaceAll(
+                            ':placeId',
+                            place.placeId,
+                          ),
+                        );
                       },
                     ),
                   );
@@ -83,6 +98,17 @@ class RecentSavedPlacesSection extends ConsumerWidget {
             ),
             error: (error, stack) {
               debugPrint('장소 데이터 로드 실패: $error');
+
+              // RefreshTokenException (TOKEN_BLACKLISTED 포함) 처리
+              if (error is RefreshTokenException) {
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  await handleTokenError(context, ref, error);
+                });
+                // 에러 처리 중이므로 빈 Container 반환
+                return const SizedBox.shrink();
+              }
+
+              // 일반 에러 표시
               return SizedBox(
                 height: 150.h,
                 child: Center(

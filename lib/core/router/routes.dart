@@ -35,7 +35,6 @@ class AppRoutes {
 
   /// 홈 탭 하위 경로들
   static const String snsContentsList = '/home/sns-contents';
-  static const String snsContentDetail = '/home/sns-contents/detail/:contentId';
   static const String savedPlacesList = '/home/saved-places';
 
   /// 코스마켓 탭 하위 경로들
@@ -45,9 +44,13 @@ class AppRoutes {
   /// 상세 화면 경로들 (router.dart의 실제 경로와 일치)
   static const String courseDetail = '/course-market/detail/:courseId';
 
-  /// 장소 상세 화면 경로 (중첩 라우트)
-  /// /home/saved-places/:placeId 패턴으로 접근
-  static const String placeDetail = '/home/saved-places/:placeId';
+  /// SNS 콘텐츠 상세 화면 경로 (독립 라우트)
+  /// 어디서든 접근 가능한 top-level 경로
+  static const String snsContentDetail = '/sns-content-detail/:contentId';
+
+  /// 장소 상세 화면 경로 (독립 라우트)
+  /// 어디서든 접근 가능한 top-level 경로
+  static const String placeDetail = '/place-detail/:placeId';
   static const String scheduleDetail = '/schedule/detail/:scheduleId';
   static const String profileEdit = '/profile-edit';
   static const String settings = '/settings';

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../../core/network/auth_interceptor.dart';
 import '../data/models/interest_response.dart';
 import '../services/interest_api_service.dart';
 
@@ -11,38 +11,26 @@ part 'interest_provider.g.dart';
 /// Dio 인스턴스 Provider (JWT 토큰 자동 추가)
 ///
 /// **특징**:
-/// - Interceptor를 통해 모든 요청에 JWT 토큰 자동 추가
-/// - FlutterSecureStorage에서 access_token 읽기
-/// - 토큰이 없으면 요청 그대로 진행 (인증 불필요한 API 대응)
+/// - AuthInterceptor를 통해 모든 요청에 JWT 토큰 자동 추가
+/// - TokenManager에서 메모리 캐시 우선 읽기 (Race Condition 방지)
+/// - Access Token 만료 시 자동 갱신
+/// - TOKEN_BLACKLISTED 에러 자동 처리
 @riverpod
 Dio dio(Ref ref) {
+  final baseUrl =
+      dotenv.env['API_BASE_URL'] ?? 'https://api.tripgether.suhsaechan.kr';
+
   final dio = Dio(
     BaseOptions(
-      baseUrl:
-          dotenv.env['API_BASE_URL'] ?? 'https://api.tripgether.suhsaechan.kr',
+      baseUrl: baseUrl,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {'Content-Type': 'application/json'},
     ),
   );
 
-  // JWT 토큰 자동 추가 Interceptor
-  dio.interceptors.add(
-    InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        // FlutterSecureStorage에서 토큰 읽기
-        const storage = FlutterSecureStorage();
-        final accessToken = await storage.read(key: 'access_token');
-
-        // 토큰이 있으면 Authorization 헤더 추가
-        if (accessToken != null && accessToken.isNotEmpty) {
-          options.headers['Authorization'] = 'Bearer $accessToken';
-        }
-
-        return handler.next(options);
-      },
-    ),
-  );
+  // AuthInterceptor 추가 (JWT 토큰 자동 주입 + 갱신)
+  dio.interceptors.add(AuthInterceptor(baseUrl: baseUrl));
 
   return dio;
 }
