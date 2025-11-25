@@ -14,7 +14,6 @@ import '../../../../shared/widgets/common/section_divider.dart';
 import '../../../../shared/widgets/inputs/search_bar.dart';
 import '../../../../shared/widgets/layout/collapsible_title_sliver_app_bar.dart';
 import '../../../../shared/mixins/refreshable_tab_mixin.dart';
-import '../../../debug/share_extension_log_screen.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/providers/user_provider.dart';
@@ -378,19 +377,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ]),
             ),
           ],
-        ),
-        // 디버그용 FloatingActionButton (Share Extension 로그 확인)
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ShareExtensionLogScreen(),
-              ),
-            );
-          },
-          tooltip: 'Share Extension 로그',
-          child: const Icon(Icons.bug_report),
         ),
       ),
     );
