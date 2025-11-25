@@ -127,6 +127,7 @@ class ApiLogger {
   /// - EXPIRED_REFRESH_TOKEN: 만료된 리프레시 토큰입니다.
   /// - MEMBER_NOT_FOUND: 회원 정보를 찾을 수 없습니다.
   /// - TOKEN_BLACKLISTED: 블랙리스트 처리된 토큰입니다. (회원 탈퇴 또는 계정 비활성화)
+  /// - MISSING_AUTH_TOKEN: 인증 토큰이 없습니다. (토큰 저장 실패 또는 삭제된 경우)
   static bool _isRefreshTokenError(String? errorCode) {
     if (errorCode == null) return false;
 
@@ -135,7 +136,8 @@ class ApiLogger {
         errorCode == 'INVALID_REFRESH_TOKEN' ||
         errorCode == 'EXPIRED_REFRESH_TOKEN' ||
         errorCode == 'MEMBER_NOT_FOUND' ||
-        errorCode == 'TOKEN_BLACKLISTED';
+        errorCode == 'TOKEN_BLACKLISTED' ||
+        errorCode == 'MISSING_AUTH_TOKEN';
   }
 
   /// DioException을 처리하고 적절한 Exception을 throw

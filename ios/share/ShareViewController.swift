@@ -4,16 +4,15 @@
 //
 //  iOS 18+ Compatible Implementation
 //  UIViewController 기반 Share Extension
-//  바텀 시트 UI 없이 즉시 공유 처리 → 로컬 알림으로 피드백 제공
+//  바텀 시트 UI 없이 즉시 공유 처리 → 메인 앱에서 폴링으로 확인
 //
 
 import UIKit
 import UniformTypeIdentifiers
-import UserNotifications
 
 /// Share Extension의 메인 뷰 컨트롤러
 /// iOS 18+ 호환 UIViewController 기반 구현
-/// 공유 즉시 처리 후 로컬 알림으로 사용자에게 피드백 제공
+/// 공유 즉시 처리 후 App Group 큐에 저장
 @objc(ShareViewController)
 class ShareViewController: UIViewController {
 
@@ -224,9 +223,6 @@ class ShareViewController: UIViewController {
         let saveSuccess = saveToQueue()
 
         if saveSuccess {
-            // 로컬 알림 발송 (사용자에게 즉각적인 피드백)
-            sendLocalNotification()
-
             // 디버그 로그 저장
             let urlsOnly = sharedText.filter { $0.hasPrefix("http://") || $0.hasPrefix("https://") }
             let urlsToLog = urlsOnly.joined(separator: " | ")
@@ -312,34 +308,6 @@ class ShareViewController: UIViewController {
         print("[ShareExtension] ═══════════════════════════════════════")
 
         return syncSuccess
-    }
-
-    // MARK: - Local Notification
-
-    /// 로컬 알림 발송 (공유 완료 시 사용자에게 즉각 피드백)
-    private func sendLocalNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "트립게더에 저장됨"
-        content.body = "공유된 콘텐츠를 확인하세요"
-        content.sound = .default
-        content.badge = 1
-
-        // 즉시 발송 (0.1초 후 트리거)
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-
-        let request = UNNotificationRequest(
-            identifier: "share_completed",
-            content: content,
-            trigger: trigger
-        )
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("[ShareExtension] ❌ 알림 발송 실패: \(error)")
-            } else {
-                print("[ShareExtension] ✅ 로컬 알림 발송 성공")
-            }
-        }
     }
 
     // MARK: - App Group Utilities
