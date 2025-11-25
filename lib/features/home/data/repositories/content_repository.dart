@@ -123,4 +123,21 @@ class ContentRepository {
       rethrow;
     }
   }
+
+  /// 장소 상세 조회
+  ///
+  /// GET /api/place/{placeId}
+  /// 특정 장소의 상세 정보를 조회합니다.
+  /// PlaceDetailScreen에서 사용됩니다.
+  Future<PlaceModel> getPlaceById(String placeId) async {
+    try {
+      debugPrint('📤 [ContentRepository] 장소 상세 조회: $placeId');
+      final place = await _dataSource.getPlaceById(placeId);
+      debugPrint('✅ [ContentRepository] 장소 조회 완료: ${place.name}');
+      return place;
+    } catch (e) {
+      debugPrint('❌ [ContentRepository] 장소 조회 실패: $e');
+      rethrow;
+    }
+  }
 }

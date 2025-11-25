@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
@@ -17,12 +18,17 @@ import '../../../../shared/widgets/cards/place_detail_card.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/app_snackbar.dart';
 import '../../../../shared/widgets/layout/section_header.dart';
+import '../providers/content_provider.dart';
 
 /// SNS 콘텐츠 상세 화면
 ///
 /// SnsContentCard 클릭 시 이동하는 상세 페이지입니다.
 /// Hero 애니메이션으로 부드러운 전환을 제공하며,
 /// 썸네일, 플랫폼 정보, 제목, 설명 등을 표시합니다.
+///
+/// places가 비어있는 경우 API를 통해 상세 데이터를 자동으로 가져옵니다.
+/// - getRecentContents() API는 places를 포함하지 않음
+/// - getContentById() API는 places를 포함함
 ///
 /// 사용 예시:
 /// ```dart
@@ -31,11 +37,63 @@ import '../../../../shared/widgets/layout/section_header.dart';
 ///   extra: content,
 /// );
 /// ```
-class SnsContentDetailScreen extends StatelessWidget {
-  /// 표시할 콘텐츠 모델
+class SnsContentDetailScreen extends ConsumerStatefulWidget {
+  /// 표시할 콘텐츠 모델 (초기 데이터, places가 비어있을 수 있음)
   final ContentModel content;
 
   const SnsContentDetailScreen({super.key, required this.content});
+
+  @override
+  ConsumerState<SnsContentDetailScreen> createState() =>
+      _SnsContentDetailScreenState();
+}
+
+class _SnsContentDetailScreenState
+    extends ConsumerState<SnsContentDetailScreen> {
+  /// 실제 표시할 콘텐츠 (API 응답으로 업데이트될 수 있음)
+  late ContentModel _displayContent;
+
+  /// places 로딩 중 여부
+  bool _isLoadingPlaces = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _displayContent = widget.content;
+
+    // places가 비어있으면 API에서 상세 데이터 가져오기
+    if (widget.content.places.isEmpty) {
+      _fetchContentDetail();
+    }
+  }
+
+  /// API에서 콘텐츠 상세 정보 가져오기 (places 포함)
+  Future<void> _fetchContentDetail() async {
+    setState(() {
+      _isLoadingPlaces = true;
+    });
+
+    try {
+      // contentDetailProvider를 통해 API 호출
+      final fullContent = await ref.read(
+        contentDetailProvider(widget.content.contentId).future,
+      );
+
+      if (mounted) {
+        setState(() {
+          _displayContent = fullContent;
+          _isLoadingPlaces = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('[SnsContentDetailScreen] places 로드 실패: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingPlaces = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +102,7 @@ class SnsContentDetailScreen extends StatelessWidget {
     return Scaffold(
       // 뒤로가기 버튼만 있는 AppBar (알림 아이콘 숨김)
       appBar: CommonAppBar.forSubPage(
-        title: content.title ?? l10n.snsContentDetail,
+        title: _displayContent.title ?? l10n.snsContentDetail,
         rightActions: [], // 알림 아이콘 숨김
       ),
       backgroundColor: AppColors.white,
@@ -55,7 +113,7 @@ class SnsContentDetailScreen extends StatelessWidget {
             // 썸네일 이미지 (Hero 애니메이션) - 좌우 패딩 포함
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: _buildThumbnail(content),
+              child: _buildThumbnail(_displayContent),
             ),
 
             AppSpacing.verticalSpaceLG,
@@ -63,7 +121,7 @@ class SnsContentDetailScreen extends StatelessWidget {
             // 플랫폼 정보 + 제목 컨테이너 - 좌우 패딩 포함
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: _buildContentInfo(context, content),
+              child: _buildContentInfo(context, _displayContent),
             ),
 
             AppSpacing.verticalSpaceSM,
@@ -71,7 +129,7 @@ class SnsContentDetailScreen extends StatelessWidget {
             // AI 콘텐츠 요약 섹션 - 좌우 패딩 포함
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: _buildContentDescription(context, content),
+              child: _buildContentDescription(context, _displayContent),
             ),
 
             AppSpacing.verticalSpaceLG,
@@ -80,12 +138,50 @@ class SnsContentDetailScreen extends StatelessWidget {
             const SectionDivider.thick(),
 
             // 링크에 포함된 장소 - 좌우 패딩 포함
-            if (content.places.isNotEmpty)
+            // places 로딩 중이면 로딩 인디케이터 표시
+            if (_isLoadingPlaces)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: _buildPlacesSection(context, content),
+                child: _buildPlacesLoadingSection(),
+              )
+            else if (_displayContent.places.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: _buildPlacesSection(context, _displayContent),
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// 장소 로딩 중 표시 섹션
+  Widget _buildPlacesLoadingSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppSpacing.verticalSpaceLG,
+        SectionHeader(title: '링크에 포함된 장소', showMoreButton: false),
+        AppSpacing.verticalSpaceMD,
+        // Shimmer 로딩 플레이스홀더
+        ...List.generate(2, (index) => _buildPlaceCardShimmer()),
+      ],
+    );
+  }
+
+  /// 장소 카드 Shimmer 플레이스홀더
+  Widget _buildPlaceCardShimmer() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppSpacing.md),
+      child: Shimmer.fromColors(
+        baseColor: AppColors.subColor2.withValues(alpha: 0.3),
+        highlightColor: AppColors.shimmerHighlight,
+        child: Container(
+          height: 120,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: AppRadius.allMedium,
+          ),
         ),
       ),
     );

@@ -9,8 +9,7 @@ part 'place_detail_provider.g.dart';
 /// 장소 상세 정보를 제공하는 Provider
 ///
 /// placeId를 받아 해당 장소의 상세 정보를 로드합니다.
-/// ContentRepository의 getSavedPlaces()를 통해 장소 목록을 가져온 후
-/// placeId로 필터링하여 반환합니다.
+/// GET /api/place/{placeId} API를 호출하여 위치 정보를 포함한 상세 데이터를 가져옵니다.
 @riverpod
 class PlaceDetail extends _$PlaceDetail {
   @override
@@ -18,20 +17,15 @@ class PlaceDetail extends _$PlaceDetail {
     final repository = ref.read(contentRepositoryProvider);
 
     try {
-      // 저장된 장소 목록을 가져옴
-      final places = await repository.getSavedPlaces();
-
-      // placeId로 필터링
-      final place = places.firstWhere(
-        (p) => p.placeId == placeId,
-        orElse: () => throw PlaceNotFoundException(placeId),
-      );
-
+      // GET /api/place/{placeId} API 호출
+      // latitude, longitude 등 위치 정보가 포함된 상세 데이터 반환
+      final place = await repository.getPlaceById(placeId);
       return place;
     } catch (e) {
-      // PlaceNotFoundException을 다시 던지거나 null 반환
-      if (e is PlaceNotFoundException) {
-        rethrow;
+      // 장소를 찾을 수 없는 경우 PlaceNotFoundException 던지기
+      if (e.toString().contains('not found') ||
+          e.toString().contains('PLACE_NOT_FOUND')) {
+        throw PlaceNotFoundException(placeId);
       }
       throw Exception('Failed to load place details: $e');
     }

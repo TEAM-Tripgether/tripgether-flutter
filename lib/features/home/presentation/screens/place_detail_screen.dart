@@ -109,6 +109,7 @@ class PlaceDetailScreen extends ConsumerWidget {
               placeName: place.name,
               placeId: place.placeId,
               height: 240.h,
+              iconUrl: place.iconUrl,
             ),
           ),
 
@@ -117,7 +118,7 @@ class PlaceDetailScreen extends ConsumerWidget {
           const SectionDivider.thick(),
 
           AppSpacing.verticalSpaceLG, // 구분선 → 상세 정보 간격
-          // 4. 장소 상세 정보 (주소, 전화, 별점) - 패딩 있음 (헤더보다 8px 더 들어감)
+          // 4. 장소 상세 정보 (주소, 전화, 영업시간, 별점) - 패딩 있음 (헤더보다 8px 더 들어감)
           Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
             child: PlaceInfoSection(
@@ -125,6 +126,8 @@ class PlaceDetailScreen extends ConsumerWidget {
               phone: place.phone,
               rating: place.rating?.toDouble(),
               reviewCount: place.userRatingsTotal,
+              businessHours: place.businessHours,
+              businessStatus: place.businessStatus,
               onPhoneTap: place.phone != null
                   ? () {
                       // TODO: 전화 기능 구현

@@ -4,6 +4,16 @@ import 'place_model.dart';
 part 'content_model.freezed.dart';
 part 'content_model.g.dart';
 
+/// JSON에서 contentId 읽기 - "id" 또는 "contentId" 둘 다 지원
+///
+/// API 엔드포인트별 필드명 차이 처리:
+/// - POST /api/content/analyze 응답: "contentId" 필드 사용
+/// - 일부 API: "id" 필드 사용
+Object? _readContentId(Map<dynamic, dynamic> json, String key) {
+  // "contentId" 필드 우선, 없으면 "id" 사용
+  return json['contentId'] ?? json['id'];
+}
+
 /// 콘텐츠 모델
 ///
 /// Instagram, YouTube 등의 외부 플랫폼에서 공유된 콘텐츠 정보를 나타냅니다.
@@ -12,8 +22,10 @@ part 'content_model.g.dart';
 class ContentModel with _$ContentModel {
   const factory ContentModel({
     /// 콘텐츠 고유 ID
-    /// Backend API는 "id"를 사용하지만 Flutter에서는 명확성을 위해 contentId 사용
-    @JsonKey(name: 'id') required String contentId,
+    /// - POST /api/content/analyze: "contentId" 필드 사용
+    /// - 일부 API: "id" 필드 사용
+    /// readValue로 "contentId" 또는 "id" 둘 다 처리
+    @JsonKey(readValue: _readContentId) required String contentId,
 
     /// 회원 ID (백엔드 응답용, 프론트엔드에서는 미사용)
     /// POST /api/content/analyze PENDING 응답: "memberId": null

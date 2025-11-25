@@ -15,6 +15,7 @@ import '../../../../shared/widgets/common/common_app_bar.dart';
 import '../../../../shared/widgets/common/empty_state.dart';
 import '../../domain/models/notification_item.dart';
 import '../../../home/presentation/providers/content_provider.dart';
+import '../providers/notification_provider.dart';
 
 /// 알림 화면 위젯
 /// 외부 앱에서 공유된 링크 및 데이터를 표시하는 전용 페이지
@@ -34,9 +35,6 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
   /// FCM 콘텐츠 완료 알림 스트림 구독
   StreamSubscription<String>? _fcmSubscription;
-
-  /// 알림 아이템 리스트
-  final List<NotificationItem> _notifications = [];
 
   /// 자동 완료 타이머들을 관리하는 Map (알림 ID → Timer)
   final Map<String, Timer> _completionTimers = {};
@@ -108,8 +106,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
         return;
       }
 
-      // PENDING 또는 ANALYZING 상태 알림이 있는지 확인
-      final hasPendingNotifications = _notifications.any((n) => n.isInProgress);
+      // PENDING 또는 ANALYZING 상태 알림이 있는지 확인 (Provider에서)
+      final notifications = ref.read(notificationListProvider);
+      final hasPendingNotifications = notifications.any((n) => n.isInProgress);
 
       if (!hasPendingNotifications) {
         debugPrint('[NotificationScreen] ✅ 모든 알림 완료 - 폴링 중지');
@@ -133,8 +132,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     debugPrint('═══════════════════════════════════════════════════════');
     debugPrint('[NotificationScreen] 🔄 PENDING 알림 폴링 체크');
 
-    // PENDING 또는 ANALYZING 상태인 알림들 필터링
-    final pendingNotifications = _notifications.where((n) => n.isInProgress).toList();
+    // PENDING 또는 ANALYZING 상태인 알림들 필터링 (Provider에서)
+    final notifications = ref.read(notificationListProvider);
+    final pendingNotifications = notifications.where((n) => n.isInProgress).toList();
 
     if (pendingNotifications.isEmpty) {
       debugPrint('[NotificationScreen] ✅ 폴링할 PENDING 알림 없음');
@@ -171,8 +171,14 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
         // API 응답으로 알림 상태 업데이트
         await _updateNotificationFromApi(contentId);
 
-        // 상태 변경 통계 업데이트
-        final newStatus = _notifications.firstWhere((n) => n.contentId == contentId).status;
+        // 상태 변경 통계 업데이트 (Provider에서 다시 읽기)
+        final updatedNotifications = ref.read(notificationListProvider);
+        final updatedNotification = updatedNotifications.firstWhere(
+          (n) => n.contentId == contentId,
+          orElse: () => notification,
+        );
+        final newStatus = updatedNotification.status;
+
         if (oldStatus != newStatus) {
           switch (newStatus) {
             case NotificationStatus.analyzing:
@@ -225,8 +231,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       debugPrint('═══════════════════════════════════════════════════════');
       debugPrint('[NotificationScreen] 🔄 PENDING 알림 상태 체크 시작');
 
-      // PENDING 상태인 알림들 필터링
-      final pendingNotifications = _notifications.where((n) => n.isPending).toList();
+      // PENDING 상태인 알림들 필터링 (Provider에서)
+      final notifications = ref.read(notificationListProvider);
+      final pendingNotifications = notifications.where((n) => n.isPending).toList();
 
       if (pendingNotifications.isEmpty) {
         debugPrint('[NotificationScreen] ✅ 체크할 PENDING 알림 없음');
@@ -263,8 +270,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           // API 응답으로 알림 상태 업데이트
           await _updateNotificationFromApi(contentId);
 
-          // 상태 변경 통계 업데이트
-          final newStatus = _notifications.firstWhere((n) => n.contentId == contentId).status;
+          // 상태 변경 통계 업데이트 (Provider에서 다시 읽기)
+          final updatedNotifications = ref.read(notificationListProvider);
+          final newStatus = updatedNotifications.firstWhere((n) => n.contentId == contentId).status;
           if (oldStatus != newStatus) {
             switch (newStatus) {
               case NotificationStatus.analyzing:
@@ -320,9 +328,6 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
       debugPrint('[NotificationScreen] 파싱 결과 - 작성자: $author, URL: $url');
 
-      // 임시 알림 ID 생성
-      final notificationId = DateTime.now().millisecondsSinceEpoch.toString();
-
       try {
         // 백엔드로 URL 전송하고 contentId 받기
         final contentProvider = ref.read(contentListProvider.notifier);
@@ -330,20 +335,12 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
         debugPrint('[NotificationScreen] contentId 수신: $contentId');
 
-        // NotificationItem 생성 (contentId 포함)
-        final notification = NotificationItem(
-          id: notificationId,
-          contentId: contentId, // ✅ 백엔드 UUID 저장
-          author: author,
+        // 알림 리스트에 추가 (Provider 사용)
+        ref.read(notificationListProvider.notifier).addNotification(
+          contentId: contentId,
           url: url,
-          receivedAt: DateTime.now(),
-          status: NotificationStatus.pending,
+          author: author,
         );
-
-        // 알림 리스트에 추가
-        setState(() {
-          _notifications.insert(0, notification); // 최신 알림을 상단에 추가
-        });
 
         debugPrint('[NotificationScreen] 알림 추가 완료 (PENDING 상태)');
       } on RefreshTokenException catch (e) {
@@ -399,19 +396,15 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       // 백엔드 status 문자열 → NotificationStatus enum 변환
       final notificationStatus = _mapContentStatusToNotificationStatus(fullContent.status);
 
-      // 알림 업데이트
-      setState(() {
-        final index = _notifications.indexWhere((n) => n.contentId == contentId);
-        if (index != -1) {
-          _notifications[index] = _notifications[index].copyWith(
-            status: notificationStatus,
-            contentTitle: fullContent.title,
-            contentSummary: fullContent.summary,
-            placeCount: fullContent.places.length,
-          );
-          debugPrint('[NotificationScreen] ✅ 알림 업데이트 완료: ${notificationStatus.name}');
-        }
-      });
+      // 알림 업데이트 (Provider 사용)
+      ref.read(notificationListProvider.notifier).updateNotification(
+        contentId: contentId,
+        status: notificationStatus,
+        title: fullContent.title,
+        summary: fullContent.summary,
+        placeCount: fullContent.places.length,
+      );
+      debugPrint('[NotificationScreen] ✅ 알림 업데이트 완료: ${notificationStatus.name}');
     } catch (e) {
       debugPrint('[NotificationScreen] ❌ API 호출 실패: $e');
       // 에러 발생 시 알림 상태 유지 (변경하지 않음)
@@ -448,6 +441,8 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    // Provider에서 알림 목록 watch (상태 변경 시 자동 리빌드)
+    final notifications = ref.watch(notificationListProvider);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -477,14 +472,14 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
             ),
             // 알림 리스트
             Expanded(
-              child: _notifications.isNotEmpty
+              child: notifications.isNotEmpty
                   ? SingleChildScrollView(
                       padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildSectionHeader(l10n.notificationSectionToday),
-                          ..._notifications.map(
+                          ...notifications.map(
                             (notification) => _buildNotificationItem(notification),
                           ),
                         ],

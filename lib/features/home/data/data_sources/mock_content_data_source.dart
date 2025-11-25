@@ -152,6 +152,17 @@ class MockContentDataSource implements ContentDataSource {
     _cachedContents?.removeWhere((c) => c.contentId == contentId);
   }
 
+  @override
+  Future<PlaceModel> getPlaceById(String placeId) async {
+    // 캐시된 장소 목록에서 찾기
+    final places = await getSavedPlaces();
+    final place = places.firstWhere(
+      (p) => p.placeId == placeId,
+      orElse: () => throw Exception('Place not found: $placeId'),
+    );
+    return place;
+  }
+
   /// URL에서 플랫폼 감지
   String _detectPlatform(String url) {
     if (url.contains('instagram.com')) {

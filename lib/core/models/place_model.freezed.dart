@@ -22,9 +22,10 @@ PlaceModel _$PlaceModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PlaceModel {
   /// 장소 고유 ID
-  /// GET /api/content/place/saved: "placeId" 필드 사용
-  /// POST /api/content/analyze: "id" 필드 사용 (places 배열 내)
-  @JsonKey(name: 'placeId')
+  /// - GET /api/content/place/saved: "id" 필드 사용
+  /// - Mock 데이터, 일부 API: "placeId" 필드 사용
+  /// readValue로 "id" 또는 "placeId" 둘 다 처리
+  @JsonKey(readValue: _readPlaceId)
   String get placeId => throw _privateConstructorUsedError;
 
   /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
@@ -113,7 +114,7 @@ abstract class $PlaceModelCopyWith<$Res> {
   ) = _$PlaceModelCopyWithImpl<$Res, PlaceModel>;
   @useResult
   $Res call({
-    @JsonKey(name: 'placeId') String placeId,
+    @JsonKey(readValue: _readPlaceId) String placeId,
     int position,
     String name,
     String address,
@@ -282,7 +283,7 @@ abstract class _$$PlaceModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    @JsonKey(name: 'placeId') String placeId,
+    @JsonKey(readValue: _readPlaceId) String placeId,
     int position,
     String name,
     String address,
@@ -443,7 +444,7 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PlaceModelImpl implements _PlaceModel {
   const _$PlaceModelImpl({
-    @JsonKey(name: 'placeId') required this.placeId,
+    @JsonKey(readValue: _readPlaceId) required this.placeId,
     this.position = 0,
     required this.name,
     required this.address,
@@ -473,10 +474,11 @@ class _$PlaceModelImpl implements _PlaceModel {
       _$$PlaceModelImplFromJson(json);
 
   /// 장소 고유 ID
-  /// GET /api/content/place/saved: "placeId" 필드 사용
-  /// POST /api/content/analyze: "id" 필드 사용 (places 배열 내)
+  /// - GET /api/content/place/saved: "id" 필드 사용
+  /// - Mock 데이터, 일부 API: "placeId" 필드 사용
+  /// readValue로 "id" 또는 "placeId" 둘 다 처리
   @override
-  @JsonKey(name: 'placeId')
+  @JsonKey(readValue: _readPlaceId)
   final String placeId;
 
   /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
@@ -692,7 +694,7 @@ class _$PlaceModelImpl implements _PlaceModel {
 
 abstract class _PlaceModel implements PlaceModel {
   const factory _PlaceModel({
-    @JsonKey(name: 'placeId') required final String placeId,
+    @JsonKey(readValue: _readPlaceId) required final String placeId,
     final int position,
     required final String name,
     required final String address,
@@ -720,10 +722,11 @@ abstract class _PlaceModel implements PlaceModel {
       _$PlaceModelImpl.fromJson;
 
   /// 장소 고유 ID
-  /// GET /api/content/place/saved: "placeId" 필드 사용
-  /// POST /api/content/analyze: "id" 필드 사용 (places 배열 내)
+  /// - GET /api/content/place/saved: "id" 필드 사용
+  /// - Mock 데이터, 일부 API: "placeId" 필드 사용
+  /// readValue로 "id" 또는 "placeId" 둘 다 처리
   @override
-  @JsonKey(name: 'placeId')
+  @JsonKey(readValue: _readPlaceId)
   String get placeId;
 
   /// 콘텐츠 내에서의 장소 순서 (0부터 시작)

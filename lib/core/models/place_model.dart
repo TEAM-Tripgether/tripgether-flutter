@@ -4,6 +4,16 @@ import 'business_hour_model.dart';
 part 'place_model.freezed.dart';
 part 'place_model.g.dart';
 
+/// JSON에서 placeId 읽기 - "id" 또는 "placeId" 둘 다 지원
+///
+/// API 엔드포인트별 필드명 차이 처리:
+/// - GET /api/content/place/saved: "id" 필드 사용
+/// - Mock 데이터, 일부 API: "placeId" 필드 사용
+Object? _readPlaceId(Map<dynamic, dynamic> json, String key) {
+  // "id" 필드 우선, 없으면 "placeId" 사용
+  return json['id'] ?? json['placeId'];
+}
+
 /// 장소 정보 모델
 ///
 /// Instagram, YouTube 등의 콘텐츠에서 추출된 장소 정보를 나타냅니다.
@@ -12,9 +22,10 @@ part 'place_model.g.dart';
 class PlaceModel with _$PlaceModel {
   const factory PlaceModel({
     /// 장소 고유 ID
-    /// GET /api/content/place/saved: "placeId" 필드 사용
-    /// POST /api/content/analyze: "id" 필드 사용 (places 배열 내)
-    @JsonKey(name: 'placeId') required String placeId,
+    /// - GET /api/content/place/saved: "id" 필드 사용
+    /// - Mock 데이터, 일부 API: "placeId" 필드 사용
+    /// readValue로 "id" 또는 "placeId" 둘 다 처리
+    @JsonKey(readValue: _readPlaceId) required String placeId,
 
     /// 콘텐츠 내에서의 장소 순서 (0부터 시작)
     /// GET /api/content/place/saved 응답에는 포함되지 않음

@@ -22,8 +22,10 @@ ContentModel _$ContentModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ContentModel {
   /// 콘텐츠 고유 ID
-  /// Backend API는 "id"를 사용하지만 Flutter에서는 명확성을 위해 contentId 사용
-  @JsonKey(name: 'id')
+  /// - POST /api/content/analyze: "contentId" 필드 사용
+  /// - 일부 API: "id" 필드 사용
+  /// readValue로 "contentId" 또는 "id" 둘 다 처리
+  @JsonKey(readValue: _readContentId)
   String get contentId => throw _privateConstructorUsedError;
 
   /// 회원 ID (백엔드 응답용, 프론트엔드에서는 미사용)
@@ -94,7 +96,7 @@ abstract class $ContentModelCopyWith<$Res> {
   ) = _$ContentModelCopyWithImpl<$Res, ContentModel>;
   @useResult
   $Res call({
-    @JsonKey(name: 'id') String contentId,
+    @JsonKey(readValue: _readContentId) String contentId,
     String? memberId,
     String? platform,
     String status,
@@ -233,7 +235,7 @@ abstract class _$$ContentModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    @JsonKey(name: 'id') String contentId,
+    @JsonKey(readValue: _readContentId) String contentId,
     String? memberId,
     String? platform,
     String status,
@@ -364,7 +366,7 @@ class __$$ContentModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ContentModelImpl implements _ContentModel {
   const _$ContentModelImpl({
-    @JsonKey(name: 'id') required this.contentId,
+    @JsonKey(readValue: _readContentId) required this.contentId,
     this.memberId,
     this.platform,
     this.status = 'PENDING',
@@ -388,9 +390,11 @@ class _$ContentModelImpl implements _ContentModel {
       _$$ContentModelImplFromJson(json);
 
   /// 콘텐츠 고유 ID
-  /// Backend API는 "id"를 사용하지만 Flutter에서는 명확성을 위해 contentId 사용
+  /// - POST /api/content/analyze: "contentId" 필드 사용
+  /// - 일부 API: "id" 필드 사용
+  /// readValue로 "contentId" 또는 "id" 둘 다 처리
   @override
-  @JsonKey(name: 'id')
+  @JsonKey(readValue: _readContentId)
   final String contentId;
 
   /// 회원 ID (백엔드 응답용, 프론트엔드에서는 미사용)
@@ -558,7 +562,7 @@ class _$ContentModelImpl implements _ContentModel {
 
 abstract class _ContentModel implements ContentModel {
   const factory _ContentModel({
-    @JsonKey(name: 'id') required final String contentId,
+    @JsonKey(readValue: _readContentId) required final String contentId,
     final String? memberId,
     final String? platform,
     final String status,
@@ -581,9 +585,11 @@ abstract class _ContentModel implements ContentModel {
       _$ContentModelImpl.fromJson;
 
   /// 콘텐츠 고유 ID
-  /// Backend API는 "id"를 사용하지만 Flutter에서는 명확성을 위해 contentId 사용
+  /// - POST /api/content/analyze: "contentId" 필드 사용
+  /// - 일부 API: "id" 필드 사용
+  /// readValue로 "contentId" 또는 "id" 둘 다 처리
   @override
-  @JsonKey(name: 'id')
+  @JsonKey(readValue: _readContentId)
   String get contentId;
 
   /// 회원 ID (백엔드 응답용, 프론트엔드에서는 미사용)

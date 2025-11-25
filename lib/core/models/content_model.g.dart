@@ -8,7 +8,7 @@ part of 'content_model.dart';
 
 _$ContentModelImpl _$$ContentModelImplFromJson(Map<String, dynamic> json) =>
     _$ContentModelImpl(
-      contentId: json['id'] as String,
+      contentId: _readContentId(json, 'contentId') as String,
       memberId: json['memberId'] as String?,
       platform: json['platform'] as String?,
       status: json['status'] as String? ?? 'PENDING',
@@ -39,7 +39,7 @@ _$ContentModelImpl _$$ContentModelImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$ContentModelImplToJson(_$ContentModelImpl instance) =>
     <String, dynamic>{
-      'id': instance.contentId,
+      'contentId': instance.contentId,
       'memberId': instance.memberId,
       'platform': instance.platform,
       'status': instance.status,

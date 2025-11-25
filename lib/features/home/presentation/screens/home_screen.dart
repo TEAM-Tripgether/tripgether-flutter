@@ -22,6 +22,7 @@ import '../../data/repositories/content_repository.dart';
 import '../providers/content_provider.dart';
 import '../widgets/recent_sns_content_section.dart';
 import '../widgets/recent_saved_places_section.dart';
+import '../../../notifications/presentation/providers/notification_provider.dart';
 
 /// 홈 화면 위젯
 /// 앱의 메인 화면으로 최근 SNS 콘텐츠와 저장한 장소를 표시합니다.
@@ -166,6 +167,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           debugPrint(
             '[HomeScreen] ✅ URL 전송 성공: ${result.contentId} (${result.status})',
           );
+
+          // ✅ NotificationProvider에 알림 추가
+          ref.read(notificationListProvider.notifier).addNotification(
+                contentId: result.contentId,
+                url: url,
+                author: '알 수 없음', // URL에서 작성자 추출 불가 시 기본값
+              );
+          debugPrint('[HomeScreen] 📢 NotificationProvider에 알림 추가 완료');
+
           successCount++;
         } on RefreshTokenException catch (e) {
           // Refresh Token 에러 → 자동 로그아웃 처리

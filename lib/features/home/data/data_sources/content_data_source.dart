@@ -28,10 +28,12 @@ abstract class ContentDataSource {
   /// 특정 콘텐츠의 상세 정보와 추출된 장소 목록을 조회합니다.
   Future<ContentModel> getContentById(String contentId);
 
-  /// 저장된 장소 목록 조회
+  /// 저장한 장소 목록 조회
   ///
-  /// GET /api/content/place/saved
-  /// 사용자가 저장한 모든 장소 목록을 조회합니다.
+  /// GET /api/place/saved
+  /// MemberPlace 기반으로 사용자가 명시적으로 저장한 장소만 조회합니다.
+  /// 응답: placeId, name, address, rating, photoUrls, description
+  /// 상세 정보(latitude, longitude, businessHours 등)는 getPlaceById() 추가 호출 필요.
   Future<List<PlaceModel>> getSavedPlaces();
 
   /// 콘텐츠 삭제
@@ -39,4 +41,11 @@ abstract class ContentDataSource {
   /// DELETE /api/content/{contentId}
   /// 특정 콘텐츠를 삭제합니다.
   Future<void> deleteContent(String contentId);
+
+  /// 장소 상세 조회
+  ///
+  /// GET /api/place/{placeId}
+  /// 특정 장소의 상세 정보를 조회합니다.
+  /// latitude, longitude 등 위치 정보가 포함됩니다.
+  Future<PlaceModel> getPlaceById(String placeId);
 }

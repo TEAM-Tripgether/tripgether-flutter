@@ -123,25 +123,66 @@ class ApiContentDataSource implements ContentDataSource {
     }
   }
 
+  /// 특정 콘텐츠 상세 조회
+  ///
+  /// GET /api/content/{contentId} API 호출
+  /// 응답 구조: { "content": {...}, "places": [...] }
+  /// content 객체와 places 배열을 합쳐서 ContentModel로 변환합니다.
   @override
   Future<ContentModel> getContentById(String contentId) async {
     try {
+      debugPrint('═══════════════════════════════════════════════════════');
+      debugPrint('[API] 📤 GET /api/content/$contentId 요청');
+
       final response = await dio.get(
         '$baseUrl/api/content/$contentId',
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
+      debugPrint('[API] 📥 Response Status: ${response.statusCode}');
+      debugPrint('[API] 📥 Response Data: ${response.data}');
+
       if (response.statusCode == 200) {
-        return ContentModel.fromJson(response.data);
+        // 백엔드 응답 구조: { "content": {...}, "places": [...] }
+        final Map<String, dynamic> responseData =
+            response.data as Map<String, dynamic>;
+
+        // content 객체 추출
+        final Map<String, dynamic> contentJson =
+            responseData['content'] as Map<String, dynamic>;
+
+        // places 배열 추출 (없으면 빈 배열)
+        final List<dynamic> placesJson =
+            responseData['places'] as List<dynamic>? ?? [];
+
+        debugPrint('[API] 📋 content keys: ${contentJson.keys.toList()}');
+        debugPrint('[API] 📋 places count: ${placesJson.length}');
+
+        // places를 content에 추가하여 ContentModel 생성
+        contentJson['places'] = placesJson;
+
+        final content = ContentModel.fromJson(contentJson);
+        debugPrint('[API] ✅ ContentModel 파싱 성공');
+        debugPrint('[API] ✅ contentId: ${content.contentId}');
+        debugPrint('[API] ✅ places count: ${content.places.length}');
+        debugPrint('═══════════════════════════════════════════════════════');
+
+        return content;
       } else {
+        debugPrint('[API] ❌ 실패 - Status: ${response.statusCode}');
+        debugPrint('═══════════════════════════════════════════════════════');
         throw Exception('Failed to load content: ${response.statusCode}');
       }
     } on DioException catch (e) {
+      debugPrint('[API] ❌ DioException 발생: ${e.message}');
+      debugPrint('═══════════════════════════════════════════════════════');
       ApiLogger.throwFromDioError(
         e,
         context: 'ApiContentDataSource.getContentById',
       );
     } catch (e) {
+      debugPrint('[API] ❌ Exception 발생: $e');
+      debugPrint('═══════════════════════════════════════════════════════');
       ApiLogger.logException(
         e,
         context: 'ApiContentDataSource.getContentById',
@@ -150,11 +191,17 @@ class ApiContentDataSource implements ContentDataSource {
     }
   }
 
+  /// 저장한 장소 목록 조회
+  ///
+  /// GET /api/place/saved API 호출
+  /// MemberPlace 기반으로 사용자가 명시적으로 저장한 장소만 조회합니다.
+  /// 응답에는 기본 정보(placeId, name, address, rating, photoUrls, description)만 포함됩니다.
+  /// 상세 정보(latitude, longitude, businessHours 등)가 필요하면 getPlaceById() 추가 호출 필요.
   @override
   Future<List<PlaceModel>> getSavedPlaces() async {
     try {
       final response = await dio.get(
-        '$baseUrl/api/content/place/saved',
+        '$baseUrl/api/place/saved',
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
@@ -203,6 +250,48 @@ class ApiContentDataSource implements ContentDataSource {
       ApiLogger.logException(
         e,
         context: 'ApiContentDataSource.deleteContent',
+      );
+      rethrow;
+    }
+  }
+
+  @override
+  Future<PlaceModel> getPlaceById(String placeId) async {
+    try {
+      debugPrint('═══════════════════════════════════════════════════════');
+      debugPrint('[API] 📤 GET /api/place/$placeId 요청');
+
+      final response = await dio.get(
+        '$baseUrl/api/place/$placeId',
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      debugPrint('[API] 📥 Response Status: ${response.statusCode}');
+      debugPrint('[API] 📥 Response Data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        final place = PlaceModel.fromJson(response.data as Map<String, dynamic>);
+        debugPrint('[API] ✅ PlaceModel 파싱 성공 - name: ${place.name}');
+        debugPrint('═══════════════════════════════════════════════════════');
+        return place;
+      } else {
+        debugPrint('[API] ❌ 실패 - Status: ${response.statusCode}');
+        debugPrint('═══════════════════════════════════════════════════════');
+        throw Exception('Failed to load place: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      debugPrint('[API] ❌ DioException 발생: ${e.message}');
+      debugPrint('═══════════════════════════════════════════════════════');
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'ApiContentDataSource.getPlaceById',
+      );
+    } catch (e) {
+      debugPrint('[API] ❌ Exception 발생: $e');
+      debugPrint('═══════════════════════════════════════════════════════');
+      ApiLogger.logException(
+        e,
+        context: 'ApiContentDataSource.getPlaceById',
       );
       rethrow;
     }

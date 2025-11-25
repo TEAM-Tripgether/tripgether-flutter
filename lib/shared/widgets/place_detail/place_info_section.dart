@@ -29,6 +29,9 @@ class PlaceInfoSection extends StatefulWidget {
   /// 영업시간 목록 (선택 사항)
   final List<BusinessHourModel> businessHours;
 
+  /// 영업 상태 (OPERATIONAL, CLOSED_TEMPORARILY, CLOSED_PERMANENTLY)
+  final String? businessStatus;
+
   /// 전화번호 탭 콜백 (선택 사항)
   final VoidCallback? onPhoneTap;
 
@@ -42,6 +45,7 @@ class PlaceInfoSection extends StatefulWidget {
     this.rating,
     this.reviewCount,
     this.businessHours = const [],
+    this.businessStatus,
     this.onPhoneTap,
     this.onAddressTap,
   });
@@ -89,10 +93,14 @@ class _PlaceInfoSectionState extends State<PlaceInfoSection> {
           ),
         ],
 
-        // 영업시간
-        if (widget.businessHours.isNotEmpty) ...[
+        // 영업 상태 및 영업시간
+        if (widget.businessStatus != null ||
+            widget.businessHours.isNotEmpty) ...[
           SizedBox(height: AppSpacing.sm),
-          _BusinessHoursSection(businessHours: widget.businessHours),
+          _BusinessHoursSection(
+            businessHours: widget.businessHours,
+            businessStatus: widget.businessStatus,
+          ),
         ],
 
         // 별점
@@ -170,7 +178,13 @@ class _InfoRow extends StatelessWidget {
 class _BusinessHoursSection extends StatefulWidget {
   final List<BusinessHourModel> businessHours;
 
-  const _BusinessHoursSection({required this.businessHours});
+  /// 영업 상태 (OPERATIONAL, CLOSED_TEMPORARILY, CLOSED_PERMANENTLY)
+  final String? businessStatus;
+
+  const _BusinessHoursSection({
+    required this.businessHours,
+    this.businessStatus,
+  });
 
   @override
   State<_BusinessHoursSection> createState() => _BusinessHoursSectionState();
@@ -181,6 +195,19 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
 
   @override
   Widget build(BuildContext context) {
+    // businessStatus 우선 처리 (폐업/임시휴업 상태)
+    final statusInfo = _getBusinessStatusInfo();
+
+    // 폐업인 경우 영업시간 표시 안함
+    if (statusInfo.isPermanentlyClosed) {
+      return _buildStatusOnlyRow(statusInfo);
+    }
+
+    // 영업시간이 없고 특별한 상태도 없는 경우
+    if (widget.businessHours.isEmpty && statusInfo.label == null) {
+      return const SizedBox.shrink();
+    }
+
     final isOpen = _isCurrentlyOpen(widget.businessHours);
 
     return Column(
@@ -188,7 +215,9 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
       children: [
         // 헤더 (탭 가능)
         InkWell(
-          onTap: () => setState(() => _isExpanded = !_isExpanded),
+          onTap: widget.businessHours.isNotEmpty
+              ? () => setState(() => _isExpanded = !_isExpanded)
+              : null,
           borderRadius: AppRadius.allSmall,
           child: Row(
             children: [
@@ -199,30 +228,98 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
                 height: AppSizes.iconSmall,
               ),
               SizedBox(width: AppSpacing.xs),
-              // 영업 중/영업 종료 텍스트
-              Text(
-                isOpen ? '영업 중' : '영업 종료',
-                style: AppTextStyles.titleSemiBold13.copyWith(
-                  color: AppColors.mainColor,
-                ),
-              ),
+              // 영업 상태 텍스트
+              _buildStatusText(isOpen, statusInfo),
               const Spacer(),
-              // 펼침/접힘 아이콘
-              Icon(
-                _isExpanded ? Icons.expand_less : Icons.expand_more,
-                size: AppSizes.iconSmall,
-                color: AppColors.textColor1.withValues(alpha: 0.6),
-              ),
+              // 펼침/접힘 아이콘 (영업시간이 있는 경우만)
+              if (widget.businessHours.isNotEmpty)
+                Icon(
+                  _isExpanded ? Icons.expand_less : Icons.expand_more,
+                  size: AppSizes.iconSmall,
+                  color: AppColors.textColor1.withValues(alpha: 0.6),
+                ),
             ],
           ),
         ),
 
         // 펼쳐진 리스트
-        if (_isExpanded) ...[
+        if (_isExpanded && widget.businessHours.isNotEmpty) ...[
           SizedBox(height: AppSpacing.sm),
           ..._buildHoursList(widget.businessHours),
         ],
       ],
+    );
+  }
+
+  /// 영업 상태 정보 가져오기
+  _BusinessStatusInfo _getBusinessStatusInfo() {
+    final status = widget.businessStatus;
+
+    if (status == 'CLOSED_PERMANENTLY') {
+      return _BusinessStatusInfo(
+        label: '폐업',
+        color: AppColors.error,
+        isPermanentlyClosed: true,
+      );
+    } else if (status == 'CLOSED_TEMPORARILY') {
+      return _BusinessStatusInfo(
+        label: '임시 휴업',
+        color: AppColors.warning,
+        isPermanentlyClosed: false,
+      );
+    }
+
+    // OPERATIONAL 또는 null인 경우
+    return _BusinessStatusInfo(
+      label: null,
+      color: AppColors.mainColor,
+      isPermanentlyClosed: false,
+    );
+  }
+
+  /// 상태만 표시하는 행 (폐업인 경우)
+  Widget _buildStatusOnlyRow(_BusinessStatusInfo statusInfo) {
+    return Row(
+      children: [
+        Icon(
+          Icons.cancel_outlined,
+          size: AppSizes.iconSmall,
+          color: statusInfo.color,
+        ),
+        SizedBox(width: AppSpacing.xs),
+        Text(
+          statusInfo.label ?? '',
+          style: AppTextStyles.titleSemiBold13.copyWith(
+            color: statusInfo.color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 상태 텍스트 위젯 생성
+  Widget _buildStatusText(bool isOpen, _BusinessStatusInfo statusInfo) {
+    // 임시 휴업 상태인 경우
+    if (statusInfo.label == '임시 휴업') {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '임시 휴업',
+            style: AppTextStyles.titleSemiBold13.copyWith(
+              color: statusInfo.color,
+            ),
+          ),
+        ],
+      );
+    }
+
+    // 정상 영업 상태 (OPERATIONAL 또는 null)
+    return Text(
+      isOpen ? '영업 중' : '영업 종료',
+      style: AppTextStyles.titleSemiBold13.copyWith(
+        color: isOpen ? AppColors.success : AppColors.textColor1.withValues(alpha: 0.6),
+      ),
     );
   }
 
@@ -299,4 +396,22 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
     };
     return map[weekday] ?? 'MONDAY';
   }
+}
+
+/// 영업 상태 정보를 담는 내부 클래스
+class _BusinessStatusInfo {
+  /// 표시할 라벨 (null이면 기본 영업 상태 표시)
+  final String? label;
+
+  /// 텍스트 색상
+  final Color color;
+
+  /// 폐업 여부 (true면 영업시간 표시 안함)
+  final bool isPermanentlyClosed;
+
+  const _BusinessStatusInfo({
+    required this.label,
+    required this.color,
+    required this.isPermanentlyClosed,
+  });
 }

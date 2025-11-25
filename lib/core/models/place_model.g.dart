@@ -9,7 +9,7 @@ part of 'place_model.dart';
 _$PlaceModelImpl _$$PlaceModelImplFromJson(
   Map<String, dynamic> json,
 ) => _$PlaceModelImpl(
-  placeId: json['placeId'] as String,
+  placeId: _readPlaceId(json, 'placeId') as String,
   position: (json['position'] as num?)?.toInt() ?? 0,
   name: json['name'] as String,
   address: json['address'] as String,
