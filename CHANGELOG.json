@@ -1,11 +1,40 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-25T10:24:38Z",
-    "currentVersion": "1.2.11",
+    "lastUpdated": "2025-11-25T11:39:36Z",
+    "currentVersion": "1.2.12",
     "projectType": "flutter",
-    "totalReleases": 38
+    "totalReleases": 39
   },
   "releases": [
+    {
+      "version": "1.2.12",
+      "project_type": "flutter",
+      "date": "2025-11-25",
+      "pr_number": 105,
+      "raw_summary": "Summary by CodeRabbit\n버전 1.2.12 릴리스 노트\n\n\n새로운 기능\n\n완료된 알림에서 콘텐츠 상세 페이지로 직접 이동할 수 있도록 업데이트\n\n\n\n개선 사항\n\n알림 폴링 메커니즘 최적화\niOS 공유 기능 워크플로우 개선\n토큰 오류 처리 강화\n\n\n\n기타\n\n버전 업데이트 (1.2.12)\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "완료된 알림에서 콘텐츠 상세 페이지로 직접 이동할 수 있도록 업데이트"
+          ]
+        },
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "알림 폴링 메커니즘 최적화",
+            "iOS 공유 기능 워크플로우 개선",
+            "토큰 오류 처리 강화"
+          ]
+        },
+        "기타": {
+          "title": "기타",
+          "items": [
+            "버전 업데이트 (1.2.12)"
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.11",
       "project_type": "flutter",
