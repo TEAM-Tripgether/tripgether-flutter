@@ -18,6 +18,7 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/sns_contents_list_screen.dart';
 import '../../features/home/presentation/screens/sns_content_detail_screen.dart';
 import '../../features/home/presentation/screens/place_detail_screen.dart';
+import '../../features/home/presentation/screens/saved_places_list_screen.dart';
 import '../../features/course_market/presentation/screens/course_market_screen.dart';
 import '../../features/course_market/presentation/screens/course_search_screen.dart';
 import '../../features/course_market/presentation/screens/popular_courses_screen.dart';
@@ -269,6 +270,15 @@ class AppRouter {
                   pageBuilder: (context, state) {
                     return NoTransitionPage(
                       child: const SnsContentsListScreen(),
+                    );
+                  },
+                ),
+                // 저장한 장소 리스트 화면
+                GoRoute(
+                  path: 'saved-places',
+                  pageBuilder: (context, state) {
+                    return NoTransitionPage(
+                      child: const SavedPlacesListScreen(),
                     );
                   },
                 ),

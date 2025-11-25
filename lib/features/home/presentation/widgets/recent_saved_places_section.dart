@@ -39,7 +39,8 @@ class RecentSavedPlacesSection extends ConsumerWidget {
           SectionHeader(
             title: l10n.recentSavedPlaces,
             onMoreTap: () {
-              debugPrint('최근 저장한 장소 리스트 화면으로 이동');
+              // 저장한 장소 전체 리스트 화면으로 이동
+              context.push(AppRoutes.savedPlacesList);
             },
           ),
 
@@ -62,8 +63,11 @@ class RecentSavedPlacesSection extends ConsumerWidget {
                 );
               }
 
+              // 홈 화면에서는 최대 3개만 표시
+              final displayPlaces = places.take(3).toList();
+
               return Column(
-                children: places.map((place) {
+                children: displayPlaces.map((place) {
                   return Padding(
                     padding: EdgeInsets.only(bottom: AppSpacing.sm),
                     child: PlaceDetailCard(

@@ -207,10 +207,16 @@ class ApiContentDataSource implements ContentDataSource {
   @override
   Future<List<PlaceModel>> getSavedPlaces() async {
     try {
+      debugPrint('═══════════════════════════════════════════════════════');
+      debugPrint('[API] 📤 GET /api/place/saved 요청');
+
       final response = await dio.get(
         '$baseUrl/api/place/saved',
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
+
+      debugPrint('[API] 📥 Response Status: ${response.statusCode}');
+      debugPrint('[API] 📥 Response Data: ${response.data}');
 
       if (response.statusCode == 200) {
         // 백엔드 응답: { "places": [ ... ] }
@@ -218,18 +224,31 @@ class ApiContentDataSource implements ContentDataSource {
             response.data as Map<String, dynamic>;
         final List<dynamic> jsonList = responseData['places'] as List<dynamic>;
 
-        return jsonList.map((json) {
+        debugPrint('[API] 📋 places count: ${jsonList.length}');
+
+        final places = jsonList.map((json) {
           return PlaceModel.fromJson(json as Map<String, dynamic>);
         }).toList();
+
+        debugPrint('[API] ✅ PlaceModel 파싱 성공 - ${places.length}개 장소');
+        debugPrint('═══════════════════════════════════════════════════════');
+
+        return places;
       } else {
+        debugPrint('[API] ❌ 실패 - Status: ${response.statusCode}');
+        debugPrint('═══════════════════════════════════════════════════════');
         throw Exception('Failed to load saved places: ${response.statusCode}');
       }
     } on DioException catch (e) {
+      debugPrint('[API] ❌ DioException 발생: ${e.message}');
+      debugPrint('═══════════════════════════════════════════════════════');
       ApiLogger.throwFromDioError(
         e,
         context: 'ApiContentDataSource.getSavedPlaces',
       );
     } catch (e) {
+      debugPrint('[API] ❌ Exception 발생: $e');
+      debugPrint('═══════════════════════════════════════════════════════');
       ApiLogger.logException(e, context: 'ApiContentDataSource.getSavedPlaces');
       rethrow;
     }
@@ -261,7 +280,11 @@ class ApiContentDataSource implements ContentDataSource {
   Future<PlaceModel> getPlaceById(String placeId) async {
     try {
       debugPrint('═══════════════════════════════════════════════════════');
+      debugPrint('[API] 🔍 getPlaceById 호출');
+      debugPrint('[API] 📍 placeId: $placeId');
+      debugPrint('[API] 📏 placeId 길이: ${placeId.length}');
       debugPrint('[API] 📤 GET /api/place/$placeId 요청');
+      debugPrint('═══════════════════════════════════════════════════════');
 
       final response = await dio.get(
         '$baseUrl/api/place/$placeId',

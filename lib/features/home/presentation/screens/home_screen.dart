@@ -238,6 +238,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         backgroundColor: AppColors.white,
         body: CustomScrollView(
           controller: scrollController,
+          // 콘텐츠가 화면보다 작아도 항상 스크롤 가능 (pull-to-refresh 활성화)
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           slivers: [
             // SliverAppBar (스크롤 시 점진적 축소)
             Consumer(

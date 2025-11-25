@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/models/content_model.dart';
@@ -14,14 +15,25 @@ part 'place_detail_provider.g.dart';
 class PlaceDetail extends _$PlaceDetail {
   @override
   Future<PlaceModel?> build(String placeId) async {
+    debugPrint('═══════════════════════════════════════════════════════');
+    debugPrint('[PlaceDetailProvider] 🔍 build() 호출');
+    debugPrint('[PlaceDetailProvider] 📍 placeId: $placeId');
+    debugPrint('[PlaceDetailProvider] 📏 placeId 길이: ${placeId.length}');
+    debugPrint('═══════════════════════════════════════════════════════');
+
     final repository = ref.read(contentRepositoryProvider);
 
     try {
       // GET /api/place/{placeId} API 호출
       // latitude, longitude 등 위치 정보가 포함된 상세 데이터 반환
+      debugPrint(
+        '[PlaceDetailProvider] 📤 repository.getPlaceById($placeId) 호출',
+      );
       final place = await repository.getPlaceById(placeId);
+      debugPrint('[PlaceDetailProvider] ✅ 장소 로드 성공: ${place.name}');
       return place;
     } catch (e) {
+      debugPrint('[PlaceDetailProvider] ❌ 에러 발생: $e');
       // 장소를 찾을 수 없는 경우 PlaceNotFoundException 던지기
       if (e.toString().contains('not found') ||
           e.toString().contains('PLACE_NOT_FOUND')) {

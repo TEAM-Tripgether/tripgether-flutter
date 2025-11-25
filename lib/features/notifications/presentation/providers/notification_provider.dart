@@ -9,7 +9,10 @@ part 'notification_provider.g.dart';
 /// HomeScreen과 NotificationScreen에서 공유하여 사용합니다.
 /// - HomeScreen: URL 분석 요청 후 알림 추가
 /// - NotificationScreen: 알림 목록 표시 및 상태 업데이트
-@riverpod
+///
+/// **중요**: `keepAlive: true` 설정으로 화면 전환 시에도 상태가 유지됩니다.
+/// 기본 @riverpod는 autoDispose가 적용되어 구독자가 없으면 상태가 초기화됩니다.
+@Riverpod(keepAlive: true)
 class NotificationList extends _$NotificationList {
   @override
   List<NotificationItem> build() {
