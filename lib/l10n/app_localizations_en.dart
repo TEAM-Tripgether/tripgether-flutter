@@ -744,7 +744,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiAnalyzingLocation => 'AI is analyzing location information';
 
   @override
-  String get aiAnalysisFailed => 'Analysis failed';
+  String get aiAnalysisFailed => 'AI failed to analyze';
 
   @override
   String aiAnalyzedLocations(String count) {

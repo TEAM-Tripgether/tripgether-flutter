@@ -25,8 +25,9 @@ if [ ! -f "$ENV_FILE" ]; then
     fi
 else
     echo "✅ Loading environment variables from .env..."
-    # .env 파일에서 GOOGLE_IOS_CLIENT_ID 읽기
+    # .env 파일에서 환경 변수 읽기
     GOOGLE_IOS_CLIENT_ID=$(grep -E "^GOOGLE_IOS_CLIENT_ID=" "$ENV_FILE" | cut -d '=' -f2)
+    GOOGLE_MAPS_API_KEY=$(grep -E "^GOOGLE_MAP_IOS_MAPS_API_KEY=" "$ENV_FILE" | cut -d '=' -f2)
 fi
 
 # GOOGLE_IOS_CLIENT_ID 값 확인
@@ -49,10 +50,14 @@ echo "📱 GOOGLE_IOS_CLIENT_ID: ${GOOGLE_IOS_CLIENT_ID:0:30}..."
 GOOGLE_URL_SCHEME=$(echo "$GOOGLE_IOS_CLIENT_ID" | sed -E 's/^([0-9]+-[a-z0-9]+)\.apps\.googleusercontent\.com$/com.googleusercontent.apps.\1/')
 
 echo "🔗 GOOGLE_URL_SCHEME: $GOOGLE_URL_SCHEME"
+echo "🗺️  GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:0:20}..."
 
-# Xcode 환경 변수로 export (Info.plist에서 $(GOOGLE_URL_SCHEME)으로 사용)
+# Xcode 환경 변수로 export (Info.plist에서 $(GOOGLE_URL_SCHEME), $(GOOGLE_MAPS_API_KEY)으로 사용)
 OUTPUT_FILE="$SCRIPT_DIR/../Flutter/GoogleEnv.xcconfig"
-echo "GOOGLE_URL_SCHEME=$GOOGLE_URL_SCHEME" > "$OUTPUT_FILE"
+{
+    echo "GOOGLE_URL_SCHEME=$GOOGLE_URL_SCHEME"
+    echo "GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY"
+} > "$OUTPUT_FILE"
 
 echo "✅ Environment setup completed!"
 echo "📁 Output: $OUTPUT_FILE"

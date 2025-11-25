@@ -550,17 +550,15 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   /// [l10n]: 다국어 리소스
   ///
   /// 알림 상태에 따라 적절한 메시지를 반환합니다:
-  /// - PENDING: "분석 대기 중입니다"
-  /// - ANALYZING: "AI가 위치정보를 파악하고 있습니다"
-  /// - COMPLETED: "AI가 N개의 장소를 찾았습니다"
-  /// - FAILED: "분석에 실패했습니다"
+  /// - PENDING/ANALYZING: "AI가 위치정보를 파악하고 있습니다"
+  /// - COMPLETED: "AI가 N곳의 위치정보를 파악했습니다"
+  /// - FAILED: "AI가 분석을 실패했습니다"
   String _getStatusMessage(
     NotificationItem notification,
     AppLocalizations l10n,
   ) {
     switch (notification.status) {
       case NotificationStatus.pending:
-        return l10n.aiPendingAnalysis;
       case NotificationStatus.analyzing:
         return l10n.aiAnalyzingLocation;
       case NotificationStatus.completed:
@@ -577,16 +575,14 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   /// [notification]: 알림 아이템
   ///
   /// 알림 상태에 따라 메시지 색상을 반환합니다:
-  /// - PENDING/ANALYZING: 기본 텍스트 색상
-  /// - COMPLETED: 초록색 (성공 강조)
+  /// - PENDING/ANALYZING/COMPLETED: mainColor (보라색)
   /// - FAILED: 빨간색 (오류 강조)
   Color _getStatusMessageColor(NotificationItem notification) {
     switch (notification.status) {
       case NotificationStatus.pending:
       case NotificationStatus.analyzing:
-        return AppColors.textColor1;
       case NotificationStatus.completed:
-        return AppColors.success;
+        return AppColors.mainColor;
       case NotificationStatus.failed:
         return AppColors.error;
     }
