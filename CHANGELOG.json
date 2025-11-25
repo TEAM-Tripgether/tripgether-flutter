@@ -1,11 +1,39 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-25T07:16:08Z",
-    "currentVersion": "1.2.9",
+    "lastUpdated": "2025-11-25T09:22:40Z",
+    "currentVersion": "1.2.10",
     "projectType": "flutter",
-    "totalReleases": 36
+    "totalReleases": 37
   },
   "releases": [
+    {
+      "version": "1.2.10",
+      "project_type": "flutter",
+      "date": "2025-11-25",
+      "pr_number": 101,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n새로운 기능\n\n장소 상세 정보 지도에서 팬(이동)과 확대/축소 기능을 활성화했습니다.\n\n\n\n개선 사항\n\nAI 분석 상태 메시지를 개선했습니다.\nAI 분석 실패 메시지를 업데이트했습니다.\n\n\n\n기타\n\n버전 1.2.10으로 업데이트했습니다.\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "장소 상세 정보 지도에서 팬(이동)과 확대/축소 기능을 활성화했습니다."
+          ]
+        },
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "AI 분석 상태 메시지를 개선했습니다.",
+            "AI 분석 실패 메시지를 업데이트했습니다."
+          ]
+        },
+        "기타": {
+          "title": "기타",
+          "items": [
+            "버전 1.2.10으로 업데이트했습니다."
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.9",
       "project_type": "flutter",
