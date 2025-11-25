@@ -1,11 +1,44 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-23T09:05:57Z",
-    "currentVersion": "1.2.7",
+    "lastUpdated": "2025-11-25T07:16:08Z",
+    "currentVersion": "1.2.9",
     "projectType": "flutter",
-    "totalReleases": 35
+    "totalReleases": 36
   },
   "releases": [
+    {
+      "version": "1.2.9",
+      "project_type": "flutter",
+      "date": "2025-11-25",
+      "pr_number": 99,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n새로운 기능\n\nGoogle 지도 통합으로 위치 기반 기능 추가\n여행지 상세 정보 보기 및 저장 기능 지원\n저장한 장소 목록 관리 및 필터링 기능\nFCM 기반 콘텐츠 분석 알림 시스템 개선\n위치 권한 요청 기능 추가\n\n\n\n개선 사항\n\n토큰 관리 및 자동 갱신 로직 강화\n알림 상태 관리 및 폴링 메커니즘 개선\n오류 처리 및 토큰 만료 시 자동 로그아웃\n\n\n\n버전\n\n버전 1.2.9로 업데이트\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "Google 지도 통합으로 위치 기반 기능 추가",
+            "여행지 상세 정보 보기 및 저장 기능 지원",
+            "저장한 장소 목록 관리 및 필터링 기능",
+            "FCM 기반 콘텐츠 분석 알림 시스템 개선",
+            "위치 권한 요청 기능 추가"
+          ]
+        },
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "토큰 관리 및 자동 갱신 로직 강화",
+            "알림 상태 관리 및 폴링 메커니즘 개선",
+            "오류 처리 및 토큰 만료 시 자동 로그아웃"
+          ]
+        },
+        "버전": {
+          "title": "버전",
+          "items": [
+            "버전 1.2.9로 업데이트"
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.7",
       "project_type": "flutter",
