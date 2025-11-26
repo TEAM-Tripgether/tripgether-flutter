@@ -36,8 +36,8 @@ class SavedPlacesListScreen extends ConsumerStatefulWidget {
 
 class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
     with AutomaticKeepAliveClientMixin, RefreshableTabMixin {
-  /// 선택된 카테고리 ('전체', '카페', '음식점', '관광지')
-  String _selectedCategory = '전체';
+  /// 선택된 정렬 옵션 ('전체', '평점순', '리뷰순')
+  String _selectedSort = '전체';
 
   // ════════════════════════════════════════════════════════════════════════
   // RefreshableTabMixin 필수 구현
@@ -198,7 +198,7 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
             right: AppSpacing.lg,
             bottom: AppSpacing.sm,
           ),
-          child: _buildCategoryChips(l10n),
+          child: _buildSortChips(l10n),
         ),
       ),
     );
@@ -216,19 +216,15 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
   ) {
     return placesAsync.when(
       data: (places) {
-        final filteredPlaces = _getFilteredPlaces(places);
+        final sortedPlaces = _getSortedPlaces(places);
 
-        if (filteredPlaces.isEmpty) {
+        if (sortedPlaces.isEmpty) {
           // 빈 상태 표시
           return SliverFillRemaining(
             child: Center(
               child: EmptyStates.noData(
-                title: _selectedCategory == '전체'
-                    ? l10n.noSavedPlacesYet
-                    : '해당 카테고리에 저장된 장소가 없습니다',
-                message: _selectedCategory == '전체'
-                    ? '콘텐츠에서 마음에 드는 장소를 저장해보세요'
-                    : '다른 카테고리를 선택해보세요',
+                title: l10n.noSavedPlacesYet,
+                message: '콘텐츠에서 마음에 드는 장소를 저장해보세요',
               ),
             ),
           );
@@ -239,7 +235,7 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
           padding: EdgeInsets.all(AppSpacing.lg),
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
-              final place = filteredPlaces[index];
+              final place = sortedPlaces[index];
               return Padding(
                 padding: EdgeInsets.only(bottom: AppSpacing.sm),
                 child: PlaceDetailCard(
@@ -261,7 +257,7 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
                   },
                 ),
               );
-            }, childCount: filteredPlaces.length),
+            }, childCount: sortedPlaces.length),
           ),
         );
       },
@@ -286,19 +282,19 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
     );
   }
 
-  /// 카테고리 필터 칩 리스트
+  /// 정렬 옵션 칩 리스트
   ///
-  /// 전체/카페/음식점/관광지 카테고리 선택 칩
-  Widget _buildCategoryChips(AppLocalizations l10n) {
-    final categories = ['전체', '카페', '음식점', '관광지', '숙소'];
+  /// 전체/평점순/리뷰순 정렬 선택 칩
+  Widget _buildSortChips(AppLocalizations l10n) {
+    final sortOptions = ['전체', '평점순', '리뷰순'];
 
     return SelectableChipList(
-      items: categories,
-      selectedItems: {_selectedCategory},
+      items: sortOptions,
+      selectedItems: {_selectedSort},
       onSelectionChanged: (selected) {
         if (selected.isNotEmpty) {
           setState(() {
-            _selectedCategory = selected.first;
+            _selectedSort = selected.first;
           });
         }
       },
@@ -316,18 +312,29 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
     );
   }
 
-  /// 카테고리별 장소 필터링
+  /// 정렬 옵션별 장소 정렬
   ///
-  /// - '전체': 모든 장소 반환
-  /// - 그 외: category 필드 매칭
-  List<PlaceModel> _getFilteredPlaces(List<PlaceModel> places) {
-    if (_selectedCategory == '전체') {
+  /// - '전체': 원본 순서 유지 (최신순)
+  /// - '평점순': rating 내림차순 정렬
+  /// - '리뷰순': userRatingsTotal 내림차순 정렬
+  List<PlaceModel> _getSortedPlaces(List<PlaceModel> places) {
+    if (_selectedSort == '전체') {
       return places;
     }
 
-    return places
-        .where((place) => place.category == _selectedCategory)
-        .toList();
+    final sortedList = List<PlaceModel>.from(places);
+
+    if (_selectedSort == '평점순') {
+      // 평점 내림차순 (높은 평점이 먼저)
+      sortedList.sort((a, b) => (b.rating ?? 0).compareTo(a.rating ?? 0));
+    } else if (_selectedSort == '리뷰순') {
+      // 리뷰 수 내림차순 (많은 리뷰가 먼저)
+      sortedList.sort(
+        (a, b) => (b.userRatingsTotal ?? 0).compareTo(a.userRatingsTotal ?? 0),
+      );
+    }
+
+    return sortedList;
   }
 
   /// 로딩 중 Shimmer 효과

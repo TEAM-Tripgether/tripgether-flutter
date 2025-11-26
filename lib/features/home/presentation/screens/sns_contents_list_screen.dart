@@ -381,11 +381,42 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
     );
   }
 
+  /// 콘텐츠의 플랫폼을 추론합니다.
+  ///
+  /// 백엔드에서 platform 필드가 누락될 경우를 대비한 폴백 로직입니다.
+  ///
+  /// **우선순위**:
+  /// 1. content.platform 필드 (백엔드 제공)
+  /// 2. originalUrl 기반 추론 (폴백)
+  /// 3. null 반환 (추론 불가)
+  String? _inferPlatform(ContentModel content) {
+    // 1. platform 필드가 있으면 사용
+    if (content.platform != null && content.platform!.isNotEmpty) {
+      return content.platform!.toUpperCase();
+    }
+
+    // 2. originalUrl 기반 추론
+    final url = content.originalUrl?.toLowerCase() ?? '';
+
+    if (url.contains('youtube.com') || url.contains('youtu.be')) {
+      return 'YOUTUBE';
+    }
+    if (url.contains('instagram.com')) {
+      return 'INSTAGRAM';
+    }
+    if (url.contains('tiktok.com')) {
+      return 'TIKTOK';
+    }
+
+    // 3. 추론 불가
+    return null;
+  }
+
   /// 카테고리별 콘텐츠 필터링
   ///
   /// - '전체': 모든 콘텐츠 반환
-  /// - '유튜브': platform == 'YOUTUBE'
-  /// - '인스타그램': platform == 'INSTAGRAM'
+  /// - '유튜브': platform == 'YOUTUBE' OR originalUrl에 youtube 포함
+  /// - '인스타그램': platform == 'INSTAGRAM' OR originalUrl에 instagram 포함
   List<ContentModel> _getFilteredContents(List<ContentModel> contents) {
     if (_selectedCategory == '전체') {
       return contents;
@@ -394,14 +425,15 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
     // 카테고리명을 플랫폼 enum으로 매핑
     final platformMap = {'유튜브': 'YOUTUBE', '인스타그램': 'INSTAGRAM'};
 
-    final platform = platformMap[_selectedCategory];
-    if (platform == null) {
+    final targetPlatform = platformMap[_selectedCategory];
+    if (targetPlatform == null) {
       return contents;
     }
 
-    return contents
-        .where((content) => content.platform?.toUpperCase() == platform)
-        .toList();
+    return contents.where((content) {
+      final inferredPlatform = _inferPlatform(content);
+      return inferredPlatform == targetPlatform;
+    }).toList();
   }
 
   /// 콘텐츠 메타데이터 (채널명 + 제목)

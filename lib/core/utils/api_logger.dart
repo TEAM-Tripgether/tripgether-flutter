@@ -118,10 +118,13 @@ class ApiLogger {
     }
   }
 
-  /// Refresh Token 관련 에러 코드인지 확인
+  /// Refresh Token 관련 에러 코드인지 확인 (강제 로그아웃 필요)
+  ///
+  /// **주의**: EXPIRED_ACCESS_TOKEN은 여기에 포함하지 않음!
+  /// - Access Token 만료 → AuthInterceptor에서 자동 재발급 처리
+  /// - Refresh Token 만료/무효 → 재발급 불가능 → 로그아웃 필요
   ///
   /// **에러 코드**:
-  /// - EXPIRED_ACCESS_TOKEN: 액세스 토큰이 만료되었습니다.
   /// - REFRESH_TOKEN_NOT_FOUND: 리프레시 토큰을 찾을 수 없습니다.
   /// - INVALID_REFRESH_TOKEN: 유효하지 않은 리프레시 토큰입니다.
   /// - EXPIRED_REFRESH_TOKEN: 만료된 리프레시 토큰입니다.
@@ -131,8 +134,7 @@ class ApiLogger {
   static bool _isRefreshTokenError(String? errorCode) {
     if (errorCode == null) return false;
 
-    return errorCode == 'EXPIRED_ACCESS_TOKEN' ||
-        errorCode == 'REFRESH_TOKEN_NOT_FOUND' ||
+    return errorCode == 'REFRESH_TOKEN_NOT_FOUND' ||
         errorCode == 'INVALID_REFRESH_TOKEN' ||
         errorCode == 'EXPIRED_REFRESH_TOKEN' ||
         errorCode == 'MEMBER_NOT_FOUND' ||

@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core/models/place_model.dart';
 import '../../../../core/services/location/location_service.dart';
+import '../../../../core/utils/marker_icon_loader.dart';
 import '../../../home/presentation/providers/content_provider.dart';
 
 part 'map_provider.g.dart';
@@ -307,6 +308,10 @@ class MapMarkers extends _$MapMarkers {
 /// 좌표가 없는 장소는 GET /api/place/{placeId}로 상세 조회하여
 /// 마커로 변환합니다.
 ///
+/// **커스텀 아이콘 지원**:
+/// 각 장소의 iconUrl이 있으면 해당 이미지를 마커 아이콘으로 사용합니다.
+/// MarkerIconLoader로 캐싱하여 중복 다운로드를 방지합니다.
+///
 /// 지도 화면에서 저장한 모든 장소를 마커로 표시할 때 사용됩니다.
 @riverpod
 Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
@@ -329,10 +334,15 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
         '[SavedPlacesMarkers] ✅ ${place.name} - 좌표 있음 '
         '(${place.latitude}, ${place.longitude})',
       );
+
+      // 커스텀 아이콘 로드 (iconUrl이 있으면 사용, 없으면 기본 마커)
+      final icon = await _loadMarkerIcon(place.iconUrl, place.name);
+
       markers.add(
         Marker(
           markerId: MarkerId(place.placeId),
           position: LatLng(place.latitude!, place.longitude!),
+          icon: icon,
           infoWindow: InfoWindow(title: place.name, snippet: place.address),
         ),
       );
@@ -352,6 +362,12 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
               .read(savedPlacesCacheProvider.notifier)
               .updatePlaceInCache(detailedPlace.placeId, detailedPlace);
 
+          // 커스텀 아이콘 로드 (iconUrl이 있으면 사용, 없으면 기본 마커)
+          final icon = await _loadMarkerIcon(
+            detailedPlace.iconUrl,
+            detailedPlace.name,
+          );
+
           markers.add(
             Marker(
               markerId: MarkerId(detailedPlace.placeId),
@@ -359,6 +375,7 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
                 detailedPlace.latitude!,
                 detailedPlace.longitude!,
               ),
+              icon: icon,
               infoWindow: InfoWindow(
                 title: detailedPlace.name,
                 snippet: detailedPlace.address,
@@ -376,6 +393,31 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
 
   debugPrint('[SavedPlacesMarkers] 📍 마커 생성 완료: ${markers.length}개');
   return markers;
+}
+
+/// 마커 아이콘 로드 헬퍼 함수
+///
+/// [iconUrl] 아이콘 이미지 URL (null이면 기본 마커 사용)
+/// [placeName] 장소 이름 (로그용)
+///
+/// MarkerIconLoader를 사용하여 캐싱된 아이콘을 로드합니다.
+/// 로드 실패 시 기본 빨간 마커로 폴백합니다.
+Future<BitmapDescriptor> _loadMarkerIcon(
+  String? iconUrl,
+  String placeName,
+) async {
+  if (iconUrl == null || iconUrl.isEmpty) {
+    return BitmapDescriptor.defaultMarker;
+  }
+
+  final icon = await MarkerIconLoader.loadIconWithCache(iconUrl);
+  if (icon != null) {
+    debugPrint('[SavedPlacesMarkers] 🎨 $placeName - 커스텀 아이콘 로드 완료');
+    return icon;
+  }
+
+  debugPrint('[SavedPlacesMarkers] ⚠️ $placeName - 커스텀 아이콘 로드 실패, 기본 마커 사용');
+  return BitmapDescriptor.defaultMarker;
 }
 
 /// 저장된 장소 캐시 Provider
