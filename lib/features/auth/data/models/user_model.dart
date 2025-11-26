@@ -32,7 +32,7 @@ class User with _$User {
 
     /// 닉네임 (필수)
     ///
-    /// Google displayName 또는 사용자가 직접 설정한 이름
+    /// 서버의 name 필드에서 가져오거나, Google displayName 사용
     required String nickname,
 
     /// 프로필 이미지 URL (선택)
@@ -51,6 +51,31 @@ class User with _$User {
     ///
     /// 사용자 정보가 처음 저장된 시간
     required DateTime createdAt,
+
+    // ════════════════════════════════════════════════════════════════════════
+    // 서버 API 응답 필드 (/api/members/email/{email})
+    // ════════════════════════════════════════════════════════════════════════
+
+    /// 온보딩 상태 (서버에서 관리)
+    ///
+    /// 가능한 값: "NOT_STARTED", "IN_PROGRESS", "COMPLETED"
+    String? onboardingStatus,
+
+    /// 서비스 이용약관 및 개인정보 처리방침 동의 여부
+    bool? isServiceTermsAndPrivacyAgreed,
+
+    /// 마케팅 수신 동의 여부
+    bool? isMarketingAgreed,
+
+    /// 생년월일 (yyyy-MM-dd 형식)
+    ///
+    /// 예: "1990-01-01"
+    String? birthDate,
+
+    /// 성별
+    ///
+    /// 가능한 값: "MALE", "FEMALE"
+    String? gender,
   }) = _User;
 
   /// Google 로그인 정보로 User 생성
@@ -71,6 +96,41 @@ class User with _$User {
       profileImageUrl: photoUrl,
       loginPlatform: 'GOOGLE',
       createdAt: DateTime.now(),
+    );
+  }
+
+  /// 서버 Member API 응답에서 User 생성
+  ///
+  /// GET /api/members/email/{email} 응답을 User 객체로 변환합니다.
+  /// 서버의 `name` 필드가 User의 `nickname` 필드로 매핑됩니다.
+  ///
+  /// **응답 필드 매핑**:
+  /// - `id` → `userId`
+  /// - `email` → `email`
+  /// - `name` → `nickname` (⭐ 핵심 매핑)
+  /// - `onboardingStatus` → `onboardingStatus`
+  /// - 기타 필드 동일
+  ///
+  /// [json] 서버 API 응답 JSON
+  /// [photoUrl] Google 프로필 이미지 URL (서버에 저장되지 않은 경우 사용)
+  /// [loginPlatform] 로그인 플랫폼 (기본값: null)
+  factory User.fromMemberApiResponse(
+    Map<String, dynamic> json, {
+    String? photoUrl,
+    String? loginPlatform,
+  }) {
+    return User(
+      userId: json['id'] as String?,
+      email: json['email'] as String,
+      nickname: json['name'] as String, // ⭐ 서버의 name → nickname 매핑
+      profileImageUrl: photoUrl, // Google 프로필 이미지 사용
+      loginPlatform: loginPlatform,
+      createdAt: DateTime.now(),
+      onboardingStatus: json['onboardingStatus'] as String?,
+      isServiceTermsAndPrivacyAgreed: json['isServiceTermsAndPrivacyAgreed'] as bool?,
+      isMarketingAgreed: json['isMarketingAgreed'] as bool?,
+      birthDate: json['birthDate'] as String?,
+      gender: json['gender'] as String?,
     );
   }
 

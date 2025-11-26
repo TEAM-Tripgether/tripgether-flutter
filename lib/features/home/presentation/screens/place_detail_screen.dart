@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/models/place_model.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -24,6 +25,7 @@ import '../../../../shared/widgets/dialogs/folder_selection_dialog.dart';
 import '../../data/services/place_api_service.dart';
 import '../providers/place_detail_provider.dart';
 import '../providers/content_provider.dart';
+import '../../../map/presentation/providers/map_provider.dart';
 
 /// 장소 상세 화면
 ///
@@ -56,7 +58,9 @@ class PlaceDetailScreen extends ConsumerWidget {
       return Scaffold(
         appBar: CommonAppBar.forSubPage(
           title: '',
-          rightActions: const [], // 알림 아이콘 제거
+          rightActions: [
+            _buildMapIconButton(context, ref, l10n, initialPlace!),
+          ],
         ),
         body: _buildPlaceDetail(context, ref, l10n, initialPlace!),
       );
@@ -68,7 +72,12 @@ class PlaceDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: CommonAppBar.forSubPage(
         title: '',
-        rightActions: const [], // 알림 아이콘 제거
+        rightActions: placeAsync.maybeWhen(
+          data: (place) => place != null
+              ? [_buildMapIconButton(context, ref, l10n, place)]
+              : const [],
+          orElse: () => const [],
+        ),
       ),
       body: placeAsync.when(
         data: (place) {
@@ -80,6 +89,46 @@ class PlaceDetailScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => _buildError(context, l10n, error),
       ),
+    );
+  }
+
+  /// 지도에서 보기 아이콘 버튼
+  ///
+  /// AppBar 우측에 표시되며, 클릭 시 해당 장소의 마커를 지도에 추가하고
+  /// Map 탭으로 이동합니다.
+  Widget _buildMapIconButton(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    PlaceModel place,
+  ) {
+    // 좌표가 없는 경우 아이콘 숨김
+    if (place.latitude == null || place.longitude == null) {
+      return const SizedBox.shrink();
+    }
+
+    return IconButton(
+      icon: Icon(
+        Icons.map_outlined,
+        size: AppSizes.iconDefault,
+        color: AppColors.subColor2,
+      ),
+      onPressed: () {
+        debugPrint('[PlaceDetailScreen] 🗺️ 지도에서 보기: ${place.name}');
+
+        // 1. 지도에 마커 추가 및 카메라 이동 설정
+        ref.read(mapControllerProvider.notifier).moveToPlaceWithMarker(
+          place.placeId,
+          LatLng(place.latitude!, place.longitude!),
+          place.name,
+        );
+
+        // 2. Map 탭으로 이동
+        context.go(AppRoutes.map);
+
+        debugPrint('[PlaceDetailScreen] ✅ Map 탭으로 이동 완료');
+      },
+      tooltip: l10n.placeDetailViewOnMap,
     );
   }
 

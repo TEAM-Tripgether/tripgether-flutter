@@ -930,6 +930,11 @@
     "description": "Map screen my location button tooltip"
   },
 
+  "mapShowAllPlacesTooltip": "Show all saved places",
+  "@mapShowAllPlacesTooltip": {
+    "description": "Map screen show all saved places button tooltip"
+  },
+
   "mapToggleMapType": "Toggle map type",
   "@mapToggleMapType": {
     "description": "Map type toggle button tooltip (normal/satellite)"
@@ -983,6 +988,11 @@
   "placeDetailNoLocation": "Location information not available",
   "@placeDetailNoLocation": {
     "description": "Message when location info is missing"
+  },
+
+  "placeDetailViewOnMap": "View on Map",
+  "@placeDetailViewOnMap": {
+    "description": "View on map button tooltip"
   },
 
   "addressCopied": "Address copied to clipboard",

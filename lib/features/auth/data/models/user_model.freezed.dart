@@ -34,7 +34,7 @@ mixin _$User {
 
   /// 닉네임 (필수)
   ///
-  /// Google displayName 또는 사용자가 직접 설정한 이름
+  /// 서버의 name 필드에서 가져오거나, Google displayName 사용
   String get nickname => throw _privateConstructorUsedError;
 
   /// 프로필 이미지 URL (선택)
@@ -52,7 +52,31 @@ mixin _$User {
   /// 생성일시 (로컬 저장 시간)
   ///
   /// 사용자 정보가 처음 저장된 시간
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get createdAt =>
+      throw _privateConstructorUsedError; // ════════════════════════════════════════════════════════════════════════
+  // 서버 API 응답 필드 (/api/members/email/{email})
+  // ════════════════════════════════════════════════════════════════════════
+  /// 온보딩 상태 (서버에서 관리)
+  ///
+  /// 가능한 값: "NOT_STARTED", "IN_PROGRESS", "COMPLETED"
+  String? get onboardingStatus => throw _privateConstructorUsedError;
+
+  /// 서비스 이용약관 및 개인정보 처리방침 동의 여부
+  bool? get isServiceTermsAndPrivacyAgreed =>
+      throw _privateConstructorUsedError;
+
+  /// 마케팅 수신 동의 여부
+  bool? get isMarketingAgreed => throw _privateConstructorUsedError;
+
+  /// 생년월일 (yyyy-MM-dd 형식)
+  ///
+  /// 예: "1990-01-01"
+  String? get birthDate => throw _privateConstructorUsedError;
+
+  /// 성별
+  ///
+  /// 가능한 값: "MALE", "FEMALE"
+  String? get gender => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -75,6 +99,11 @@ abstract class $UserCopyWith<$Res> {
     String? profileImageUrl,
     String? loginPlatform,
     DateTime createdAt,
+    String? onboardingStatus,
+    bool? isServiceTermsAndPrivacyAgreed,
+    bool? isMarketingAgreed,
+    String? birthDate,
+    String? gender,
   });
 }
 
@@ -99,6 +128,11 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? profileImageUrl = freezed,
     Object? loginPlatform = freezed,
     Object? createdAt = null,
+    Object? onboardingStatus = freezed,
+    Object? isServiceTermsAndPrivacyAgreed = freezed,
+    Object? isMarketingAgreed = freezed,
+    Object? birthDate = freezed,
+    Object? gender = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -126,6 +160,27 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
                       as DateTime,
+            onboardingStatus: freezed == onboardingStatus
+                ? _value.onboardingStatus
+                : onboardingStatus // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            isServiceTermsAndPrivacyAgreed:
+                freezed == isServiceTermsAndPrivacyAgreed
+                ? _value.isServiceTermsAndPrivacyAgreed
+                : isServiceTermsAndPrivacyAgreed // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            isMarketingAgreed: freezed == isMarketingAgreed
+                ? _value.isMarketingAgreed
+                : isMarketingAgreed // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            birthDate: freezed == birthDate
+                ? _value.birthDate
+                : birthDate // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            gender: freezed == gender
+                ? _value.gender
+                : gender // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -147,6 +202,11 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
     String? profileImageUrl,
     String? loginPlatform,
     DateTime createdAt,
+    String? onboardingStatus,
+    bool? isServiceTermsAndPrivacyAgreed,
+    bool? isMarketingAgreed,
+    String? birthDate,
+    String? gender,
   });
 }
 
@@ -168,6 +228,11 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? profileImageUrl = freezed,
     Object? loginPlatform = freezed,
     Object? createdAt = null,
+    Object? onboardingStatus = freezed,
+    Object? isServiceTermsAndPrivacyAgreed = freezed,
+    Object? isMarketingAgreed = freezed,
+    Object? birthDate = freezed,
+    Object? gender = freezed,
   }) {
     return _then(
       _$UserImpl(
@@ -195,6 +260,27 @@ class __$$UserImplCopyWithImpl<$Res>
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
+        onboardingStatus: freezed == onboardingStatus
+            ? _value.onboardingStatus
+            : onboardingStatus // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        isServiceTermsAndPrivacyAgreed:
+            freezed == isServiceTermsAndPrivacyAgreed
+            ? _value.isServiceTermsAndPrivacyAgreed
+            : isServiceTermsAndPrivacyAgreed // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        isMarketingAgreed: freezed == isMarketingAgreed
+            ? _value.isMarketingAgreed
+            : isMarketingAgreed // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        birthDate: freezed == birthDate
+            ? _value.birthDate
+            : birthDate // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        gender: freezed == gender
+            ? _value.gender
+            : gender // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -210,6 +296,11 @@ class _$UserImpl implements _User {
     this.profileImageUrl,
     this.loginPlatform,
     required this.createdAt,
+    this.onboardingStatus,
+    this.isServiceTermsAndPrivacyAgreed,
+    this.isMarketingAgreed,
+    this.birthDate,
+    this.gender,
   });
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
@@ -230,7 +321,7 @@ class _$UserImpl implements _User {
 
   /// 닉네임 (필수)
   ///
-  /// Google displayName 또는 사용자가 직접 설정한 이름
+  /// 서버의 name 필드에서 가져오거나, Google displayName 사용
   @override
   final String nickname;
 
@@ -253,10 +344,38 @@ class _$UserImpl implements _User {
   /// 사용자 정보가 처음 저장된 시간
   @override
   final DateTime createdAt;
+  // ════════════════════════════════════════════════════════════════════════
+  // 서버 API 응답 필드 (/api/members/email/{email})
+  // ════════════════════════════════════════════════════════════════════════
+  /// 온보딩 상태 (서버에서 관리)
+  ///
+  /// 가능한 값: "NOT_STARTED", "IN_PROGRESS", "COMPLETED"
+  @override
+  final String? onboardingStatus;
+
+  /// 서비스 이용약관 및 개인정보 처리방침 동의 여부
+  @override
+  final bool? isServiceTermsAndPrivacyAgreed;
+
+  /// 마케팅 수신 동의 여부
+  @override
+  final bool? isMarketingAgreed;
+
+  /// 생년월일 (yyyy-MM-dd 형식)
+  ///
+  /// 예: "1990-01-01"
+  @override
+  final String? birthDate;
+
+  /// 성별
+  ///
+  /// 가능한 값: "MALE", "FEMALE"
+  @override
+  final String? gender;
 
   @override
   String toString() {
-    return 'User(userId: $userId, email: $email, nickname: $nickname, profileImageUrl: $profileImageUrl, loginPlatform: $loginPlatform, createdAt: $createdAt)';
+    return 'User(userId: $userId, email: $email, nickname: $nickname, profileImageUrl: $profileImageUrl, loginPlatform: $loginPlatform, createdAt: $createdAt, onboardingStatus: $onboardingStatus, isServiceTermsAndPrivacyAgreed: $isServiceTermsAndPrivacyAgreed, isMarketingAgreed: $isMarketingAgreed, birthDate: $birthDate, gender: $gender)';
   }
 
   @override
@@ -273,7 +392,20 @@ class _$UserImpl implements _User {
             (identical(other.loginPlatform, loginPlatform) ||
                 other.loginPlatform == loginPlatform) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.onboardingStatus, onboardingStatus) ||
+                other.onboardingStatus == onboardingStatus) &&
+            (identical(
+                  other.isServiceTermsAndPrivacyAgreed,
+                  isServiceTermsAndPrivacyAgreed,
+                ) ||
+                other.isServiceTermsAndPrivacyAgreed ==
+                    isServiceTermsAndPrivacyAgreed) &&
+            (identical(other.isMarketingAgreed, isMarketingAgreed) ||
+                other.isMarketingAgreed == isMarketingAgreed) &&
+            (identical(other.birthDate, birthDate) ||
+                other.birthDate == birthDate) &&
+            (identical(other.gender, gender) || other.gender == gender));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -286,6 +418,11 @@ class _$UserImpl implements _User {
     profileImageUrl,
     loginPlatform,
     createdAt,
+    onboardingStatus,
+    isServiceTermsAndPrivacyAgreed,
+    isMarketingAgreed,
+    birthDate,
+    gender,
   );
 
   /// Create a copy of User
@@ -310,6 +447,11 @@ abstract class _User implements User {
     final String? profileImageUrl,
     final String? loginPlatform,
     required final DateTime createdAt,
+    final String? onboardingStatus,
+    final bool? isServiceTermsAndPrivacyAgreed,
+    final bool? isMarketingAgreed,
+    final String? birthDate,
+    final String? gender,
   }) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
@@ -329,7 +471,7 @@ abstract class _User implements User {
 
   /// 닉네임 (필수)
   ///
-  /// Google displayName 또는 사용자가 직접 설정한 이름
+  /// 서버의 name 필드에서 가져오거나, Google displayName 사용
   @override
   String get nickname;
 
@@ -351,7 +493,34 @@ abstract class _User implements User {
   ///
   /// 사용자 정보가 처음 저장된 시간
   @override
-  DateTime get createdAt;
+  DateTime get createdAt; // ════════════════════════════════════════════════════════════════════════
+  // 서버 API 응답 필드 (/api/members/email/{email})
+  // ════════════════════════════════════════════════════════════════════════
+  /// 온보딩 상태 (서버에서 관리)
+  ///
+  /// 가능한 값: "NOT_STARTED", "IN_PROGRESS", "COMPLETED"
+  @override
+  String? get onboardingStatus;
+
+  /// 서비스 이용약관 및 개인정보 처리방침 동의 여부
+  @override
+  bool? get isServiceTermsAndPrivacyAgreed;
+
+  /// 마케팅 수신 동의 여부
+  @override
+  bool? get isMarketingAgreed;
+
+  /// 생년월일 (yyyy-MM-dd 형식)
+  ///
+  /// 예: "1990-01-01"
+  @override
+  String? get birthDate;
+
+  /// 성별
+  ///
+  /// 가능한 값: "MALE", "FEMALE"
+  @override
+  String? get gender;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
