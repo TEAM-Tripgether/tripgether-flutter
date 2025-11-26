@@ -541,6 +541,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mapToggleMapType => '지도 타입 변경';
 
   @override
+  String get mapPlaceDetailButton => '상세보기';
+
+  @override
   String get mapPlaceholder => '지도 기능이 곧 추가될 예정입니다';
 
   @override

@@ -1082,6 +1082,12 @@ abstract class AppLocalizations {
   /// **'지도 타입 변경'**
   String get mapToggleMapType;
 
+  /// 지도 마커 클릭 시 바텀시트의 상세보기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'상세보기'**
+  String get mapPlaceDetailButton;
+
   /// 지도 화면 플레이스홀더 메시지
   ///
   /// In ko, this message translates to:

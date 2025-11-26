@@ -940,6 +940,11 @@
     "description": "Map type toggle button tooltip (normal/satellite)"
   },
 
+  "mapPlaceDetailButton": "View Details",
+  "@mapPlaceDetailButton": {
+    "description": "View details button in map marker bottom sheet"
+  },
+
   "mapPlaceholder": "Map feature coming soon",
   "@mapPlaceholder": {
     "description": "Map screen placeholder message"

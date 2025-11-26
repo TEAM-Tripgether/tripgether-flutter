@@ -549,6 +549,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapToggleMapType => 'Toggle map type';
 
   @override
+  String get mapPlaceDetailButton => 'View Details';
+
+  @override
   String get mapPlaceholder => 'Map feature coming soon';
 
   @override

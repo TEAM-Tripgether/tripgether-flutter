@@ -7,7 +7,7 @@ part of 'map_provider.dart';
 // **************************************************************************
 
 String _$savedPlacesMarkersHash() =>
-    r'2e6da89bea3f575c17c774031a8dd20edf448144';
+    r'8a799c5f029e2c14481de6cab3edf8f6bdfbde8b';
 
 /// 저장한 장소 마커 Provider
 ///
@@ -124,5 +124,49 @@ final mapMarkersProvider =
     );
 
 typedef _$MapMarkers = AutoDisposeNotifier<Set<Marker>>;
+String _$savedPlacesCacheHash() => r'8c3d779e7c4013daa0d0f34a5142803b9ecd3dbd';
+
+/// 저장된 장소 캐시 Provider
+///
+/// placeId → PlaceModel 매핑을 저장하여
+/// 마커 클릭 시 장소 정보를 빠르게 조회할 수 있습니다.
+///
+/// ⚠️ keepAlive: true - 탭 전환 시에도 캐시 유지
+///
+/// Copied from [SavedPlacesCache].
+@ProviderFor(SavedPlacesCache)
+final savedPlacesCacheProvider =
+    NotifierProvider<SavedPlacesCache, Map<String, PlaceModel>>.internal(
+      SavedPlacesCache.new,
+      name: r'savedPlacesCacheProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$savedPlacesCacheHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$SavedPlacesCache = Notifier<Map<String, PlaceModel>>;
+String _$selectedPlaceHash() => r'a9a2c924db62592fcb93fcfb424ccd5bd138852b';
+
+/// 선택된 장소 상태 Provider
+///
+/// 지도에서 마커 클릭 시 선택된 장소 정보를 저장합니다.
+/// 바텀시트에서 이 정보를 사용하여 장소 상세 정보를 표시합니다.
+///
+/// Copied from [SelectedPlace].
+@ProviderFor(SelectedPlace)
+final selectedPlaceProvider =
+    AutoDisposeNotifierProvider<SelectedPlace, PlaceModel?>.internal(
+      SelectedPlace.new,
+      name: r'selectedPlaceProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$selectedPlaceHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$SelectedPlace = AutoDisposeNotifier<PlaceModel?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

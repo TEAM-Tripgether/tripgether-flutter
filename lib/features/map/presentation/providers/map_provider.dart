@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../../core/models/place_model.dart';
 import '../../../../core/services/location/location_service.dart';
 import '../../../home/presentation/providers/content_provider.dart';
 
@@ -311,6 +312,9 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
 
   debugPrint('[SavedPlacesMarkers] 📋 저장된 장소 수: ${savedPlaces.length}');
 
+  // 장소 캐시 업데이트 (마커 클릭 시 장소 정보 조회용)
+  ref.read(savedPlacesCacheProvider.notifier).updateCache(savedPlaces);
+
   final markers = <Marker>{};
 
   for (final place in savedPlaces) {
@@ -342,6 +346,13 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
             '[SavedPlacesMarkers] ✅ ${detailedPlace.name} - 상세 조회로 좌표 획득 '
             '(${detailedPlace.latitude}, ${detailedPlace.longitude})',
           );
+
+          // 상세 조회된 장소(좌표 포함)를 캐시에 업데이트
+          ref.read(savedPlacesCacheProvider.notifier).updatePlaceInCache(
+                detailedPlace.placeId,
+                detailedPlace,
+              );
+
           markers.add(
             Marker(
               markerId: MarkerId(detailedPlace.placeId),
@@ -370,4 +381,84 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
 
   debugPrint('[SavedPlacesMarkers] 📍 마커 생성 완료: ${markers.length}개');
   return markers;
+}
+
+/// 저장된 장소 캐시 Provider
+///
+/// placeId → PlaceModel 매핑을 저장하여
+/// 마커 클릭 시 장소 정보를 빠르게 조회할 수 있습니다.
+///
+/// ⚠️ keepAlive: true - 탭 전환 시에도 캐시 유지
+@Riverpod(keepAlive: true)
+class SavedPlacesCache extends _$SavedPlacesCache {
+  @override
+  Map<String, PlaceModel> build() {
+    return {};
+  }
+
+  /// 장소 캐시 업데이트
+  ///
+  /// [places] 캐시에 저장할 장소 목록
+  void updateCache(List<PlaceModel> places) {
+    final newCache = <String, PlaceModel>{};
+    for (final place in places) {
+      newCache[place.placeId] = place;
+    }
+    state = newCache;
+    debugPrint('[SavedPlacesCache] 📦 캐시 업데이트: ${places.length}개 장소');
+  }
+
+  /// 캐시에서 장소 조회
+  ///
+  /// [placeId] 조회할 장소 ID
+  /// 반환: PlaceModel 또는 null (캐시에 없는 경우)
+  PlaceModel? getPlace(String placeId) {
+    return state[placeId];
+  }
+
+  /// 캐시에서 특정 장소 업데이트
+  ///
+  /// 기존 장소 정보를 새 정보로 교체합니다.
+  /// 주로 상세 조회로 좌표 정보를 얻은 후 캐시 업데이트에 사용됩니다.
+  ///
+  /// [placeId] 업데이트할 장소 ID
+  /// [place] 새 장소 정보
+  void updatePlaceInCache(String placeId, PlaceModel place) {
+    final updatedCache = Map<String, PlaceModel>.from(state);
+    updatedCache[placeId] = place;
+    state = updatedCache;
+    debugPrint('[SavedPlacesCache] 🔄 캐시 업데이트: ${place.name} (좌표: ${place.latitude}, ${place.longitude})');
+  }
+
+  /// 캐시 초기화
+  void clearCache() {
+    state = {};
+    debugPrint('[SavedPlacesCache] 🗑️ 캐시 초기화');
+  }
+}
+
+/// 선택된 장소 상태 Provider
+///
+/// 지도에서 마커 클릭 시 선택된 장소 정보를 저장합니다.
+/// 바텀시트에서 이 정보를 사용하여 장소 상세 정보를 표시합니다.
+@riverpod
+class SelectedPlace extends _$SelectedPlace {
+  @override
+  PlaceModel? build() {
+    return null;
+  }
+
+  /// 장소 선택
+  ///
+  /// [place] 선택된 장소 정보
+  void selectPlace(PlaceModel place) {
+    debugPrint('[SelectedPlace] 📍 장소 선택: ${place.name}');
+    state = place;
+  }
+
+  /// 선택 해제
+  void clearSelection() {
+    debugPrint('[SelectedPlace] 🗑️ 선택 해제');
+    state = null;
+  }
 }

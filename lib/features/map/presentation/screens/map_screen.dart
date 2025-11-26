@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../../shared/mixins/refreshable_tab_mixin.dart';
 import '../../../../shared/widgets/common/common_app_bar.dart';
+import '../../../../shared/widgets/map/place_info_bottom_sheet.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -11,6 +13,11 @@ import '../providers/map_provider.dart';
 ///
 /// 여행지 위치 정보를 Google Maps로 확인할 수 있는 화면입니다.
 /// 전체 화면을 지도가 차지하므로 미니멀한 AppBar를 사용합니다.
+///
+/// **기능**:
+/// - 저장한 장소 마커 표시
+/// - 마커 클릭 시 장소 정보 바텀시트 표시
+/// - 탭 더블클릭 시 저장 장소 새로고침
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
@@ -18,9 +25,53 @@ class MapScreen extends ConsumerStatefulWidget {
   ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends ConsumerState<MapScreen> {
+class _MapScreenState extends ConsumerState<MapScreen>
+    with AutomaticKeepAliveClientMixin, RefreshableTabMixin {
   /// 지도 생성 완료 여부
   bool _isMapCreated = false;
+
+  /// 바텀시트 표시 중 여부 (중복 표시 방지)
+  bool _isBottomSheetShowing = false;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RefreshableTabMixin 구현
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// 탭 인덱스: 지도 탭 (2번)
+  @override
+  int get tabIndex => 2;
+
+  /// 상태 유지 (탭 전환 시 화면 상태 유지)
+  @override
+  bool get wantKeepAlive => true;
+
+  /// 새로고침이 실행되기 위한 탭 클릭 횟수 (더블클릭)
+  @override
+  int get refreshTapCount => 2;
+
+  /// 탭 재클릭 시 자동 새로고침 활성화
+  @override
+  bool get enableAutoRefresh => true;
+
+  /// 데이터 새로고침 로직
+  ///
+  /// 저장 장소 Provider를 invalidate하여 API 재호출
+  @override
+  Future<void> onRefreshData() async {
+    debugPrint('[MapScreen] 🔄 저장 장소 새로고침 시작');
+
+    // savedPlacesMarkersProvider invalidate → API 재호출
+    ref.invalidate(savedPlacesMarkersProvider);
+
+    // Provider가 다시 로드될 때까지 대기
+    await ref.read(savedPlacesMarkersProvider.future);
+
+    debugPrint('[MapScreen] ✅ 저장 장소 새로고침 완료');
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Lifecycle
+  // ─────────────────────────────────────────────────────────────────────────
 
   @override
   void initState() {
@@ -28,6 +79,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     // 지도 화면 진입 시 저장된 장소 마커 로드
     _loadSavedPlaceMarkers();
   }
+
+  @override
+  void dispose() {
+    // 지도 컨트롤러 정리
+    ref.read(mapControllerProvider.notifier).disposeController();
+    super.dispose();
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 마커 관리
+  // ─────────────────────────────────────────────────────────────────────────
 
   /// 저장된 장소 마커 로드
   ///
@@ -41,16 +103,60 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     markersAsync.when(
       data: (markers) {
         debugPrint('[MapScreen] ✅ 저장 장소 마커 ${markers.length}개 로드 완료');
-        // 마커를 MapMarkers에 추가
-        ref.read(mapMarkersProvider.notifier).replaceWithSavedPlaceMarkers(markers);
+        // 마커에 onTap 콜백 추가하여 MapMarkers에 설정
+        final markersWithTap = _addOnTapToMarkers(markers);
+        ref.read(mapMarkersProvider.notifier).replaceWithSavedPlaceMarkers(markersWithTap);
         // 지도가 이미 생성되었으면 카메라 이동
-        _fitCameraToMarkersIfReady(markers);
+        _fitCameraToMarkersIfReady(markersWithTap);
       },
       loading: () {
         debugPrint('[MapScreen] ⏳ 저장 장소 마커 로딩 중...');
       },
       error: (error, stack) {
         debugPrint('[MapScreen] ❌ 저장 장소 마커 로드 실패: $error');
+      },
+    );
+  }
+
+  /// 마커에 onTap 콜백 추가
+  ///
+  /// 기존 마커 Set을 받아서 각 마커에 onTap 콜백을 추가합니다.
+  Set<Marker> _addOnTapToMarkers(Set<Marker> markers) {
+    return markers.map((marker) {
+      return marker.copyWith(
+        onTapParam: () => _onMarkerTapped(marker.markerId.value),
+      );
+    }).toSet();
+  }
+
+  /// 마커 탭 시 바텀시트 표시
+  ///
+  /// [placeId] 탭된 마커의 장소 ID
+  void _onMarkerTapped(String placeId) {
+    debugPrint('[MapScreen] 📍 마커 탭: $placeId');
+
+    // 중복 표시 방지
+    if (_isBottomSheetShowing) {
+      debugPrint('[MapScreen] ⚠️ 바텀시트 이미 표시 중 - 스킵');
+      return;
+    }
+
+    // 캐시에서 장소 정보 조회
+    final place = ref.read(savedPlacesCacheProvider.notifier).getPlace(placeId);
+
+    if (place == null) {
+      debugPrint('[MapScreen] ❌ 캐시에서 장소 정보를 찾을 수 없음: $placeId');
+      return;
+    }
+
+    // 바텀시트 표시
+    _isBottomSheetShowing = true;
+    PlaceInfoBottomSheet.show(
+      context,
+      place: place,
+      onClose: () {
+        _isBottomSheetShowing = false;
+        debugPrint('[MapScreen] 📍 바텀시트 닫힘');
       },
     );
   }
@@ -73,15 +179,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     await ref.read(mapControllerProvider.notifier).fitBoundsToMarkers(markers);
   }
 
-  @override
-  void dispose() {
-    // 지도 컨트롤러 정리
-    ref.read(mapControllerProvider.notifier).disposeController();
-    super.dispose();
-  }
+  // ─────────────────────────────────────────────────────────────────────────
+  // Build
+  // ─────────────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // AutomaticKeepAliveClientMixin 필수
+
     final l10n = AppLocalizations.of(context);
     final initialPosition = ref.watch(initialCameraPositionProvider);
     final mapType = ref.watch(mapTypeStateProvider);
@@ -91,9 +196,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     ref.listen<AsyncValue<Set<Marker>>>(savedPlacesMarkersProvider, (_, next) {
       next.whenData((savedMarkers) {
         debugPrint('[MapScreen] 🔄 저장 장소 마커 업데이트: ${savedMarkers.length}개');
-        ref.read(mapMarkersProvider.notifier).replaceWithSavedPlaceMarkers(savedMarkers);
+        // 마커에 onTap 콜백 추가
+        final markersWithTap = _addOnTapToMarkers(savedMarkers);
+        ref.read(mapMarkersProvider.notifier).replaceWithSavedPlaceMarkers(markersWithTap);
         // 마커 업데이트 시 카메라 이동
-        _fitCameraToMarkersIfReady(savedMarkers);
+        _fitCameraToMarkersIfReady(markersWithTap);
       });
     });
 
@@ -169,7 +276,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       body: GoogleMap(
         initialCameraPosition: initialPosition,
         mapType: mapType,
-        markers: markers, // 장소 마커 표시
+        markers: markers, // 장소 마커 표시 (onTap 포함)
         myLocationEnabled: true, // 내 위치 표시
         myLocationButtonEnabled: false, // 기본 버튼 숨김 (커스텀 버튼 사용)
         zoomControlsEnabled: false, // 기본 줌 컨트롤 숨김

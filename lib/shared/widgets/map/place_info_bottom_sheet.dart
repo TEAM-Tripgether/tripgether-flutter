@@ -1,9 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
 import '../../../core/models/place_model.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/app_colors.dart';
@@ -11,6 +8,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../buttons/common_button.dart';
+import '../common/place_info_widgets.dart';
 
 /// 장소 정보 바텀시트
 ///
@@ -120,22 +118,7 @@ class PlaceInfoBottomSheet extends StatelessWidget {
       children: [
         // 카테고리 칩 (있는 경우)
         if (place.category != null && place.category!.isNotEmpty) ...[
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.smd,
-              vertical: AppSpacing.xxs,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.subColor2.withValues(alpha: 0.2),
-              borderRadius: AppRadius.allSmall,
-            ),
-            child: Text(
-              place.category!,
-              style: AppTextStyles.metaMedium12.copyWith(
-                color: AppColors.textColor1.withValues(alpha: 0.6),
-              ),
-            ),
-          ),
+          PlaceCategoryChip(category: place.category!),
           AppSpacing.verticalSpaceSM,
         ],
 
@@ -150,53 +133,14 @@ class PlaceInfoBottomSheet extends StatelessWidget {
         AppSpacing.verticalSpaceXS,
 
         // 주소
-        Row(
-          children: [
-            SvgPicture.asset(
-              'assets/icons/location_on.svg',
-              width: AppSizes.iconSmall,
-              height: AppSizes.iconSmall,
-              colorFilter: ColorFilter.mode(
-                AppColors.mainColor,
-                BlendMode.srcIn,
-              ),
-            ),
-            AppSpacing.horizontalSpaceXS,
-            Expanded(
-              child: Text(
-                place.address,
-                style: AppTextStyles.metaMedium12.copyWith(
-                  color: AppColors.textColor1.withValues(alpha: 0.6),
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
+        PlaceAddressRow(address: place.address),
 
         // 평점 및 리뷰 수 (있는 경우)
         if (place.rating != null) ...[
           AppSpacing.verticalSpaceXS,
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/star.svg',
-                width: AppSizes.iconSmall,
-                height: AppSizes.iconSmall,
-                colorFilter: ColorFilter.mode(
-                  AppColors.mainColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-              AppSpacing.horizontalSpaceXS,
-              Text(
-                '${place.rating}${place.userRatingsTotal != null ? ' (${place.userRatingsTotal})' : ''}',
-                style: AppTextStyles.metaMedium12.copyWith(
-                  color: AppColors.textColor1.withValues(alpha: 0.6),
-                ),
-              ),
-            ],
+          PlaceRatingRow(
+            rating: place.rating!,
+            reviewCount: place.userRatingsTotal,
           ),
         ],
 
@@ -218,55 +162,10 @@ class PlaceInfoBottomSheet extends StatelessWidget {
 
   /// 이미지 갤러리 빌드
   Widget _buildImageGallery() {
-    return SizedBox(
-      height: 100.h,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: place.photoUrls.length,
-        separatorBuilder: (context, index) => AppSpacing.horizontalSpaceSM,
-        itemBuilder: (context, index) {
-          return ClipRRect(
-            borderRadius: AppRadius.allMedium,
-            child: CachedNetworkImage(
-              imageUrl: place.photoUrls[index],
-              width: 120.w,
-              height: 100.h,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => _buildShimmerPlaceholder(),
-              errorWidget: (context, url, error) => _buildErrorPlaceholder(),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  /// Shimmer 로딩 플레이스홀더
-  Widget _buildShimmerPlaceholder() {
-    return Shimmer.fromColors(
-      baseColor: AppColors.subColor2.withValues(alpha: 0.3),
-      highlightColor: AppColors.shimmerHighlight,
-      child: Container(
-        width: 120.w,
-        height: 100.h,
-        color: AppColors.white,
-      ),
-    );
-  }
-
-  /// 에러 플레이스홀더
-  Widget _buildErrorPlaceholder() {
-    return Container(
-      width: 120.w,
-      height: 100.h,
-      color: AppColors.imagePlaceholder,
-      child: Center(
-        child: Icon(
-          Icons.image_outlined,
-          size: AppSizes.iconMedium,
-          color: AppColors.white,
-        ),
-      ),
+    return PlaceImageGallery(
+      imageUrls: place.photoUrls,
+      imageWidth: 120.w,
+      imageHeight: 100.h,
     );
   }
 
