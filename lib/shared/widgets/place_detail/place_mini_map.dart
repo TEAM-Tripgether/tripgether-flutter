@@ -1,13 +1,10 @@
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/utils/marker_icon_loader.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// Google Maps 미니맵 위젯
@@ -55,9 +52,6 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
   /// 커스텀 마커 아이콘 (로드 완료 시 non-null)
   BitmapDescriptor? _customMarkerIcon;
 
-  /// Dio 인스턴스 (이미지 다운로드용)
-  final Dio _dio = Dio();
-
   /// 지도 컨트롤러 (카메라 제어용)
   GoogleMapController? _mapController;
 
@@ -98,6 +92,9 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
   }
 
   /// 커스텀 마커 아이콘 로드
+  ///
+  /// MarkerIconLoader를 사용하여 캐싱된 아이콘을 로드합니다.
+  /// 로드 실패 시 기본 마커로 폴백합니다.
   Future<void> _loadCustomMarkerIcon() async {
     if (widget.iconUrl == null || widget.iconUrl!.isEmpty) {
       if (mounted) {
@@ -109,7 +106,8 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
     }
 
     try {
-      final icon = await _getMarkerIconFromUrl(widget.iconUrl!);
+      // MarkerIconLoader로 캐싱된 아이콘 로드
+      final icon = await MarkerIconLoader.loadIconWithCache(widget.iconUrl);
       if (mounted) {
         setState(() {
           _customMarkerIcon = icon;
@@ -123,46 +121,6 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
         });
       }
     }
-  }
-
-  /// URL에서 마커 아이콘 BitmapDescriptor 생성
-  ///
-  /// 네트워크 이미지를 다운로드하여 적절한 크기로 리사이즈 후
-  /// BitmapDescriptor로 변환합니다.
-  Future<BitmapDescriptor> _getMarkerIconFromUrl(String url) async {
-    // Dio를 사용하여 이미지 다운로드
-    final response = await _dio.get<List<int>>(
-      url,
-      options: Options(responseType: ResponseType.bytes),
-    );
-
-    if (response.statusCode != 200 || response.data == null) {
-      throw Exception('이미지 다운로드 실패: ${response.statusCode}');
-    }
-
-    final Uint8List imageData = Uint8List.fromList(response.data!);
-
-    // 이미지 디코딩 및 리사이즈 (AppSizes.iconSmall = 16 기준)
-    final markerSize = AppSizes.iconSmall.toInt() * 2; // 32px (레티나 대응)
-    final ui.Codec codec = await ui.instantiateImageCodec(
-      imageData,
-      targetWidth: markerSize,
-      targetHeight: markerSize,
-    );
-    final ui.FrameInfo frameInfo = await codec.getNextFrame();
-    final ui.Image image = frameInfo.image;
-
-    // PNG로 인코딩
-    final ByteData? byteData = await image.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-    if (byteData == null) {
-      throw Exception('이미지 변환 실패');
-    }
-
-    final Uint8List pngBytes = byteData.buffer.asUint8List();
-
-    return BitmapDescriptor.bytes(pngBytes);
   }
 
   @override

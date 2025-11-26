@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'business_hour_model.dart';
+import 'platform_reference_model.dart';
 
 part 'place_model.freezed.dart';
 part 'place_model.g.dart';
@@ -20,6 +21,9 @@ Object? _readPlaceId(Map<dynamic, dynamic> json, String key) {
 /// 백엔드 API 응답의 places 배열 내 각 항목을 매핑합니다.
 @freezed
 class PlaceModel with _$PlaceModel {
+  /// Freezed에서 getter 메서드 추가를 위한 private 생성자
+  const PlaceModel._();
+
   const factory PlaceModel({
     /// 장소 고유 ID
     /// - GET /api/content/place/saved: "id" 필드 사용
@@ -82,6 +86,9 @@ class PlaceModel with _$PlaceModel {
     /// 영업시간 목록
     @Default([]) List<BusinessHourModel> businessHours,
 
+    /// 플랫폼 참조 정보 (Google Place ID, Kakao ID 등)
+    @Default([]) List<PlatformReferenceModel> platformReferences,
+
     /// 생성 일시
     DateTime? createdAt,
 
@@ -98,4 +105,30 @@ class PlaceModel with _$PlaceModel {
   /// JSON 직렬화/역직렬화를 위한 팩토리 생성자
   factory PlaceModel.fromJson(Map<String, dynamic> json) =>
       _$PlaceModelFromJson(json);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Computed Getters
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Google Place ID 가져오기
+  ///
+  /// platformReferences에서 GOOGLE 플랫폼의 ID를 찾아 반환합니다.
+  /// 없으면 null을 반환합니다.
+  ///
+  /// 예시:
+  /// ```dart
+  /// final googlePlaceId = place.googlePlaceId;
+  /// // "ChIJ6bYlHTSlfDURtqcO49QcsG0"
+  /// ```
+  String? get googlePlaceId {
+    final googleRef = platformReferences.where(
+      (ref) => ref.placePlatform.toUpperCase() == 'GOOGLE',
+    );
+    return googleRef.isNotEmpty ? googleRef.first.placePlatformId : null;
+  }
+
+  /// 좌표가 유효한지 확인
+  ///
+  /// latitude와 longitude가 모두 null이 아닌 경우 true 반환
+  bool get hasValidCoordinates => latitude != null && longitude != null;
 }

@@ -84,6 +84,10 @@ mixin _$PlaceModel {
   List<BusinessHourModel> get businessHours =>
       throw _privateConstructorUsedError;
 
+  /// 플랫폼 참조 정보 (Google Place ID, Kakao ID 등)
+  List<PlatformReferenceModel> get platformReferences =>
+      throw _privateConstructorUsedError;
+
   /// 생성 일시
   DateTime? get createdAt => throw _privateConstructorUsedError;
 
@@ -132,6 +136,7 @@ abstract class $PlaceModelCopyWith<$Res> {
     int? userRatingsTotal,
     List<String> photoUrls,
     List<BusinessHourModel> businessHours,
+    List<PlatformReferenceModel> platformReferences,
     DateTime? createdAt,
     DateTime? updatedAt,
     String createdBy,
@@ -172,6 +177,7 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
     Object? userRatingsTotal = freezed,
     Object? photoUrls = null,
     Object? businessHours = null,
+    Object? platformReferences = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? createdBy = null,
@@ -251,6 +257,10 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
                 ? _value.businessHours
                 : businessHours // ignore: cast_nullable_to_non_nullable
                       as List<BusinessHourModel>,
+            platformReferences: null == platformReferences
+                ? _value.platformReferences
+                : platformReferences // ignore: cast_nullable_to_non_nullable
+                      as List<PlatformReferenceModel>,
             createdAt: freezed == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -301,6 +311,7 @@ abstract class _$$PlaceModelImplCopyWith<$Res>
     int? userRatingsTotal,
     List<String> photoUrls,
     List<BusinessHourModel> businessHours,
+    List<PlatformReferenceModel> platformReferences,
     DateTime? createdAt,
     DateTime? updatedAt,
     String createdBy,
@@ -340,6 +351,7 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
     Object? userRatingsTotal = freezed,
     Object? photoUrls = null,
     Object? businessHours = null,
+    Object? platformReferences = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? createdBy = null,
@@ -419,6 +431,10 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
             ? _value._businessHours
             : businessHours // ignore: cast_nullable_to_non_nullable
                   as List<BusinessHourModel>,
+        platformReferences: null == platformReferences
+            ? _value._platformReferences
+            : platformReferences // ignore: cast_nullable_to_non_nullable
+                  as List<PlatformReferenceModel>,
         createdAt: freezed == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -442,7 +458,7 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$PlaceModelImpl implements _PlaceModel {
+class _$PlaceModelImpl extends _PlaceModel {
   const _$PlaceModelImpl({
     @JsonKey(readValue: _readPlaceId) required this.placeId,
     this.position = 0,
@@ -462,13 +478,16 @@ class _$PlaceModelImpl implements _PlaceModel {
     this.userRatingsTotal,
     final List<String> photoUrls = const [],
     final List<BusinessHourModel> businessHours = const [],
+    final List<PlatformReferenceModel> platformReferences = const [],
     this.createdAt,
     this.updatedAt,
     this.createdBy = 'system',
     this.updatedBy = 'system',
   }) : _types = types,
        _photoUrls = photoUrls,
-       _businessHours = businessHours;
+       _businessHours = businessHours,
+       _platformReferences = platformReferences,
+       super._();
 
   factory _$PlaceModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$PlaceModelImplFromJson(json);
@@ -580,6 +599,19 @@ class _$PlaceModelImpl implements _PlaceModel {
     return EqualUnmodifiableListView(_businessHours);
   }
 
+  /// 플랫폼 참조 정보 (Google Place ID, Kakao ID 등)
+  final List<PlatformReferenceModel> _platformReferences;
+
+  /// 플랫폼 참조 정보 (Google Place ID, Kakao ID 등)
+  @override
+  @JsonKey()
+  List<PlatformReferenceModel> get platformReferences {
+    if (_platformReferences is EqualUnmodifiableListView)
+      return _platformReferences;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_platformReferences);
+  }
+
   /// 생성 일시
   @override
   final DateTime? createdAt;
@@ -600,7 +632,7 @@ class _$PlaceModelImpl implements _PlaceModel {
 
   @override
   String toString() {
-    return 'PlaceModel(placeId: $placeId, position: $position, name: $name, address: $address, country: $country, latitude: $latitude, longitude: $longitude, businessType: $businessType, category: $category, phone: $phone, description: $description, types: $types, businessStatus: $businessStatus, iconUrl: $iconUrl, rating: $rating, userRatingsTotal: $userRatingsTotal, photoUrls: $photoUrls, businessHours: $businessHours, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy, updatedBy: $updatedBy)';
+    return 'PlaceModel(placeId: $placeId, position: $position, name: $name, address: $address, country: $country, latitude: $latitude, longitude: $longitude, businessType: $businessType, category: $category, phone: $phone, description: $description, types: $types, businessStatus: $businessStatus, iconUrl: $iconUrl, rating: $rating, userRatingsTotal: $userRatingsTotal, photoUrls: $photoUrls, businessHours: $businessHours, platformReferences: $platformReferences, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy, updatedBy: $updatedBy)';
   }
 
   @override
@@ -640,6 +672,10 @@ class _$PlaceModelImpl implements _PlaceModel {
               other._businessHours,
               _businessHours,
             ) &&
+            const DeepCollectionEquality().equals(
+              other._platformReferences,
+              _platformReferences,
+            ) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -672,6 +708,7 @@ class _$PlaceModelImpl implements _PlaceModel {
     userRatingsTotal,
     const DeepCollectionEquality().hash(_photoUrls),
     const DeepCollectionEquality().hash(_businessHours),
+    const DeepCollectionEquality().hash(_platformReferences),
     createdAt,
     updatedAt,
     createdBy,
@@ -692,7 +729,7 @@ class _$PlaceModelImpl implements _PlaceModel {
   }
 }
 
-abstract class _PlaceModel implements PlaceModel {
+abstract class _PlaceModel extends PlaceModel {
   const factory _PlaceModel({
     @JsonKey(readValue: _readPlaceId) required final String placeId,
     final int position,
@@ -712,11 +749,13 @@ abstract class _PlaceModel implements PlaceModel {
     final int? userRatingsTotal,
     final List<String> photoUrls,
     final List<BusinessHourModel> businessHours,
+    final List<PlatformReferenceModel> platformReferences,
     final DateTime? createdAt,
     final DateTime? updatedAt,
     final String createdBy,
     final String updatedBy,
   }) = _$PlaceModelImpl;
+  const _PlaceModel._() : super._();
 
   factory _PlaceModel.fromJson(Map<String, dynamic> json) =
       _$PlaceModelImpl.fromJson;
@@ -800,6 +839,10 @@ abstract class _PlaceModel implements PlaceModel {
   /// 영업시간 목록
   @override
   List<BusinessHourModel> get businessHours;
+
+  /// 플랫폼 참조 정보 (Google Place ID, Kakao ID 등)
+  @override
+  List<PlatformReferenceModel> get platformReferences;
 
   /// 생성 일시
   @override
