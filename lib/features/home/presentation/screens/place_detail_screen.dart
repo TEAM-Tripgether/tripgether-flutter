@@ -117,11 +117,13 @@ class PlaceDetailScreen extends ConsumerWidget {
         debugPrint('[PlaceDetailScreen] 🗺️ 지도에서 보기: ${place.name}');
 
         // 1. 지도에 마커 추가 및 카메라 이동 설정
-        ref.read(mapControllerProvider.notifier).moveToPlaceWithMarker(
-          place.placeId,
-          LatLng(place.latitude!, place.longitude!),
-          place.name,
-        );
+        ref
+            .read(mapControllerProvider.notifier)
+            .moveToPlaceWithMarker(
+              place.placeId,
+              LatLng(place.latitude!, place.longitude!),
+              place.name,
+            );
 
         // 2. Map 탭으로 이동
         context.go(AppRoutes.map);

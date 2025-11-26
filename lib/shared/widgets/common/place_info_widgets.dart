@@ -73,7 +73,8 @@ class PlaceImageGallery extends StatelessWidget {
                 width: width,
                 height: height,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => _buildShimmerPlaceholder(width, height),
+                placeholder: (context, url) =>
+                    _buildShimmerPlaceholder(width, height),
                 errorWidget: (context, url, error) =>
                     _buildErrorPlaceholder(width, height),
               ),
@@ -89,11 +90,7 @@ class PlaceImageGallery extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: AppColors.subColor2.withValues(alpha: 0.3),
       highlightColor: AppColors.shimmerHighlight,
-      child: Container(
-        width: width,
-        height: height,
-        color: AppColors.white,
-      ),
+      child: Container(width: width, height: height, color: AppColors.white),
     );
   }
 
@@ -129,11 +126,7 @@ class PlaceAddressRow extends StatelessWidget {
   /// 최대 줄 수 (기본값: 1)
   final int maxLines;
 
-  const PlaceAddressRow({
-    super.key,
-    required this.address,
-    this.maxLines = 1,
-  });
+  const PlaceAddressRow({super.key, required this.address, this.maxLines = 1});
 
   @override
   Widget build(BuildContext context) {
@@ -143,10 +136,7 @@ class PlaceAddressRow extends StatelessWidget {
           'assets/icons/location_on.svg',
           width: AppSizes.iconSmall,
           height: AppSizes.iconSmall,
-          colorFilter: ColorFilter.mode(
-            AppColors.mainColor,
-            BlendMode.srcIn,
-          ),
+          colorFilter: ColorFilter.mode(AppColors.mainColor, BlendMode.srcIn),
         ),
         AppSpacing.horizontalSpaceXS,
         Expanded(
@@ -182,11 +172,7 @@ class PlaceRatingRow extends StatelessWidget {
   /// 리뷰 수 (선택 사항)
   final int? reviewCount;
 
-  const PlaceRatingRow({
-    super.key,
-    required this.rating,
-    this.reviewCount,
-  });
+  const PlaceRatingRow({super.key, required this.rating, this.reviewCount});
 
   @override
   Widget build(BuildContext context) {
@@ -196,10 +182,7 @@ class PlaceRatingRow extends StatelessWidget {
           'assets/icons/star.svg',
           width: AppSizes.iconSmall,
           height: AppSizes.iconSmall,
-          colorFilter: ColorFilter.mode(
-            AppColors.mainColor,
-            BlendMode.srcIn,
-          ),
+          colorFilter: ColorFilter.mode(AppColors.mainColor, BlendMode.srcIn),
         ),
         AppSpacing.horizontalSpaceXS,
         Text(
@@ -225,10 +208,7 @@ class PlaceCategoryChip extends StatelessWidget {
   /// 카테고리 이름
   final String category;
 
-  const PlaceCategoryChip({
-    super.key,
-    required this.category,
-  });
+  const PlaceCategoryChip({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {

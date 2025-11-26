@@ -127,7 +127,8 @@ class User with _$User {
       loginPlatform: loginPlatform,
       createdAt: DateTime.now(),
       onboardingStatus: json['onboardingStatus'] as String?,
-      isServiceTermsAndPrivacyAgreed: json['isServiceTermsAndPrivacyAgreed'] as bool?,
+      isServiceTermsAndPrivacyAgreed:
+          json['isServiceTermsAndPrivacyAgreed'] as bool?,
       isMarketingAgreed: json['isMarketingAgreed'] as bool?,
       birthDate: json['birthDate'] as String?,
       gender: json['gender'] as String?,

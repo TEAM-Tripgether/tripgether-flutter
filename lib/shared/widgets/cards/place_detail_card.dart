@@ -83,10 +83,7 @@ class PlaceDetailCard extends StatelessWidget {
 
                   AppSpacing.verticalSpaceXS, // 4
                   // 평점 및 리뷰 수
-                  PlaceRatingRow(
-                    rating: rating,
-                    reviewCount: reviewCount,
-                  ),
+                  PlaceRatingRow(rating: rating, reviewCount: reviewCount),
                 ],
               ),
             ),

@@ -93,9 +93,7 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
     }
 
     await _mapController!.animateCamera(
-      CameraUpdate.newLatLng(
-        LatLng(widget.latitude!, widget.longitude!),
-      ),
+      CameraUpdate.newLatLng(LatLng(widget.latitude!, widget.longitude!)),
     );
   }
 
@@ -203,7 +201,10 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
           children: [
             // 지도
             GoogleMap(
-              initialCameraPosition: CameraPosition(target: position, zoom: 16.0),
+              initialCameraPosition: CameraPosition(
+                target: position,
+                zoom: 16.0,
+              ),
               markers: {
                 Marker(
                   markerId: MarkerId(widget.placeId),

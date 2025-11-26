@@ -235,9 +235,7 @@ class MemberApiService {
       final encodedEmail = Uri.encodeComponent(email);
       final response = await dio.get('/api/members/email/$encodedEmail');
 
-      debugPrint(
-        '[MemberApiService - Real] ✅ 응답 상태: ${response.statusCode}',
-      );
+      debugPrint('[MemberApiService - Real] ✅ 응답 상태: ${response.statusCode}');
       debugPrint('[MemberApiService - Real] 응답 데이터: ${response.data}');
 
       // 성공 응답 처리
@@ -260,7 +258,10 @@ class MemberApiService {
         throw Exception('회원 정보 조회 실패: 상태 코드 ${response.statusCode}');
       }
     } on DioException catch (e) {
-      ApiLogger.throwFromDioError(e, context: 'MemberApiService.getMemberByEmail');
+      ApiLogger.throwFromDioError(
+        e,
+        context: 'MemberApiService.getMemberByEmail',
+      );
     } catch (e) {
       ApiLogger.logException(e, context: 'MemberApiService.getMemberByEmail');
       rethrow;

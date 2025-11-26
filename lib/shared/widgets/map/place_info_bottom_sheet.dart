@@ -22,11 +22,7 @@ class PlaceInfoBottomSheet extends StatelessWidget {
   /// 바텀시트 닫기 콜백
   final VoidCallback? onClose;
 
-  const PlaceInfoBottomSheet({
-    super.key,
-    required this.place,
-    this.onClose,
-  });
+  const PlaceInfoBottomSheet({super.key, required this.place, this.onClose});
 
   /// 바텀시트 표시 헬퍼 메서드
   ///
@@ -42,10 +38,8 @@ class PlaceInfoBottomSheet extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => PlaceInfoBottomSheet(
-        place: place,
-        onClose: onClose,
-      ),
+      builder: (context) =>
+          PlaceInfoBottomSheet(place: place, onClose: onClose),
     ).whenComplete(() {
       // 바텀시트가 닫힐 때 콜백 실행
       onClose?.call();

@@ -65,13 +65,17 @@ class MapController extends _$MapController {
     }
 
     try {
-      debugPrint('[MapController] 🔍 LocationService.getCurrentLocation() 호출 중...');
+      debugPrint(
+        '[MapController] 🔍 LocationService.getCurrentLocation() 호출 중...',
+      );
       final currentLocation = await LocationService.getCurrentLocation();
 
       // 기본 위치(서울 시청)인지 확인
       final isDefaultLocation =
-          currentLocation.latitude == LocationService.defaultLocation.latitude &&
-          currentLocation.longitude == LocationService.defaultLocation.longitude;
+          currentLocation.latitude ==
+              LocationService.defaultLocation.latitude &&
+          currentLocation.longitude ==
+              LocationService.defaultLocation.longitude;
 
       debugPrint(
         '[MapController] 📍 위치 가져옴 - '
@@ -125,7 +129,10 @@ class MapController extends _$MapController {
   ///
   /// [markers] 표시할 마커 Set
   /// [padding] 화면 가장자리 여백 (기본값: 50.0)
-  Future<void> fitBoundsToMarkers(Set<Marker> markers, {double padding = 50.0}) async {
+  Future<void> fitBoundsToMarkers(
+    Set<Marker> markers, {
+    double padding = 50.0,
+  }) async {
     if (state == null) {
       debugPrint('[MapController] ⚠️ 컨트롤러가 null - fitBounds 스킵');
       return;
@@ -175,9 +182,7 @@ class MapController extends _$MapController {
       'SW: ($minLat, $minLng), NE: ($maxLat, $maxLng)',
     );
 
-    await state!.animateCamera(
-      CameraUpdate.newLatLngBounds(bounds, padding),
-    );
+    await state!.animateCamera(CameraUpdate.newLatLngBounds(bounds, padding));
 
     debugPrint('[MapController] ✅ 카메라 이동 완료 - 모든 마커 표시');
   }
@@ -328,17 +333,12 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
         Marker(
           markerId: MarkerId(place.placeId),
           position: LatLng(place.latitude!, place.longitude!),
-          infoWindow: InfoWindow(
-            title: place.name,
-            snippet: place.address,
-          ),
+          infoWindow: InfoWindow(title: place.name, snippet: place.address),
         ),
       );
     } else {
       // 좌표가 없는 경우 상세 조회로 좌표 가져오기
-      debugPrint(
-        '[SavedPlacesMarkers] 🔍 ${place.name} - 좌표 없음, 상세 조회 시작',
-      );
+      debugPrint('[SavedPlacesMarkers] 🔍 ${place.name} - 좌표 없음, 상세 조회 시작');
       try {
         final detailedPlace = await repository.getPlaceById(place.placeId);
         if (detailedPlace.latitude != null && detailedPlace.longitude != null) {
@@ -348,10 +348,9 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
           );
 
           // 상세 조회된 장소(좌표 포함)를 캐시에 업데이트
-          ref.read(savedPlacesCacheProvider.notifier).updatePlaceInCache(
-                detailedPlace.placeId,
-                detailedPlace,
-              );
+          ref
+              .read(savedPlacesCacheProvider.notifier)
+              .updatePlaceInCache(detailedPlace.placeId, detailedPlace);
 
           markers.add(
             Marker(
@@ -367,14 +366,10 @@ Future<Set<Marker>> savedPlacesMarkers(Ref ref) async {
             ),
           );
         } else {
-          debugPrint(
-            '[SavedPlacesMarkers] ⚠️ ${place.name} - 상세 조회에도 좌표 없음',
-          );
+          debugPrint('[SavedPlacesMarkers] ⚠️ ${place.name} - 상세 조회에도 좌표 없음');
         }
       } catch (e) {
-        debugPrint(
-          '[SavedPlacesMarkers] ❌ ${place.name} - 상세 조회 실패: $e',
-        );
+        debugPrint('[SavedPlacesMarkers] ❌ ${place.name} - 상세 조회 실패: $e');
       }
     }
   }
@@ -427,7 +422,9 @@ class SavedPlacesCache extends _$SavedPlacesCache {
     final updatedCache = Map<String, PlaceModel>.from(state);
     updatedCache[placeId] = place;
     state = updatedCache;
-    debugPrint('[SavedPlacesCache] 🔄 캐시 업데이트: ${place.name} (좌표: ${place.latitude}, ${place.longitude})');
+    debugPrint(
+      '[SavedPlacesCache] 🔄 캐시 업데이트: ${place.name} (좌표: ${place.latitude}, ${place.longitude})',
+    );
   }
 
   /// 캐시 초기화

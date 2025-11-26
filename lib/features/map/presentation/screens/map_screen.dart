@@ -105,7 +105,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
         debugPrint('[MapScreen] ✅ 저장 장소 마커 ${markers.length}개 로드 완료');
         // 마커에 onTap 콜백 추가하여 MapMarkers에 설정
         final markersWithTap = _addOnTapToMarkers(markers);
-        ref.read(mapMarkersProvider.notifier).replaceWithSavedPlaceMarkers(markersWithTap);
+        ref
+            .read(mapMarkersProvider.notifier)
+            .replaceWithSavedPlaceMarkers(markersWithTap);
         // 지도가 이미 생성되었으면 카메라 이동
         _fitCameraToMarkersIfReady(markersWithTap);
       },
@@ -198,7 +200,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
         debugPrint('[MapScreen] 🔄 저장 장소 마커 업데이트: ${savedMarkers.length}개');
         // 마커에 onTap 콜백 추가
         final markersWithTap = _addOnTapToMarkers(savedMarkers);
-        ref.read(mapMarkersProvider.notifier).replaceWithSavedPlaceMarkers(markersWithTap);
+        ref
+            .read(mapMarkersProvider.notifier)
+            .replaceWithSavedPlaceMarkers(markersWithTap);
         // 마커 업데이트 시 카메라 이동
         _fitCameraToMarkersIfReady(markersWithTap);
       });
@@ -241,7 +245,8 @@ class _MapScreenState extends ConsumerState<MapScreen>
                 icon: Icon(
                   // 현재 모드에 따라 아이콘 변경
                   isMyLocationMode
-                      ? Icons.zoom_out_map_outlined // 내 위치 모드 → 전체 보기 아이콘
+                      ? Icons
+                            .zoom_out_map_outlined // 내 위치 모드 → 전체 보기 아이콘
                       : Icons.my_location_outlined, // 저장 장소 모드 → 내 위치 아이콘
                   size: AppSizes.iconDefault,
                   color: AppColors.subColor2,
@@ -256,12 +261,18 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           .read(mapControllerProvider.notifier)
                           .fitBoundsToMarkers(savedMarkers);
                     }
-                    ref.read(cameraFocusModeProvider.notifier).setSavedPlacesMode();
+                    ref
+                        .read(cameraFocusModeProvider.notifier)
+                        .setSavedPlacesMode();
                   } else {
                     // 현재 저장 장소 모드 → 내 위치로 이동
                     debugPrint('[MapScreen] 🔄 내 위치로 이동');
-                    await ref.read(mapControllerProvider.notifier).moveToMyLocation();
-                    ref.read(cameraFocusModeProvider.notifier).setMyLocationMode();
+                    await ref
+                        .read(mapControllerProvider.notifier)
+                        .moveToMyLocation();
+                    ref
+                        .read(cameraFocusModeProvider.notifier)
+                        .setMyLocationMode();
                   }
                 },
                 tooltip: isMyLocationMode
