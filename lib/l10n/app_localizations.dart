@@ -1070,11 +1070,23 @@ abstract class AppLocalizations {
   /// **'내 위치로 이동'**
   String get mapMyLocationTooltip;
 
+  /// 지도 화면 저장 장소 전체 보기 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'저장한 장소 전체 보기'**
+  String get mapShowAllPlacesTooltip;
+
   /// 지도 타입 변경 버튼 툴팁 (일반/위성)
   ///
   /// In ko, this message translates to:
   /// **'지도 타입 변경'**
   String get mapToggleMapType;
+
+  /// 지도 마커 클릭 시 바텀시트의 상세보기 버튼
+  ///
+  /// In ko, this message translates to:
+  /// **'상세보기'**
+  String get mapPlaceDetailButton;
 
   /// 지도 화면 플레이스홀더 메시지
   ///
@@ -1135,6 +1147,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'위치 정보가 없습니다'**
   String get placeDetailNoLocation;
+
+  /// 지도에서 보기 버튼 툴팁
+  ///
+  /// In ko, this message translates to:
+  /// **'지도에서 보기'**
+  String get placeDetailViewOnMap;
 
   /// 주소 복사 완료 메시지
   ///

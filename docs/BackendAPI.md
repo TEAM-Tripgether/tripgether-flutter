@@ -418,7 +418,11 @@
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "email": "user@example.com",
   "name": "여행러버",
-  "onboardingStatus": "COMPLETED"
+  "onboardingStatus": "NOT_STARTED",
+  "isServiceTermsAndPrivacyAgreed": true,
+  "isMarketingAgreed": false,
+  "birthDate": "1990-01-01",
+  "gender": "MALE"
 }
 ```
 

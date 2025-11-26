@@ -543,7 +543,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapMyLocationTooltip => 'Go to my location';
 
   @override
+  String get mapShowAllPlacesTooltip => 'Show all saved places';
+
+  @override
   String get mapToggleMapType => 'Toggle map type';
+
+  @override
+  String get mapPlaceDetailButton => 'View Details';
 
   @override
   String get mapPlaceholder => 'Map feature coming soon';
@@ -574,6 +580,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get placeDetailNoLocation => 'Location information not available';
+
+  @override
+  String get placeDetailViewOnMap => 'View on Map';
 
   @override
   String get addressCopied => 'Address copied to clipboard';

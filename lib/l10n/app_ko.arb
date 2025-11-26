@@ -930,9 +930,19 @@
     "description": "지도 화면 내 위치 버튼 툴팁"
   },
 
+  "mapShowAllPlacesTooltip": "저장한 장소 전체 보기",
+  "@mapShowAllPlacesTooltip": {
+    "description": "지도 화면 저장 장소 전체 보기 버튼 툴팁"
+  },
+
   "mapToggleMapType": "지도 타입 변경",
   "@mapToggleMapType": {
     "description": "지도 타입 변경 버튼 툴팁 (일반/위성)"
+  },
+
+  "mapPlaceDetailButton": "상세보기",
+  "@mapPlaceDetailButton": {
+    "description": "지도 마커 클릭 시 바텀시트의 상세보기 버튼"
   },
 
   "mapPlaceholder": "지도 기능이 곧 추가될 예정입니다",
@@ -983,6 +993,11 @@
   "placeDetailNoLocation": "위치 정보가 없습니다",
   "@placeDetailNoLocation": {
     "description": "위치 정보 없을 때 표시 메시지"
+  },
+
+  "placeDetailViewOnMap": "지도에서 보기",
+  "@placeDetailViewOnMap": {
+    "description": "지도에서 보기 버튼 툴팁"
   },
 
   "addressCopied": "주소가 복사되었습니다",
