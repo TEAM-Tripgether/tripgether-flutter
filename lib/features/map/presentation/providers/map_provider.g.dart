@@ -7,13 +7,17 @@ part of 'map_provider.dart';
 // **************************************************************************
 
 String _$savedPlacesMarkersHash() =>
-    r'8a799c5f029e2c14481de6cab3edf8f6bdfbde8b';
+    r'd99f160771bce4abc178f8347b4d3a8b19c6de47';
 
 /// 저장한 장소 마커 Provider
 ///
 /// GET /api/place/saved에서 저장된 장소를 조회하고,
 /// 좌표가 없는 장소는 GET /api/place/{placeId}로 상세 조회하여
 /// 마커로 변환합니다.
+///
+/// **커스텀 아이콘 지원**:
+/// 각 장소의 iconUrl이 있으면 해당 이미지를 마커 아이콘으로 사용합니다.
+/// MarkerIconLoader로 캐싱하여 중복 다운로드를 방지합니다.
 ///
 /// 지도 화면에서 저장한 모든 장소를 마커로 표시할 때 사용됩니다.
 ///

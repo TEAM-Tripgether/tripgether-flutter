@@ -262,7 +262,16 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
       );
     }
 
-    // OPERATIONAL 또는 null인 경우
+    // OPERATIONAL인 경우 "영업 중" 표시
+    if (status == 'OPERATIONAL') {
+      return _BusinessStatusInfo(
+        label: '영업 중',
+        color: AppColors.mainColor,
+        isPermanentlyClosed: false,
+      );
+    }
+
+    // null인 경우 (상태 정보 없음)
     return _BusinessStatusInfo(
       label: null,
       color: AppColors.mainColor,
@@ -294,25 +303,30 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
   Widget _buildStatusText(bool isOpen, _BusinessStatusInfo statusInfo) {
     // 임시 휴업 상태인 경우
     if (statusInfo.label == '임시 휴업') {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '임시 휴업',
-            style: AppTextStyles.titleSemiBold13.copyWith(
-              color: statusInfo.color,
-            ),
-          ),
-        ],
+      return Text(
+        '임시 휴업',
+        style: AppTextStyles.titleSemiBold13.copyWith(
+          color: statusInfo.color,
+        ),
       );
     }
 
-    // 정상 영업 상태 (OPERATIONAL 또는 null)
+    // OPERATIONAL 상태이고 영업시간이 없는 경우 → label 그대로 표시
+    if (statusInfo.label == '영업 중' && widget.businessHours.isEmpty) {
+      return Text(
+        statusInfo.label!,
+        style: AppTextStyles.titleSemiBold13.copyWith(
+          color: statusInfo.color,
+        ),
+      );
+    }
+
+    // 영업시간이 있는 경우 → 현재 시간 기준으로 표시
     return Text(
       isOpen ? '영업 중' : '영업 종료',
       style: AppTextStyles.titleSemiBold13.copyWith(
         color: isOpen
-            ? AppColors.success
+            ? AppColors.mainColor
             : AppColors.textColor1.withValues(alpha: 0.6),
       ),
     );

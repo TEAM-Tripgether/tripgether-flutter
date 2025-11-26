@@ -1,11 +1,35 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-26T02:58:54Z",
-    "currentVersion": "1.2.13",
+    "lastUpdated": "2025-11-26T06:59:32Z",
+    "currentVersion": "1.2.14",
     "projectType": "flutter",
-    "totalReleases": 40
+    "totalReleases": 41
   },
   "releases": [
+    {
+      "version": "1.2.14",
+      "project_type": "flutter",
+      "date": "2025-11-26",
+      "pr_number": 109,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n새로운 기능\n\n저장된 장소를 평점 또는 리뷰 수로 정렬\n지도에 장소별 맞춤형 마커 아이콘 표시\n\n\n\n개선 사항\n\n업체 운영 상태 표시 개선\nSNS 콘텐츠 플랫폼 인식 개선\n인증 안정성 개선\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "저장된 장소를 평점 또는 리뷰 수로 정렬",
+            "지도에 장소별 맞춤형 마커 아이콘 표시"
+          ]
+        },
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "업체 운영 상태 표시 개선",
+            "SNS 콘텐츠 플랫폼 인식 개선",
+            "인증 안정성 개선"
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.13",
       "project_type": "flutter",

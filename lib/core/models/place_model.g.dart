@@ -35,6 +35,13 @@ _$PlaceModelImpl _$$PlaceModelImplFromJson(
           ?.map((e) => BusinessHourModel.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
+  platformReferences:
+      (json['platformReferences'] as List<dynamic>?)
+          ?.map(
+            (e) => PlatformReferenceModel.fromJson(e as Map<String, dynamic>),
+          )
+          .toList() ??
+      const [],
   createdAt: json['createdAt'] == null
       ? null
       : DateTime.parse(json['createdAt'] as String),
@@ -65,6 +72,7 @@ Map<String, dynamic> _$$PlaceModelImplToJson(_$PlaceModelImpl instance) =>
       'userRatingsTotal': instance.userRatingsTotal,
       'photoUrls': instance.photoUrls,
       'businessHours': instance.businessHours,
+      'platformReferences': instance.platformReferences,
       'createdAt': instance.createdAt?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
       'createdBy': instance.createdBy,
