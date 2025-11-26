@@ -58,6 +58,9 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
   /// Dio 인스턴스 (이미지 다운로드용)
   final Dio _dio = Dio();
 
+  /// 지도 컨트롤러 (카메라 제어용)
+  GoogleMapController? _mapController;
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +74,27 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
     if (oldWidget.iconUrl != widget.iconUrl) {
       _loadCustomMarkerIcon();
     }
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
+  }
+
+  /// 마커 위치로 카메라 이동
+  ///
+  /// 사용자가 미니맵을 드래그한 후 원래 장소 위치로 돌아갈 때 사용합니다.
+  Future<void> _moveToMarker() async {
+    if (_mapController == null ||
+        widget.latitude == null ||
+        widget.longitude == null) {
+      return;
+    }
+
+    await _mapController!.animateCamera(
+      CameraUpdate.newLatLng(LatLng(widget.latitude!, widget.longitude!)),
+    );
   }
 
   /// 커스텀 마커 아이콘 로드
@@ -173,24 +197,55 @@ class _PlaceMiniMapState extends State<PlaceMiniMap> {
       borderRadius: AppRadius.allMedium,
       child: SizedBox(
         height: widget.height.h,
-        child: GoogleMap(
-          initialCameraPosition: CameraPosition(target: position, zoom: 16.0),
-          markers: {
-            Marker(
-              markerId: MarkerId(widget.placeId),
-              position: position,
-              icon: markerIcon,
-              infoWindow: InfoWindow(title: widget.placeName),
+        child: Stack(
+          children: [
+            // 지도
+            GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: position,
+                zoom: 16.0,
+              ),
+              markers: {
+                Marker(
+                  markerId: MarkerId(widget.placeId),
+                  position: position,
+                  icon: markerIcon,
+                  infoWindow: InfoWindow(title: widget.placeName),
+                ),
+              },
+              // 인터랙티브 맵 (마커는 좌표에 고정)
+              zoomControlsEnabled: false, // UI 버튼 숨김
+              myLocationButtonEnabled: false, // 내 위치 버튼 숨김
+              mapToolbarEnabled: false, // Android 툴바 숨김
+              scrollGesturesEnabled: true, // ✅ 스크롤(패닝) 활성화
+              zoomGesturesEnabled: true, // ✅ 핀치 줌 활성화
+              tiltGesturesEnabled: false, // 3D 기울기 비활성화
+              rotateGesturesEnabled: false, // 회전 비활성화
+              onMapCreated: (controller) {
+                _mapController = controller;
+              },
             ),
-          },
-          // 인터랙티브 맵 (마커는 좌표에 고정)
-          zoomControlsEnabled: false, // UI 버튼 숨김
-          myLocationButtonEnabled: false, // 내 위치 버튼 숨김
-          mapToolbarEnabled: false, // Android 툴바 숨김
-          scrollGesturesEnabled: true, // ✅ 스크롤(패닝) 활성화
-          zoomGesturesEnabled: true, // ✅ 핀치 줌 활성화
-          tiltGesturesEnabled: false, // 3D 기울기 비활성화
-          rotateGesturesEnabled: false, // 회전 비활성화
+            // 현재 장소로 이동 버튼
+            Positioned(
+              right: AppSpacing.sm,
+              bottom: AppSpacing.sm,
+              child: SizedBox(
+                width: 36.w,
+                height: 36.w,
+                child: FloatingActionButton(
+                  heroTag: 'minimap_location_${widget.placeId}',
+                  onPressed: _moveToMarker,
+                  backgroundColor: AppColors.white,
+                  elevation: 2,
+                  child: Icon(
+                    Icons.my_location,
+                    size: AppSizes.iconSmall,
+                    color: AppColors.mainColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -5,6 +5,7 @@ import 'package:tripgether/core/services/auth/google_auth_service.dart';
 import 'package:tripgether/features/auth/data/models/user_model.dart';
 import 'package:tripgether/features/auth/data/models/auth_request.dart';
 import 'package:tripgether/features/auth/services/auth_api_service.dart';
+import 'package:tripgether/features/auth/services/member_api_service.dart';
 import 'package:tripgether/features/auth/providers/user_provider.dart';
 
 part 'login_provider.g.dart';
@@ -145,33 +146,62 @@ class LoginNotifier extends _$LoginNotifier {
       );
       debugPrint('  🆕 최초 로그인: ${authResponse.isFirstLogin}');
 
-      // 4. User 객체 생성 (Google 정보 기반)
-      final user = User.fromGoogleSignIn(
-        email: googleUser.email,
-        displayName: googleUser.displayName ?? 'Unknown',
-        photoUrl: googleUser.photoUrl,
-      );
-
-      debugPrint('[LoginProvider] 👤 User 객체 생성 완료');
-      debugPrint('  📧 Email: ${user.email}');
-      debugPrint('  👤 Nickname: ${user.nickname}');
-      debugPrint('  🖼️ Profile: ${user.profileImageUrl ?? "없음"}');
-
-      // 5. UserNotifier에 사용자 정보 + 토큰 저장
-      debugPrint('[LoginProvider] 💾 Secure Storage에 정보 저장 중...');
-
+      // 4. ⭐ 서버에서 사용자 상세 정보 조회 (닉네임 = 서버의 name 필드)
+      // 먼저 토큰을 임시 저장 (MemberApiService에서 AuthInterceptor가 토큰을 사용하므로)
       await ref
           .read(userNotifierProvider.notifier)
           .setUser(
-            user: user,
+            user: User.fromGoogleSignIn(
+              email: googleUser.email,
+              displayName: googleUser.displayName ?? 'Unknown',
+              photoUrl: googleUser.photoUrl,
+            ),
             accessToken: authResponse.accessToken,
             refreshToken: authResponse.refreshToken,
           );
 
-      debugPrint('[LoginProvider] ✅ 사용자 정보 저장 완료 (Secure Storage)');
-      debugPrint('  📁 저장 항목: User, Access Token, Refresh Token');
+      debugPrint('[LoginProvider] 💾 임시 토큰 저장 완료 (Member API 호출용)');
 
-      // 6. 온보딩 상태 저장 (서버 응답 기반)
+      // 5. ⭐ MemberApiService로 서버에서 사용자 정보 조회
+      User user;
+      try {
+        debugPrint('[LoginProvider] 👤 서버에서 사용자 정보 조회 중...');
+        final memberService = MemberApiService();
+        user = await memberService.getMemberByEmail(
+          email: googleUser.email,
+          photoUrl: googleUser.photoUrl,
+          loginPlatform: 'GOOGLE',
+        );
+
+        debugPrint('[LoginProvider] ✅ 서버 사용자 정보 조회 성공');
+        debugPrint('  📧 Email: ${user.email}');
+        debugPrint('  👤 Nickname (서버): ${user.nickname}');
+        debugPrint('  🆔 UserId: ${user.userId}');
+        debugPrint('  📋 OnboardingStatus: ${user.onboardingStatus}');
+      } catch (e) {
+        // 서버 조회 실패 시 Google 정보로 fallback
+        debugPrint('[LoginProvider] ⚠️ 서버 사용자 정보 조회 실패 (Google 정보로 대체): $e');
+        user = User.fromGoogleSignIn(
+          email: googleUser.email,
+          displayName: googleUser.displayName ?? 'Unknown',
+          photoUrl: googleUser.photoUrl,
+        );
+      }
+
+      debugPrint('[LoginProvider] 👤 최종 User 객체 확정');
+      debugPrint('  📧 Email: ${user.email}');
+      debugPrint('  👤 Nickname: ${user.nickname}');
+      debugPrint('  🖼️ Profile: ${user.profileImageUrl ?? "없음"}');
+
+      // 6. ⭐ 최종 User 정보로 UserNotifier 업데이트 (서버 닉네임 반영)
+      debugPrint('[LoginProvider] 💾 최종 사용자 정보 저장 중...');
+
+      await ref.read(userNotifierProvider.notifier).updateUser(user);
+
+      debugPrint('[LoginProvider] ✅ 사용자 정보 업데이트 완료 (서버 닉네임 반영)');
+      debugPrint('  📁 저장 항목: User (서버 name → nickname)');
+
+      // 7. 온보딩 상태 저장 (서버 응답 기반)
       const storage = FlutterSecureStorage();
       if (authResponse.requiresOnboarding) {
         // 온보딩이 필요한 경우: 서버가 제공한 currentStep 저장

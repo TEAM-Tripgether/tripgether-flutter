@@ -1,11 +1,37 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-25T11:39:36Z",
-    "currentVersion": "1.2.12",
+    "lastUpdated": "2025-11-26T02:58:54Z",
+    "currentVersion": "1.2.13",
     "projectType": "flutter",
-    "totalReleases": 39
+    "totalReleases": 40
   },
   "releases": [
+    {
+      "version": "1.2.13",
+      "project_type": "flutter",
+      "date": "2025-11-26",
+      "pr_number": 107,
+      "raw_summary": "Summary by CodeRabbit\n릴리즈 노트 v1.2.13\n\n\n새로운 기능\n\n위치 기반 서비스 지원 추가\n지도에서 저장된 장소를 표시하고 조회 가능\n지도 마커를 탭하여 장소 상세 정보 확인 가능\n사용자 프로필에 온보딩 상태, 마케팅 동의, 생년월일, 성별 정보 추가\n\n\n\n개선 사항\n\n장소 상세 화면에서 지도 보기 버튼 추가\n지도 UI 및 기능 강화\n한국어 및 영어 로컬라이제이션 확대\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "위치 기반 서비스 지원 추가",
+            "지도에서 저장된 장소를 표시하고 조회 가능",
+            "지도 마커를 탭하여 장소 상세 정보 확인 가능",
+            "사용자 프로필에 온보딩 상태, 마케팅 동의, 생년월일, 성별 정보 추가"
+          ]
+        },
+        "개선_사항": {
+          "title": "개선 사항",
+          "items": [
+            "장소 상세 화면에서 지도 보기 버튼 추가",
+            "지도 UI 및 기능 강화",
+            "한국어 및 영어 로컬라이제이션 확대"
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.12",
       "project_type": "flutter",

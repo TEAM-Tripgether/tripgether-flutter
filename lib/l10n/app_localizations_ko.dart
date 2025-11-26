@@ -535,7 +535,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mapMyLocationTooltip => '내 위치로 이동';
 
   @override
+  String get mapShowAllPlacesTooltip => '저장한 장소 전체 보기';
+
+  @override
   String get mapToggleMapType => '지도 타입 변경';
+
+  @override
+  String get mapPlaceDetailButton => '상세보기';
 
   @override
   String get mapPlaceholder => '지도 기능이 곧 추가될 예정입니다';
@@ -566,6 +572,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get placeDetailNoLocation => '위치 정보가 없습니다';
+
+  @override
+  String get placeDetailViewOnMap => '지도에서 보기';
 
   @override
   String get addressCopied => '주소가 복사되었습니다';

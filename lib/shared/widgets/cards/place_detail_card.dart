@@ -1,11 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shimmer/shimmer.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../common/place_info_widgets.dart';
 
 /// 장소 상세 카드 위젯
 ///
@@ -68,22 +66,7 @@ class PlaceDetailCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 카테고리
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.subColor2.withValues(alpha: 0.2),
-                      borderRadius: AppRadius.allSmall,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.smd,
-                      vertical: AppSpacing.xxs,
-                    ),
-                    child: Text(
-                      category,
-                      style: AppTextStyles.metaMedium12.copyWith(
-                        color: AppColors.textColor1.withValues(alpha: 0.4),
-                      ),
-                    ),
-                  ),
+                  PlaceCategoryChip(category: category),
 
                   AppSpacing.verticalSpaceXSM, // 6
                   // 장소 이름
@@ -96,117 +79,25 @@ class PlaceDetailCard extends StatelessWidget {
 
                   AppSpacing.verticalSpaceXS, // 4
                   // 주소
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/location_on.svg',
-                        width: AppSizes.iconSmall,
-                        height: AppSizes.iconSmall,
-                        colorFilter: ColorFilter.mode(
-                          AppColors.mainColor,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      AppSpacing.horizontalSpaceXS,
-                      Expanded(
-                        child: Text(
-                          address,
-                          style: AppTextStyles.metaMedium12.copyWith(
-                            color: AppColors.textColor1.withValues(alpha: 0.6),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
+                  PlaceAddressRow(address: address),
 
                   AppSpacing.verticalSpaceXS, // 4
                   // 평점 및 리뷰 수
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/star.svg',
-                        width: AppSizes.iconSmall,
-                        height: AppSizes.iconSmall,
-                        colorFilter: ColorFilter.mode(
-                          AppColors.mainColor,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      AppSpacing.horizontalSpaceXS,
-                      Text(
-                        '$rating ($reviewCount)',
-                        style: AppTextStyles.metaMedium12.copyWith(
-                          color: AppColors.textColor1.withValues(alpha: 0.6),
-                        ),
-                      ),
-                    ],
-                  ),
+                  PlaceRatingRow(rating: rating, reviewCount: reviewCount),
                 ],
               ),
             ),
 
             AppSpacing.verticalSpaceSM, // 8
             // 가로 스크롤 이미지 리스트
-            if (imageUrls.isNotEmpty) _buildImageList(),
+            if (imageUrls.isNotEmpty)
+              PlaceImageGallery(
+                imageUrls: imageUrls,
+                imageWidth: 104.w,
+                imageHeight: 84.h,
+                spacing: AppSpacing.xs,
+              ),
           ],
-        ),
-      ),
-    );
-  }
-
-  /// 가로 스크롤 이미지 리스트
-  Widget _buildImageList() {
-    return SizedBox(
-      height: 84.h,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: imageUrls.length,
-        separatorBuilder: (context, index) =>
-            SizedBox(width: AppSpacing.xs), // 4
-        itemBuilder: (context, index) {
-          return _buildImageItem(imageUrls[index]);
-        },
-      ),
-    );
-  }
-
-  /// 개별 이미지 아이템
-  Widget _buildImageItem(String imageUrl) {
-    return ClipRRect(
-      borderRadius: AppRadius.allMedium,
-      child: CachedNetworkImage(
-        imageUrl: imageUrl,
-        width: 104.w,
-        height: 84.h,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => _buildShimmerPlaceholder(),
-        errorWidget: (context, url, error) => _buildErrorPlaceholder(),
-      ),
-    );
-  }
-
-  /// Shimmer 로딩 플레이스홀더
-  Widget _buildShimmerPlaceholder() {
-    return Shimmer.fromColors(
-      baseColor: AppColors.subColor2.withValues(alpha: 0.3),
-      highlightColor: AppColors.shimmerHighlight,
-      child: Container(width: 104.w, height: 84.h, color: AppColors.white),
-    );
-  }
-
-  /// 에러 플레이스홀더
-  Widget _buildErrorPlaceholder() {
-    return Container(
-      width: 104.w,
-      height: 84.h,
-      color: AppColors.imagePlaceholder,
-      child: Center(
-        child: Icon(
-          Icons.image_outlined,
-          size: AppSizes.iconMedium,
-          color: AppColors.white,
         ),
       ),
     );

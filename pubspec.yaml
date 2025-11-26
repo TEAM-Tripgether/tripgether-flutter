@@ -4,7 +4,7 @@ description: "Tripgether - Share your travel moments and discover local places t
 publish_to: 'none' 
 
 
-version: 1.2.12
+version: 1.2.13
 
 environment:
   sdk: ^3.9.2
@@ -51,6 +51,7 @@ dependencies:
   flutter_svg: ^2.2.1             # 앱 아이콘
   flutter_expandable_fab: ^2.5.2 # 확장 가능한 FAB (Floating Action Button)
   google_maps_flutter: ^2.13.1  # 구글 지도 위젯
+  geolocator: ^13.0.2           # GPS 위치 서비스
 
   # 리스트 & 데이터 표시
   infinite_scroll_pagination: ^5.1.1 # 무한 스크롤 페이징 처리

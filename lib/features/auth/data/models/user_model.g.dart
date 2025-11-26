@@ -13,6 +13,12 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
   profileImageUrl: json['profileImageUrl'] as String?,
   loginPlatform: json['loginPlatform'] as String?,
   createdAt: DateTime.parse(json['createdAt'] as String),
+  onboardingStatus: json['onboardingStatus'] as String?,
+  isServiceTermsAndPrivacyAgreed:
+      json['isServiceTermsAndPrivacyAgreed'] as bool?,
+  isMarketingAgreed: json['isMarketingAgreed'] as bool?,
+  birthDate: json['birthDate'] as String?,
+  gender: json['gender'] as String?,
 );
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
@@ -23,4 +29,9 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'profileImageUrl': instance.profileImageUrl,
       'loginPlatform': instance.loginPlatform,
       'createdAt': instance.createdAt.toIso8601String(),
+      'onboardingStatus': instance.onboardingStatus,
+      'isServiceTermsAndPrivacyAgreed': instance.isServiceTermsAndPrivacyAgreed,
+      'isMarketingAgreed': instance.isMarketingAgreed,
+      'birthDate': instance.birthDate,
+      'gender': instance.gender,
     };
