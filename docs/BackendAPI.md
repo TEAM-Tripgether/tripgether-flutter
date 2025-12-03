@@ -1,7 +1,7 @@
 # Tripgether Backend API 문서
 
 **Base URL**: `https://api.tripgether.suhsaechan.kr`
-**문서 버전**: 2025-11-24
+**문서 버전**: 2025-12-04
 **API 버전**: OAS 3.1
 
 ---
@@ -965,6 +965,7 @@
       "name": "스타벅스 서울역점",
       "address": "서울특별시 중구 명동길 29",
       "rating": 4.5,
+      "userRatingsTotal": 232,
       "photoUrls": ["https://example.com/photo1.jpg"],
       "description": "서울역 인근, 공부하기 좋은 카페"
     }
@@ -980,6 +981,7 @@
 | places[].name | string | 장소명 |
 | places[].address | string | 주소 |
 | places[].rating | number | 별점 (0.0 ~ 5.0) |
+| places[].userRatingsTotal | integer | 리뷰 수 |
 | places[].photoUrls | array of string | 사진 URL 배열 (최대 10개) |
 | places[].description | string | 장소 요약 설명 |
 
@@ -994,6 +996,7 @@
 **API 변경 이력**:
 | 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
 |------|--------|----------|-----------|-----------|
+| 2025.12.04 | 서새찬 | [#129](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/129) | AI Callback에서 thubmnailUrl, platformUploader 파라미터 누락문제 | 응답에 userRatingsTotal 필드 추가 |
 | 2025.11.24 | 서새찬 | [#103](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/103) | 로그인 API FCM 토큰 필드 추가 및 멀티 디바이스 푸시 알림 지원 기능 추가 | 저장한 장소 목록 조회 API 추가 |
 
 ---
@@ -1467,7 +1470,9 @@ AI 서버 Webhook Callback
 |------|------|------|------|------|
 | contentId | string (uuid) | ✅ | Content UUID (백엔드에서 전송받은 UUID) | "123e4567-e89b-12d3-a456-426614174000" |
 | thumbnailUrl | string | ✅ | 썸네일 URL | "https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg" |
+| contentUrl | string | ✅ | 콘텐츠 URL | "https://www.youtube.com/watch?v=VIDEO_ID" |
 | platform | string (enum) | ✅ | SNS 플랫폼 (INSTAGRAM, YOUTUBE, YOUTUBE_SHORTS) | "YOUTUBE" |
+| platformUploader | string | ✅ | 업로더 아이디 | "travel_lover_123" |
 | title | string | ✅ | 콘텐츠 제목 | "일본 전국 라멘 투어 - 개당 1200원의 가성비 초밥" |
 | summary | string | ❌ | AI 콘텐츠 요약 | "샷포로 3대 스시 맛집 '토리톤' 방문..." |
 
@@ -1490,7 +1495,9 @@ AI 서버 Webhook Callback
   "contentInfo": {
     "contentId": "123e4567-e89b-12d3-a456-426614174000",
     "thumbnailUrl": "https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg",
+    "contentUrl": "https://www.youtube.com/watch?v=VIDEO_ID",
     "platform": "YOUTUBE",
+    "platformUploader": "travel_lover_123",
     "title": "일본 전국 라멘 투어 - 개당 1200원의 가성비 초밥",
     "summary": "샷포로 3대 스시 맛집 '토리톤' 방문..."
   },
@@ -1540,6 +1547,7 @@ AI 서버 Webhook Callback
 **API 변경 이력**:
 | 날짜 | 작성자 | 이슈번호 | 이슈 제목 | 변경 내용 |
 |------|--------|----------|-----------|-----------|
+| 2025.12.04 | 서새찬 | [#129](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/129) | AI Callback에서 thumbnailUrl, platformUploader 파라미터 누락문제 | ContentInfo에 contentUrl, platformUploader 필드 추가 |
 | 2025.11.18 | 서새찬 | [#83](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/83) | AI 서버 Callback API 에 대한 API 명세 수정 및 파라미터 추가 필요 | AI 서버 Callback API ContentInfo 파라미터 추가 (summary 필드) |
 | 2025.11.12 | 서새찬 | [#70](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/70) | 장소 정보를 위해 구글 API 를 이용한 구글ID 추출 필요 | 명세 변경, 기존 전체정보 > 상호명으로만 받음 |
 | 2025.11.02 | 강지윤 | [#48](https://github.com/TEAM-Tripgether/Tripgether-BE/issues/48) | AI 서버 연동 API 구현 필요 : 장소 추출 요청 및 Webhook Callback 처리 | AI 서버 Webhook Callback 리팩터링 |
@@ -1710,6 +1718,7 @@ FCM 푸시 알림 전송 테스트
 | name | string | 장소명 | "스타벅스 서울역점" |
 | address | string | 주소 | "서울특별시 중구 명동길 29" |
 | rating | number | 별점 (0.0 ~ 5.0) | 4.5 |
+| userRatingsTotal | integer | 리뷰 수 | 232 |
 | photoUrls | array of string | 사진 URL 배열 (최대 10개) | ["https://example.com/photo1.jpg"] |
 | description | string | 장소 요약 설명 | "서울역 인근, 공부하기 좋은 카페" |
 
