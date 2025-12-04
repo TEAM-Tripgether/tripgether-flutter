@@ -773,22 +773,125 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   }
 
   /// 회원 탈퇴 확인 다이얼로그
+  ///
+  /// **2중 안전 장치**:
+  /// 1. 이메일 입력 검증 (현재 로그인된 이메일과 일치해야 함)
+  /// 2. 이메일 일치 시에만 탈퇴 버튼 활성화
+  ///
+  /// **구현 방식**:
+  /// - CommonDialog의 customContent 파라미터 활용
+  /// - StatefulBuilder로 다이얼로그 내부 상태 관리
   void _showWithdrawDialog(BuildContext context) {
+    // 현재 사용자 이메일 가져오기
+    final currentUser = ref.read(userNotifierProvider).valueOrNull;
+    final userEmail = currentUser?.email ?? '';
+    final emailController = TextEditingController();
+
     showDialog(
       context: context,
-      builder: (dialogContext) => CommonDialog.forConfirm(
-        title: '회원 탈퇴',
-        description: '정말 탈퇴하시겠습니까?\n탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.',
-        confirmText: '탈퇴',
-        cancelText: '취소',
-        // CommonDialog의 autoDismiss가 자동으로 pop 처리함
-        // 콜백에서 중복 pop 하면 스택 에러 발생
-        onConfirm: () async {
-          await _handleWithdraw();
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          // 이메일 일치 여부 계산
+          final inputEmail = emailController.text.trim().toLowerCase();
+          final isEmailMatch =
+              inputEmail.isNotEmpty && inputEmail == userEmail.toLowerCase();
+
+          return CommonDialog(
+            title: '회원 탈퇴',
+            description:
+                '정말 탈퇴하시겠습니까?\n탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.',
+            subtitle: '탈퇴를 확인하려면 이메일을 입력하세요',
+            leftButtonText: '취소',
+            rightButtonText: '탈퇴',
+            rightButtonColor:
+                isEmailMatch ? AppColors.error : AppColors.error.withValues(alpha: 0.3),
+            rightButtonTextColor:
+                isEmailMatch ? AppColors.white : AppColors.white.withValues(alpha: 0.5),
+            // 취소 버튼: 항상 다이얼로그 닫기
+            onLeftPressed: () => Navigator.of(context).pop(),
+            // 탈퇴 버튼: 이메일 일치할 때만 실행
+            onRightPressed: isEmailMatch
+                ? () async {
+                    Navigator.of(context).pop(); // 먼저 다이얼로그 닫기
+                    await _handleWithdraw();
+                  }
+                : null,
+            autoDismiss: false, // 수동으로 닫기 제어
+            customContent: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: AppSpacing.md),
+
+                // 현재 이메일 표시
+                Text(
+                  '현재 이메일: $userEmail',
+                  style: AppTextStyles.caption12.copyWith(
+                    color: AppColors.subColor2,
+                  ),
+                ),
+
+                SizedBox(height: AppSpacing.sm),
+
+                // 이메일 입력 TextField
+                TextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  autocorrect: false,
+                  onChanged: (_) => setDialogState(() {}), // 입력 변경 시 상태 갱신
+                  decoration: InputDecoration(
+                    hintText: '이메일을 입력하세요',
+                    hintStyle: AppTextStyles.bodyRegular14.copyWith(
+                      color: AppColors.subColor2,
+                    ),
+                    filled: true,
+                    fillColor: AppColors.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: AppRadius.allMedium,
+                      borderSide: BorderSide(color: AppColors.subColor2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: AppRadius.allMedium,
+                      borderSide: BorderSide(color: AppColors.subColor2),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: AppRadius.allMedium,
+                      borderSide: BorderSide(
+                        color: isEmailMatch ? AppColors.success : AppColors.mainColor,
+                        width: 2,
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.md,
+                    ),
+                    // 일치 여부 아이콘 표시
+                    suffixIcon: emailController.text.isNotEmpty
+                        ? Icon(
+                            isEmailMatch ? Icons.check_circle : Icons.cancel,
+                            color: isEmailMatch ? AppColors.success : AppColors.error,
+                            size: 20.w,
+                          )
+                        : null,
+                  ),
+                  style: AppTextStyles.bodyRegular14,
+                ),
+
+                // 일치 여부 메시지
+                if (emailController.text.isNotEmpty) ...[
+                  SizedBox(height: AppSpacing.xs),
+                  Text(
+                    isEmailMatch ? '이메일이 일치합니다' : '이메일이 일치하지 않습니다',
+                    style: AppTextStyles.metaMedium12.copyWith(
+                      color: isEmailMatch ? AppColors.success : AppColors.error,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          );
         },
-        // onCancel: null이면 autoDismiss로 다이얼로그만 닫힘
       ),
-    );
+    ).then((_) => emailController.dispose()); // 컨트롤러 정리
   }
 
   /// 회원 탈퇴 처리
