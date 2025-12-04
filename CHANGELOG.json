@@ -1,11 +1,49 @@
 {
   "metadata": {
-    "lastUpdated": "2025-11-26T06:59:32Z",
-    "currentVersion": "1.2.14",
+    "lastUpdated": "2025-12-04T10:00:06Z",
+    "currentVersion": "1.2.15",
     "projectType": "flutter",
-    "totalReleases": 41
+    "totalReleases": 42
   },
   "releases": [
+    {
+      "version": "1.2.15",
+      "project_type": "flutter",
+      "date": "2025-12-04",
+      "pr_number": 111,
+      "raw_summary": "Summary by CodeRabbit\n릴리스 노트\n\n\n새로운 기능\n\n프로필 편집 화면 추가 - 닉네임, 성별, 생년월일, 관심사 관리 가능\n약관 및 정책 문서 통합 - 서비스 약관, 개인정보처리방침, 연령 확인, 마케팅 동의\n정책 상세 페이지에서 약관 내용 확인 가능\n\n\n\n사용자 인터페이스 개선\n\n마이페이지 UI 개편 - 메뉴 기반 레이아웃으로 개선\n전체 앱 내 백 버튼 스타일 통일\n프로필, 설정 페이지 네비게이션 경로 개선\n\n\n\n성능 개선\n\n토큰 갱신 안정성 향상\nAPI 응답에 장소 평점 정보 추가\n\n\n\n버전\n\nv1.2.15로 업데이트\n\n\n\n✏️ Tip: You can customize this high-level summary in your review settings.",
+      "parsed_changes": {
+        "새로운_기능": {
+          "title": "새로운 기능",
+          "items": [
+            "프로필 편집 화면 추가 - 닉네임, 성별, 생년월일, 관심사 관리 가능",
+            "약관 및 정책 문서 통합 - 서비스 약관, 개인정보처리방침, 연령 확인, 마케팅 동의",
+            "정책 상세 페이지에서 약관 내용 확인 가능"
+          ]
+        },
+        "사용자_인터페이스_개선": {
+          "title": "사용자 인터페이스 개선",
+          "items": [
+            "마이페이지 UI 개편 - 메뉴 기반 레이아웃으로 개선",
+            "전체 앱 내 백 버튼 스타일 통일",
+            "프로필, 설정 페이지 네비게이션 경로 개선"
+          ]
+        },
+        "성능_개선": {
+          "title": "성능 개선",
+          "items": [
+            "토큰 갱신 안정성 향상",
+            "API 응답에 장소 평점 정보 추가"
+          ]
+        },
+        "버전": {
+          "title": "버전",
+          "items": [
+            "v1.2.15로 업데이트"
+          ]
+        }
+      }
+    },
     {
       "version": "1.2.14",
       "project_type": "flutter",

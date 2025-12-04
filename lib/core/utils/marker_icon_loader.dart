@@ -81,10 +81,7 @@ class MarkerIconLoader {
   ///
   /// 캐시를 무시하고 항상 새로 다운로드합니다.
   /// 실패 시 예외를 throw합니다.
-  static Future<BitmapDescriptor> loadIcon(
-    String url, {
-    int? size,
-  }) async {
+  static Future<BitmapDescriptor> loadIcon(String url, {int? size}) async {
     return _downloadAndConvert(url, size ?? _defaultMarkerSize);
   }
 

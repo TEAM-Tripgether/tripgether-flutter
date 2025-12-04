@@ -256,9 +256,9 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   /// PreferredSizeWidget 인터페이스 구현
-  /// AppBar의 기본 높이를 반환 (ScreenUtil 적용)
+  /// AppBar의 기본 높이를 반환 (Flutter 표준 56px)
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight.h);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   /// 홈 화면용 AppBar 생성
   /// 기본 설정으로 "Tripgether" 제목과 햄버거 메뉴, 알림 아이콘을 표시
@@ -296,31 +296,39 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// 설정 화면용 AppBar 생성
   /// 뒤로가기 버튼과 저장 버튼을 표시
+  ///
+  /// **저장 버튼 상태**:
+  /// - onSavePressed가 null이면 버튼 비활성화 (회색)
+  /// - onSavePressed가 있으면 버튼 활성화 (기본 색상)
   static CommonAppBar forSettings({
     required BuildContext context,
     String? title,
     VoidCallback? onSavePressed,
   }) {
     final l10n = AppLocalizations.of(context);
+    final isEnabled = onSavePressed != null;
+
     return CommonAppBar(
       title: title ?? l10n.settings,
       showBackButton: true,
       showMenuButton: false,
       showNotificationIcon: false,
-      rightActions: onSavePressed != null
-          ? [
-              Semantics(
-                label: l10n.settingsButtonLabel, // 스크린 리더용 시맨틱 라벨
-                button: true,
-                child: IconButton(
-                  icon: const Icon(Icons.check),
-                  onPressed: onSavePressed,
-                  tooltip: l10n.settings,
-                ),
-              ),
-              SizedBox(width: AppSpacing.sm),
-            ]
-          : null,
+      rightActions: [
+        Semantics(
+          label: l10n.settingsButtonLabel,
+          button: true,
+          child: IconButton(
+            icon: Icon(
+              Icons.check,
+              // 활성화 여부에 따라 색상 변경
+              color: isEnabled ? AppColors.textColor1 : AppColors.subColor2,
+            ),
+            onPressed: onSavePressed, // null이면 자동으로 비활성화
+            tooltip: l10n.settings,
+          ),
+        ),
+        SizedBox(width: AppSpacing.sm),
+      ],
     );
   }
 

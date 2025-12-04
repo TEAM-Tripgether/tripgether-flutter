@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../../features/auth/services/auth_api_service.dart';
@@ -9,18 +11,29 @@ import '../services/auth/token_manager.dart';
 /// 1. 모든 API 요청에 자동으로 JWT Bearer 토큰 추가
 /// 2. 401 EXPIRED_ACCESS_TOKEN 에러 발생 시 자동 토큰 재발급
 /// 3. 재발급 성공 시 원래 요청 재시도
+/// 4. 동시 API 호출 시 재발급 완료까지 대기 후 재시도
 ///
 /// **토큰 재발급 흐름**:
 /// 1. 401 + EXPIRED_ACCESS_TOKEN 감지
 /// 2. Refresh Token으로 재발급 API 호출
 /// 3. 새 토큰 저장
 /// 4. 원래 요청에 새 토큰 적용하여 재시도
+///
+/// **동시 요청 처리**:
+/// - 첫 번째 요청만 재발급 API 호출
+/// - 나머지 요청은 Completer로 재발급 완료 대기
+/// - 재발급 완료 후 모든 대기 요청 재시도
 class AuthInterceptor extends Interceptor {
   final TokenManager _tokenManager = TokenManager();
   final String _baseUrl;
 
   /// 토큰 재발급 중 플래그 (동시 요청 시 중복 재발급 방지)
   bool _isRefreshing = false;
+
+  /// 재발급 완료 대기용 Completer
+  /// - 재발급 진행 중일 때 다른 요청들이 완료를 기다림
+  /// - 재발급 성공 시 true, 실패 시 false 반환
+  Completer<bool>? _refreshCompleter;
 
   AuthInterceptor({required String baseUrl}) : _baseUrl = baseUrl;
 
@@ -73,13 +86,35 @@ class AuthInterceptor extends Interceptor {
       if (errorCode == 'EXPIRED_ACCESS_TOKEN') {
         debugPrint('⚠️ [AuthInterceptor] $apiInfo → 401 - Access Token 만료 감지');
 
-        // 중복 재발급 방지
+        // 🔄 이미 재발급 진행 중인 경우 → 완료까지 대기 후 재시도
         if (_isRefreshing) {
-          debugPrint('⏳ [AuthInterceptor] $apiInfo → 이미 토큰 재발급 진행 중');
-          return handler.next(err);
+          debugPrint('⏳ [AuthInterceptor] $apiInfo → 재발급 완료 대기 중...');
+
+          try {
+            // 재발급 완료 대기
+            final success = await _refreshCompleter?.future ?? false;
+
+            if (success) {
+              // 재발급 성공 → 새 토큰으로 원래 요청 재시도
+              debugPrint('✅ [AuthInterceptor] $apiInfo → 재발급 완료 확인 → 요청 재시도');
+              final newToken = await _tokenManager.getAccessToken();
+              err.requestOptions.headers['Authorization'] = 'Bearer $newToken';
+              final response = await _retryOriginalRequest(err.requestOptions);
+              return handler.resolve(response);
+            } else {
+              // 재발급 실패 → 에러 전달 (로그아웃 처리됨)
+              debugPrint('❌ [AuthInterceptor] $apiInfo → 재발급 실패 확인 → 에러 전달');
+              return handler.reject(err);
+            }
+          } catch (e) {
+            debugPrint('❌ [AuthInterceptor] $apiInfo → 대기 중 오류: $e');
+            return handler.reject(err);
+          }
         }
 
+        // 🚀 첫 번째 요청만 재발급 시작
         _isRefreshing = true;
+        _refreshCompleter = Completer<bool>();
         debugPrint('🔄 [AuthInterceptor] $apiInfo → 토큰 재발급 시작');
 
         try {
@@ -91,6 +126,7 @@ class AuthInterceptor extends Interceptor {
               '❌ [AuthInterceptor] $apiInfo → Refresh Token 없음 → 재발급 불가',
             );
             _isRefreshing = false;
+            _refreshCompleter?.complete(false);
             return handler.next(err);
           }
 
@@ -120,7 +156,9 @@ class AuthInterceptor extends Interceptor {
           debugPrint('[AuthInterceptor] $apiInfo → 🔁 원래 요청 재시도 중');
           final response = await _retryOriginalRequest(err.requestOptions);
 
+          // 🔔 대기 중인 요청들에게 성공 알림
           _isRefreshing = false;
+          _refreshCompleter?.complete(true);
           debugPrint('[AuthInterceptor] $apiInfo → ✅ 요청 재시도 성공');
 
           // 성공 응답 반환
@@ -128,10 +166,32 @@ class AuthInterceptor extends Interceptor {
         } catch (e) {
           // 6. 재발급 실패 시 에러 전달
           debugPrint('[AuthInterceptor] $apiInfo → ❌ 토큰 재발급 실패: $e');
-          _isRefreshing = false;
 
-          // 재발급 실패 에러는 ApiLogger가 RefreshTokenException으로 변환
-          return handler.next(err);
+          // 🔔 대기 중인 요청들에게 실패 알림
+          _isRefreshing = false;
+          _refreshCompleter?.complete(false);
+
+          // 🔑 재발급 API의 에러를 전달 (EXPIRED_REFRESH_TOKEN 등)
+          // - DioException이면 그대로 reject → ApiLogger에서 RefreshTokenException으로 변환
+          // - 기타 에러는 DioException으로 래핑하여 reject
+          // ⚠️ handler.next(err)를 사용하면 원래 에러(EXPIRED_ACCESS_TOKEN)가 전달되어
+          //    RefreshTokenException으로 변환되지 않음
+          if (e is DioException) {
+            debugPrint(
+              '[AuthInterceptor] $apiInfo → 🚨 재발급 API 에러 코드: ${e.response?.data?['errorCode']}',
+            );
+            return handler.reject(e);
+          }
+
+          // 네트워크 에러 등 기타 에러는 DioException으로 래핑
+          return handler.reject(
+            DioException(
+              requestOptions: err.requestOptions,
+              error: e,
+              type: DioExceptionType.unknown,
+              message: '토큰 재발급 실패: $e',
+            ),
+          );
         }
       } else if (errorCode == 'MISSING_AUTH_TOKEN') {
         // ⚠️ 토큰이 없는 경우 (저장 실패 또는 타이밍 이슈)
