@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/widgets/buttons/common_button.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../policy/data/models/policy_model.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/onboarding_notifier.dart';
 import '../../utils/onboarding_error_handler.dart';
@@ -153,21 +155,12 @@ class _TermsPageState extends ConsumerState<TermsPage> {
     });
   }
 
-  /// 약관 상세 내용 다이얼로그 표시
-  void _showTermsDialog(String title, String content) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(child: Text(content)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('닫기'),
-          ),
-        ],
-      ),
-    );
+  /// 약관 상세 페이지로 이동
+  ///
+  /// [type] PolicyType enum을 사용하여 해당 약관 페이지로 이동합니다.
+  /// 라우트: `/policy/:type` (예: `/policy/termsOfService`)
+  void _navigateToPolicyDetail(PolicyType type) {
+    context.push('/policy/${type.name}');
   }
 
   @override
@@ -194,55 +187,47 @@ class _TermsPageState extends ConsumerState<TermsPage> {
           ),
 
           AppSpacing.verticalSpaceSM, // 8px
-          // 필수 약관 1
+          // 필수 약관 1: 서비스 이용약관
           _buildCheckboxTile(
             value: _termsOfService,
             onChanged: (value) =>
                 setState(() => _termsOfService = value ?? false),
             title: '${l10n.termsOfService} *',
-            onViewDetails: () => _showTermsDialog(
-              l10n.termsOfService,
-              '서비스 이용약관 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
-            ),
+            onViewDetails: () =>
+                _navigateToPolicyDetail(PolicyType.termsOfService),
           ),
 
           AppSpacing.verticalSpaceSM, // 8px
-          // 필수 약관 2
+          // 필수 약관 2: 개인정보 처리방침
           _buildCheckboxTile(
             value: _privacyPolicy,
             onChanged: (value) =>
                 setState(() => _privacyPolicy = value ?? false),
             title: '${l10n.privacyPolicy} *',
-            onViewDetails: () => _showTermsDialog(
-              l10n.privacyPolicy,
-              '개인정보 처리방침 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
-            ),
+            onViewDetails: () =>
+                _navigateToPolicyDetail(PolicyType.privacyPolicy),
           ),
 
           AppSpacing.verticalSpaceSM, // 8px
-          // 필수 약관 3
+          // 필수 약관 3: 만 14세 이상 확인
           _buildCheckboxTile(
             value: _ageConfirmation,
             onChanged: (value) =>
                 setState(() => _ageConfirmation = value ?? false),
             title: '${l10n.ageConfirmation} *',
-            onViewDetails: () => _showTermsDialog(
-              l10n.ageConfirmation,
-              '만 14세 이상 확인 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
-            ),
+            onViewDetails: () =>
+                _navigateToPolicyDetail(PolicyType.ageConfirmation),
           ),
 
           AppSpacing.verticalSpaceSM, // 8px
-          // 선택 약관
+          // 선택 약관: 마케팅 정보 수신 동의
           _buildCheckboxTile(
             value: _marketingConsent,
             onChanged: (value) =>
                 setState(() => _marketingConsent = value ?? false),
             title: '[선택] ${l10n.marketingConsent}',
-            onViewDetails: () => _showTermsDialog(
-              l10n.marketingConsent,
-              '마케팅 정보 수신 동의 내용...\n\n향후 실제 약관 내용으로 대체됩니다.',
-            ),
+            onViewDetails: () =>
+                _navigateToPolicyDetail(PolicyType.marketingConsent),
           ),
 
           // 하단 동적 간격

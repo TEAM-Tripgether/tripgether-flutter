@@ -55,6 +55,11 @@ class AppRoutes {
   static const String profileEdit = '/my-page/profile-edit';
   static const String settings = '/my-page/settings';
 
+  /// 약관/정책 상세 화면 경로 (독립 라우트)
+  /// PolicyType.name을 사용하여 접근 (예: termsOfService, privacyPolicy)
+  /// 사용 예: context.push('/policy/termsOfService')
+  static const String policyDetail = '/policy/:type';
+
   /// 모든 바텀 네비게이션 탭의 경로를 리스트로 반환
   /// 탭 인덱스와 경로를 매핑할 때 사용
   static List<String> get bottomNavRoutes => [

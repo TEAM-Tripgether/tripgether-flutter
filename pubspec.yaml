@@ -111,6 +111,7 @@ flutter:
     - assets/navigation_icons/
     - assets/platform_icons/
     - assets/icons/
+    - assets/terms/
     - .env
     - lib/core/data/mock/mockData.json
   fonts:

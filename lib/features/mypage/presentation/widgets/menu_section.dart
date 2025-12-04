@@ -22,11 +22,7 @@ import 'package:tripgether/core/theme/app_text_styles.dart';
 /// )
 /// ```
 class MenuSection extends StatelessWidget {
-  const MenuSection({
-    super.key,
-    required this.tag,
-    required this.children,
-  });
+  const MenuSection({super.key, required this.tag, required this.children});
 
   /// 섹션 상단에 표시되는 태그 텍스트
   /// 예: "내 정보", "알림 설정", "고객지원"
@@ -42,7 +38,7 @@ class MenuSection extends StatelessWidget {
       padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.backgroundLight,
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: AppRadius.allMedium,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,14 +50,14 @@ class MenuSection extends StatelessWidget {
               color: AppColors.subColor2,
             ),
           ),
-          SizedBox(height: 12.h),
+          AppSpacing.verticalSpaceMD,
           // 구분선
           Divider(
             height: 1.h,
             thickness: AppSizes.dividerThin,
             color: AppColors.subColor2.withValues(alpha: 0.3),
           ),
-          SizedBox(height: 8.h),
+          AppSpacing.verticalSpaceSM,
           // 메뉴 아이템들
           ...children,
         ],

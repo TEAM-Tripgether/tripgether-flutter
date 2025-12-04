@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tripgether/shared/widgets/common/common_app_bar.dart';
 import 'package:tripgether/core/theme/app_colors.dart';
@@ -11,6 +11,7 @@ import 'package:tripgether/features/mypage/presentation/widgets/profile_header.d
 import 'package:tripgether/features/mypage/presentation/widgets/menu_section.dart';
 import 'package:tripgether/features/mypage/presentation/widgets/menu_item.dart';
 import 'package:tripgether/features/mypage/presentation/widgets/toggle_menu_item.dart';
+import 'package:tripgether/features/policy/data/models/policy_model.dart';
 import 'package:tripgether/shared/widgets/dialogs/common_dialog.dart';
 import 'package:tripgether/shared/widgets/common/section_divider.dart';
 
@@ -204,6 +205,10 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
   }
 
   /// 정책 & 안전 섹션
+  ///
+  /// - 이용약관: PolicyDetailScreen으로 이동
+  /// - 개인정보 처리방침: PolicyDetailScreen으로 이동
+  /// - 오픈소스 라이센스: Flutter 기본 라이센스 페이지 표시
   Widget _buildPolicySection(BuildContext context, AppLocalizations l10n) {
     return MenuSection(
       tag: '정책 & 안전',
@@ -211,22 +216,35 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
         MenuItem(
           title: '이용약관',
           onTap: () {
-            debugPrint('이용약관 클릭');
-            // TODO: 이용약관 화면
+            // 서비스 이용약관 페이지로 이동
+            context.push('/policy/${PolicyType.termsOfService.name}');
           },
         ),
         MenuItem(
           title: '개인정보 처리방침',
           onTap: () {
-            debugPrint('개인정보 처리방침 클릭');
-            // TODO: 개인정보 처리방침 화면
+            // 개인정보 처리방침 페이지로 이동
+            context.push('/policy/${PolicyType.privacyPolicy.name}');
+          },
+        ),
+        MenuItem(
+          title: '만 14세 이상 확인',
+          onTap: () {
+            // 만 14세 이상 확인 페이지로 이동
+            context.push('/policy/${PolicyType.ageConfirmation.name}');
+          },
+        ),
+        MenuItem(
+          title: '마케팅 정보 수신 동의',
+          onTap: () {
+            // 마케팅 정보 수신 동의 페이지로 이동
+            context.push('/policy/${PolicyType.marketingConsent.name}');
           },
         ),
         MenuItem(
           title: '오픈소스 라이센스',
           onTap: () {
-            debugPrint('오픈소스 라이센스 클릭');
-            // 오픈소스 라이센스 화면 표시
+            // 오픈소스 라이센스 화면 표시 (Flutter 기본 제공)
             showLicensePage(
               context: context,
               applicationName: 'Tripgether',
@@ -245,11 +263,11 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
       padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.backgroundLight,
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: AppRadius.allMedium,
       ),
       child: InkWell(
         onTap: () => _showAppInfoDialog(context),
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: AppRadius.allMedium,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

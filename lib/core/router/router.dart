@@ -26,6 +26,8 @@ import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/schedule/presentation/screens/schedule_screen.dart';
 import '../../features/mypage/presentation/screens/mypage_screen.dart';
 import '../../features/mypage/presentation/screens/profile_edit_screen.dart';
+import '../../features/policy/data/models/policy_model.dart';
+import '../../features/policy/presentation/screens/policy_detail_screen.dart';
 
 /// 앱 전체의 라우팅을 관리하는 GoRouter 설정
 ///
@@ -230,6 +232,59 @@ class AppRouter {
 
         return NoTransitionPage(
           child: PlaceDetailScreen(placeId: placeId, initialPlace: place),
+        );
+      },
+    ),
+
+    /// 약관/정책 상세 화면 라우트 (독립 라우트)
+    ///
+    /// 온보딩과 마이페이지 양쪽에서 접근 가능한 약관 상세 화면입니다.
+    /// - 온보딩 약관 동의 페이지에서 "자세히 보기" 클릭 시
+    /// - 마이페이지 "정책 & 안전" 섹션에서 클릭 시
+    ///
+    /// [state.pathParameters['type']]으로 PolicyType.name 전달:
+    /// - termsOfService: 서비스 이용약관
+    /// - privacyPolicy: 개인정보 처리방침
+    /// - ageConfirmation: 만 14세 이상 확인
+    /// - marketingConsent: 마케팅 정보 수신 동의
+    GoRoute(
+      path: AppRoutes.policyDetail,
+      pageBuilder: (context, state) {
+        final typeString = state.pathParameters['type'];
+        final policyType = PolicyType.fromString(typeString);
+
+        // 유효하지 않은 타입인 경우 에러 페이지 표시
+        if (policyType == null) {
+          return NoTransitionPage(
+            child: Scaffold(
+              appBar: AppBar(title: const Text('오류')),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: AppSizes.iconError,
+                      color: AppColors.error,
+                    ),
+                    AppSpacing.verticalSpaceLG,
+                    Text('약관을 찾을 수 없습니다', style: AppTextStyles.summaryBold18),
+                    AppSpacing.verticalSpaceSM,
+                    Text(
+                      'Type: $typeString',
+                      style: AppTextStyles.bodyRegular14.copyWith(
+                        color: AppColors.subColor2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        return NoTransitionPage(
+          child: PolicyDetailScreen(policyType: policyType),
         );
       },
     ),
