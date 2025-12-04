@@ -97,9 +97,7 @@ class ProfileEditNotifier extends _$ProfileEditNotifier {
     }
 
     try {
-      final requestData = <String, dynamic>{
-        'name': name,
-      };
+      final requestData = <String, dynamic>{'name': name};
 
       if (gender != null) {
         requestData['gender'] = gender;

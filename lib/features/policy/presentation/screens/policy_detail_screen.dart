@@ -18,10 +18,7 @@ import '../../data/services/policy_service.dart';
 /// - 온보딩 약관 동의 화면에서 "자세히 보기" 클릭 시
 /// - 마이페이지 "정책 & 안전" 섹션에서 이용약관/개인정보처리방침 클릭 시
 class PolicyDetailScreen extends ConsumerWidget {
-  const PolicyDetailScreen({
-    super.key,
-    required this.policyType,
-  });
+  const PolicyDetailScreen({super.key, required this.policyType});
 
   final PolicyType policyType;
 
@@ -60,9 +57,7 @@ class _PolicyContent extends StatelessWidget {
           // 메타 정보 (버전 · 최종 수정일)
           Text(
             '버전 ${policy.version} · 최종 수정일 ${policy.lastUpdated}',
-            style: AppTextStyles.caption12.copyWith(
-              color: AppColors.subColor2,
-            ),
+            style: AppTextStyles.caption12.copyWith(color: AppColors.subColor2),
           ),
           AppSpacing.verticalSpaceLG,
 
@@ -106,10 +101,7 @@ class _PolicyContent extends StatelessWidget {
 
 /// 오류 표시 (심플 버전)
 class _PolicyErrorView extends StatelessWidget {
-  const _PolicyErrorView({
-    required this.error,
-    required this.onRetry,
-  });
+  const _PolicyErrorView({required this.error, required this.onRetry});
 
   final Object error;
   final VoidCallback onRetry;

@@ -798,15 +798,16 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
           return CommonDialog(
             title: '회원 탈퇴',
-            description:
-                '정말 탈퇴하시겠습니까?\n탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.',
+            description: '정말 탈퇴하시겠습니까?\n탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.',
             subtitle: '탈퇴를 확인하려면 이메일을 입력하세요',
             leftButtonText: '취소',
             rightButtonText: '탈퇴',
-            rightButtonColor:
-                isEmailMatch ? AppColors.error : AppColors.error.withValues(alpha: 0.3),
-            rightButtonTextColor:
-                isEmailMatch ? AppColors.white : AppColors.white.withValues(alpha: 0.5),
+            rightButtonColor: isEmailMatch
+                ? AppColors.error
+                : AppColors.error.withValues(alpha: 0.3),
+            rightButtonTextColor: isEmailMatch
+                ? AppColors.white
+                : AppColors.white.withValues(alpha: 0.5),
             // 취소 버튼: 항상 다이얼로그 닫기
             onLeftPressed: () => Navigator.of(context).pop(),
             // 탈퇴 버튼: 이메일 일치할 때만 실행
@@ -856,7 +857,9 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: AppRadius.allMedium,
                       borderSide: BorderSide(
-                        color: isEmailMatch ? AppColors.success : AppColors.mainColor,
+                        color: isEmailMatch
+                            ? AppColors.success
+                            : AppColors.mainColor,
                         width: 2,
                       ),
                     ),
@@ -868,7 +871,9 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     suffixIcon: emailController.text.isNotEmpty
                         ? Icon(
                             isEmailMatch ? Icons.check_circle : Icons.cancel,
-                            color: isEmailMatch ? AppColors.success : AppColors.error,
+                            color: isEmailMatch
+                                ? AppColors.success
+                                : AppColors.error,
                             size: 20.w,
                           )
                         : null,
@@ -1205,7 +1210,9 @@ class _InterestsBottomSheetState extends ConsumerState<_InterestsBottomSheet> {
                 child: Text(
                   '초기화',
                   style: AppTextStyles.bodyRegular14.copyWith(
-                    color: canReset ? AppColors.subColor2 : AppColors.subColor2.withValues(alpha: 0.4),
+                    color: canReset
+                        ? AppColors.subColor2
+                        : AppColors.subColor2.withValues(alpha: 0.4),
                   ),
                 ),
               ),
@@ -1214,7 +1221,9 @@ class _InterestsBottomSheetState extends ConsumerState<_InterestsBottomSheet> {
               Text(
                 '$selectedCount/10 선택',
                 style: AppTextStyles.titleSemiBold14.copyWith(
-                  color: selectedCount < 3 ? AppColors.error : AppColors.mainColor,
+                  color: selectedCount < 3
+                      ? AppColors.error
+                      : AppColors.mainColor,
                 ),
               ),
             ],
@@ -1248,11 +1257,7 @@ class _InterestsBottomSheetState extends ConsumerState<_InterestsBottomSheet> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.info_outline,
-                    size: 14.w,
-                    color: AppColors.error,
-                  ),
+                  Icon(Icons.info_outline, size: 14.w, color: AppColors.error),
                   SizedBox(width: 4.w),
                   Text(
                     '최소 3개 이상 선택해주세요 (${3 - selectedCount}개 더 필요)',

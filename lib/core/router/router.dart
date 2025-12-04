@@ -520,7 +520,6 @@ class ScheduleDetailScreen extends StatelessWidget {
   }
 }
 
-
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
