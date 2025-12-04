@@ -256,9 +256,9 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   /// PreferredSizeWidget 인터페이스 구현
-  /// AppBar의 기본 높이를 반환 (ScreenUtil 적용)
+  /// AppBar의 기본 높이를 반환 (Flutter 표준 56px)
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight.h);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   /// 홈 화면용 AppBar 생성
   /// 기본 설정으로 "Tripgether" 제목과 햄버거 메뉴, 알림 아이콘을 표시
