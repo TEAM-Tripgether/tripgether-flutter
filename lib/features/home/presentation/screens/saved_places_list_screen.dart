@@ -54,8 +54,8 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
 
   @override
   Future<void> onRefreshData() async {
-    // Riverpod provider 새로고침
-    ref.invalidate(recentSavedPlacesProvider);
+    // Riverpod provider 새로고침 (전체 목록)
+    ref.invalidate(savedPlacesProvider);
   }
 
   @override
@@ -63,7 +63,8 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
     super.build(context); // AutomaticKeepAliveClientMixin 필수 호출
 
     final l10n = AppLocalizations.of(context);
-    final placesAsync = ref.watch(recentSavedPlacesProvider);
+    // 전체 저장 장소 목록 사용 (recentSavedPlacesProvider는 홈 미리보기용 3개 제한)
+    final placesAsync = ref.watch(savedPlacesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -103,10 +104,17 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
       elevation: 0,
       surfaceTintColor: Colors.transparent,
 
-      // 뒤로가기 버튼
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new_rounded),
-        onPressed: () => Navigator.of(context).pop(),
+      // 뒤로가기 버튼 (CommonAppBar 스타일과 동일)
+      leading: Padding(
+        padding: EdgeInsets.only(left: AppSpacing.lg),
+        child: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: AppSizes.iconDefault,
+            color: AppColors.textColor1,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
 
       // 축소 시 표시될 타이틀 (동적 opacity)
@@ -268,7 +276,7 @@ class _SavedPlacesListScreenState extends ConsumerState<SavedPlacesListScreen>
             title: '장소를 불러올 수 없습니다',
             message: l10n.networkError,
             action: TextButton(
-              onPressed: () => ref.invalidate(recentSavedPlacesProvider),
+              onPressed: () => ref.invalidate(savedPlacesProvider),
               child: Text(
                 l10n.retry,
                 style: AppTextStyles.buttonMediumMedium14.copyWith(

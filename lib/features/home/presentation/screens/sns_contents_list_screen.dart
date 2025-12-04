@@ -101,10 +101,17 @@ class _SnsContentsListScreenState extends ConsumerState<SnsContentsListScreen>
       elevation: 0,
       surfaceTintColor: Colors.transparent,
 
-      // 뒤로가기 버튼
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new_rounded),
-        onPressed: () => Navigator.of(context).pop(),
+      // 뒤로가기 버튼 (CommonAppBar 스타일과 동일)
+      leading: Padding(
+        padding: EdgeInsets.only(left: AppSpacing.lg),
+        child: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: AppSizes.iconDefault,
+            color: AppColors.textColor1,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
 
       // 축소 시 표시될 타이틀 (동적 opacity)

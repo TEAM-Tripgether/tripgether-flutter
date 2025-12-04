@@ -305,9 +305,7 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
     if (statusInfo.label == '임시 휴업') {
       return Text(
         '임시 휴업',
-        style: AppTextStyles.titleSemiBold13.copyWith(
-          color: statusInfo.color,
-        ),
+        style: AppTextStyles.titleSemiBold13.copyWith(color: statusInfo.color),
       );
     }
 
@@ -315,9 +313,7 @@ class _BusinessHoursSectionState extends State<_BusinessHoursSection> {
     if (statusInfo.label == '영업 중' && widget.businessHours.isEmpty) {
       return Text(
         statusInfo.label!,
-        style: AppTextStyles.titleSemiBold13.copyWith(
-          color: statusInfo.color,
-        ),
+        style: AppTextStyles.titleSemiBold13.copyWith(color: statusInfo.color),
       );
     }
 
