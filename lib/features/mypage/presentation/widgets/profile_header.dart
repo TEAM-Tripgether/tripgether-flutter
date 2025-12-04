@@ -12,27 +12,20 @@ import 'package:tripgether/features/auth/providers/user_provider.dart';
 import 'package:tripgether/l10n/app_localizations.dart';
 import 'package:tripgether/shared/widgets/common/profile_avatar.dart';
 
-/// 프로필 헤더 위젯
+/// 프로필 헤더 위젯 (새 디자인)
 ///
 /// **역할**:
-/// - 사용자 프로필 정보 표시 (프로필 사진, 닉네임, 이메일)
+/// - 사용자 프로필 정보를 가로로 표시 (아바타 + "닉네임 님" + 화살표)
+/// - 터치 시 프로필 수정 화면으로 이동 (로그아웃은 그 화면에서 가능)
 /// - 로그인 상태에 따른 UI 분기 (로그인 / 미로그인)
 /// - 로딩 상태 표시 (Shimmer 효과)
 ///
+/// **디자인 스펙**:
+/// - 배경: backgroundLight (#F8F8F8)
+/// - 모서리: radius 8
+/// - 텍스트: textColor1 (#130537), bodyMedium16
+///
 /// **사용 위치**: MyPageScreen 최상단
-///
-/// **데이터 소스**: UserNotifier (Riverpod)
-///
-/// **사용 예시**:
-/// ```dart
-/// ListView(
-///   children: [
-///     ProfileHeader(),  // ← 마이페이지 최상단
-///     SizedBox(height: 16.h),
-///     // ... 기타 컨텐츠
-///   ],
-/// )
-/// ```
 class ProfileHeader extends ConsumerWidget {
   const ProfileHeader({super.key});
 
@@ -61,101 +54,54 @@ class ProfileHeader extends ConsumerWidget {
     );
   }
 
-  /// 프로필 정보 표시 (로그인 상태)
+  /// 프로필 정보 표시 (로그인 상태) - 새 디자인
   ///
   /// **구성**:
-  /// - 프로필 사진 (ProfileAvatar)
-  /// - 닉네임 (titleLarge, 굵은 폰트)
-  /// - 이메일 (bodyMedium, 보조 색상)
+  /// - 흰색 배경 위에 가로 배치: [아바타] [닉네임 님] [>]
+  /// - 전체 영역 터치 시 프로필 수정 화면으로 이동
   Widget _buildProfile(BuildContext context, User user) {
-    return Padding(
-      padding: AppSpacing.cardPadding,
-      child: Column(
-        children: [
-          // 프로필 사진 (xLarge: 120dp - 프로필 페이지에서 더 눈에 띄게)
-          ProfileAvatar(
-            imageUrl: user.profileImageUrl,
-            size: ProfileAvatarSize.xLarge,
-            showBorder: true,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          // 프로필 수정 화면으로 이동 (로그아웃도 여기서 가능)
+          context.push(AppRoutes.profileEdit);
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.lg,
           ),
+          child: Row(
+            children: [
+              // 프로필 아바타 (medium: 48dp)
+              ProfileAvatar(
+                imageUrl: user.profileImageUrl,
+                size: ProfileAvatarSize.large,
+                showBorder: false,
+              ),
 
-          AppSpacing.verticalSpaceLG,
+              AppSpacing.horizontalSpaceMD,
 
-          // 닉네임 (titleLarge: 20px, 세미볼드)
-          Text(
-            user.nickname,
-            style: AppTextStyles.greetingBold20.copyWith(
-              color: AppColors.textColor1,
-            ),
+              // 닉네임 + "님"
+              Expanded(
+                child: Text(
+                  '${user.nickname} 님',
+                  style: AppTextStyles.bodyMedium16.copyWith(
+                    color: AppColors.textColor1,
+                  ),
+                ),
+              ),
+
+              // 오른쪽 화살표
+              Icon(
+                Icons.chevron_right,
+                color: AppColors.subColor2,
+                size: AppSizes.iconDefault,
+              ),
+            ],
           ),
-
-          AppSpacing.verticalSpaceXS,
-
-          // 이메일 (bodyMedium: 14px, 레귤러)
-          Text(
-            user.email,
-            style: AppTextStyles.bodyRegular14.copyWith(
-              color: AppColors.textColor1.withValues(alpha: 0.7),
-            ),
-          ),
-
-          AppSpacing.verticalSpaceMD,
-
-          // 로그인 플랫폼 뱃지 (선택 사항)
-          if (user.loginPlatform != null)
-            _buildLoginPlatformBadge(context, user.loginPlatform!),
-        ],
-      ),
-    );
-  }
-
-  /// 로그인 플랫폼 뱃지
-  ///
-  /// Google, Kakao 등의 로그인 플랫폼을 표시 (mainColor 사용으로 가독성 개선)
-  Widget _buildLoginPlatformBadge(BuildContext context, String platform) {
-    final l10n = AppLocalizations.of(context);
-
-    // 플랫폼별 아이콘 설정
-    IconData icon;
-    String displayName;
-
-    switch (platform.toUpperCase()) {
-      case 'GOOGLE':
-        icon = Icons.g_mobiledata;
-        displayName = 'Google';
-        break;
-      case 'KAKAO':
-        icon = Icons.chat_bubble;
-        displayName = 'Kakao';
-        break;
-      default:
-        icon = Icons.person;
-        displayName = platform;
-    }
-
-    // mainColor 사용으로 통일된 디자인과 더 나은 가독성
-    return Container(
-      padding: AppSpacing.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.mainColor.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: AppColors.mainColor.withValues(alpha: 0.4),
-          width: 1.w,
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: AppSizes.iconSmall, color: AppColors.mainColor),
-          AppSpacing.horizontalSpaceXS,
-          Text(
-            l10n.accountSuffix(displayName),
-            style: AppTextStyles.buttonMediumMedium14.copyWith(
-              color: AppColors.mainColor,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -163,123 +109,102 @@ class ProfileHeader extends ConsumerWidget {
   /// 미로그인 상태 UI
   ///
   /// **구성**:
-  /// - 기본 아이콘
-  /// - "로그인이 필요합니다" 메시지
-  /// - "로그인하러 가기" 버튼
+  /// - 흰색 배경 위에 가로 배치: [기본 아이콘] [로그인이 필요합니다] [>]
+  /// - 터치 시 로그인 화면으로 이동
   Widget _buildNotLoggedIn(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: AppSpacing.symmetric(horizontal: 24, vertical: 48),
-      child: Column(
-        children: [
-          // 기본 아이콘
-          Container(
-            width: 80.w,
-            height: 80.h,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.person_outline,
-              size: 40.w,
-              color: Colors.grey[400],
-            ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          context.push(AppRoutes.login);
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.lg,
           ),
-
-          AppSpacing.verticalSpaceLG,
-
-          // 안내 메시지
-          Text(
-            l10n.profileLoginRequired,
-            style: AppTextStyles.titleSemiBold16.copyWith(
-              color: AppColors.textColor1,
-            ),
-          ),
-
-          AppSpacing.verticalSpaceSM,
-
-          Text(
-            l10n.profileLoginPrompt,
-            style: AppTextStyles.bodyRegular14.copyWith(
-              color: AppColors.textColor1.withValues(alpha: 0.7),
-            ),
-            textAlign: TextAlign.center,
-          ),
-
-          AppSpacing.verticalSpaceXXL,
-
-          // 로그인 버튼
-          ElevatedButton(
-            onPressed: () {
-              context.push(AppRoutes.login);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.mainColor,
-              foregroundColor: AppColors.white,
-              padding: AppSpacing.buttonPaddingLarge,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
+          child: Row(
+            children: [
+              // 기본 아바타
+              Container(
+                width: 48.w,
+                height: 48.h,
+                decoration: BoxDecoration(
+                  color: AppColors.subColor2.withValues(alpha: 0.3),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.person_outline,
+                  size: AppSizes.iconDefault,
+                  color: AppColors.subColor2,
+                ),
               ),
-            ),
-            child: Text(
-              l10n.profileLoginButton,
-              style: AppTextStyles.buttonSelectSemiBold16,
-            ),
+
+              AppSpacing.horizontalSpaceMD,
+
+              // 로그인 안내 메시지
+              Expanded(
+                child: Text(
+                  l10n.profileLoginRequired,
+                  style: AppTextStyles.bodyMedium16.copyWith(
+                    color: AppColors.textColor1,
+                  ),
+                ),
+              ),
+
+              // 오른쪽 화살표
+              Icon(
+                Icons.chevron_right,
+                color: AppColors.subColor2,
+                size: AppSizes.iconDefault,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   /// 로딩 중 UI (Shimmer)
   ///
-  /// **구성**:
-  /// - 프로필 사진 스켈레톤 (원형)
-  /// - 닉네임 스켈레톤 (긴 막대)
-  /// - 이메일 스켈레톤 (짧은 막대)
+  /// **구성**: 흰색 배경 위에 가로 배치 스켈레톤
   Widget _buildLoading() {
     return Padding(
-      padding: AppSpacing.cardPadding,
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.lg,
+      ),
       child: Shimmer.fromColors(
         baseColor: AppColors.subColor2.withValues(alpha: 0.3),
         highlightColor: AppColors.shimmerHighlight,
-        child: Column(
+        child: Row(
           children: [
-            // 프로필 사진 스켈레톤 (xLarge: 120dp와 동일)
+            // 아바타 스켈레톤
             Container(
-              width: 120.w,
-              height: 120.h,
+              width: 48.w,
+              height: 48.h,
               decoration: const BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
             ),
 
-            AppSpacing.verticalSpaceLG,
+            AppSpacing.horizontalSpaceMD,
 
-            // 닉네임 스켈레톤
-            Container(
-              width: 150.w,
-              height: 20.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4.r),
+            // 텍스트 스켈레톤
+            Expanded(
+              child: Container(
+                height: 20.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
               ),
             ),
 
-            AppSpacing.verticalSpaceSM,
-
-            // 이메일 스켈레톤
-            Container(
-              width: 200.w,
-              height: 14.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4.r),
-              ),
-            ),
+            SizedBox(width: 24.w),
           ],
         ),
       ),
@@ -287,36 +212,31 @@ class ProfileHeader extends ConsumerWidget {
   }
 
   /// 에러 상태 UI
-  ///
-  /// **구성**:
-  /// - 에러 아이콘
-  /// - 에러 메시지
   Widget _buildError(BuildContext context, Object error) {
     final l10n = AppLocalizations.of(context);
 
     return Padding(
-      padding: AppSpacing.symmetric(horizontal: 24, vertical: 48),
-      child: Column(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.lg,
+      ),
+      child: Row(
         children: [
-          Icon(Icons.error_outline, size: 48.w, color: Colors.red[300]),
-
-          AppSpacing.verticalSpaceLG,
-
-          Text(
-            l10n.profileLoadError,
-            style: AppTextStyles.titleSemiBold16.copyWith(
-              color: AppColors.textColor1,
-            ),
+          Icon(
+            Icons.error_outline,
+            size: AppSizes.iconDefault,
+            color: AppColors.redAccent,
           ),
 
-          AppSpacing.verticalSpaceSM,
+          AppSpacing.horizontalSpaceMD,
 
-          Text(
-            error.toString(),
-            style: AppTextStyles.metaMedium12.copyWith(
-              color: AppColors.textColor1.withValues(alpha: 0.7),
+          Expanded(
+            child: Text(
+              l10n.profileLoadError,
+              style: AppTextStyles.bodyMedium16.copyWith(
+                color: AppColors.textColor1,
+              ),
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
