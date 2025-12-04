@@ -25,6 +25,7 @@ import '../../features/course_market/presentation/screens/popular_courses_screen
 import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/schedule/presentation/screens/schedule_screen.dart';
 import '../../features/mypage/presentation/screens/mypage_screen.dart';
+import '../../features/mypage/presentation/screens/profile_edit_screen.dart';
 
 /// 앱 전체의 라우팅을 관리하는 GoRouter 설정
 ///
@@ -464,17 +465,6 @@ class ScheduleDetailScreen extends StatelessWidget {
   }
 }
 
-class ProfileEditScreen extends StatelessWidget {
-  const ProfileEditScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('프로필 편집')),
-      body: const Center(child: Text('프로필 편집 화면')),
-    );
-  }
-}
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
