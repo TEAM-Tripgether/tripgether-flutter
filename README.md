@@ -1,7 +1,7 @@
 # 🌏 Tripgether
 
 <!-- 수정하지마세요 자동으로 동기화 됩니다 -->
-## 최신 버전 : v1.2.7 (2025-11-23)
+## 최신 버전 : v1.2.8 (2025-12-06)
 [전체 업데이트 내역 보기](CHANGELOG.md)
 
 > 여행 콘텐츠를 발견하고, 장소를 저장하며, 함께 여행을 계획하세요.
@@ -53,43 +53,61 @@ Google OAuth 2.0 소셜 로그인으로 빠르고 안전하게 시작하세요.
 ## 🛠️ 기술 스택
 
 ### Core Framework
-- **Flutter 3.27.2** - 크로스 플랫폼 모바일 앱 개발
-- **Dart 3.6.1** - 프로그래밍 언어
+- **Flutter 3.9.2+** - 크로스 플랫폼 모바일 앱 개발
+- **Dart 3.5.0+** - 프로그래밍 언어
 
 ### State Management & Architecture
 - **Riverpod 2.6.1** - @riverpod 어노테이션 기반 상태 관리
-- **Freezed 2.5.9** - 불변 데이터 모델 생성
-- **Build Runner** - 코드 생성 자동화
+- **Freezed 2.5.7** - 불변 데이터 모델 생성
+- **Build Runner 2.4.14** - 코드 생성 자동화
 
 ### Navigation
-- **GoRouter 14.6.2** - 선언적 라우팅 및 딥링크 지원
+- **GoRouter 16.2.1** - 선언적 라우팅, ShellRoute, 딥링크 지원
 - **AppRoutes** - 중앙화된 라우트 상수 관리 (`lib/core/router/routes.dart`)
 
-### Authentication
+### Authentication & Security
 - **Google Sign-In 7.2.0** - 이벤트 기반 API로 Google OAuth 2.0 인증
-- **Flutter Secure Storage** - 민감 데이터 안전 저장
+- **Flutter Secure Storage 9.2.4** - 민감 데이터 안전 저장 (iOS Keychain 지원)
+- **JWT Token Management** - 자동 갱신 및 동시 요청 처리
+
+### Network & API
+- **Dio 5.9.0** - HTTP 클라이언트
+- **Retrofit 4.7.2** - REST API 클라이언트 생성
+- **AuthInterceptor** - JWT 자동 주입 및 토큰 갱신
 
 ### UI/UX
 - **Material Design 3** - 최신 디자인 시스템
 - **Pretendard Font** - 커스텀 폰트 (9가지 두께 지원)
 - **flutter_screenutil 5.9.3** - 반응형 UI (.w, .h, .sp, .r)
-- **cached_network_image** - 이미지 캐싱 및 성능 최적화
+- **cached_network_image 3.4.1** - 이미지 캐싱 및 성능 최적화
 - **shimmer 3.0.0** - 스켈레톤 로딩 효과
-- **lottie 3.2.1** - Lottie 애니메이션
-- **flutter_animate 4.5.0** - 선언적 애니메이션
-- **flutter_staggered_animations** - 스태거드 애니메이션
+- **lottie 3.1.2** - Lottie 애니메이션
+- **flutter_animate 4.5.2** - 선언적 애니메이션
+- **flutter_staggered_animations 1.1.1** - 스태거드 애니메이션
+
+### Maps & Location
+- **google_maps_flutter 2.13.1** - Google Maps 통합
+- **geolocator 13.0.2** - GPS 위치 서비스
+
+### Push Notifications
+- **firebase_core 4.1.0** - Firebase 기반
+- **firebase_messaging 16.0.1** - FCM 푸시 알림
+- **flutter_local_notifications 19.4.2** - 로컬 알림 관리
 
 ### Content Sharing
-- **receive_sharing_intent 1.6.1** - 외부 앱에서 공유된 콘텐츠 수신
-- 지원 형식: 텍스트, URL, 이미지, 비디오, 문서
+- **share_plus 12.0.0** - 외부 앱으로 콘텐츠 공유
+- **iOS Share Extension** - 외부 앱에서 공유 수신 (커스텀 바텀시트 UI)
 
 ### Internationalization
 - **flutter_localizations** - 다국어 지원 기반
+- **intl 0.20.2** - 국제화 및 날짜/숫자 포맷팅
 - **ARB 파일** - 한국어(ko), 영어(en) 리소스 관리
 
 ### Development Tools
-- **flutter_launcher_icons 0.15.1** - 앱 아이콘 생성
-- **change_app_package_name** - 패키지명 변경 도구
+- **flutter_launcher_icons 0.14.4** - 앱 아이콘 생성
+- **change_app_package_name 1.5.0** - 패키지명 변경 도구
+- **riverpod_generator 2.6.2** - Riverpod 코드 생성
+- **retrofit_generator 9.1.8** - API 클라이언트 코드 생성
 
 ---
 
@@ -105,42 +123,87 @@ lib/
 │   │   └── app_theme.dart         # 통합 Material 테마 설정
 │   │
 │   ├── router/                     # 라우팅 설정
-│   │   ├── app_router.dart        # GoRouter 설정 및 라우트 정의
-│   │   └── routes.dart            # AppRoutes 클래스 (경로 상수 중앙 관리)
+│   │   ├── app_router.dart        # GoRouter ShellRoute 설정
+│   │   ├── routes.dart            # AppRoutes 클래스 (경로 상수 중앙 관리)
+│   │   └── guards/                # 라우트 가드 (인증 체크)
+│   │
+│   ├── network/                    # 네트워크 레이어
+│   │   ├── auth_interceptor.dart  # JWT 자동 주입 및 토큰 갱신
+│   │   └── dio_client.dart        # Dio 클라이언트 설정
+│   │
+│   ├── models/                     # 글로벌 데이터 모델
+│   │   ├── place_model.dart       # 장소 모델
+│   │   ├── content_model.dart     # SNS 콘텐츠 모델
+│   │   └── business_hour_model.dart # 영업시간 모델
 │   │
 │   ├── services/                   # 공통 서비스
 │   │   ├── auth/                  # 인증 서비스
-│   │   │   └── google_auth_service.dart  # Google OAuth 처리
-│   │   └── sharing_service.dart   # 외부 앱 공유 데이터 수신
+│   │   │   ├── google_auth_service.dart  # Google OAuth 처리
+│   │   │   └── token_manager.dart        # JWT 토큰 관리
+│   │   ├── fcm/                   # Firebase Cloud Messaging
+│   │   │   ├── firebase_messaging_service.dart
+│   │   │   └── local_notifications_service.dart
+│   │   ├── location/              # 위치 서비스
+│   │   │   └── location_service.dart
+│   │   ├── sharing_service.dart   # 외부 앱 공유 데이터 수신
+│   │   ├── device_info_service.dart
+│   │   └── device_id_manager.dart
 │   │
 │   └── utils/                      # 유틸리티
 │
 ├── features/                       # 기능별 모듈 (Feature-First Architecture)
 │   ├── auth/                      # 인증 기능
-│   │   ├── presentation/          # UI 레이어
-│   │   │   ├── screens/          # 로그인 화면
-│   │   │   └── widgets/          # 로그인 폼, 소셜 로그인 버튼
-│   │   └── providers/            # 상태 관리 (Riverpod)
-│   │       └── login_provider.dart
+│   │   ├── data/models/           # AuthRequest, AuthResponse, UserModel
+│   │   ├── services/              # AuthApiService, MemberApiService
+│   │   ├── providers/             # LoginProvider, UserProvider
+│   │   └── presentation/          # 로그인 화면, 폼, 소셜 로그인
+│   │
+│   ├── onboarding/                # 온보딩 (6단계)
+│   │   ├── data/models/           # OnboardingData, InterestResponse
+│   │   ├── services/              # OnboardingApiService, InterestApiService
+│   │   ├── providers/             # OnboardingNotifier, InterestProvider
+│   │   └── presentation/pages/    # Welcome → Terms → Nickname → Birthdate → Gender → Interests
 │   │
 │   ├── home/                      # 홈 화면 기능
-│   │   ├── data/models/          # 데이터 모델
-│   │   └── presentation/
-│   │       └── screens/          # 홈, SNS 콘텐츠, 장소 목록 화면
+│   │   ├── data/                  # ContentRepository, PlaceApiService
+│   │   ├── presentation/providers/  # ContentProvider, PlaceDetailProvider
+│   │   └── presentation/screens/  # Home, SNS콘텐츠, 장소상세, 저장장소
 │   │
-│   ├── course_market/             # 코스 마켓 기능
-│   │   └── presentation/
-│   │       └── screens/          # 코스 마켓 메인 화면
+│   ├── mypage/                    # 마이페이지
+│   │   ├── presentation/providers/  # ProfileEditProvider
+│   │   ├── presentation/screens/  # MyPage, ProfileEdit
+│   │   └── presentation/widgets/  # ProfileHeader, MenuItem
 │   │
+│   ├── map/                       # 지도 기능
+│   │   ├── presentation/providers/  # MapProvider (커스텀 마커, 영업상태)
+│   │   └── presentation/screens/  # MapScreen (바텀시트 연동)
+│   │
+│   ├── course_market/             # 코스 마켓
+│   │   └── presentation/screens/  # CourseMarket, Search, PopularCourses
+│   │
+│   ├── notifications/             # 알림 관리
+│   │   ├── domain/models/         # NotificationItem
+│   │   └── presentation/          # NotificationScreen, Provider
+│   │
+│   ├── policy/                    # 약관/정책
+│   │   ├── data/                  # PolicyModel, PolicyService
+│   │   └── presentation/screens/  # PolicyDetailScreen (ContentController API)
+│   │
+│   ├── schedule/                  # 일정 관리 (개발 중)
+│   ├── splash/                    # 스플래시 화면
 │   └── debug/                     # 디버깅 도구
 │
 ├── shared/ ⭐                      # 공유 위젯 및 리소스 (재사용 필수)
-│   └── widgets/
-│       ├── common/               # 공통 위젯 (AppBar, 로딩, 에러 등)
-│       ├── layout/               # 레이아웃 위젯 (GradientBackground 등)
-│       ├── buttons/              # 버튼 컴포넌트
-│       ├── cards/                # 카드 컴포넌트
-│       └── inputs/               # 입력 컴포넌트 (TripSearchBar 등)
+│   ├── mixins/                    # 유틸리티 믹스인
+│   └── widgets/                   # 26+ 재사용 컴포넌트
+│       ├── common/               # CommonAppBar, EmptyState, ChipList, ProfileAvatar 등
+│       ├── buttons/              # PrimaryButton, SecondaryButton, SocialLoginButton
+│       ├── cards/                # SnsContentCard, PlaceDetailCard
+│       ├── inputs/               # TripSearchBar, OnboardingTextField
+│       ├── layout/               # GradientBackground, SectionHeader, BottomNavigation
+│       ├── dialogs/              # CommonDialog, FolderSelectionDialog
+│       ├── map/                  # PlaceInfoBottomSheet
+│       └── place_detail/         # PlaceInfoHeader, PlacePhotoGallery, PlaceMiniMap
 │
 └── l10n/                         # 다국어 지원
     ├── app_localizations.dart    # 자동 생성된 다국어 클래스
@@ -206,8 +269,8 @@ AppBar(title: Text('제목'), backgroundColor: AppColors.primary)
 ## 🚀 시작하기
 
 ### 필수 요구사항
-- Flutter SDK 3.27.2 이상
-- Dart SDK 3.6.1 이상
+- Flutter SDK 3.9.2 이상
+- Dart SDK 3.5.0 이상
 - Android Studio / Xcode (각 플랫폼 빌드용)
 
 ### 설치 및 실행
@@ -370,57 +433,93 @@ import '../../shared/widgets/layout/gradient_background.dart';
 
 ### ✅ 인증 시스템
 - Google OAuth 2.0 (Sign-In 7.2.0 이벤트 기반 API)
-- LoginProvider (Riverpod 상태 관리)
-- 로그인 성공 시 자동 홈 화면 이동
-- ref.mounted 체크를 통한 안전한 라이프사이클 관리
+- JWT 토큰 관리 (자동 갱신, 동시 요청 처리)
+- LoginProvider / UserProvider (Riverpod 상태 관리)
+- Flutter Secure Storage (iOS Keychain `unlocked_this_device`)
+- 로그인 성공 시 자동 온보딩/홈 화면 분기
+
+### ✅ 온보딩 시스템 (6단계)
+- Welcome → Terms(약관동의) → Nickname → Birthdate → Gender → Interests
+- 서버 API 연동 관심사 카테고리 동적 로드
+- 온보딩 완료 시 프로필 자동 저장
+- 진행률 표시기 및 시스템 뒤로가기 처리
 
 ### ✅ 라우팅 시스템
-- GoRouter 기반 선언적 라우팅
+- GoRouter ShellRoute 기반 탭 네비게이션 (5개 탭)
+- 탭별 독립적 네비게이션 스택 유지
 - AppRoutes 클래스를 통한 중앙화된 경로 관리
-- 모든 하드코딩 경로를 AppRoutes 상수로 대체 완료
-- 동적 파라미터 지원 (:placeId, :contentId)
+- 딥링크 지원 및 라우트 가드 (인증 체크)
 
-### ✅ 콘텐츠 공유
-- receive_sharing_intent 통합
-- 텍스트, URL, 이미지, 비디오, 문서 지원
-- URL 정리 및 플랫폼 감지 (YouTube, Instagram)
-- Android 및 iOS 플랫폼 설정 완료
+### ✅ 백엔드 API 연동
+- **AuthApiService**: 로그인, 토큰 갱신
+- **MemberApiService**: 프로필 조회, 닉네임 중복확인, 회원탈퇴 (이메일 2중 확인)
+- **OnboardingApiService**: 프로필 완성, 관심사 업데이트
+- **InterestApiService**: 관심사 목록, 카테고리 조회 (캐싱)
+- **PlaceApiService**: 장소 목록, 저장, 삭제 (캐싱)
+- **PolicyService**: 약관/정책 상세 (ContentController API)
+- AuthInterceptor: JWT 자동 주입, 만료 시 자동 갱신
 
 ### ✅ 홈 화면
-- SNS 콘텐츠 가로 스크롤 표시
-- 저장된 장소 세로 리스트 레이아웃
-- 공유 데이터 처리 및 가공
-- Pull-to-refresh 및 무한 스크롤 패턴
+- SNS 콘텐츠 가로 스크롤 (SnsContentCard)
+- 저장된 장소 세로 리스트 (PlaceCard)
+- SNS 콘텐츠 상세 / 장소 상세 화면
+- Pull-to-refresh 패턴
+
+### ✅ 마이페이지
+- ProfileHeader (프로필 이미지, 닉네임)
+- 프로필 편집 화면 (닉네임 중복확인, 관심사 Overlay 선택)
+- 메뉴 시스템 (알림설정, 언어, 테마, 약관, 로그아웃, 탈퇴)
+- 회원탈퇴 이메일 2중 확인 안전장치
+
+### ✅ 지도 기능
+- Google Maps 통합
+- 커스텀 마커 아이콘 (영업 상태 표시)
+- 마커 클릭 → 장소 정보 바텀시트
+- 위치 서비스 (Geolocator) 연동
+- 장소 캐시 시스템
 
 ### ✅ 코스 마켓 화면
 - 그라데이션 배경 디자인 적용
 - Hero 애니메이션 검색창
-- RefreshableTabMixin 적용 (탭 재클릭 시 스크롤 최상단 + 새로고침)
-- 디자인 시스템 100% 준수 (품질 점수: 99.75/100)
+- 인기 코스, 근처 코스 섹션
+- RefreshableTabMixin (탭 재클릭 시 스크롤 최상단 + 새로고침)
 
-### ✅ UI 컴포넌트
-- ScreenUtil 기반 반응형 디자인
-- Shimmer 스켈레톤 로딩 효과
-- CachedNetworkImage 성능 최적화
-- CommonAppBar 일관된 내비게이션
-- GradientBackground 재사용 가능한 그라데이션 위젯
-- TripSearchBar 공통 검색 컴포넌트
+### ✅ 알림 시스템
+- Firebase Cloud Messaging 통합
+- 로컬 알림 서비스 (Android/iOS)
+- FCM 토큰 관리 및 갱신
+- 알림 목록 화면
+
+### ✅ iOS Share Extension
+- 외부 앱에서 공유 수신 (이미지, 비디오, 텍스트, URL)
+- 커스텀 바텀시트 UI (2.5초 자동 닫기)
+- "앱에서 보기" 버튼
+- 공유 로그 관리
+
+### ✅ UI 컴포넌트 (26+ 공용 위젯)
+- CommonAppBar (forHome, forSubPage, forSettings)
+- EmptyState, ChipList, ProfileAvatar
+- PrimaryButton, SecondaryButton, SocialLoginButton
+- SnsContentCard, PlaceDetailCard
+- TripSearchBar, OnboardingTextField
+- GradientBackground, SectionHeader, BottomNavigation
+- CommonDialog, FolderSelectionDialog
+- PlaceInfoBottomSheet, PlacePhotoGallery, PlaceMiniMap
 
 ### ✅ 다국어 지원
-- 한국어 및 영어 지원
+- 한국어 및 영어 완전 지원
 - ARB 기반 localization 시스템
 - AppLocalizations 전체 적용
 
 ---
 
-## 🚧 개발 예정 기능
+## 🚧 개발 중 기능
 
-- 백엔드 API 통합 (현재 더미 데이터 사용)
-- 사용자 프로필 관리
-- 여행 생성 및 협업 기능
-- 장소 상세 정보를 위한 지도 통합
-- Firebase Cloud Messaging 푸시 알림
-- 로컬 데이터베이스 (데이터 영속성)
+- 일정 관리 (Schedule) 화면 구현
+- FCM 메시지 기반 화면 네비게이션
+- 장소 전화 연결 기능
+- 여행 코스 생성 및 협업 기능
+- 실시간 동기화
 
 ---
 
@@ -428,8 +527,7 @@ import '../../shared/widgets/layout/gradient_background.dart';
 
 - 위젯 테스트가 현재 앱 구조에 맞춰 업데이트 필요
 - 패키지 충돌로 인해 Firebase analytics/crashlytics 비활성화
-- 일부 상세 화면 (장소 상세, SNS 콘텐츠 상세) 미완성
-- 데이터 영속성 레이어 미구현
+- iOS Push Notification 활성화 작업 중 (시뮬레이터에서 토큰 미발급)
 
 ---
 

@@ -1,8 +1,8 @@
 # 📚 Tripgether 기술 문서
 
-**최종 업데이트**: 2025-01-20
-**프로젝트 버전**: 1.0.0
-**Flutter SDK**: 3.24.0+
+**최종 업데이트**: 2025-12-06
+**프로젝트 버전**: 1.2.8
+**Flutter SDK**: 3.9.2+
 
 여행 계획을 함께 만들어가는 협업 플랫폼, **Tripgether**의 기술 문서 허브입니다.
 
@@ -84,20 +84,25 @@
 ## 🚀 주요 기능
 
 ### 완료된 기능 ✅
-- Google OAuth 소셜 로그인
-- JWT 기반 인증 시스템
-- 온보딩 플로우 (약관 → 이름 → 생년월일 → 성별 → 관심사)
+- Google OAuth 소셜 로그인 + JWT 토큰 관리 (자동 갱신)
+- 온보딩 플로우 (Welcome → 약관 → 닉네임 → 생년월일 → 성별 → 관심사)
+- 백엔드 API 연동 (Auth, Member, Onboarding, Interest, Place, Policy)
+- 마이페이지 및 프로필 편집 (닉네임 중복확인, 관심사 수정)
+- 회원탈퇴 이메일 2중 확인 안전장치
+- 지도 기능 (Google Maps, 커스텀 마커, 바텀시트)
+- 위치 서비스 (Geolocator)
 - FCM 푸시 알림 (Android 완료, iOS 설정 중)
-- 외부 앱 공유 수신 기능
+- iOS Share Extension (커스텀 바텀시트 UI)
 - 반응형 UI (ScreenUtil)
 - 다국어 지원 (한국어, 영어)
-- 디자인 시스템 구축
-- 공용 다이얼로그 시스템 (CommonDialog)
+- 디자인 시스템 구축 (26+ 공용 위젯)
+- 공용 다이얼로그 시스템 (CommonDialog, FolderSelectionDialog)
+- 약관/정책 상세 페이지 (ContentController API)
 
 ### 진행 중 🚧
-- 백엔드 API 통합
-- SNS 콘텐츠 장소 추출 기능
-- 여행 계획 협업 기능
+- 일정 관리 화면 구현
+- FCM 메시지 기반 화면 네비게이션
+- 여행 코스 생성 및 협업 기능
 - 실시간 동기화
 - iOS Push Notification 활성화
 
@@ -106,30 +111,33 @@
 ## 🛡️ 기술 스택
 
 ### Frontend
-- **Framework**: Flutter 3.24.0+
+- **Framework**: Flutter 3.9.2+
 - **Language**: Dart 3.5.0+
-- **State Management**: Riverpod 2.5.1 (@riverpod 어노테이션)
-- **Routing**: GoRouter 14.6.2
-- **DI**: GetIt 8.0.2
+- **State Management**: Riverpod 2.6.1 (@riverpod 어노테이션)
+- **Routing**: GoRouter 16.2.1 (ShellRoute, 딥링크)
 
 ### Backend Integration
-- **API Client**: Dio 5.7.0
-- **Authentication**: JWT + Secure Storage
-- **Push Notification**: Firebase Cloud Messaging
+- **API Client**: Dio 5.9.0 + Retrofit 4.7.2
+- **Authentication**: JWT + Secure Storage 9.2.4
+- **Push Notification**: Firebase Messaging 16.0.1
 - **Social Login**: Google Sign-In 7.2.0
+
+### Maps & Location
+- **Maps**: google_maps_flutter 2.13.1
+- **Location**: geolocator 13.0.2
 
 ### UI/UX
 - **Design System**: Material 3
 - **Responsive**: flutter_screenutil 5.9.3
 - **Images**: CachedNetworkImage 3.4.1
 - **Loading**: Shimmer 3.0.0
-- **Icons**: flutter_svg 2.0.14
+- **Icons**: flutter_svg 2.2.1
 
 ### Development Tools
-- **Code Generation**: build_runner, freezed
-- **Localization**: flutter_localizations
-- **Linting**: flutter_lints
-- **Testing**: flutter_test, mockito
+- **Code Generation**: build_runner 2.4.14, freezed 2.5.7
+- **API Generator**: retrofit_generator 9.1.8
+- **Localization**: flutter_localizations + intl 0.20.2
+- **Linting**: flutter_lints 6.0.0
 
 ---
 
@@ -138,30 +146,40 @@
 ```
 lib/
 ├── core/                    # 핵심 모듈
-│   ├── theme/              # 디자인 시스템
-│   ├── router/             # 라우팅 설정
-│   ├── services/           # 글로벌 서비스
+│   ├── theme/              # 디자인 시스템 (Colors, TextStyles, Spacing)
+│   ├── router/             # GoRouter ShellRoute 설정
+│   ├── network/            # Dio, AuthInterceptor
+│   ├── models/             # 글로벌 데이터 모델
+│   ├── services/           # 글로벌 서비스 (Auth, FCM, Location)
 │   ├── providers/          # 글로벌 프로바이더
 │   └── utils/              # 유틸리티
 │
-├── features/               # 기능별 모듈
-│   ├── auth/              # 인증 기능
-│   ├── onboarding/        # 온보딩
-│   ├── home/              # 홈 화면
-│   ├── mypage/            # 마이페이지
-│   ├── map/               # 지도
-│   └── course_market/     # 코스 마켓
+├── features/               # 기능별 모듈 (12개)
+│   ├── auth/              # 인증 (Login, OAuth)
+│   ├── onboarding/        # 온보딩 (6단계)
+│   ├── home/              # 홈 화면 (SNS콘텐츠, 장소)
+│   ├── mypage/            # 마이페이지 (프로필 편집)
+│   ├── map/               # 지도 (마커, 바텀시트)
+│   ├── course_market/     # 코스 마켓
+│   ├── notifications/     # 알림 관리
+│   ├── policy/            # 약관/정책 상세
+│   ├── schedule/          # 일정 관리 (개발 중)
+│   ├── splash/            # 스플래시
+│   └── debug/             # 디버깅 도구
 │
-├── shared/                 # 공용 컴포넌트
+├── shared/                 # 공용 컴포넌트 (26+ 위젯)
+│   ├── mixins/            # 유틸리티 믹스인
 │   └── widgets/           # 재사용 위젯
-│       ├── common/        # 공통 위젯
-│       ├── buttons/       # 버튼 컴포넌트
-│       ├── cards/         # 카드 컴포넌트
-│       ├── inputs/        # 입력 컴포넌트
-│       ├── layout/        # 레이아웃 컴포넌트
-│       └── dialogs/       # 다이얼로그 컴포넌트
+│       ├── common/        # AppBar, EmptyState, ChipList
+│       ├── buttons/       # Primary, Secondary, Social
+│       ├── cards/         # SnsContent, PlaceDetail
+│       ├── inputs/        # SearchBar, TextField
+│       ├── layout/        # GradientBackground, SectionHeader
+│       ├── dialogs/       # CommonDialog, FolderSelection
+│       ├── map/           # PlaceInfoBottomSheet
+│       └── place_detail/  # InfoHeader, PhotoGallery, MiniMap
 │
-└── l10n/                   # 다국어 리소스
+└── l10n/                   # 다국어 리소스 (ko, en)
 ```
 
 ---
@@ -249,4 +267,4 @@ flutter build ios --release
 이 문서는 프로젝트 진행에 따라 지속적으로 업데이트됩니다.
 문서 관련 문의사항이나 개선 제안은 GitHub Issues를 통해 등록해주세요.
 
-**Version**: 1.0.0
+**Version**: 1.2.8
